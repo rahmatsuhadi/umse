@@ -68,7 +68,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
     return (
         <main className="bg-white">
-            <div className="container mx-auto px-10 py-8 md:py-12">
+            <div className="container mx-auto md:px-10 py-8 md:py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-8">
 
                     {/* Kolom Kiri & Tengah (Gambar & Info) */}
