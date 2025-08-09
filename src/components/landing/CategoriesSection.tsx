@@ -16,8 +16,8 @@ export default function CategoriesSection() {
         <h2 className="text-2xl font-bold text-slate-900 mb-6">Kategori Pilihan</h2>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
           {categories.map((category, index) => (
-            <div key={index} className="flex flex-col items-center p-4 border rounded-lg hover:shadow-md hover:border-pink-500 transition-all cursor-pointer">
-              <category.icon className="w-8 h-8 text-pink-600 mb-2" />
+            <div key={index} className="flex flex-col items-center p-4 border rounded-lg hover:shadow-md hover:border-primary/80 transition-all cursor-pointer">
+              <category.icon className="w-8 h-8 text-primary mb-2" />
               
               <p className="text-center text-sm font-medium text-slate-700">{category.text}</p>
             </div>

@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
-import {Poppins } from "next/font/google";
+import {Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // Sertakan berbagai weight yang dibutuhkan
-  variable: "--font-poppins", // Buat CSS variable
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+});
+
+const jakarta = Plus_Jakarta_Sans({ // Daftarkan font Plus Jakarta Sans
+  subsets: ["latin", ],
+  weight: ["400", "500", "600", "700", "800",],
+  display: "swap",
+  style: ["normal", "italic"],
+  variable: "--font-jakarta",
 });
 
 
@@ -24,7 +32,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-       className={`${poppins.variable} antialiased bg-white`}
+       className={`
+        ${jakarta.variable} antialiased bg-white`}
       >
         <Navbar /> 
         {children}

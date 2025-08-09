@@ -22,14 +22,15 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm md:px-10">
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm md:px-10 ">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
 
           {/* 1. Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold" style={{ color: '#c21a86' }}>
-              Sleman<span className="text-sm font-semibold">Store</span>
+            <Link href="/" className="text-2xl font-bold text-primary" >
+            <img src={"https://slemanmart.web.id/img/slemanmartlogo.png"} height={100} width={100}/>
+              {/* Sleman<span className="text-sm font-semibold">Store</span> */}
             </Link>
           </div>
 
@@ -56,8 +57,8 @@ export default function Navbar() {
                     href={link.href}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-pink-50 text-primary font-semibold'
-                        : 'text-gray-600 hover:bg-gray-100'
+                        ? ' text-primary font-semibold'
+                        : 'text-gray-600 '
                     }`}
                   >
                     {link.name}

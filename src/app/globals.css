@@ -13,8 +13,10 @@
 
 
 @theme inline {
+  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --font-jakarta: var(--font-jakarta);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -63,7 +65,7 @@
   --popover-foreground: oklch(0.129 0.042 264.695);
 
   /* Primary Colors - Warna Utama Anda */
-  --primary: oklch(52.44% 0.220 343.25);
+  --primary: oklch(63.2% 0.178 48.2);
   /* #B70A8A */
   --primary-foreground: oklch(0.98 0 0);
   /* Putih untuk kontras */
@@ -71,7 +73,7 @@
   /* Secondary Colors */
   --secondary: oklch(0.96 0.02 325);
   /* Turunan pink yang lebih pudar */
-  --secondary-foreground: oklch(0.53 0.231 325.27);
+  --secondary-foreground: oklch(47.327% 0.11781 50.615);
 
   /* Muted Colors */
   --muted: oklch(0.96 0.02 325);
@@ -80,7 +82,7 @@
   /* Accent Colors - Warna Aksen (lebih terang) */
   --accent: oklch(0.9 0.06 325.27);
   /* #EAB6DC sedikit lebih gelap untuk kontras */
-  --accent-foreground: oklch(0.53 0.231 325.27);
+  --accent-foreground: oklch(63.2% 0.178 48.2);
 
   /* Destructive Colors */
   --destructive: oklch(0.577 0.245 27.325);
@@ -90,7 +92,7 @@
   --input: oklch(0.929 0.013 255.508);
 
   /* Ring Color - Warna focus ring */
-  --ring: oklch(0.6 0.2 325.27);
+  --ring: oklch(63.2% 0.178 48.2);
   /* Turunan dari warna utama */
 }
 
@@ -103,9 +105,9 @@
   --popover-foreground: oklch(0.98 0 0);
 
   /* Primary Colors - Warna dibalik untuk mode gelap */
-  --primary: oklch(0.81 0.103 325.27);
+  --primary: oklch(47.327% 0.11781 50.615);
   /* #EAB6DC */
-  --primary-foreground: oklch(52.44% 0.220 343.25);
+  --primary-foreground: oklch(63.2% 0.178 48.2);
   /* #B70A8A */
 
   /* Secondary Colors */
@@ -137,7 +139,7 @@
   }
 
   body {
-    font-family: var(--font-poppins), sans-serif;
+    /* font-family: var(--font-jakarta), sans-serif; */
     @apply bg-background text-foreground;
   }
 }
