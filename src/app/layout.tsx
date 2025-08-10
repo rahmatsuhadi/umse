@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/shared/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import Head from "next/head";
+import { Navbar } from "@/components/shared/Navbar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -46,7 +46,6 @@ export default function RootLayout({
         className={`
         ${jakarta.variable} antialiased bg-white`}
       >
-        {/* <Navbar />  */}
         {children}
         <Toaster />
       </body>

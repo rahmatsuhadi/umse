@@ -17,7 +17,7 @@ const navLinks = [
 
 const withSearchBar = ["/"];
 
-export default function Navbar() {
+export function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -56,8 +56,8 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-                        ? ' text-primary font-semibold'
-                        : 'text-gray-600 '
+                      ? ' text-primary font-semibold'
+                      : 'text-gray-600 '
                       }`}
                   >
                     {link.name}
@@ -98,41 +98,78 @@ export default function Navbar() {
 
       {/* 5. Panel Menu Mobile yang Muncul Saat Diklik */}
       {/* {isMenuOpen && ( */}
-        {/* <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t"> */}
-        <div
-          className={`md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t transform transition-all duration-300 origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0 pointer-events-none'
-            }`}
-        >
-          <div className="flex flex-col space-y-2 p-4">
-            {/* Pencarian di Mobile */}
-            {!withSearchBar.includes(pathname) && (
-              <div className="relative w-full mb-2">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input placeholder="Search..." className="pl-10 rounded-lg bg-slate-100 border-none" />
-              </div>
-            )}
-            {/* Tautan Navigasi di Mobile */}
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="block px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100"
-              >
-                {link.name}
-              </Link>
-            ))}
-            <div className="border-t pt-4 mt-2 space-y-2">
-              <Button asChild variant="outline" className="w-full border-primary  hover:border-primary/80 text-primary">
-                <Link href="/daftar" onClick={() => setIsMenuOpen(false)}>Daftar</Link>
-              </Button>
-              <Button asChild className="w-full bg-primary hover:bg-primary/80">
-                <Link href="/masuk" onClick={() => setIsMenuOpen(false)}>Masuk</Link>
-              </Button>
+      {/* <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t"> */}
+      <div
+        className={`md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t transform transition-all duration-300 origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0 pointer-events-none'
+          }`}
+      >
+        <div className="flex flex-col space-y-2 p-4">
+          {/* Pencarian di Mobile */}
+          {!withSearchBar.includes(pathname) && (
+            <div className="relative w-full mb-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input placeholder="Search..." className="pl-10 rounded-lg bg-slate-100 border-none" />
             </div>
+          )}
+          {/* Tautan Navigasi di Mobile */}
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100"
+            >
+              {link.name}
+            </Link>
+          ))}
+          <div className="border-t pt-4 mt-2 space-y-2">
+            <Button asChild variant="outline" className="w-full border-primary  hover:border-primary/80 text-primary">
+              <Link href="/daftar" onClick={() => setIsMenuOpen(false)}>Daftar</Link>
+            </Button>
+            <Button asChild className="w-full bg-primary hover:bg-primary/80">
+              <Link href="/masuk" onClick={() => setIsMenuOpen(false)}>Masuk</Link>
+            </Button>
           </div>
         </div>
+      </div>
       {/* )} */}
     </nav>
   );
+}
+
+export function Navbar2() {
+  return (
+    <header className="bg-white shadow-md">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-800 font-jakarta">
+            Produk UMKM Sleman
+          </h1>
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <a href="/cart" className="relative text-primary hover:text-primary-dark transition duration-300">
+              <i className="fas fa-shopping-cart text-lg sm:text-xl"></i>
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+            </a>
+            <div className="relative group">
+              <button className="flex items-center text-primary hover:text-primary-dark transition duration-300">
+                <i className="fas fa-user-circle text-lg sm:text-xl mr-1 sm:mr-2"></i>
+                <span className="hidden sm:inline text-sm sm:text-base">Profile</span>
+                <i className="fas fa-chevron-down text-xs ml-1"></i>
+              </button>
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                <div className="py-2">
+                  <Link href="#" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"><i className="fas fa-box mr-3 text-gray-500"></i><span>Pesanan Saya</span></Link>
+                  <Link href="#" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"><i className="fas fa-user mr-3 text-gray-500"></i><span>Edit Profile</span></Link>
+                  <Link href="#" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"><i className="fas fa-heart mr-3 text-gray-500"></i><span>Favorit</span></Link>
+                  <hr className="my-2" />
+                  <Link href="#" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"><i className="fas fa-home mr-3 text-gray-500"></i><span>Beranda</span></Link>
+                  <Link href="/masuk" className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50"><i className="fas fa-sign-out-alt mr-3"></i><span>Keluar</span></Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
 }

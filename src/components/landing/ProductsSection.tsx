@@ -1,19 +1,20 @@
+"use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import Link from "next/link";
 
-const products = [
-  { name: "Kursi Sofa Minimalis", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  { name: "Kursi Merah Elegan", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  { name: "Sofa Pink Nyaman", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  { name: "Kursi Abu Modern", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  // Tambah 4 produk lagi untuk total 8
-  { name: "Kursi Merah Elegan", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  { name: "Sofa Pink Nyaman", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  { name: "Kursi Abu Modern", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-  { name: "Kursi Sofa Minimalis", price: "33.000", seller: "Anthon's, Pedalaman", image: "/placeholder.svg" },
-];
+
+const products = Array.from({ length: 8 }, (_, i) => ({
+  id: i + 1,
+  name: 'Keripik Tempe Original',
+  category: 'Makanan',
+  store: 'Toko Cemilan Sleman',
+  location: 'Jl. Magelang KM 5, Sleman',
+  price: 15000,
+  stock: 25,
+  rating: 4.5,
+}));
 
 export default function ProductsSection() {
   return (
@@ -50,8 +51,30 @@ export default function ProductsSection() {
           <TabsContent value="new">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
               {products.map((product, index) => (
-                <Link key={index}  href={"/barang/121"}>
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Link key={index} href={"/products/121"}>
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 group h-full flex flex-col">
+                    <div className="bg-gray-300 h-40 md:h-48 flex items-center justify-center relative">
+                      {/* <i className="fas fa-image text-gray-500 text-2xl md:text-3xl"></i> */}
+                      <Image objectFit="cover" layout="fill"
+                        alt={product.name} className="absolute inset-0 object-cover"
+                        src="/hero.png" />
+                    </div>
+                    <div className="p-4 flex flex-col flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">{product.category}</span>
+                        <div className="flex items-center text-yellow-400"><i className="fas fa-star text-xs"></i><span className="text-gray-600 text-xs ml-1">{product.rating}</span></div>
+                      </div>
+                      <h3 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-primary">{product.name}</h3>
+                      <p className="text-xs text-gray-600 mb-1">{product.store}</p>
+                      <p className="text-xs text-gray-500 mb-3">{product.location}</p>
+                      <div className="flex items-center justify-between mt-auto">
+                        <div><span className="text-primary font-bold text-sm md:text-lg">Rp {product.price.toLocaleString('id-ID')}</span><p className="text-xs text-gray-500">Stok: {product.stock}</p></div>
+                        <button onClick={(e) => { console.log(e) }} className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition duration-300"><i className="fas fa-shopping-cart text-sm"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <CardContent className="p-0">
                     <div className="relative w-full aspect-square ">
                       <img src={"https://d2xjmi1k71iy2m.cloudfront.net/dairyfarm/id/images/198/1319859_PE941002_S4.jpg"}/>
@@ -62,7 +85,7 @@ export default function ProductsSection() {
                     <p className="text-green-500 font-bold mt-1">Rp. {product.price}</p>
                     <p className="text-xs text-gray-500 mt-2">{product.seller}</p>
                   </CardFooter>
-                </Card>
+                </Card> */}
                 </Link>
               ))}
             </div>
@@ -72,6 +95,17 @@ export default function ProductsSection() {
             <p className="mt-6 text-center">Produk terlaris akan segera hadir!</p>
           </TabsContent>
         </Tabs>
+      </div>
+
+      {/* ===== Pagination ===== */}
+      <div className="flex justify-center my-8">
+        <div className="flex items-center space-x-2">
+          <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-left"></i></button>
+          <button className="px-4 py-2 bg-primary text-white rounded-lg">1</button>
+          <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">2</button>
+          <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">3</button>
+          <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-right"></i></button>
+        </div>
       </div>
     </section>
   );

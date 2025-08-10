@@ -5,17 +5,17 @@ const announcements = [
   {
     title: "Pembaruan Ketentuan UMKM",
     description: "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-    image: "https://images.unsplash.com/photo-1547082299-de196ea013d6?q=80&w=2070&auto=format&fit=crop"
+    image: "/hero.png"
   },
   {
     title: "Pembaruan Ketentuan UMKM",
     description: "It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing.",
-    image: "https://images.unsplash.com/photo-1547082299-de196ea013d6?q=80&w=2070&auto=format&fit=crop"
+    image: "/hero.png"
   },
   {
     title: "Pembaruan Ketentuan UMKM",
     description: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-    image: "https://images.unsplash.com/photo-1547082299-de196ea013d6?q=80&w=2070&auto=format&fit=crop"
+    image: "/hero.png"
   },
 ]
 
@@ -33,7 +33,7 @@ export default function AnnouncementsSection() {
                 <h3 className="text-xl font-bold text-primary mb-2">{item.title}</h3>
                 <p className="text-slate-600">{item.description}</p>
               </div>
-              <div className="relative w-full h-40 rounded-md overflow-hidden">
+              <div className="relative w-full h-50 rounded-md overflow-hidden">
                 <Image
                   src={item.image}
                   alt={item.title}

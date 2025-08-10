@@ -15,9 +15,11 @@ export default function HeroSection() {
             Platform Digital <Link className="underline hover:cursor-pointer" href={"/"}>DISKOPUKM Kab. Sleman</Link> untuk Pembinaan UMKM Sleman. Dapatkan layanan terbaik dan nikmati pengalaman belanja online yang menyenangkan.
           </p>
           <div className="mt-8">
-            <Button  className="bg-primary rounded-sm px-9 py-7 hover:bg-primary/50">
+            <Link href={"/products"}>
+            <Button type="button" className="bg-primary rounded-sm px-9 py-7 hover:cursor-pointer hover:bg-primary/50">
               Mulai Belanja
             </Button>
+            </Link>
           </div>
         </div>
 

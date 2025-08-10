@@ -91,12 +91,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <div className="flex items-center justify-between">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Sleman Mart</h1>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <Link href="/v2/product" className="text-primary hover:text-primary-dark text-sm sm:text-base flex items-center">
+              <Link href="/products" className="text-primary hover:text-primary-dark text-sm sm:text-base flex items-center">
                 <i className="fas fa-arrow-left mr-1"></i>
                 <span className="hidden sm:inline">Kembali ke Produk</span>
                 <span className="sm:hidden">Kembali</span>
               </Link>
-              <Link href="/v2/" className="text-primary hover:text-primary-dark text-sm sm:text-base flex items-center">
+              <Link href="/" className="text-primary hover:text-primary-dark text-sm sm:text-base flex items-center">
                 <i className="fas fa-home mr-1"></i>
                 <span className="hidden sm:inline">Beranda</span>
               </Link>
@@ -109,9 +109,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       <nav className="bg-white border-b px-4 py-3">
         <div className="container mx-auto">
           <div className="flex items-center text-xs sm:text-sm text-gray-600 overflow-x-auto whitespace-nowrap">
-            <Link href="/v2/" className="hover:text-primary flex-shrink-0">Beranda</Link>
+            <Link href="/" className="hover:text-primary flex-shrink-0">Beranda</Link>
             <i className="fas fa-chevron-right mx-2 text-gray-400 flex-shrink-0"></i>
-            <Link href="/v2/product" className="hover:text-primary flex-shrink-0">Produk</Link>
+            <Link href="/products" className="hover:text-primary flex-shrink-0">Produk</Link>
             <i className="fas fa-chevron-right mx-2 text-gray-400 flex-shrink-0"></i>
             <span className="text-gray-800 truncate">{productData.name}</span>
           </div>

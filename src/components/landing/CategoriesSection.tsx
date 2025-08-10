@@ -19,7 +19,7 @@ export default function CategoriesSection() {
             <div key={index} className="flex flex-col items-center p-4 border rounded-lg hover:shadow-md hover:border-primary/80 transition-all cursor-pointer">
               <category.icon className="w-8 h-8 text-primary mb-2" />
               
-              <p className="text-center text-sm font-medium text-slate-700">{category.text}</p>
+              <p className="text-center text-xs md:text-sm font-medium text-slate-700">{category.text}</p>
             </div>
           ))}
         </div>

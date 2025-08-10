@@ -58,7 +58,7 @@ export default function LoginPage() {
       });
 
       // Arahkan pengguna ke halaman dashboard setelah berhasil login
-      router.push('/dashboard');
+      router.push('/');
 
     } catch (error) {
       toast.error("Login Gagal", {
