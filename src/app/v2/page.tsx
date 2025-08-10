@@ -169,12 +169,12 @@ export default function HomePage() {
               <div className="text-sm text-gray-600">UMKM Terdaftar</div>
               <div className="text-xl font-bold text-primary">340+</div>
             </div>
-            <a
-              href="products.html"
+            <Link
+              href="/v2/product"
               className="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary-dark transition duration-300"
             >
               <i className="fas fa-th-large mr-2"></i>Semua Produk
-            </a>
+            </Link>
           </div>
         </div>
       </section>
