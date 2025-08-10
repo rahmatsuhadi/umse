@@ -65,7 +65,9 @@
   --popover-foreground: oklch(0.129 0.042 264.695);
 
   /* Primary Colors - Warna Utama Anda */
-  --primary: oklch(63.2% 0.178 48.2);
+  --primary: oklch(69.77% 0.150 51.81);
+  --primary-dark:oklch(62.28% 0.141 50.68);
+  --primar-light:oklch(76.73% 0.129 55.22);
   /* #B70A8A */
   --primary-foreground: oklch(0.98 0 0);
   /* Putih untuk kontras */
@@ -82,7 +84,7 @@
   /* Accent Colors - Warna Aksen (lebih terang) */
   --accent: oklch(0.9 0.06 325.27);
   /* #EAB6DC sedikit lebih gelap untuk kontras */
-  --accent-foreground: oklch(63.2% 0.178 48.2);
+  --accent-foreground: oklch(69.77% 0.150 51.81);
 
   /* Destructive Colors */
   --destructive: oklch(0.577 0.245 27.325);
@@ -92,7 +94,7 @@
   --input: oklch(0.929 0.013 255.508);
 
   /* Ring Color - Warna focus ring */
-  --ring: oklch(63.2% 0.178 48.2);
+  --ring: oklch(69.77% 0.150 51.81);
   /* Turunan dari warna utama */
 }
 
@@ -107,7 +109,7 @@
   /* Primary Colors - Warna dibalik untuk mode gelap */
   --primary: oklch(47.327% 0.11781 50.615);
   /* #EAB6DC */
-  --primary-foreground: oklch(63.2% 0.178 48.2);
+  --primary-foreground: oklch(69.77% 0.150 51.81);
   /* #B70A8A */
 
   /* Secondary Colors */

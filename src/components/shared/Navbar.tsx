@@ -71,7 +71,7 @@ export default function Navbar() {
 
           {/* 3. Tombol Aksi & Ikon (Desktop) */}
           <div className="hidden md:flex items-center gap-3">
-            <Button asChild variant="outline" className="border-primary text-primary hover:bg-pink-50 hover:text-primary">
+            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary/50 hover:text-primary">
               <Link href="/daftar">Daftar</Link>
             </Button>
             <Button asChild className="bg-primary hover:bg-primary/90">
