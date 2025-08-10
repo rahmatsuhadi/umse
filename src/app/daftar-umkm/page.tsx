@@ -15,7 +15,7 @@ export default function DaftarUmkmPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[70vh] py-12 px-4">
+    <div className="flex items-center justify-center min-h-[70vh] py-12 px-4  bg-[#f8f9fa]">
       {/* Tampilkan komponen berdasarkan state 'step' */}
       {step === 1 && <PhoneNumberCheckStep onSuccess={handlePhoneCheckSuccess} />}
       {step === 2 && <RegistrationFormStep phone={validatedPhone} />}

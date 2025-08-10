@@ -73,11 +73,11 @@ export default function DaftarPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
+    <div className="flex items-center justify-center min-h-[80vh] px-4  bg-[#f8f9fa] font-jakarta">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-primary">Daftar</CardTitle>
-          <CardDescription>Daftar Untuk Melajutkan</CardDescription>
+          <CardTitle className="text-3xl font-bold text-[#36454F]">Daftar</CardTitle>
+          <CardDescription className='text-[#36454F]'>Daftar Untuk Melajutkan</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -91,7 +91,7 @@ export default function DaftarPage() {
                     <FormControl>
                       <div className="relative">
                         <FaPhoneAlt  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input placeholder="0812 xxxxxx" className="pl-10 border-primary rounded-md" {...field} />
+                        <Input placeholder="0812 xxxxxx" className="pl-10 py-5 rounded-xl" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -110,7 +110,7 @@ export default function DaftarPage() {
                         <Input
                           type={showPassword ? 'text' : 'password'}
                           placeholder="********"
-                          className="pl-10 border-primary rounded-md pr-10"
+                          className="pl-10 py-5 rounded-xl"
                           {...field}
                         />
                         <button
@@ -138,7 +138,7 @@ export default function DaftarPage() {
                         <Input
                           type={showPasswordAgain ? 'text' : 'password'}
                           placeholder="********"
-                          className="pl-10 border-primary rounded-md pr-10"
+                          className="pl-10 py-5 rounded-xl"
                           {...field}
                         />
                         <button

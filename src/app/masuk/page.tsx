@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import {  Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { IoLockClosed } from "react-icons/io5";
 const formSchema = z.object({
@@ -68,11 +68,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
+    <div className="flex items-center justify-center min-h-[80vh] px-4 bg-[#f8f9fa]">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-primary">Login</CardTitle>
-          <CardDescription>Silahkan masuk untuk melanjutkan</CardDescription>
+          <CardTitle className="text-3xl font-bold font-jakarta text-[#36454F]">Login</CardTitle>
+          <CardDescription className='text-[#36454F]'>Silahkan masuk untuk melanjutkan</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -85,8 +85,8 @@ export default function LoginPage() {
                     <FormLabel>Nomor HP</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <FaPhoneAlt  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input placeholder="0812 xxxxxx" className="pl-10 border-primary rounded-md" {...field} />
+                        <FaPhoneAlt className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input placeholder="0812 xxxxxx" className="pl-10 py-5 rounded-xl" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -101,11 +101,11 @@ export default function LoginPage() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <IoLockClosed  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <IoLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
                           type={showPassword ? 'text' : 'password'}
                           placeholder="********"
-                          className="pl-10 border-primary rounded-md pr-10"
+                          className="pl-10 py-5 rounded-xl pr-10"
                           {...field}
                         />
                         <button
@@ -128,17 +128,19 @@ export default function LoginPage() {
           </Form>
         </CardContent>
         <CardFooter className="flex flex-col items-center">
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-gray-600 font-semibold mb-4">
             Belum punya akun?
+          <Link href={"/daftar"} className='ml-2 underline text-primary'>Daftar</Link>
           </p>
-          <div className=" w-full gap-4 grid grid-cols-2">
+          
+          {/* <div className=" w-full gap-4 grid grid-cols-2">
             <Button asChild variant="outline" className=" border-primary text-primary hover:bg-pink-50 hover:text-primary">
               <Link href="/daftar-umkm">Daftar UMKM</Link>
             </Button>
             <Button asChild variant="outline" className=" border-primary text-primary hover:bg-pink-50 hover:text-primary">
               <Link href="/daftar">Daftar Customer</Link>
             </Button>
-          </div>
+          </div> */}
         </CardFooter>
       </Card>
     </div>
