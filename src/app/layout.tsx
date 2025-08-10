@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import {Plus_Jakarta_Sans, Poppins } from "next/font/google";
+import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import { Toaster } from "@/components/ui/sonner";
+import Head from "next/head";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const poppins = Poppins({
 });
 
 const jakarta = Plus_Jakarta_Sans({ // Daftarkan font Plus Jakarta Sans
-  subsets: ["latin", ],
+  subsets: ["latin",],
   weight: ["400", "500", "600", "700", "800",],
   display: "swap",
   style: ["normal", "italic"],
@@ -31,11 +32,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+
+        <link 
+          rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" 
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
+          crossOrigin="anonymous" 
+          referrerPolicy="no-referrer" 
+        />
+      </head>
       <body
-       className={`
+        className={`
         ${jakarta.variable} antialiased bg-white`}
       >
-        <Navbar /> 
+        {/* <Navbar />  */}
         {children}
         <Toaster />
       </body>
