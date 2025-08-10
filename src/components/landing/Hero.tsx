@@ -8,7 +8,7 @@ export default function HeroSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 md:min-h-[87vh] min-h-[50vh]">
         {/* Kolom Kiri: Teks */}
         <div className=" flex flex-col justify-center p-8 md:p-16">
-          <h1 className="text-4xl md:text-[50pt] font-bold text-slate-900 plus-jakarta-sans">
+          <h1 className="text-4xl md:text-[50pt] font-bold text-slate-900 font-jakarta">
             Sleman Mart
           </h1>
           <p className="mt-4 text-lg text-slate-600">

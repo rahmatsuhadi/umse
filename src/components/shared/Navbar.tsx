@@ -29,14 +29,14 @@ export default function Navbar() {
           {/* 1. Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-primary" >
-            <img src={"https://slemanmart.web.id/img/slemanmartlogo.png"} height={100} width={100}/>
+              <img src={"https://slemanmart.web.id/img/slemanmartlogo.png"} height={100} width={100} />
               {/* Sleman<span className="text-sm font-semibold">Store</span> */}
             </Link>
           </div>
 
           {/* 2. Navigasi & Pencarian untuk Tampilan Desktop */}
           <div className="hidden md:flex items-center gap-4 flex-1 justify-center">
-             {/* Kolom Pencarian */}
+            {/* Kolom Pencarian */}
             {withSearchBar.includes(pathname) && (
               <div className="relative w-full max-w-xs">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -55,11 +55,10 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
                         ? ' text-primary font-semibold'
                         : 'text-gray-600 '
-                    }`}
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -67,7 +66,7 @@ export default function Navbar() {
               })}
             </div>
 
-           
+
           </div>
 
           {/* 3. Tombol Aksi & Ikon (Desktop) */}
@@ -98,14 +97,18 @@ export default function Navbar() {
       </div>
 
       {/* 5. Panel Menu Mobile yang Muncul Saat Diklik */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t">
+      {/* {isMenuOpen && ( */}
+        {/* <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t"> */}
+        <div
+          className={`md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t transform transition-all duration-300 origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0 pointer-events-none'
+            }`}
+        >
           <div className="flex flex-col space-y-2 p-4">
             {/* Pencarian di Mobile */}
             {!withSearchBar.includes(pathname) && (
               <div className="relative w-full mb-2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input placeholder="Search..." className="pl-10 rounded-lg bg-slate-100 border-none"/>
+                <Input placeholder="Search..." className="pl-10 rounded-lg bg-slate-100 border-none" />
               </div>
             )}
             {/* Tautan Navigasi di Mobile */}
@@ -120,16 +123,16 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="border-t pt-4 mt-2 space-y-2">
-              <Button asChild variant="outline" className="w-full border-primary text-primary">
-                  <Link href="/daftar" onClick={() => setIsMenuOpen(false)}>Daftar</Link>
+              <Button asChild variant="outline" className="w-full border-primary  hover:border-primary/80 text-primary">
+                <Link href="/daftar" onClick={() => setIsMenuOpen(false)}>Daftar</Link>
               </Button>
-              <Button asChild className="w-full bg-primary">
-                  <Link href="/masuk" onClick={() => setIsMenuOpen(false)}>Masuk</Link>
+              <Button asChild className="w-full bg-primary hover:bg-primary/80">
+                <Link href="/masuk" onClick={() => setIsMenuOpen(false)}>Masuk</Link>
               </Button>
             </div>
           </div>
         </div>
-      )}
+      {/* )} */}
     </nav>
   );
 }
