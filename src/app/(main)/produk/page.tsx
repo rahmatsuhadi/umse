@@ -1,14 +1,12 @@
-import CategoriesSection from "@/components/landing/CategoriesSection";
-import FeaturesSection from "@/components/landing/Feature";
-import ProductsSection from "@/components/landing/ProductsSection";
+import CategoriesSection from "@/components/features/home/CategoriesSection";
+import FeaturesSection from "@/components/features/home/FeatureSection";
 import StoresSection from "@/components/landing/StoresSection";
 import Footer from "@/components/layout/Footer";
-import FilterBar from "@/components/product/FilterBar";
+import FilterSortModal from "@/components/product/FilterBar";
+import ProductSection from "@/components/product/ProductSection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
-import { Navbar2 } from "@/components/shared/Navbar";
-import { Input } from "@/components/ui/input";
+import { NavbarDashboard } from "@/components/shared/HeaderNav";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 
 
 
@@ -16,13 +14,13 @@ export default function ProductsPage() {
     return (
         <div>
             <div className="md:px-10">
-                <Navbar2 />
+                <NavbarDashboard />
 
-                <FilterBar />
+                <FilterSortModal />
 
 
                 <AnimatedWrapper>
-                    <h1 className="text-3xl font-bold text-center text-slate-900  mt-10">Layanan Kami</h1>
+                    <h1 className="text-3xl font-bold text-center text-slate-900  mt-10 font-jakarta">Layanan Kami</h1>
                     <p className="text-center text-gray-500 mb-1">Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart</p>
                     <FeaturesSection />
                 </AnimatedWrapper>
@@ -37,7 +35,7 @@ export default function ProductsPage() {
                 <Separator />
 
                 <AnimatedWrapper>
-                    <ProductsSection />
+                    <ProductSection />
                 </AnimatedWrapper>
 
 
@@ -52,9 +50,6 @@ export default function ProductsPage() {
 
 
             <Footer />
-
-
-
 
 
         </div>

@@ -44,6 +44,8 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -66,8 +68,8 @@
 
   /* Primary Colors - Warna Utama Anda */
   --primary: oklch(69.77% 0.150 51.81);
-  --primary-dark:oklch(62.28% 0.141 50.68);
-  --primar-light:oklch(76.73% 0.129 55.22);
+  --primary-dark: oklch(62.28% 0.141 50.68);
+  --primary-light: oklch(76.73% 0.129 55.22);
   /* #B70A8A */
   --primary-foreground: oklch(0.98 0 0);
   /* Putih untuk kontras */

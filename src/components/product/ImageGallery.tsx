@@ -5,43 +5,41 @@ import Image from "next/image";
 
 type Props = {
   images: string[];
-  productName: string;
 };
 
-export default function ImageGallery({ images, productName }: Props) {
+export default function ImageGallery({ images }: Props) {
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
   return (
-    // Menggunakan flex-row untuk layout horizontal
-    <div className="flex flex-col-reverse md:flex-row gap-4">
+    <div className="flex flex-col gap-4">
+
       {/* Gambar Utama */}
-      <div className="relative aspect-square w-full rounded-lg overflow-hidden border flex-grow">
-        <img
-          src={selectedImage} // Ganti dengan path gambar asli
-          alt={productName}
-          // fill
-          className="object-cover"
+      <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center p-2">
+        <img 
+          src={selectedImage} 
+          alt="Gambar Utama" 
+          className="w-full h-full object-contain"
         />
       </div>
-      {/* Thumbnail */}
-      <div className="flex md:flex-col gap-3 w-full md:w-24">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedImage(image)}
-            className={`relative aspect-square w-full rounded-md overflow-hidden cursor-pointer border-2 transition-all ${
-              selectedImage === image ? 'border-primary' : 'border-transparent hover:border-pink-200'
-            }`}
+
+      {/* Grid thumbnail */}
+      <div className="grid grid-cols-4 gap-4">
+        {images.slice(0, 4).map((url, index) => (
+          <div 
+            key={index} 
+            className={`w-full h-20 md:h-24 bg-gray-200 rounded-lg flex items-center justify-center p-1 cursor-pointer transition-all duration-200 ease-in-out 
+              ${selectedImage === url ? 'border-4 border-primary' : 'border-0'}`}
+            onClick={() => setSelectedImage(url)} // Mengganti gambar utama ketika thumbnail diklik
           >
-            <img
-              src={image}
-              alt={`Thumbnail ${index + 1}`}
-              // fill
-              className="object-cover"
+            <img 
+              src={url} 
+              alt={`Thumbnail ${index + 1}`} 
+              className="w-full h-full object-contain rounded"
             />
           </div>
         ))}
       </div>
+
     </div>
   );
 }
