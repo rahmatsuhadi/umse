@@ -95,18 +95,21 @@ export default function AddressPage() {
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center space-x-4">
-                            <button
+                             <Link href={"/pengguna"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
+                                <i className="fas fa-arrow-left text-xl"></i>
+                            </Link>
+                            {/* <button
                                 onClick={() => router.push('/pengguna')}
                                 className="text-gray-600 hover:text-primary transition-colors"
                             >
                                 <i className="fas fa-arrow-left text-xl"></i>
-                            </button>
+                            </button> */}
                             <h1 className="text-xl font-bold text-gray-800">Alamat Saya</h1>
                         </div>
 
                         <button
                             onClick={() => router.push('/pengguna/alamat/')}
-                            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
+                            className="bg-primary text-white px-4 py-2 hover:cursor-pointer rounded-lg hover:bg-primary-dark transition-colors"
                         >
                             <i className="fas fa-plus mr-2"></i>Tambah
                         </button>
@@ -133,7 +136,7 @@ export default function AddressPage() {
                                 <i className="fas fa-map-marker-alt text-4xl mb-4 text-gray-300"></i>
                                 <h3 className="text-lg font-medium mb-2">Belum ada alamat</h3>
                                 <p className="text-sm mb-4">Tambah alamat untuk memudahkan pengiriman</p>
-                                <Link className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors" href={"/pengguna/alamat/form"}>
+                                <Link className="bg-primary hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors" href={"/pengguna/alamat/form"}>
                                     <i className="fas fa-plus mr-2"></i>Tambah Alamat Pertama
                                 </Link>
                             </div>
@@ -173,14 +176,14 @@ export default function AddressPage() {
                                         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 ml-4">
                                             <button
                                                 onClick={() => editAddress(address.id)}
-                                                className="text-primary hover:text-primary-dark p-2 hover:bg-primary-light hover:bg-opacity-20 rounded-lg transition-colors"
+                                                className="text-primary hover:cursor-pointer hover:text-primary-dark p-2 hover:bg-primary-light hover:bg-opacity-20 rounded-lg transition-colors"
                                                 title="Edit"
                                             >
                                                 <i className="fas fa-edit"></i>
                                             </button>
                                             <button
                                                 onClick={() => deleteAddress(address.id)}
-                                                className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                                                className="text-red-500 hover:cursor-pointer hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Hapus"
                                             >
                                                 <i className="fas fa-trash"></i>
@@ -188,7 +191,7 @@ export default function AddressPage() {
                                             {!address.isDefault && (
                                                 <button
                                                     onClick={() => setDefaultAddress(address.id)}
-                                                    className="text-yellow-500 hover:text-yellow-700 p-2 hover:bg-yellow-50 rounded-lg transition-colors"
+                                                    className="text-yellow-500 hover:cursor-pointer hover:text-yellow-700 p-2 hover:bg-yellow-50 rounded-lg transition-colors"
                                                     title="Jadikan Utama"
                                                 >
                                                     <i className="fas fa-star"></i>

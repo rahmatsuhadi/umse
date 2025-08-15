@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
@@ -53,13 +54,16 @@ export default function EditProfilePage() {
                     <div className="flex items-center justify-between h-16">
                         {/* Back Button & Title */}
                         <div className="flex items-center space-x-4">
-                            <button
+                             <Link href={"/pengguna"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
+                                <i className="fas fa-arrow-left text-xl"></i>
+                            </Link>
+                            {/* <button
                                 onClick={() => router.push("/pengguna")}
                                 className="text-gray-600 hover:text-primary transition-colors"
                                 aria-label="Back to profile"
                             >
                                 <i className="fas fa-arrow-left text-xl"></i>
-                            </button>
+                            </button> */}
                             <h1 className="text-xl font-bold text-gray-800">Edit Profile</h1>
                         </div>
                     </div>

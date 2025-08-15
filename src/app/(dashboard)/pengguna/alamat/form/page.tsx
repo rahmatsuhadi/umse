@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -104,12 +105,15 @@ export default function FormAddressPage(props: FormAddressPageProps) {
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center space-x-4">
-                            <button
+                            <Link href={"/pengguna/alamat"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
+                                <i className="fas fa-arrow-left text-xl"></i>
+                            </Link>
+                            {/* <button
                                 onClick={() => router.push('/pengguna/alamat')}
                                 className="text-gray-600 hover:text-primary transition-colors"
                             >
                                 <i className="fas fa-arrow-left text-xl"></i>
-                            </button>
+                            </button> */}
                             <h1 className="text-xl font-bold text-gray-800">
                                 {edit ? 'Edit Alamat' : 'Tambah Alamat'}
                             </h1>
@@ -265,14 +269,14 @@ export default function FormAddressPage(props: FormAddressPageProps) {
                             <button
                                 onClick={() => router.push("/pengguna/alamat")}
                                 type="button"
-                                className="flex-1 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                                className="flex-1 hover:cursor-pointer border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                             >
                                 <i className="fas fa-times mr-2"></i>Batal
                             </button>
                             {/* </Link> */}
                             <button
                                 type="submit"
-                                className="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+                                className="flex-1 hover:cursor-pointer bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-dark transition-colors"
                             >
                                 <i className="fas fa-save mr-2"></i>Simpan
                             </button>
