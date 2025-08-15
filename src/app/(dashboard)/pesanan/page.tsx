@@ -1,11 +1,14 @@
 import OrderList from "@/components/features/order/OrderList";
 import ContactSection from "@/components/landing/Contact";
+import Footer from "@/components/layout/Footer";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
+import { Navbar } from "@/components/shared/Navbar";
 import Link from "next/link";
 
 export default function OrderPage() {
     return (
         <div>
+            <Navbar isAuth withMenu={false}/>
             <div className="container mx-auto px-4 py-4 sm:py-8 md:px-10">
                 {/* <!-- Breadcrumb --> */}
                 <nav className="mb-4 sm:mb-6">
@@ -116,7 +119,7 @@ export default function OrderPage() {
 
 
             <AnimatedWrapper>
-                <ContactSection />
+                <Footer />
             </AnimatedWrapper>
 
 

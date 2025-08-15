@@ -59,14 +59,17 @@ export default function PasswordSettingsPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <Link href="/pengguna">
-              
-              <button
-                className="text-gray-600 hover:text-primary transition-colors"
+              {/* <Link href="/pengguna">
+
+                <button
+                  className="text-gray-600 hover:text-primary transition-colors"
                 >
+                  <i className="fas fa-arrow-left text-xl"></i>
+                </button>
+              </Link> */}
+              <Link href={"/pengguna/"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
                 <i className="fas fa-arrow-left text-xl"></i>
-              </button>
-                </Link>
+              </Link>
               <h1 className="text-xl font-bold text-gray-800">Keamanan Akun</h1>
             </div>
           </div>

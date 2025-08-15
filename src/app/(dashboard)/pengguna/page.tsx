@@ -1,5 +1,6 @@
 "use client"
 import { Navbar } from "@/components/shared/Navbar";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function PesananPage() {
@@ -8,12 +9,13 @@ export default function PesananPage() {
     const logout = () => {
         // Implementasi logout
         console.log('User logged out');
+        router.replace("/masuk")
         // Redirect ke login
     };
 
     return (
         <div className="bg-gray-50 ">
-            <Navbar isAuth withMenu={false}/>
+            <Navbar isAuth withMenu={false} />
 
             <main className="container mx-auto px-4 py-6">
                 {/* Profile Header */}
@@ -98,7 +100,7 @@ export default function PesananPage() {
                             </h3>
                         </div>
                         <div className="divide-y divide-gray-200">
-                            <MenuItem icon="fas fa-list-alt" label="Riwayat Pesanan" link="/pengguna/pesanan" />
+                            <MenuItem icon="fas fa-list-alt" label="Riwayat Pesanan" link="/pesanan" />
                             <MenuItem icon="fas fa-shopping-cart" label="Keranjang" link="/keranjang" />
                         </div>
                     </div>
@@ -121,7 +123,7 @@ export default function PesananPage() {
                     <div className="bg-white rounded-lg shadow-md">
                         <button
                             onClick={logout}
-                            className="w-full flex items-center justify-between p-4 text-red-600 hover:bg-red-50 transition-colors rounded-lg"
+                            className="w-full flex hover:cursor-pointer items-center justify-between p-4 text-red-600 hover:bg-red-50 transition-colors rounded-lg"
                         >
                             <div className="flex items-center">
                                 <i className="fas fa-sign-out-alt w-5"></i>
@@ -192,24 +194,27 @@ export default function PesananPage() {
 }
 
 interface MenuItemProps {
-  icon: string;
-  label: string;
-  link: string;
+    icon: string;
+    label: string;
+    link: string;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ icon, label, link }) => {
-  const navigate = useRouter();
 
-  return (
-    <button
-      onClick={() => navigate.replace(link)}
-      className="w-full text-left flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
-    >
-      <div className="flex items-center">
-        <i className={`${icon} text-gray-500 w-5`}></i>
-        <span className="ml-3 text-gray-800">{label}</span>
-      </div>
-      <i className="fas fa-chevron-right text-gray-400"></i>
-    </button>
-  );
+    return (
+        <Link href={link} className="w-full">
+            <button
+            type="button"
+                className=" text-left w-full  hover:cursor-pointer flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+            >
+                <div className="flex items-center">
+                    <i className={`${icon} text-gray-500 w-5`}></i>
+                    <span className="ml-3 text-gray-800">{label}</span>
+                </div>
+                <i className="fas fa-chevron-right text-gray-400"></i>
+            </button>
+        </Link>
+    )
+
+   
 };
