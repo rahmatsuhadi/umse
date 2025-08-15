@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import Head from "next/head";
-import { Navbar } from "@/components/shared/Navbar";
 
 const poppins = Poppins({
   subsets: ["latin"],

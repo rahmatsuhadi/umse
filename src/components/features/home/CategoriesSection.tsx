@@ -1,12 +1,12 @@
-import { Utensils, Shirt, Gem, Palette, Heater, Sofa } from 'lucide-react';
+
 
 const categories = [
-  { icon: Utensils, text: "Kuliner Siap Saji" },
-  { icon: Palette, text: "Kain dan Canting" },
-  { icon: Gem, text: "Aksesoris" },
-  { icon: Shirt, text: "Fashion dan Aksesoris" },
-  { icon: Heater, text: "Olahan Rempah/Minuman" },
-  { icon: Sofa, text: "Olahan Makanan dan Kerajinan" },
+  { icon: "fas fa-utensils", text: "Kuliner Siap Saji" },
+  { icon: "fas fa-cookie-bite", text: "Kain dan Canting" },
+  { icon: "fas fa-handshake", text: "Aksesoris" },
+  { icon: "fas fa-tshirt", text: "Fashion dan Aksesoris" },
+  { icon: "fas fa-snowflake", text: "Olahan Kemasan dan Frozen" },
+  { icon: "fas fa-box", text: "Olahan Makanan dan Kerajinan" },
 ];
 
 export default function CategoriesSection() {
@@ -14,12 +14,21 @@ export default function CategoriesSection() {
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-2xl font-bold text-slate-900 mb-6">Kategori Pilihan</h2>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
           {categories.map((category, index) => (
-            <div key={index} className="flex flex-col items-center p-4 border rounded-lg hover:shadow-md hover:border-primary/80 transition-all cursor-pointer">
-              <category.icon className="w-8 h-8 text-primary mb-2" />
-              
-              <p className="text-center text-xs md:text-sm font-medium text-slate-700">{category.text}</p>
+            <div key={index} className="flex flex-col items-center p-3 sm:p-4 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 hover:border-primary transition duration-300 group cursor-pointer">
+              {/* <category.icon className="w-8 h-8 text-primary mb-2" /> */}
+              <div
+                className="bg-primary rounded-lg w-10 h-8 sm:w-12 sm:h-10 flex items-center justify-center mb-2"
+              >
+                <i className={`${category.icon} text-white text-sm sm:text-base`}></i>
+              </div>
+              <h3
+                className="text-xs sm:text-sm font-medium text-gray-800 text-center leading-tight"
+              >
+                {category.text}
+              </h3>
+
             </div>
           ))}
         </div>

@@ -15,7 +15,6 @@ export default function MainLayout({
 }>) {
     return (
         <>
-            <NavbarDashboard/>
             {children}
         </>
     );

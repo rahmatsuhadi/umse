@@ -1,15 +1,13 @@
 'use client'; // Pastikan ada 'use client'
 
 import { motion } from 'framer-motion';
-import { Store, Building2, Info, GraduationCap, BarChart } from 'lucide-react';
-import Image from 'next/image';
 
 const features = [
-    { link: "/icon/cart-user.svg", icon: Store, text: "Pasar Sleman" },
-    { link: "/icon/store.svg", icon: Building2, text: "Direktori UMKM" },
-    { link: "/icon/announce.svg", icon: Info, text: "Info Pameran" },
-    { link: "/icon/video-present.svg", icon: GraduationCap, text: "Info Pelatihan" },
-    { link: "/icon/book-search.svg", icon: BarChart, text: "Literasi UMKM" },
+    { link: "/icon/cart-user.svg", icon: "fas fa-shopping-basket", text: "Pasar Sleman" },
+    { link: "/icon/store.svg", icon: "fas fa-store ", text: "Direktori UMKM" },
+    { link: "/icon/announce.svg", icon: "fas fa-bullhorn", text: "Info Pameran" },
+    { link: "/icon/video-present.svg", icon: "fas fa-graduation-cap ", text: "Info Pelatihan" },
+    { link: "/icon/book-search.svg", icon: "fas fa-book-open ", text: "Literasi UMKM" },
 ];
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -31,21 +29,28 @@ const itemVariants = {
 
 export default function FeaturesSection() {
     return (
-        <section className="py-12 md:py-20 bg-white">
+        <section className="pb-12 md:pb-20 ">
             <div className="container mx-auto px-4">
                 <motion.div
-                    className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-16 text-center"
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 md:gap-3"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
                 >
                     {features.map((feature, index) => (
-                        <motion.div key={index} className="flex flex-col items-center  border-black/20 border shadow-sm  rounded-xl p-6" variants={itemVariants}>
-                            <div className="flex items-center justify-centermb-4 h-20">
-                                {/* <feature.icon className="w-10 h-10 text-pink-600" /> */}
+                        <motion.div key={index} className="flex flex-col items-center p-2 sm:p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-300 group" variants={itemVariants}>
+                            {/* <div className="flex items-center justify-centermb-4 h-20">
                                 <Image src={feature.link} alt={feature.text} width={100} height={100} />
+                            </div> */}
+                            <div
+                                className="bg-orange-100 rounded-full w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center mb-1 sm:mb-3 group-hover:bg-primary-light transition duration-300"
+                            >
+                                <i
+                                    className={`text-primary text-sm sm:text-lg lg:text-2xl ${feature.icon}`}
+                                ></i>
                             </div>
+
                             <h3 className="font-semibold text-slate-700">{feature.text}</h3>
                         </motion.div>
                     ))}

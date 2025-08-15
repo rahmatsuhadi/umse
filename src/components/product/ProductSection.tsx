@@ -72,7 +72,7 @@ const ProductSection = () => {
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
                     {products.map((product, index) => (
-                        <Link key={index} href={"/produk/121"}>
+                        <Link key={index} href={"/p/121"}>
                             <CardProduct
                                 product={product}
                             />

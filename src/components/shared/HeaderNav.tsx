@@ -8,12 +8,12 @@ export function NavbarDashboard() {
         <div className="flex items-center justify-between">
            <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-primary" >
-              <img src={"https://slemanmart.web.id/img/slemanmartlogo.png"} height={80} width={80} />
+              <img src={"/slemanmartlogo.png"} height={80} width={80} />
               {/* Sleman<span className="text-sm font-semibold">Store</span> */}
             </Link>
           </div>
           <div className="flex items-center space-x-3 sm:space-x-4">
-            <Link href="/cart" className="relative text-primary hover:text-primary-dark transition duration-300">
+            <Link href="/keranjang" className="relative text-primary hover:text-primary-dark transition duration-300">
               <i className="fas fa-shopping-cart text-lg sm:text-xl"></i>
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
             </Link>
