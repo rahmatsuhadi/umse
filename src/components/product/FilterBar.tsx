@@ -53,8 +53,8 @@ const FilterSortModal = () => {
         <>
 
             {/* <!-- Search Bar - Top Section --> */}
-            <section className="py-3 bg-white border-b">
-                <div className="container mx-auto px-4">
+            <section className="py-3  border-b ">
+                <div className="container mx-auto px-4 ">
                     <div className="flex items-center gap-3">
                         {/* <!-- Search Bar --> */}
                         <div className="flex-1">

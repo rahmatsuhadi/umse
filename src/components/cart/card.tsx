@@ -132,10 +132,10 @@ export const StoreCartItem = ({
                         <p className="text-xs sm:text-sm text-gray-600">{storeLocation}</p>
                     </div>
                 </div>
-                <div className="flex items-center text-xs sm:text-sm text-gray-600 ml-auto sm:ml-0">
+                {/* <div className="flex items-center text-xs sm:text-sm text-gray-600 ml-auto sm:ml-0">
                     <i className="fas fa-truck mr-1"></i>
                     <span>Ongkir: Rp {shipping}</span>
-                </div>
+                </div> */}
             </div>
 
             <div className="p-4 sm:p-6">

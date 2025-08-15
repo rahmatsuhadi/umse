@@ -58,7 +58,7 @@ export default function LoginPage() {
       });
 
       // Arahkan pengguna ke halaman dashboard setelah berhasil login
-      router.push('/');
+      router.push('/?auth=true');
 
     } catch (error) {
       toast.error("Login Gagal", {
@@ -68,7 +68,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4 bg-[#f8f9fa]">
+    <div className="flex items-center justify-center min-h-[80vh] px-4 ">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold font-jakarta text-[#36454F]">Login</CardTitle>
@@ -130,9 +130,9 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col items-center">
           <p className="text-sm text-gray-600 font-semibold mb-4">
             Belum punya akun?
-          <Link href={"/daftar"} className='ml-2 underline text-primary'>Daftar</Link>
+            <Link href={"/daftar"} className='ml-2 underline text-primary'>Daftar</Link>
           </p>
-          
+
           {/* <div className=" w-full gap-4 grid grid-cols-2">
             <Button asChild variant="outline" className=" border-primary text-primary hover:bg-pink-50 hover:text-primary">
               <Link href="/daftar-umkm">Daftar UMKM</Link>

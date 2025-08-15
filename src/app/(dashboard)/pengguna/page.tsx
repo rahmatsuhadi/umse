@@ -1,129 +1,137 @@
-import OrderList from "@/components/dashboard/OrderList";
-import StatCard from "@/components/dashboard/StatCard";
-import ProductSectionHorizontal from "@/components/product/ProductsSectionHorizontal";
+"use client"
 import { Navbar } from "@/components/shared/Navbar";
+import { useRouter } from "next/navigation";
 
 export default function PesananPage() {
+    const router = useRouter()
+
+    const logout = () => {
+        // Implementasi logout
+        console.log('User logged out');
+        // Redirect ke login
+    };
+
     return (
         <div className="bg-gray-50 ">
+            <Navbar isAuth withMenu={false}/>
 
-            <div className="container mx-auto md:px-10 px-4 py-8">
-                {/* <!-- Welcome Section --> */}
-                {/* <CardWelcome name="John Doe" /> */}
+            <main className="container mx-auto px-4 py-6">
+                {/* Profile Header */}
+                <div className="bg-white rounded-lg shadow-md mb-6">
+                    <div className="relative">
+                        {/* Cover Background */}
+                        <div className="h-32 primary-light rounded-t-lg"></div>
 
-                {/* <!-- Quick Stats --> */}
-                <StatCard />
+                        {/* Profile Info */}
+                        <div className="relative px-6 pb-6">
+                            <div className="flex flex-col items-center -mt-16 mb-4">
+                                {/* Profile Photo */}
+                                <div className="relative mb-4">
+                                    <img
+                                        id="profilePhoto"
+                                        src="https://img.pikbest.com/png-images/20241013/islamic-cartoon-profile-picture_10957076.png!sw800"
+                                        alt="Profile"
+                                        className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
+                                    />
+                                </div>
 
-                <div className="flex justify-center">
-                    {/* <!-- Recent Orders --> */}
-                    <OrderList />
-
-
+                                {/* User Info */}
+                                <div className="text-center flex-1">
+                                    <div className="mb-2">
+                                        <h1 id="userName" className="text-2xl font-bold text-gray-800 mb-1">
+                                            Ahmad Santoso
+                                        </h1>
+                                        <p id="userEmail" className="text-gray-600 mb-3">
+                                            ahmad.santoso@email.com
+                                        </p>
+                                        <button
+                                            onClick={() => router.replace('/pengguna/edit')}
+                                            className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+                                            title="Edit Profile"
+                                        >
+                                            <i className="fas fa-edit mr-2"></i>Edit Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* <!-- Recommended Products --> */}
-                <section className="py-8 sm:py-12 bg-gray-50  md:px-10">
-                    <div className="container mx-auto px-4">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">Rekomendasi Untuk Anda</h2>
-                        <ProductSectionHorizontal relatedProducts={
-                            [
-                                { category: "Makanan", id: 1, name: "Browseer", price: 1000, rating: 4.5 },
-                                { category: "Makanan", id: 2, name: "Browseer", price: 1000, rating: 4.5 },
-                                { category: "Makanan", id: 9, name: "Browseer", price: 1000, rating: 4.5 },
-                            ]
-                        } />
+                {/* Profile Stats */}
+                <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-white rounded-lg shadow-md p-4 text-center">
+                        <div className="text-2xl font-bold text-primary mb-1">15</div>
+                        <div className="text-gray-600 text-sm">Total Pesanan</div>
                     </div>
-                </section>
+                    <div className="bg-white rounded-lg shadow-md p-4 text-center">
+                        <div className="text-2xl font-bold text-green-600 mb-1">12</div>
+                        <div className="text-gray-600 text-sm">Selesai</div>
+                    </div>
+                    <div className="bg-white rounded-lg shadow-md p-4 text-center">
+                        <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
+                        <div className="text-gray-600 text-sm">Dalam Proses</div>
+                    </div>
+                </div>
 
-
-
-                {/* <div className="mt-8">
-                    <div className="bg-white rounded-lg shadow-md p-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-semibold">Rekomendasi Untuk Anda</h3>
-                            <a
-                                href="products.html"
-                                className="text-primary hover:underline text-sm"
-                            >
-                                Lihat Semua <i className="fas fa-arrow-right ml-1"></i>
-                            </a>
+                {/* Menu Sections */}
+                <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4">
+                    {/* Account Management */}
+                    <div className="bg-white rounded-lg shadow-md">
+                        <div className="p-4 border-b border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                                <i className="fas fa-user-cog mr-2 text-primary"></i>Manajemen Akun
+                            </h3>
                         </div>
-
-                        <div className="grid md:grid-cols-4 gap-6">
-                            <div
-                                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition duration-300"
-                            >
-                                <div className="bg-gray-300 h-32 flex items-center justify-center">
-                                    <i className="fas fa-image text-gray-500 text-2xl"></i>
-                                </div>
-                                <div className="p-3">
-                                    <h4 className="font-medium text-sm mb-1">Madu Hutan Murni</h4>
-                                    <p className="text-xs text-gray-600 mb-2">Madu Asli Sleman</p>
-                                    <p className="text-primary font-bold text-sm mb-2">Rp 85.000</p>
-                                    <button
-                                        className="w-full bg-primary text-white text-xs py-2 rounded hover:bg-primary-dark"
-                                    >
-                                        Tambah ke Keranjang
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div
-                                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition duration-300"
-                            >
-                                <div className="bg-gray-300 h-32 flex items-center justify-center">
-                                    <i className="fas fa-image text-gray-500 text-2xl"></i>
-                                </div>
-                                <div className="p-3">
-                                    <h4 className="font-medium text-sm mb-1">Kopi Robusta Premium</h4>
-                                    <p className="text-xs text-gray-600 mb-2">Kopi Sleman Hills</p>
-                                    <p className="text-primary font-bold text-sm mb-2">Rp 55.000</p>
-                                    <button
-                                        className="w-full bg-primary text-white text-xs py-2 rounded hover:bg-primary-dark"
-                                    >
-                                        Tambah ke Keranjang
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div
-                                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition duration-300"
-                            >
-                                <div className="bg-gray-300 h-32 flex items-center justify-center">
-                                    <i className="fas fa-image text-gray-500 text-2xl"></i>
-                                </div>
-                                <div className="p-3">
-                                    <h4 className="font-medium text-sm mb-1">Tas Anyaman Pandan</h4>
-                                    <p className="text-xs text-gray-600 mb-2">Kerajinan Sleman</p>
-                                    <p className="text-primary font-bold text-sm mb-2">Rp 45.000</p>
-                                    <button
-                                        className="w-full bg-primary text-white text-xs py-2 rounded hover:bg-primary-dark">
-                                        Tambah ke Keranjang
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div
-                                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition duration-300"
-                            >
-                                <div className="bg-gray-300 h-32 flex items-center justify-center">
-                                    <i className="fas fa-image text-gray-500 text-2xl"></i>
-                                </div>
-                                <div className="p-3">
-                                    <h4 className="font-medium text-sm mb-1">Dodol Nangka</h4>
-                                    <p className="text-xs text-gray-600 mb-2">Dodol Tradisional</p>
-                                    <p className="text-primary font-bold text-sm mb-2">Rp 18.000</p>
-                                    <button
-                                        className="w-full bg-primary text-white text-xs py-2 rounded hover:bg-primary-dark"
-                                    >
-                                        Tambah ke Keranjang
-                                    </button>
-                                </div>
-                            </div>
+                        <div className="divide-y divide-gray-200">
+                            <MenuItem icon="fas fa-edit" label="Edit Profile" link="/pengguna/edit" />
+                            <MenuItem icon="fas fa-map-marker-alt" label="Alamat Saya" link="/pengguna/alamat" />
+                            <MenuItem icon="fas fa-shield-alt" label="Keamanan" link="/pengguna/ganti-password" />
                         </div>
                     </div>
-                </div> */}
-            </div>
+
+                    {/* Orders & Shopping */}
+                    <div className="bg-white rounded-lg shadow-md">
+                        <div className="p-4 border-b border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                                <i className="fas fa-shopping-bag mr-2 text-primary"></i>Belanja & Pesanan
+                            </h3>
+                        </div>
+                        <div className="divide-y divide-gray-200">
+                            <MenuItem icon="fas fa-list-alt" label="Riwayat Pesanan" link="/pengguna/pesanan" />
+                            <MenuItem icon="fas fa-shopping-cart" label="Keranjang" link="/keranjang" />
+                        </div>
+                    </div>
+
+                    {/* Support & Info */}
+                    <div className="bg-white rounded-lg shadow-md">
+                        <div className="p-4 border-b border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                                <i className="fas fa-info-circle mr-2 text-primary"></i>Bantuan & Info
+                            </h3>
+                        </div>
+                        <div className="divide-y divide-gray-200">
+                            <MenuItem icon="fas fa-headset" label="Pusat Bantuan" link="#" />
+                            <MenuItem icon="fas fa-file-alt" label="Syarat & Ketentuan" link="#" />
+                            <MenuItem icon="fas fa-user-shield" label="Kebijakan Privasi" link="#" />
+                        </div>
+                    </div>
+
+                    {/* Logout */}
+                    <div className="bg-white rounded-lg shadow-md">
+                        <button
+                            onClick={logout}
+                            className="w-full flex items-center justify-between p-4 text-red-600 hover:bg-red-50 transition-colors rounded-lg"
+                        >
+                            <div className="flex items-center">
+                                <i className="fas fa-sign-out-alt w-5"></i>
+                                <span className="ml-3 font-medium">Keluar</span>
+                            </div>
+                            <i className="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
 
             {/* <!-- Footer --> */}
             <footer className="bg-gray-800 text-white py-12 mt-16">
@@ -149,8 +157,7 @@ export default function PesananPage() {
                                         className="text-gray-300 hover:text-primary">Kategori</a>
                                 </li>
                                 <li>
-                                    <a href="sellers.html" className="text-gray-300 hover:text-primary"                                    >Penjual</a
-                                    >
+                                    <a href="sellers.html" className="text-gray-300 hover:text-primary" >Penjual</a>
                                 </li>
                             </ul>
                         </div>
@@ -183,3 +190,26 @@ export default function PesananPage() {
         </div>
     );
 }
+
+interface MenuItemProps {
+  icon: string;
+  label: string;
+  link: string;
+}
+
+const MenuItem: React.FC<MenuItemProps> = ({ icon, label, link }) => {
+  const navigate = useRouter();
+
+  return (
+    <button
+      onClick={() => navigate.replace(link)}
+      className="w-full text-left flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+    >
+      <div className="flex items-center">
+        <i className={`${icon} text-gray-500 w-5`}></i>
+        <span className="ml-3 text-gray-800">{label}</span>
+      </div>
+      <i className="fas fa-chevron-right text-gray-400"></i>
+    </button>
+  );
+};

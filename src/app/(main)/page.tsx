@@ -1,32 +1,72 @@
-import AnnouncementsSection from "@/components/features/home/AnouncementSection";
+import CategoriesSection from "@/components/features/home/CategoriesSection";
 import FeaturesSection from "@/components/features/home/FeatureSection";
-import HeroSection from "@/components/features/home/HeroSection";
-import ContactSection from "@/components/landing/Contact";
+import StoresSection from "@/components/landing/StoresSection";
+import Footer from "@/components/layout/Footer";
+import FilterSortModal from "@/components/product/FilterBar";
+import ProductSection from "@/components/product/ProductSection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
+import { Separator } from "@/components/ui/separator";
 
 
-export default function HomePage() {
+interface ProductsPageProps {
+    searchParams: Promise<{
+        auth: boolean
+    }>
+}
+
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+    const { auth } = await searchParams
     return (
-        <main>
-            <Navbar />
-            <HeroSection />
+        <div>
+            <Navbar withMenu={true} isAuth={auth} />
+            <div className="">
 
-            <div className="md:mx-20">
-                <AnimatedWrapper>
-                    <h1 className="text-3xl font-bold text-center text-slate-900 mb-12 mt-10 ">Layanan Kami</h1>
+                <div className="md:px-10">
+                    <FilterSortModal />
+                </div>
+
+
+                <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
+                    <div className="text-center mb-4 sm:mb-6 pt-10">
+                        <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
+                            Layanan Kami
+                        </h2>
+                        <p className="text-xs sm:text-sm text-gray-600">
+                            Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
+                        </p>
+                    </div>
+
                     <FeaturesSection />
                 </AnimatedWrapper>
 
-                <AnimatedWrapper>
-                    <AnnouncementsSection />
+
+
+                <AnimatedWrapper className="md:px-10">
+                    <CategoriesSection />
                 </AnimatedWrapper>
 
-            </div>
-            <AnimatedWrapper>
-                <ContactSection />
-            </AnimatedWrapper>
 
-        </main>
+                <Separator />
+
+                <AnimatedWrapper className="md:px-10">
+                    <ProductSection />
+                </AnimatedWrapper>
+
+
+                <AnimatedWrapper className="md:px-10">
+                    <div className="text-center mb-8">
+                        <h2 className="text-xl font-bold text-gray-800 mb-2">Toko UMKM Partner Kami</h2>
+                        <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
+                    </div>
+                    <StoresSection />
+                </AnimatedWrapper>
+            </div>
+
+
+            <Footer />
+
+
+        </div>
     );
 }

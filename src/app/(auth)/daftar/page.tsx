@@ -73,7 +73,7 @@ export default function DaftarPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4  bg-[#f8f9fa] font-jakarta">
+    <div className="flex items-center justify-center min-h-[80vh] px-4   font-jakarta">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-[#36454F]">Daftar</CardTitle>

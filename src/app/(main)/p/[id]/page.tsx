@@ -71,10 +71,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   return (
     <div className="bg-gray-50">
       {/* ===== Header ===== */}
-      <Navbar3 />
+      {/* <Navbar3 /> */}
 
-      {/* ===== Breadcrumb ===== */}
-      <Breadcrumb productData={productData} />
 
       {/* ===== Product Detail Section ===== */}
       <section className="py-4 sm:py-8  md:px-10">
