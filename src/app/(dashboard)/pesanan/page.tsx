@@ -1,5 +1,4 @@
 import OrderList from "@/components/features/order/OrderList";
-import ContactSection from "@/components/landing/Contact";
 import Footer from "@/components/layout/Footer";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";

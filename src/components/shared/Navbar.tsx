@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 const navLinks = [
   { name: 'Beranda', href: '/' },
@@ -15,7 +15,7 @@ const navLinks = [
   { name: 'Blog', href: '#' },
 ];
 
-const withSearchBar = ["/"];
+// const withSearchBar = ["/"];
 
 export function Navbar({ isAuth = false, withMenu = true }: { isAuth?: boolean, withMenu?: boolean }) {
   const pathname = usePathname();
@@ -29,7 +29,7 @@ export function Navbar({ isAuth = false, withMenu = true }: { isAuth?: boolean, 
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2">
-              <img
+              <Image
                 src="/slemanmartlogo.png"
                 alt="Slemanmart Logo"
                 width={80}
@@ -164,19 +164,25 @@ function ProfileDropDown() {
         {isOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
             <div className="py-2">
-              <Link href="/pesanan" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
-                <i className="fas fa-box mr-3 text-gray-500"></i>
-                <span>Pesanan Saya</span>
-              </Link>
-              <Link href="/pengguna/edit" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
-                <i className="fas fa-user mr-3 text-gray-500"></i>
-                <span>Edit Profile</span>
-              </Link>
-              <hr className="my-2" />
               <Link href="/" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
                 <i className="fas fa-home mr-3 text-gray-500"></i>
                 <span>Beranda</span>
               </Link>
+              <Link href="/pengguna/edit" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i className="fas fa-user mr-3 text-gray-500"></i>
+                <span>Profile</span>
+              </Link>
+              
+              <Link href="/pesanan" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i className="fas fa-box mr-3 text-gray-500"></i>
+                <span>Pesanan Saya</span>
+              </Link>
+              <Link href="/laporan" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <i className="fas fa-exclamation-triangle mr-3 text-gray-500"></i>
+                <span>Laporan Masalah</span>
+              </Link>
+              
+              <hr className="my-2" />
               <Link href="/masuk" className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50">
                 <i className="fas fa-sign-out-alt mr-3"></i>
                 <span>Keluar</span>

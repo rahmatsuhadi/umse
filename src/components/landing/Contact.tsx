@@ -1,8 +1,7 @@
 "use client"
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { FaGlobe, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import 'leaflet/dist/leaflet.css';
-import { Icon } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 
