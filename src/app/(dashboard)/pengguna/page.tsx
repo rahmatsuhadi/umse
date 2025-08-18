@@ -150,8 +150,8 @@ export default function PesananPage() {
                             <h4 className="font-semibold mb-4">Link Cepat</h4>
                             <ul className="space-y-2">
                                 <li>
-                                    <a href="products.html" className="text-gray-300 hover:text-primary"
-                                    >Produk</a                                    >
+                                    <Link href="/" className="text-gray-300 hover:text-primary"
+                                    >Produk</Link                                    >
                                 </li>
                                 <li>
                                     <a
@@ -159,7 +159,7 @@ export default function PesananPage() {
                                         className="text-gray-300 hover:text-primary">Kategori</a>
                                 </li>
                                 <li>
-                                    <a href="sellers.html" className="text-gray-300 hover:text-primary" >Penjual</a>
+                                    <Link href="#" className="text-gray-300 hover:text-primary" >Penjual</Link>
                                 </li>
                             </ul>
                         </div>
@@ -167,12 +167,12 @@ export default function PesananPage() {
                             <h4 className="font-semibold mb-4">Bantuan</h4>
                             <ul className="space-y-2">
                                 <li>
-                                    <a href="help.html" className="text-gray-300 hover:text-primary"
-                                    >Pusat Bantuan</a                                    >
+                                    <Link href="#" className="text-gray-300 hover:text-primary"
+                                    >Pusat Bantuan</Link                                    >
                                 </li>
                                 <li>
-                                    <a href="contact.html" className="text-gray-300 hover:text-primary"
-                                    >Kontak</a                                    >
+                                    <Link href="" className="text-gray-300 hover:text-primary"
+                                    >Kontak</Link                                    >
                                 </li>
                             </ul>
                         </div>

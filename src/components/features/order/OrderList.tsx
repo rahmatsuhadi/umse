@@ -119,9 +119,9 @@ const formatPrice = (price: number) => {
 };
 
 // ✅ Dummy handlers (bisa ganti dengan navigasi atau modals)
-const viewOrderDetail = (id: string) => alert(`Lihat detail pesanan: ${id}`);
+// const viewOrderDetail = (id: string) => alert(`Lihat detail pesanan: ${id}`);
 const trackOrder = (id: string) => alert(`Lacak pesanan: ${id}`);
-const openReviewModal = (id: string) => alert(`Buka ulasan untuk: ${id}`);
+// const openReviewModal = (id: string) => alert(`Buka ulasan untuk: ${id}`);
 const cancelOrder = (id: string) => alert(`Batalkan pesanan: ${id}`);
 const confirmReceived = (id: string) => alert(`Konfirmasi terima: ${id}`);
 

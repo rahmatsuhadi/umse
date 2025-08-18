@@ -1,11 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import Footer from '@/components/layout/Footer';
-import { Navbar3 } from '@/components/shared/Navbar';
-import Breadcrumb from '@/components/shared/Breadcrumb';
 import ImageGallery from '@/components/product/ImageGallery';
 import ActionCartOrBuy from '@/components/product/ActionCartOrBuy';
 import { CardRating, ReviewCard, StarRating } from '@/components/product/ReviewCard';

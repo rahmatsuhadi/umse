@@ -51,7 +51,7 @@ export default function ProductLayout({
 
 
             {/* ===== Breadcrumb ===== */}
-            <Breadcrumb productData={{ name: productName }} />
+            <Breadcrumb currentPage={productName} />
            </div>
             {children}
         </div>

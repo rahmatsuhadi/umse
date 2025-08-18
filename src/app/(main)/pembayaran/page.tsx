@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from "next/image";
 
 
 
@@ -41,9 +42,15 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
             <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center">
-                            <a href="index.html" className="text-2xl font-bold text-primary"
-                            >Sleman Mart</a>
+                        <div className="flex-shrink-0">
+                            <Link href="/" className="flex items-center gap-2">
+                                <Image
+                                    src="/slemanmartlogo.png"
+                                    alt="Slemanmart Logo"
+                                    width={80}
+                                    height={80}
+                                />
+                            </Link>
                         </div>
 
                         <nav className="hidden md:flex items-center space-x-2 text-sm">
@@ -548,8 +555,8 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
                                                             Saya menyatakan bahwa informasi yang saya berikan adalah
                                                             benar dan akurat. Saya memahami bahwa pembayaran akan
                                                             diverifikasi oleh penjual sebelum pesanan diproses.
-                                                            <a href="#" className="text-primary hover:text-primary-dark"
-                                                            >Syarat & Ketentuan</a>
+                                                            <Link href="#" className="text-primary hover:text-primary-dark"
+                                                            >Syarat & Ketentuan</Link>
                                                         </span>
                                                     </label>
                                                 </div>

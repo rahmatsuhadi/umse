@@ -15,55 +15,55 @@ const products = Array.from({ length: 8 }, (_, i) => ({
     rating: 4.5,
 }));
 
-function ProductsSectionOld() {
-    return (
-        <section className="py-12 ">
-            <div className="container mx-auto px-4">
-                <Tabs defaultValue="new">
-                    <TabsList className="grid bg-transparent w-full grid-cols-2 md:w-1/4">
-                        {/* Tombol Tab "Produk Baru" */}
-                        <TabsTrigger
-                            value="new"
-                            className="
-            text-muted-foreground border-0 data-[state=active]:text-primary 
-            text-lg font-semibold  data-[state=active]:bg-transparent bg-transparent rounded-none px-4 py-2
-            border-b-4 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none
-            shadow-none focus-visible:ring-0
-          "
-                        >
-                            Produk Baru
-                        </TabsTrigger>
+// function ProductsSectionOld() {
+//     return (
+//         <section className="py-12 ">
+//             <div className="container mx-auto px-4">
+//                 <Tabs defaultValue="new">
+//                     <TabsList className="grid bg-transparent w-full grid-cols-2 md:w-1/4">
+//                         {/* Tombol Tab "Produk Baru" */}
+//                         <TabsTrigger
+//                             value="new"
+//                             className="
+//             text-muted-foreground border-0 data-[state=active]:text-primary 
+//             text-lg font-semibold  data-[state=active]:bg-transparent bg-transparent rounded-none px-4 py-2
+//             border-b-4 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none
+//             shadow-none focus-visible:ring-0
+//           "
+//                         >
+//                             Produk Baru
+//                         </TabsTrigger>
 
-                        {/* Tombol Tab "Terlaris" */}
-                        <TabsTrigger
-                            value="popular"
-                            className="
-             text-muted-foreground border-0 data-[state=active]:text-primary 
-            text-lg font-semibold  data-[state=active]:bg-transparent bg-transparent rounded-none px-4 py-2
-            border-b-4 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none
-            shadow-none focus-visible:ring-0
-          "
-                        >
-                            Terlaris
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="new">
+//                         {/* Tombol Tab "Terlaris" */}
+//                         <TabsTrigger
+//                             value="popular"
+//                             className="
+//              text-muted-foreground border-0 data-[state=active]:text-primary 
+//             text-lg font-semibold  data-[state=active]:bg-transparent bg-transparent rounded-none px-4 py-2
+//             border-b-4 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none
+//             shadow-none focus-visible:ring-0
+//           "
+//                         >
+//                             Terlaris
+//                         </TabsTrigger>
+//                     </TabsList>
+//                     <TabsContent value="new">
 
-                    </TabsContent>
-                    <TabsContent value="popular">
-                        {/* Konten untuk produk terlaris bisa ditaruh di sini */}
-                        <p className="mt-6 text-center">Produk terlaris akan segera hadir!</p>
-                    </TabsContent>
-                </Tabs>
-            </div>
+//                     </TabsContent>
+//                     <TabsContent value="popular">
+//                         {/* Konten untuk produk terlaris bisa ditaruh di sini */}
+//                         <p className="mt-6 text-center">Produk terlaris akan segera hadir!</p>
+//                     </TabsContent>
+//                 </Tabs>
+//             </div>
 
-            {/* ===== Pagination ===== */}
+//             {/* ===== Pagination ===== */}
 
-            <ButtonLoadMore />
+//             <ButtonLoadMore />
 
-        </section>
-    );
-}
+//         </section>
+//     );
+// }
 
 
 const ProductSection = () => {
@@ -130,19 +130,19 @@ const CardProduct = ({ product }: CardProductProps) => {
 }
 
 
-const Pagination = () => {
-    return (
-        <div className="flex justify-center my-8">
-            <div className="flex items-center space-x-2">
-                <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-left"></i></button>
-                <button className="px-4 py-2 bg-primary text-white rounded-lg">1</button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">2</button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">3</button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-    )
-}
+// const Pagination = () => {
+//     return (
+//         <div className="flex justify-center my-8">
+//             <div className="flex items-center space-x-2">
+//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-left"></i></button>
+//                 <button className="px-4 py-2 bg-primary text-white rounded-lg">1</button>
+//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">2</button>
+//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">3</button>
+//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-right"></i></button>
+//             </div>
+//         </div>
+//     )
+// }
 
 
 const ButtonLoadMore = () => {

@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const umkmPartners = [{ name: "Toko Cemilan Sleman", category: "Makanan & Minuman", location: "Jl. Magelang KM 5", rating: 4.5, productCount: 25 }, { name: "Batik Sleman Asri", category: "Fashion & Aksesoris", location: "Jl. Kaliurang KM 7", rating: 4.8, productCount: 18 }, { name: "Craft Sleman Studio", category: "Kerajinan Tangan", location: "Jl. Seturan Raya", rating: 4.9, productCount: 32 }, { name: "Natural Sleman Care", category: "Kecantikan & Kesehatan", location: "Jl. Palagan Tentara Pelajar", rating: 4.6, productCount: 15 }];
 
@@ -26,9 +27,9 @@ export default function StoresSection(){
             ))}
           </div>
           <div className="text-center mt-8">
-            <a href="/directory" className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-primary-dark transition duration-300">
+            <Link href="#" className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-primary-dark transition duration-300">
               <i className="fas fa-building mr-2"></i>Lihat Semua Toko UMKM
-            </a>
+            </Link>
           </div>
         </div>
       </section>
