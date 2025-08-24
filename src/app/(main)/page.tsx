@@ -2,6 +2,7 @@ import CategoriesSection from "@/components/features/home/CategoriesSection";
 import FeaturesSection from "@/components/features/home/FeatureSection";
 import StoresSection from "@/components/landing/StoresSection";
 import Footer from "@/components/layout/Footer";
+import { BannerCarousel } from "@/components/product/BannerCarousel";
 import FilterSortModal from "@/components/product/FilterBar";
 import ProductSection from "@/components/product/ProductSection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
@@ -11,16 +12,18 @@ import { Separator } from "@/components/ui/separator";
 
 interface ProductsPageProps {
     searchParams: Promise<{
-        auth: boolean
+        page: string;
+        q: string;
     }>
 }
 
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-    const { auth } = await searchParams
+export default async function ProductsPage({ }: ProductsPageProps) {
     return (
         <div>
-            <Navbar withMenu={true} isAuth={auth} />
+            <Navbar />
             <div className="">
+
+                <BannerCarousel />
 
                 <div className="md:px-10">
                     <FilterSortModal />
