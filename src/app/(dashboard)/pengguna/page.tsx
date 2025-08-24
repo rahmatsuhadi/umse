@@ -1,21 +1,29 @@
 "use client"
 import { Navbar } from "@/components/shared/Navbar";
+import { useLogout, useUser } from "@/features/auth/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function PesananPage() {
     const router = useRouter()
 
+    const {data} = useUser()
+
+    const {mutate: handleLogout} = useLogout()
+
+    const user = data?.data
+
+
     const logout = () => {
+        handleLogout()
         // Implementasi logout
-        console.log('User logged out');
-        router.replace("/masuk")
+        
         // Redirect ke login
     };
 
     return (
         <div className="bg-gray-50 ">
-            <Navbar isAuth withMenu={false} />
+            <Navbar  />
 
             <main className="container mx-auto px-4 py-6">
                 {/* Profile Header */}
@@ -31,7 +39,7 @@ export default function PesananPage() {
                                 <div className="relative mb-4">
                                     <img
                                         id="profilePhoto"
-                                        src="https://img.pikbest.com/png-images/20241013/islamic-cartoon-profile-picture_10957076.png!sw800"
+                                        src={user?.avatarUrl || 'https://img.pikbest.com/png-images/20241013/islamic-cartoon-profile-picture_10957076.png!sw800'}
                                         alt="Profile"
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                     />
@@ -41,10 +49,10 @@ export default function PesananPage() {
                                 <div className="text-center flex-1">
                                     <div className="mb-2">
                                         <h1 id="userName" className="text-2xl font-bold text-gray-800 mb-1">
-                                            Ahmad Santoso
+                                            {user?.name}
                                         </h1>
                                         <p id="userEmail" className="text-gray-600 mb-3">
-                                            ahmad.santoso@email.com
+                                           {user?.email}
                                         </p>
                                         <button
                                             onClick={() => router.replace('/pengguna/edit')}
