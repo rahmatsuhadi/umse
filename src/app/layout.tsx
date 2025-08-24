@@ -4,7 +4,8 @@ import { Plus_Jakarta_Sans,
  } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import NextTopLoader from 'nextjs-toploader';
 // const poppins = Poppins({
 //   subsets: ["latin"],
 //   weight: ["400", "500", "600", "700"],
@@ -44,8 +45,11 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} antialiased font-jakarta bg-white`}
       >
+        <NextTopLoader  color="#e57f39" />
+        <ReactQueryProvider>
         {children}
-        <Toaster />
+        </ReactQueryProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   );
