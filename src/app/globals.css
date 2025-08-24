@@ -84,7 +84,8 @@
   --muted-foreground: oklch(0.554 0.046 257.417);
 
   /* Accent Colors - Warna Aksen (lebih terang) */
-  --accent: oklch(0.9 0.06 325.27);
+  --accent: oklch(90.06% 0.0001 271.152);
+     /* --accent: oklch(0.97 0 0); */
   /* #EAB6DC sedikit lebih gelap untuk kontras */
   --accent-foreground: oklch(69.77% 0.150 51.81);
 
