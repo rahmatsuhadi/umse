@@ -9,7 +9,7 @@ import { Navbar } from "@/components/shared/Navbar";
 export default function ProfilePage() {
     return (
         <main>
-            <Navbar isAuth />
+            <Navbar />
             <HeroSection />
 
             <div className="md:mx-20">
