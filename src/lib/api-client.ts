@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'; // 1. Impor js-cookie
 import { getToken } from './token-service';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8000/api/v1';
@@ -19,7 +18,7 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
 
   if (typeof window !== 'undefined') {
     // Ganti 'authToken' dengan nama cookie Anda yang sebenarnya
-    const token = getToken(); 
+    const token = getToken();
     if (token) {
       defaultHeaders['Authorization'] = `Bearer ${token}`;
     }
@@ -55,8 +54,13 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
     // Jika backend langsung mengembalikan datanya
     return data;
 
-  } catch (error: any) {
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message || 'Gagal terhubung ke server.');
+    }
+    else {
+      throw new Error("Terjadi kesalahan")
+    }
     // console.error('API Client Error:', error.message);
-    throw new Error(error.message || 'Gagal terhubung ke server.');
   }
 }

@@ -17,10 +17,10 @@ export const getProducts = (params: ProductQueryParams): Promise<PaginatedApiRes
   params  ={
     ...params,
     include: 'store',
-    to: 10
   }
   // Membuat query string dari objek params
-  const query = new URLSearchParams(params as any).toString();
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  const query = new URLSearchParams(params as any).toString(); 
   return apiClient<PaginatedApiResponse<Product>>(`/products?${query}`);
 };
 

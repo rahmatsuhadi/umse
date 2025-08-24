@@ -3,7 +3,6 @@ import { login, register, getMe, logout, UpdateProfileData, updateProfile } from
 import type { User, LoginCredentials, RegisterData } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Cookies from 'js-cookie'; // 1. Impor js-cookie
 import { removeToken, setToken } from "@/lib/token-service";
 
 /**
@@ -26,7 +25,7 @@ export const useLogin = () => {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ credentials, redirectUrl }: { credentials: LoginCredentials, redirectUrl?: string | null }) => login(credentials),
+    mutationFn: ({ credentials }: { credentials: LoginCredentials, redirectUrl?: string | null }) => login(credentials),
     onSuccess: ({ data }, variables) => {
       const { token, user } = data;
 
@@ -132,7 +131,7 @@ export const useUpdateProfile = () => {
 
   return useMutation({
     mutationFn: (data: UpdateProfileData) => updateProfile(data),
-    onSuccess: (updatedUser) => {
+    onSuccess: () => {
       // 1. Invalidate query 'user' agar data di seluruh aplikasi ter-update
       queryClient.invalidateQueries({ queryKey: ["user"] });
 
