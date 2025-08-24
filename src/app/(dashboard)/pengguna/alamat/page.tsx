@@ -1,91 +1,41 @@
 "use client"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useAddresses, useDeleteAddress, useSetDefaultAddress } from "@/features/address/hooks";
+import { Address } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 
-interface Address {
-    id: string;
-    recipientName: string;
-    phone: string;
-    fullAddress: string;
-    district: string;
-    city: string;
-    postalCode: string;
-    isDefault?: boolean;
-    label?: string;
-}
-
-const dummyAddresses = [
-    {
-        id: "1",
-        recipientName: "Andi Saputra",
-        phone: "081234567890",
-        fullAddress: "Jl. Kaliurang KM 7, No. 15, RT 02 / RW 03",
-        city: "Kabupaten Sleman",
-        district: "Depok",
-        postalCode: "55281",
-        isDefault: true,
-        label: "Rumah",
-    },
-    {
-        id: "2",
-        recipientName: "Dewi Kartika",
-        phone: "082112345678",
-        fullAddress: "Jl. Magelang KM 5, No. 20, RT 01 / RW 04",
-        city: "Kota Yogyakarta",
-        district: "Jetis",
-        postalCode: "55231",
-        isDefault: false,
-        label: "Kantor",
-    },
-    {
-        id: "3",
-        recipientName: "Budi Santoso",
-        phone: "085612345678",
-        fullAddress: "Jl. Imogiri Barat, No. 10, RT 04 / RW 02",
-        city: "Kabupaten Bantul",
-        district: "Sewon",
-        postalCode: "55712",
-        isDefault: false,
-        label: "Gudang",
-    },
-];
 
 
 export default function AddressPage() {
     const router = useRouter();
-    const [addresses, setAddresses] = useState<Address[]>([]);
+    const { mutate: deleteAddress } = useDeleteAddress();
+    const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
-    useEffect(() => {
-        const storedAddresses = localStorage.getItem('userAddresses');
-        if (storedAddresses) {
-            setAddresses(JSON.parse(storedAddresses));
-        }
-    }, []);
+    // Panggil hook untuk mengambil data alamat spesifik
+    const { data, isLoading} = useAddresses();
 
-    const saveAddresses = (newAddresses: Address[]) => {
-        localStorage.setItem('userAddresses', JSON.stringify(newAddresses));
-        setAddresses(newAddresses);
-    };
+    const addresses = data?.data || []
 
-    const deleteAddress = (id: string) => {
-        if (confirm('Apakah Anda yakin ingin menghapus alamat ini?')) {
-            const newAddresses = addresses.filter((addr) => addr.id !== id);
-            saveAddresses(newAddresses);
+    const { mutate: handleSetDefaultAddress } = useSetDefaultAddress()
+
+    const confirmDelete = () => {
+        if (addressToDelete) {
+            deleteAddress(addressToDelete.id, {
+                onSuccess: () => setAddressToDelete(null), // Tutup modal setelah sukses
+            });
         }
     };
 
     const setDefaultAddress = (id: string) => {
-        const newAddresses = addresses.map((addr) => ({
-            ...addr,
-            isDefault: addr.id === id,
-        }));
-        saveAddresses(newAddresses);
+        handleSetDefaultAddress(id)
+        // saveAddresses(newAddresses);
     };
 
     const editAddress = (id: string) => {
-        router.push(`/pengguna/alamat/form?edit=${id}`);
+        router.push(`/pengguna/alamat/${id}`);
     };
 
     return (
@@ -95,24 +45,25 @@ export default function AddressPage() {
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center space-x-4">
-                             <Link href={"/pengguna"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
+                            <Link href={"/pengguna"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
                                 <i className="fas fa-arrow-left text-xl"></i>
                             </Link>
                             {/* <button
-                                onClick={() => router.push('/pengguna')}
-                                className="text-gray-600 hover:text-primary transition-colors"
-                            >
-                                <i className="fas fa-arrow-left text-xl"></i>
-                            </button> */}
+                                    onClick={() => router.push('/pengguna')}
+                                    className="text-gray-600 hover:text-primary transition-colors"
+                                >
+                                    <i className="fas fa-arrow-left text-xl"></i>
+                                </button> */}
                             <h1 className="text-xl font-bold text-gray-800">Alamat Saya</h1>
                         </div>
 
-                        <button
-                            onClick={() => router.push('/pengguna/alamat/')}
+                        <Link href={"/pengguna/alamat/tambah"}
                             className="bg-primary text-white px-4 py-2 hover:cursor-pointer rounded-lg hover:bg-primary-dark transition-colors"
                         >
                             <i className="fas fa-plus mr-2"></i>Tambah
-                        </button>
+
+                        </Link>
+
                     </div>
                 </div>
             </header>
@@ -131,12 +82,16 @@ export default function AddressPage() {
 
                     {/* Address List */}
                     <div id="addressesList" className="divide-y divide-gray-200">
-                        {addresses.length === 0 ? (
+                        {isLoading ? (
+                            Array(1).fill(null).map((_, index) => (
+                                <CardSkeletonAddress key={index} />
+                            ))
+                        ) : addresses.length === 0 ? (
                             <div className="p-8 text-center text-gray-500">
                                 <i className="fas fa-map-marker-alt text-4xl mb-4 text-gray-300"></i>
                                 <h3 className="text-lg font-medium mb-2">Belum ada alamat</h3>
                                 <p className="text-sm mb-4">Tambah alamat untuk memudahkan pengiriman</p>
-                                <Link className="bg-primary hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors" href={"/pengguna/alamat/form"}>
+                                <Link className="bg-primary hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors" href={"/pengguna/alamat/tambah"}>
                                     <i className="fas fa-plus mr-2"></i>Tambah Alamat Pertama
                                 </Link>
                             </div>
@@ -147,9 +102,9 @@ export default function AddressPage() {
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <span className="text-sm font-medium text-gray-800">
-                                                    {address.recipientName}
+                                                    {address.recipient_name}
                                                 </span>
-                                                {address.isDefault && (
+                                                {address.is_primary && (
                                                     <span className="bg-primary text-white px-2 py-1 rounded-full text-xs">
                                                         Utama
                                                     </span>
@@ -162,15 +117,15 @@ export default function AddressPage() {
                                             </div>
                                             <p className="text-gray-600 text-sm mb-1">
                                                 <i className="fas fa-phone mr-2"></i>
-                                                {address.phone}
+                                                {address.recipient_phone_number}
                                             </p>
                                             <p className="text-gray-700 text-sm leading-relaxed mb-1">
                                                 <i className="fas fa-map-marker-alt mr-2"></i>
-                                                {address.fullAddress}
+                                                {address.address}
                                             </p>
                                             <p className="text-gray-500 text-sm">
                                                 <i className="fas fa-envelope mr-2"></i>
-                                                {address.district}, {address.city} {address.postalCode}
+                                                {address.district.name}, {address.regency.name} {address.postal_code}
                                             </p>
                                         </div>
                                         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 ml-4">
@@ -182,13 +137,13 @@ export default function AddressPage() {
                                                 <i className="fas fa-edit"></i>
                                             </button>
                                             <button
-                                                onClick={() => deleteAddress(address.id)}
+                                                onClick={() => setAddressToDelete(address)}
                                                 className="text-red-500 hover:cursor-pointer hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Hapus"
                                             >
                                                 <i className="fas fa-trash"></i>
                                             </button>
-                                            {!address.isDefault && (
+                                            {!address.is_primary && (
                                                 <button
                                                     onClick={() => setDefaultAddress(address.id)}
                                                     className="text-yellow-500 hover:cursor-pointer hover:text-yellow-700 p-2 hover:bg-yellow-50 rounded-lg transition-colors"
@@ -206,6 +161,22 @@ export default function AddressPage() {
                 </div>
             </main>
 
+            <AlertDialog open={!!addressToDelete} onOpenChange={() => setAddressToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Apakah Anda Yakin?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tindakan ini tidak dapat diurungkan. Alamat untuk
+                            <span className="font-bold"> {addressToDelete?.label}</span> akan dihapus secara permanen.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogAction onClick={confirmDelete}>Ya, Hapus Alamat</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {/* Footer */}
             <footer className="bg-gray-800 text-white py-8 mt-16 sticky bottom-0">
                 <div className="container mx-auto px-4">
@@ -217,4 +188,28 @@ export default function AddressPage() {
             </footer>
         </div>
     );
+}
+
+
+const CardSkeletonAddress = () => {
+    return (
+        <div className="p-4 animate-pulse">
+            <div className="flex items-start justify-between">
+                <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-32 h-4 bg-gray-300 rounded-full"></div>
+                        <div className="w-20 h-4 bg-gray-300 rounded-full"></div>
+                    </div>
+                    <div className="w-24 h-3 bg-gray-300 rounded-full mb-1"></div>
+                    <div className="w-48 h-4 bg-gray-300 rounded-full mb-1"></div>
+                    <div className="w-32 h-3 bg-gray-300 rounded-full mb-1"></div>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 ml-4">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    {/* <div className="w-10 h-10 bg-gray-300 rounded-full"></div> */}
+                </div>
+            </div>
+        </div>
+    )
 }
