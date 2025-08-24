@@ -13,7 +13,7 @@ type ProductQueryParams = {
 export const useProducts = (params: ProductQueryParams) => {
   return useQuery<PaginatedApiResponse<Product>, Error>({
     // Kunci query harus menyertakan params agar cache unik untuk setiap filter
-    queryKey: ["products", params], 
+    queryKey: ["products", params],
     queryFn: () => getProducts(params),
   });
 };
@@ -25,7 +25,7 @@ export const useProducts = (params: ProductQueryParams) => {
 export const useInfiniteProducts = (filters: Omit<ProductQueryParams, 'page'>) => {
   return useInfiniteQuery<PaginatedApiResponse<Product>, Error>({
     queryKey: ["products", "infinite", filters],
-    
+
     // `pageParam` akan otomatis dikelola oleh TanStack Query
     queryFn: ({ pageParam = 1 }) => getProducts({ ...filters, page: pageParam as number }),
 
@@ -33,16 +33,18 @@ export const useInfiniteProducts = (filters: Omit<ProductQueryParams, 'page'>) =
     initialPageParam: 1,
 
     // Fungsi ini memberitahu React Query cara mendapatkan nomor halaman berikutnya
-    getNextPageParam: (lastPage, allPages) => {
+    // getNextPageParam: (lastPage, allPages) => {
+
+    getNextPageParam: (lastPage) => {
       const currentPage = lastPage.meta.current_page;
       const totalPages = lastPage.meta.last_page;
-      
+
       // Jika halaman saat ini belum mencapai halaman terakhir,
       // kembalikan nomor halaman berikutnya.
       if (currentPage < totalPages) {
         return currentPage + 1;
       }
-      
+
       // Jika sudah di halaman terakhir, kembalikan undefined untuk menandakan tidak ada lagi data.
       return undefined;
     },
