@@ -1,7 +1,9 @@
-import Link from "next/link";
+
 import { Checkbox } from "../ui/checkbox";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CartItem } from "@/types";
+import { useRemoveCartItem, useUpdateCartItem } from "@/features/cart/hooks";
 
 
 
@@ -17,7 +19,7 @@ interface CartItemProps {
     onCheck: () => void; // Fungsi untuk mengubah status checkbox item
 }
 
-export const CartItem = ({
+export const CartItemCard = ({
     title,
     variant,
     price,
@@ -68,15 +70,7 @@ interface StoreCartItemProps {
     storeName: string;
     storeLocation: string;
     shipping: number;
-    items: {
-        title: string;
-        variant: string;
-        price: number;
-        quantity: number;
-    }[];
-    onItemIncrement: (index: number) => void;
-    onItemDecrement: (index: number) => void;
-    onItemRemove: (index: number) => void;
+    items: CartItem[];
 }
 
 
@@ -85,12 +79,14 @@ export const StoreCartItem = ({
     storeLocation,
     shipping,
     items,
-    onItemIncrement,
-    onItemDecrement,
-    onItemRemove,
 }: StoreCartItemProps) => {
     const [isStoreChecked, setIsStoreChecked] = useState(false); // State untuk checkbox store
     const [itemChecked, setItemChecked] = useState<boolean[]>(new Array(items.length).fill(false)); // State untuk checkbox item
+
+
+    const { mutate: updateItem, } = useUpdateCartItem();
+    const { mutate: removeItem,  } = useRemoveCartItem();
+
 
     // Mengubah status checkbox store dan checkbox item
     const handleStoreCheckboxChange = (checked: boolean) => {
@@ -106,6 +102,20 @@ export const StoreCartItem = ({
         // Jika semua item tercentang, maka centang checkbox store
         setItemChecked(updatedItemChecked);
         setIsStoreChecked(updatedItemChecked.every((checked) => checked));
+    };
+
+    const handleQuantityChange = (item: CartItem, amount: number) => {
+
+        const newQuantity = item.quantity + amount;
+        if (newQuantity >= 1) {
+            updateItem({
+                item_id: item.id,
+                quantity: newQuantity,
+                variant_id: item.variant_id
+            });
+        } else {
+            removeItem(item.id);
+        }
     };
 
     const router = useRouter();
@@ -140,15 +150,15 @@ export const StoreCartItem = ({
 
             <div className="p-4 sm:p-6">
                 {items.map((item, index) => (
-                    <CartItem
+                    <CartItemCard
                         key={index}
-                        title={item.title}
-                        variant={item.variant}
-                        price={item.price}
+                        title={item.id}
+                        variant={item.variant_id || 'Tanpa Variant'}
+                        price={1000011}
                         quantity={item.quantity}
-                        onIncrement={() => onItemIncrement(index)}
-                        onDecrement={() => onItemDecrement(index)}
-                        onRemove={() => onItemRemove(index)}
+                        onIncrement={() => handleQuantityChange(item, +1)}
+                        onDecrement={() => handleQuantityChange(item, -1)}
+                        onRemove={() => removeItem(item.id)}
                         isChecked={itemChecked[index]} // Mengatur status checkbox item
                         onCheck={() => handleItemCheckboxChange(index)} // Menangani perubahan checkbox item
                     />
@@ -156,15 +166,15 @@ export const StoreCartItem = ({
 
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-4 space-y-3 sm:space-y-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0">
-                        <span className="text-xs sm:text-sm text-gray-600">Subtotal Produk: Rp {items.reduce((acc, item) => acc + item.price * item.quantity, 0)}</span>
+                        {/* <span className="text-xs sm:text-sm text-gray-600">Subtotal Produk: Rp {items.reduce((acc, item) => acc + item.price * item.quantity, 0)}</span> */}
                         <span className="text-xs sm:text-sm text-gray-600">Ongkir: Rp {shipping}</span>
                     </div>
                     <div className="text-left sm:text-right">
-                        <p className="text-base sm:text-lg font-bold text-gray-800">Total: Rp {items.reduce((acc, item) => acc + item.price * item.quantity, 0) + shipping}</p>
+                        {/* <p className="text-base sm:text-lg font-bold text-gray-800">Total: Rp {items.reduce((acc, item) => acc + item.price * item.quantity, 0) + shipping}</p> */}
                         {/* <Link href={"/checkout"}> */}
-                            <button type="button" disabled={itemChecked.length==0} onClick={onCheckout} className="bg-primary text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300 mt-2 text-sm sm:text-base w-full sm:w-auto">
-                                <i className="fas fa-shopping-cart mr-2"></i>Checkout Toko Ini
-                            </button>
+                        <button type="button" disabled={itemChecked.length == 0} onClick={onCheckout} className="bg-primary text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300 mt-2 text-sm sm:text-base w-full sm:w-auto">
+                            <i className="fas fa-shopping-cart mr-2"></i>Checkout Toko Ini
+                        </button>
                         {/* </Link> */}
                     </div>
                 </div>
