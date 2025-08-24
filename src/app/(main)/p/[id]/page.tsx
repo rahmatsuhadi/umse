@@ -1,10 +1,11 @@
-'use client';
-
 import Footer from '@/components/layout/Footer';
 import ImageGallery from '@/components/product/ImageGallery';
-import ActionCartOrBuy from '@/components/product/ActionCartOrBuy';
 import { CardRating, ReviewCard, StarRating } from '@/components/product/ReviewCard';
 import ProductSectionHorizontal from '@/components/product/ProductsSectionHorizontal';
+import { getProductById } from '@/features/products/api';
+import { notFound } from 'next/navigation';
+import Breadcrumb from '@/components/shared/Breadcrumb';
+import ProductVariantSelector from '@/components/product/ProductVariantSelector';
 
 // Komponen kecil untuk menampilkan bintang rating
 
@@ -57,16 +58,53 @@ const productData = {
   relatedProducts: Array.from({ length: 4 }, (_, i) => ({ id: i, name: `Produk Terkait ${i + 1}`, price: 12000 + (i * 1000), rating: 4.3 + (i * 0.1), category: 'Makanan' }))
 };
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  try {
+    const id = (await params).id;
+    const { data: product } = await getProductById(id);
+    return {
+      title: product.name,
+      description: product.description,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message)
+
+    }
+    return {
+      title: "Produk Tidak Ditemukan",
+      description: "Halaman yang Anda cari tidak ada.",
+    };
+  }
+}
 
 
-export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  // State untuk kuantitas dan gambar
+
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+
+
+  const id = (await params).id;
+
+  let product;
+  try {
+    const response = await getProductById(id);
+    product = response.data;
+  } catch (error) {
+
+    if (error instanceof Error) {
+      console.log(error.message)
+
+    }
+    // Jika produk tidak ditemukan (API melempar error), tampilkan halaman not-found
+    notFound();
+  }
+
 
 
   return (
     <div className="bg-gray-50">
-      {/* ===== Header ===== */}
-      {/* <Navbar3 /> */}
+
+      <Breadcrumb currentPage={product.name} />
 
 
       {/* ===== Product Detail Section ===== */}
@@ -85,16 +123,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             {/* Product Information */}
             <div>
               <div className="mb-4">
-                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">{productData.category}</span>
+                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">{product.category.name}</span>
                 <div className="mt-2">
-                  <StarRating rating={productData.rating} count={productData.reviewCount} />
+                  <StarRating rating={Number(product.average_rating)} count={10} />
                 </div>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{productData.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
 
               <div className="flex flex-wrap items-baseline mb-6 gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-primary">Rp {productData.price.toLocaleString('id-ID')}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-primary">{product.price.formatted}</span>
                 {/* <span className="text-base sm:text-lg text-gray-500 line-through">Rp {productData.originalPrice.toLocaleString('id-ID')}</span> */}
                 {/* <span className="bg-red-100 text-red-800 text-xs sm:text-sm px-2 py-1 rounded">Hemat {productData.discount}%</span> */}
               </div>
@@ -105,16 +143,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                     <i className="fas fa-store text-white text-sm sm:text-base"></i>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-gray-800 text-sm sm:text-base">{productData.store.name}</h3>
+                    <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <i className="fas fa-map-marker-alt mr-1 flex-shrink-0"></i>
-                      <span className="truncate">{productData.store.location}</span>
+                      <span className="truncate">{product.store.address}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm gap-2">
                   <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center"><i className="fas fa-star text-yellow-400 mr-1"></i><span>{productData.store.rating} Rating Toko</span></div>
+                    {/* <div className="flex items-center"><i className="fas fa-star text-yellow-400 mr-1"></i><span>{product} Rating Toko</span></div> */}
                     <div className="flex items-center"><i className="fas fa-box mr-1"></i><span>{productData.store.productCount} Produk</span></div>
                   </div>
                   <button className="text-primary hover:text-primary-dark font-medium self-start sm:self-auto"><i className="fas fa-eye mr-1"></i>Lihat Toko</button>
@@ -124,27 +162,28 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               <div className="mb-6">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Detail Produk</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Berat:</span><span className="sm:ml-2">{productData.details.weight}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kondisi:</span><span className="sm:ml-2">{productData.details.condition}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{productData.details.category}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{productData.details.stock} tersedia</span></div>
+                  {/* <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Berat:</span><span className="sm:ml-2">{productData.details.weight}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kondisi:</span><span className="sm:ml-2">{productData.details.condition}</span></div> */}
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{product.category.name}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{product.stock_quantity} tersedia</span></div>
                 </div>
               </div>
+              <ProductVariantSelector product={product} />
 
-              <ActionCartOrBuy stock={productData.details.stock} />
+              {/* <ActionCartOrBuy stock={product.stock_quantity} /> */}
 
 
               {/* Product Description */}
-              <div className="mb-8">
+              <div className="mb-8 mt-3">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Deskripsi Produk</h3>
                 <div className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                  <p className="mb-3">{productData.description.main}</p>
-                  <p className="mb-3"><strong>Keunggulan:</strong></p>
+                  <p className="mb-3">{product.description}</p>
+                  {/* <p className="mb-3"><strong>Keunggulan:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-2 sm:ml-4">
                     {productData.description.features.map((feature, index) => (
                       <li key={index}>{feature}</li>
                     ))}
-                  </ul>
+                  </ul> */}
                 </div>
               </div>
             </div>
@@ -160,7 +199,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
           <CardRating productData={productData} />
 
-          <ReviewCard reviews={productData.reviews.items} />
+          <ReviewCard productId={product.id} />
 
         </div>
       </section>
@@ -182,7 +221,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       <section className="py-8 sm:py-12 bg-gray-50  md:px-10">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">Produk Serupa</h2>
-                <ProductSectionHorizontal relatedProducts={
+          <ProductSectionHorizontal relatedProducts={
             [
               { category: "Makanan", id: 1, name: "Browseer", price: 1000, rating: 4.5 },
               { category: "Makanan", id: 2, name: "Browseer", price: 1000, rating: 4.5 },
