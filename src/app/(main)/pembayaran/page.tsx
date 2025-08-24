@@ -60,7 +60,7 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
                             <Link href="/keranjang" className="text-gray-600 hover:text-primary">Keranjang</Link>
 
                             {steps.slice(0, currentStepIndex + 1).map((s, index) => (
-                                <React.Fragment key={s.key}>
+                                <React.Fragment key={index}>
                                     <i className="fas fa-chevron-right text-gray-400 text-xs"></i>
                                     <span className={s.key === step ? "text-primary font-medium" : "text-gray-600"}>
                                         {s.label}
@@ -457,7 +457,7 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
                                                             </p>
                                                         </div>
                                                         <div id="filePreview" className="hidden">
-                                                            <img
+                                                            <img alt="image-payment"
                                                                 id="previewImage"
                                                                 className="max-w-full h-32 object-contain mx-auto mb-2 rounded"
                                                             />
