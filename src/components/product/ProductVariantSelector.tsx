@@ -8,6 +8,7 @@ import type { Product, Variant } from "@/types"; // Impor tipe dari file types A
 import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
+import { FaSpinner } from "react-icons/fa";
 
 export default function ProductVariantSelector({ product }: { product: Product }) {
   // State untuk menyimpan varian yang sedang dipilih
@@ -18,7 +19,7 @@ export default function ProductVariantSelector({ product }: { product: Product }
 
   const { data: user } = useUser();
 
-  const { mutate: addToCart } = useAddToCart()
+  const { mutate: addToCart, isPending } = useAddToCart()
 
   // Set varian default saat komponen pertama kali dimuat (jika ada varian)
   useEffect(() => {
@@ -109,11 +110,22 @@ export default function ProductVariantSelector({ product }: { product: Product }
         </div>
         <Separator />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={handleAddToCart} disabled={currentStock === 0}>
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            Tambah ke Keranjang
+          <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={handleAddToCart} disabled={currentStock === 0 || isPending}>
+
+            {isPending ? (
+              <>
+                <FaSpinner className="animate-spin" />
+                Menambahakan ....
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-5 w-5 mr-2" />
+                Tambah ke Keranjang
+              </>
+            )}
+
           </Button>
-          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary" disabled={currentStock === 0}>
+          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary" disabled={currentStock === 0 || true}>
             Beli Langsung
           </Button>
         </div>

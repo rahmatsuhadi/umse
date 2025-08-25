@@ -1,9 +1,11 @@
 "use client";
-import { motion } from 'framer-motion'; // 1. Impor motion dari framer-motion
+import { motion, useInView } from 'framer-motion'; // 1. Impor motion dari framer-motion
 import { useInfiniteProducts } from "@/features/products/hooks";
 import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 
 // 2. Definisikan varian animasi untuk container dan item
@@ -30,13 +32,28 @@ const ProductSection = () => {
     //     page,
     // });
 
+    const searchParams = useSearchParams()
+
+    const categoriesParams = searchParams.get('category') || ''
+
+    const sortParams = searchParams.get('sort') || 'created_at:desc'
+
     const {
         data,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
         isLoading,
-    } = useInfiniteProducts({}); // Anda bisa menambahkan filter di sini, misal: { filter: { category_slug: 'makanan' }}
+    } = useInfiniteProducts({
+        per_page:12,
+        sort: sortParams,
+        
+        filter: {
+            category__slug: categoriesParams,
+            
+        },
+        // sort: sortParams
+    }); // Anda bisa menambahkan filter di sini, misal: { filter: { category_slug: 'makanan' }}
 
 
     const products = data?.pages.flatMap(page => page.data) ?? [];
@@ -94,7 +111,7 @@ const ProductSection = () => {
 export default ProductSection
 
 
-const CardProductSkleton = () => {
+export const CardProductSkleton = () => {
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 group h-full flex flex-col">
             {/* Skeleton untuk Gambar */}
@@ -144,14 +161,22 @@ interface CardProductProps {
     product: Product
 }
 
-const CardProduct = ({ product }: CardProductProps) => {
+export const CardProduct = ({ product }: CardProductProps) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 group h-full flex flex-col">
+        <div ref={ref} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 group h-full flex flex-col">
             <div className="bg-gray-300 h-40 md:h-48 flex items-center justify-center relative">
                 {/* <i className="fas fa-image text-gray-500 text-2xl md:text-3xl"></i> */}
-                <Image objectFit="cover" layout="fill"
-                    alt={product.name} className="absolute inset-0 object-cover"
-                    src={product.thumbnail?.media_url || '/hero.png'} />
+                {isInView && (
+                    <Image
+                        src={product.thumbnail?.media_url || '/hero.png'}
+                        alt={product.name}
+                        fill
+                        className="absolute inset-0 object-cover"
+                        loading="lazy"
+                    />
+                )}
             </div>
             <div className="p-4 flex flex-col flex-1">
                 <div className="flex items-center justify-between mb-2">
@@ -169,20 +194,5 @@ const CardProduct = ({ product }: CardProductProps) => {
         </div>
     )
 }
-
-
-// const Pagination = () => {
-//     return (
-//         <div className="flex justify-center my-8">
-//             <div className="flex items-center space-x-2">
-//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-left"></i></button>
-//                 <button className="px-4 py-2 bg-primary text-white rounded-lg">1</button>
-//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">2</button>
-//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">3</button>
-//                 <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"><i className="fas fa-chevron-right"></i></button>
-//             </div>
-//         </div>
-//     )
-// }
 
 
