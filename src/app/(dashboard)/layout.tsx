@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 
@@ -15,7 +15,6 @@ export default async function DashboardLayout({
 }>) {
 
     const cookieStore = cookies();
-    const headersList = await headers();
     const token = (await cookieStore).get("slm-token"); 
     
     // Redirect jika tidak ada token

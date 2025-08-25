@@ -8,6 +8,7 @@ export interface Store {
   nik: string;
   brand_name: string;
   slug: string;
+  average_rating: number;
   logo_url: string;
   description: string;
   address: string;
