@@ -5,8 +5,15 @@ import type { PaginatedApiResponse, Product } from "@/types";
 type ProductQueryParams = {
   page?: number;
   limit?: number;
-  category?: string;
+  per_page?: number;
   search?: string;
+  filter?: {
+    // category_id?: string;          // UUID
+    category__slug?: string;       // string
+    min_price?: number;
+    max_price?: number;
+  };
+  sort?: string
 };
 
 // Hook untuk mengambil daftar produk
@@ -27,7 +34,10 @@ export const useInfiniteProducts = (filters: Omit<ProductQueryParams, 'page'>) =
     queryKey: ["products", "infinite", filters],
 
     // `pageParam` akan otomatis dikelola oleh TanStack Query
-    queryFn: ({ pageParam = 1 }) => getProducts({ ...filters, page: pageParam as number }),
+    queryFn: ({ pageParam = 1 }) => {
+
+      return getProducts({ ...filters, page: pageParam as number })
+    },
 
     // Halaman awal yang akan diambil
     initialPageParam: 1,
