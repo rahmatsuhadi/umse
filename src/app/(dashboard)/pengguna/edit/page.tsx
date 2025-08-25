@@ -127,7 +127,7 @@ export default function EditProfilePage() {
                                 <FormItem><FormLabel>Nomor Telepon</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
                             )} />
 
-                            <Button type="submit" className="w-full" disabled={isPending}>
+                            <Button type="submit" className="w-full hover:cursor-pointer" disabled={isPending}>
                                 {isPending ? (<><i className="fas fa-spinner fa-spin mr-2"></i>Menyimpan...</>) : (<><i className="fas fa-save mr-2"></i>Simpan Perubahan</>)}
                             </Button>
                         </form>
