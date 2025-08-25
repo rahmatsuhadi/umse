@@ -5,16 +5,16 @@ import type { Review, PaginatedApiResponse } from "@/types";
 export type ReviewQueryParams = {
   productId: string;
   page?: number;
-  limit?: number;
+  per_page?: number;
 };
 
 /**
  * Mengambil daftar ulasan untuk produk tertentu dengan paginasi.
  */
-export const getReviews = ({ productId, page = 1, limit = 5 }: ReviewQueryParams): Promise<PaginatedApiResponse<Review>> => {
+export const getReviews = ({ productId, page = 1, per_page = 5 }: ReviewQueryParams): Promise<PaginatedApiResponse<Review>> => {
   const query = new URLSearchParams({ 
     page: String(page), 
-    limit: String(limit) 
+    per_page: String(per_page) 
   }).toString();
   
   // Endpoint contoh: /products/ID_PRODUK/reviews?page=1&limit=5
