@@ -15,9 +15,9 @@ import {
 
 // Contoh data banner, ganti dengan gambar Anda
 const banners = [
-  { src: "/banner/banner1.jpeg", alt: "Banner 1" },
-  { src: "/banner/banner2.jpeg", alt: "Banner 2" },
-  { src: "/banner/banner3.jpeg", alt: "Banner 3" },
+  { src: "/banner/banner1.jpg", alt: "Banner 1" },
+  { src: "/banner/banner2.jpg", alt: "Banner 2" },
+  { src: "/banner/banner3.jpg", alt: "Banner 3" },
 ];
 
 export function BannerCarousel() {
@@ -27,7 +27,7 @@ export function BannerCarousel() {
 
   return (
     <section className="py-6">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto md:px-20 sm:px-10 px-4">
         <Carousel
           plugins={[plugin.current]}
           className="w-full"
