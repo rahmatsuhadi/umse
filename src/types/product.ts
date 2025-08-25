@@ -48,7 +48,7 @@ export interface Product {
   average_rating: string; // Sebaiknya di-parse ke number saat digunakan
   stock_quantity: number;
   stock_status: 'in_stock' | 'out_of_stock';
-  thumbnail: Media | null;
+  thumbnail: Media;
   media: Media[];
   variants: Variant[];
   created_at: string;

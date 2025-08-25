@@ -1,8 +1,14 @@
+import { Product, Variant } from "./product";
+import { Store } from "./store";
+
 export interface CartItem {
   id: string;
   store_id:string;
+  store:Store
   product_id:string;
+  product:Product
   variant_id?:string
+  variant?:Variant
   quantity:number
 }
 
