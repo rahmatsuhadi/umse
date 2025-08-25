@@ -76,7 +76,7 @@ function ProfileDropDown({ user }: { user?: User, isLoading?: boolean }) {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center text-primary hover:text-primary-dark transition duration-300"
+        className="flex items-center  hover:cursor-pointer text-primary hover:text-primary-dark transition duration-300"
       >
         <User2 className="w-5 h-5 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
         {user ? (
@@ -109,7 +109,7 @@ function ProfileDropDown({ user }: { user?: User, isLoading?: boolean }) {
             </Link>
 
             <hr className="my-2" />
-            <button type='button' onClick={() =>logout()} className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50">
+            <button type='button' onClick={() =>logout()} className="flex items-center h-full hover:cursor-pointer w-full px-4 py-2 text-red-600 hover:bg-red-50">
               <i className="fas fa-sign-out-alt mr-3"></i>
               <span>Keluar</span>
             </button>
