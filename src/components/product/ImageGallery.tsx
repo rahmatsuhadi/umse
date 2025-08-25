@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import { useState } from "react";
 
 type Props = {
@@ -14,7 +15,9 @@ export default function ImageGallery({ images }: Props) {
 
       {/* Gambar Utama */}
       <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center p-2">
-        <img 
+        <Image
+          width={500}
+          height={500} 
           src={selectedImage} 
           alt="Gambar Utama" 
           className="w-full h-full object-contain"
@@ -30,7 +33,9 @@ export default function ImageGallery({ images }: Props) {
               ${selectedImage === url ? 'border-4 border-primary' : 'border-0'}`}
             onClick={() => setSelectedImage(url)} // Mengganti gambar utama ketika thumbnail diklik
           >
-            <img 
+            <Image
+              width={500}
+              height={500} 
               src={url} 
               alt={`Thumbnail ${index + 1}`} 
               className="w-full h-full object-contain rounded"
