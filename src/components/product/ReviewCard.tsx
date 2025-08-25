@@ -2,6 +2,7 @@
 
 import { useReviews } from "@/features/reviews/hooks";
 import { getInitials } from "@/lib/initial-getter";
+import { Product } from "@/types";
 
 export const StarRating = ({ rating, count, size = 'sm' }: { rating: number; count?: number, size?: 'xs' | 'sm' | 'base' }) => {
   const fullStars = Math.floor(rating);
@@ -13,44 +14,44 @@ export const StarRating = ({ rating, count, size = 'sm' }: { rating: number; cou
     <div className="flex items-center text-yellow-400">
       {[...Array(fullStars)].map((_, i) => <i key={`full-${i}`} className={`fas fa-star ${starSizeClass}`}></i>)}
       {halfStar && <i className={`fas fa-star-half-alt ${starSizeClass}`}></i>}
-      {[...Array(emptyStars)].map((_, i) => <i  key={`empty-${i}`} className={`far fa-star ${starSizeClass}`}></i>)}
+      {[...Array(emptyStars)].map((_, i) => <i key={`empty-${i}`} className={`far fa-star ${starSizeClass}`}></i>)}
       {count && <span className={`text-gray-600 ml-2 text-${size}`}>{rating.toFixed(1)} ({count} ulasan)</span>}
     </div>
   );
 };
 
 interface CardRatingProps {
-  productData: {
-    rating: number;
-    reviewCount: number;
-    reviews: {
-      summary: { stars: number; count: number; percentage: number }[];
-    };
-  }
+  product: Product
 }
 
-export function CardRating({ productData }: CardRatingProps) {
+export function CardRating({ product }: CardRatingProps) {
+  const totalReviews = Object.values(product.rating_count).reduce((sum, count) => sum + count, 0);
+
   return (
     <div className="mb-6 sm:mb-8">
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Ulasan Pembeli ({productData.reviewCount})</h2>
+      {/* <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Ulasan Pembeli ({productData.reviewCount})</h2> */}
       <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-6">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
           <div className="flex flex-col sm:flex-row sm:items-center">
             <div className="text-center mb-4 sm:mb-0 sm:mr-8">
-              <div className="text-3xl sm:text-4xl font-bold text-gray-800">{productData.rating.toFixed(1)}</div>
-              <div className="flex items-center justify-center text-yellow-400 mb-1"><StarRating rating={productData.rating} /></div>
-              <div className="text-xs sm:text-sm text-gray-600">{productData.reviewCount} ulasan</div>
+              <div className="text-3xl sm:text-4xl font-bold text-gray-800">{Number(product.average_rating).toFixed(1)}</div>
+              <div className="flex items-center justify-center text-yellow-400 mb-1"><StarRating rating={Number(product.average_rating)} /></div>
+              <div className="text-xs sm:text-sm text-gray-600">{totalReviews} ulasan</div>
             </div>
             <div className="flex-1">
               <div className="space-y-2">
-                {productData.reviews.summary.map(item => (
-                  <div key={item.stars} className="flex items-center text-sm">
-                    <span className="w-8 sm:w-12">{item.stars}</span>
-                    <i className="fas fa-star text-yellow-400 mr-2"></i>
-                    <div className="flex-1 bg-gray-200 rounded-full h-2"><div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${item.percentage}%` }}></div></div>
-                    <span className="ml-2 w-6 sm:w-8">{item.count}</span>
-                  </div>
-                ))}
+                {Object.entries(product.rating_count).map(([key, item]) => {
+
+                  const percentage = totalReviews > 0 ? (Number(item) / totalReviews) * 100 : 0;
+                  return (
+                    <div key={key} className="flex items-center text-sm">
+                      <span className="w-8 sm:w-12">{key}</span>
+                      <i className="fas fa-star text-yellow-400 mr-2"></i>
+                      <div className="flex-1 bg-gray-200 rounded-full h-2"><div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${percentage}%` }}></div></div>
+                      <span className="ml-2 w-6 sm:w-8">{item}</span>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -58,8 +59,8 @@ export function CardRating({ productData }: CardRatingProps) {
             <h3 className="font-bold text-gray-800 mb-3 text-sm sm:text-base">Filter Ulasan</h3>
             <div className="flex flex-wrap gap-2">
               <button className="px-3 sm:px-4 py-2 bg-primary text-white rounded-full text-xs sm:text-sm">Semua</button>
-              <button className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm hover:bg-gray-300">5★ ({productData.reviews.summary[0].count})</button>
-              <button className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm hover:bg-gray-300">4★ ({productData.reviews.summary[1].count})</button>
+              <button className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm hover:bg-gray-300">5★ ({product.rating_count[5]})</button>
+              <button className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm hover:bg-gray-300">4★ ({product.rating_count[4]})</button>
               <button className="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm hover:bg-gray-300">Dengan Foto (45)</button>
             </div>
           </div>
