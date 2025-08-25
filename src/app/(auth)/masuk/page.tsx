@@ -1,13 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { toast } from 'sonner';
-
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -22,10 +20,21 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Eye, EyeOff } from 'lucide-react';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { IoLockClosed } from "react-icons/io5";
+import { useLogin } from '@/features/auth/hooks';
+import { getToken } from '@/lib/token-service';
+import { Illustration1, Illustration2 } from '@/components/auth/IllustrasiImages';
+import { withMask } from 'use-mask-input';
 const formSchema = z.object({
-  phone: z.string().min(1, {
-    message: "Nomor HP tidak boleh kosong.",
-  }),
+  // email: z.string()
+  //   .min(1, { message: "Email tidak boleh kosong." })
+  //   .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+  //     message: "Format email tidak valid.",
+  //   }),
+  phone_number: z.string()
+    .min(1, { message: "Nomor HP tidak boleh kosong." }).transform((val) => val.replace(/\s+/g, '')) // hapus semua spasi dulu
+    .refine((val) => /^08[0-9]{8,12}$/.test(val), {
+      message: 'Nomor harus diawali 08 dan panjangnya 10-14 digit',
+    }),
   password: z.string().min(1, {
     message: "Password tidak boleh kosong.",
   }),
@@ -34,42 +43,42 @@ const formSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect'); // Dapatkan URL redirect
+
+  const { mutate: handleLogin, isPending } = useLogin();
+
+  useEffect(() => {
+    const token = getToken(); // Ganti 'authToken' jika nama cookie Anda berbeda
+    if (token) {
+      router.push('/');
+    }
+  }, [router]);
+
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      phone: "",
+      phone_number: "",
       password: "",
     },
   });
 
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values); // Data yang akan dikirim ke API
-
-    try {
-      // Di sini Anda akan memanggil API login Anda
-      // const response = await apiClient.post('/auth/login', values);
-
-      // Simulasi panggilan API berhasil
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      toast.success("Login Berhasil!", {
-        description: "Selamat datang kembali.",
-      });
-
-      // Arahkan pengguna ke halaman dashboard setelah berhasil login
-      router.push('/?auth=true');
-
-    } catch (error) {
-      toast.error("Login Gagal", {
-        description: "Nomor HP atau password salah. Silakan coba lagi.",
-      });
-    }
+   
+    handleLogin({ credentials: values, redirectUrl })
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4 ">
-      <Card className="w-full max-w-md">
+    <div className="flex relative items-center  justify-center min-h-[80vh] px-4 ">
+
+      <div className="hidden lg:block absolute left-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
+        <Illustration1 className="w-full h-auto" />
+      </div>
+
+      <Card className="w-full max-w-md z-20">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold font-jakarta text-[#36454F]">Login</CardTitle>
           <CardDescription className='text-[#36454F]'>Silahkan masuk untuk melanjutkan</CardDescription>
@@ -79,14 +88,22 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="phone"
+                name="phone_number"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nomor HP</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <FaPhoneAlt className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input placeholder="0812 xxxxxx" className="pl-10 py-5 rounded-xl" {...field} />
+                        <Input
+                          {...field}
+                          placeholder="08xx xxxx xxxx"
+                          className="pl-10 py-5 rounded-xl pr-10"
+                          ref={withMask('999 9999 9999 999999', {
+                            placeholder: '',
+                            showMaskOnHover: false
+                          })}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -121,8 +138,8 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full py-6" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Memproses...' : 'Masuk'}
+              <Button type="submit" className="w-full py-6" disabled={isPending}>
+                {isPending ? 'Memproses...' : 'Masuk'}
               </Button>
             </form>
           </Form>
@@ -143,6 +160,10 @@ export default function LoginPage() {
           </div> */}
         </CardFooter>
       </Card>
+
+      <div className="hidden lg:block absolute right-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
+        <Illustration2 className="w-full h-auto" />
+      </div>
     </div>
   );
 }

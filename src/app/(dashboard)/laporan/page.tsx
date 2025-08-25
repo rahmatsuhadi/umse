@@ -1,36 +1,35 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+// import { useState, ChangeEvent, FormEvent } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
 import { Navbar } from '@/components/shared/Navbar';
 import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
 import Footer from '@/components/layout/Footer';
 import Breadcrumb from '@/components/shared/Breadcrumb';
 
 const ReportPage = () => {
-    const [issueCategory, setIssueCategory] = useState('');
-    const [titleCount, setTitleCount] = useState(0);
-    const [descCount, setDescCount] = useState(0);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    // const [issueCategory, setIssueCategory] = useState('');
+    // const [titleCount, setTitleCount] = useState(0);
+    // const [descCount, setDescCount] = useState(0);
+    // const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitleCount(e.target.value.length);
-    };
+    // const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    //     setTitleCount(e.target.value.length);
+    // };
 
-    const handleDescChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        setDescCount(e.target.value.length);
-    };
+    // const handleDescChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    //     setDescCount(e.target.value.length);
+    // };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setShowSuccessModal(true);
-    };
+    // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     setShowSuccessModal(true);
+    // };
 
     return (
         <>
             <div className="bg-gray-50">
-                <Navbar withMenu={false} isAuth={true} />
+                <Navbar withMenu={false} />
 
                 <div className="container mx-auto px-4 py-4 sm:py-8 md:px-10">
                     {/* <!-- Breadcrumb --> */}

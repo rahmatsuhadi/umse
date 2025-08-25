@@ -1,72 +1,64 @@
-'use client';
 
-import Footer from '@/components/layout/Footer';
 import ImageGallery from '@/components/product/ImageGallery';
-import ActionCartOrBuy from '@/components/product/ActionCartOrBuy';
 import { CardRating, ReviewCard, StarRating } from '@/components/product/ReviewCard';
 import ProductSectionHorizontal from '@/components/product/ProductsSectionHorizontal';
+import { getProductById } from '@/features/products/api';
+import { notFound } from 'next/navigation';
+import Breadcrumb from '@/components/shared/Breadcrumb';
+import ProductVariantSelector from '@/components/product/ProductVariantSelector';
+import Image from 'next/image';
+import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
+import ContactSection from '@/components/landing/Contact';
 
-// Komponen kecil untuk menampilkan bintang rating
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  try {
+    const id = (await params).id;
+    const { data: product } = await getProductById(id);
+    return {
+      title: product.name,
+      description: product.description,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message)
 
-
-// Data Dummy untuk Halaman Produk (di aplikasi nyata, ini diambil dari API)
-const productData = {
-  category: "Makanan",
-  rating: 4.5,
-  reviewCount: 127,
-  name: "Keripik Tempe Original",
-  price: 15000,
-  originalPrice: 18000,
-  discount: 17,
-  store: {
-    name: "Toko Cemilan Sleman",
-    location: "Jl. Magelang KM 5, Sleman",
-    rating: 4.8,
-    productCount: 156,
-  },
-  details: {
-    weight: "250 gram",
-    condition: "Baru",
-    category: "Makanan & Minuman",
-    stock: 25,
-  },
-  description: {
-    main: "Keripik Tempe Original yang dibuat dari tempe kedelai pilihan dengan bumbu rahasia yang telah diwariskan turun temurun. Diproses dengan higienis menggunakan teknologi modern namun tetap mempertahankan cita rasa tradisional.",
-    features: [
-      "100% tempe kedelai asli tanpa pengawet",
-      "Renyah dan gurih dengan bumbu meresap sempurna",
-      "Dikemas dalam kemasan kedap udara untuk menjaga kerenyahan",
-      "Cocok untuk camilan sehat keluarga",
-      "Halal dan telah tersertifikasi BPOM",
-    ]
-  },
-  reviews: {
-    summary: [
-      { stars: 5, percentage: 65, count: 83 },
-      { stars: 4, percentage: 25, count: 32 },
-      { stars: 3, percentage: 8, count: 10 },
-      { stars: 2, percentage: 2, count: 2 },
-      { stars: 1, percentage: 0, count: 0 },
-    ],
-    items: [
-      { id: 1, userInitial: 'S', userName: 'Sari Wulandari', rating: 5, date: '2 hari yang lalu', text: 'Enak banget! Keripik tempenya renyah dan bumbunya meresap sampai dalam. Anak-anak suka banget, langsung habis sehari beli. Pasti bakal order lagi!', helpfulCount: 12, variant: 'Original', quantity: 2, images: [1, 2], video: { duration: '0:15' }, sellerReply: { name: 'Toko Cemilan Sleman', text: 'Terima kasih banyak atas reviewnya Bu Sari! 😊 Ditunggu orderan berikutnya ya!', date: '1 hari yang lalu' } },
-      { id: 2, userInitial: 'A', userName: 'Ahmad Suprapto', rating: 5, date: '5 hari yang lalu', text: 'Packaging rapi, pengiriman cepat. Rasanya mantap, tidak terlalu asin dan tidak terlalu hambar. Cocok untuk oleh-oleh juga. Recommended!', helpfulCount: 8, variant: 'Original', quantity: 3, images: [1, 2], video: null, sellerReply: { name: 'Toko Cemilan Sleman', text: 'Terima kasih Pak Ahmad atas kepercayaannya! Kami memang selalu memperhatikan packaging agar produk sampai dalam kondisi baik.', date: '4 hari yang lalu' } },
-    ]
-  },
-  relatedProducts: Array.from({ length: 4 }, (_, i) => ({ id: i, name: `Produk Terkait ${i + 1}`, price: 12000 + (i * 1000), rating: 4.3 + (i * 0.1), category: 'Makanan' }))
-};
+    }
+    return {
+      title: "Produk Tidak Ditemukan",
+      description: "Halaman yang Anda cari tidak ada.",
+    };
+  }
+}
 
 
 
-export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  // State untuk kuantitas dan gambar
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
+
+  const id = (await params).id;
+
+  let product;
+  try {
+    const response = await getProductById(id);
+    product = response.data;
+  } catch (error) {
+
+    if (error instanceof Error) {
+      console.log(error.message)
+
+    }
+    // Jika produk tidak ditemukan (API melempar error), tampilkan halaman not-found
+    notFound();
+  }
+
+  const totalReviews = Object.values(product.rating_count).reduce((sum, count) => sum + count, 0);
+  const images = product.media.map((item) => item.media_url)
 
   return (
     <div className="bg-gray-50">
-      {/* ===== Header ===== */}
-      {/* <Navbar3 /> */}
+
+      <Breadcrumb currentPage={product.name} />
 
 
       {/* ===== Product Detail Section ===== */}
@@ -75,26 +67,21 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-8 lg:mb-12">
 
             {/* Product Images */}
-            <ImageGallery images={[
-              "https://d39wptbp5at4nd.cloudfront.net/media/69598_original_produk_unggulan_1.jpg",
-              "https://www.laptopbekasmalang.com/wp-content/uploads/2022/01/pc-core-i5-vga-gtx750ti-2.jpeg",
-              "https://cdn.rri.co.id/berita/Nunukan/o/1722396180656-gambar_komputer/n4iffrdwgvljkdv.jpeg",
-              "https://doran.id/wp-content/uploads/2024/02/pc-1024x538.jpg"
-            ]} />
+            <ImageGallery images={images} />
 
             {/* Product Information */}
             <div>
               <div className="mb-4">
-                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">{productData.category}</span>
+                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">{product.category.name}</span>
                 <div className="mt-2">
-                  <StarRating rating={productData.rating} count={productData.reviewCount} />
+                  <StarRating rating={Number(product.average_rating)} count={totalReviews} />
                 </div>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{productData.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
 
               <div className="flex flex-wrap items-baseline mb-6 gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-primary">Rp {productData.price.toLocaleString('id-ID')}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-primary">{product.price.formatted}</span>
                 {/* <span className="text-base sm:text-lg text-gray-500 line-through">Rp {productData.originalPrice.toLocaleString('id-ID')}</span> */}
                 {/* <span className="bg-red-100 text-red-800 text-xs sm:text-sm px-2 py-1 rounded">Hemat {productData.discount}%</span> */}
               </div>
@@ -102,49 +89,51 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-start sm:items-center mb-3">
                   <div className="bg-primary rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mr-3 flex-shrink-0">
-                    <i className="fas fa-store text-white text-sm sm:text-base"></i>
+                    {/* <i className="fas fa-store text-white text-sm sm:text-base"></i> */}
+                    <Image src={product.store.logo_url} className='rounded-full' alt='store-img' width={200} height={200} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-gray-800 text-sm sm:text-base">{productData.store.name}</h3>
+                    <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <i className="fas fa-map-marker-alt mr-1 flex-shrink-0"></i>
-                      <span className="truncate">{productData.store.location}</span>
+                      <span className="truncate">{product.store.address}</span>
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm gap-2">
+                {/* <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm gap-2">
                   <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center"><i className="fas fa-star text-yellow-400 mr-1"></i><span>{productData.store.rating} Rating Toko</span></div>
-                    <div className="flex items-center"><i className="fas fa-box mr-1"></i><span>{productData.store.productCount} Produk</span></div>
+                    <div className="flex items-center"><i className="fas fa-star text-yellow-400 mr-1"></i><span>{product.store.ra} Rating Toko</span></div>
+                    <div className="flex items-center"><i className="fas fa-box mr-1"></i><span>{product.store.products_count} Produk</span></div>
                   </div>
                   <button className="text-primary hover:text-primary-dark font-medium self-start sm:self-auto"><i className="fas fa-eye mr-1"></i>Lihat Toko</button>
-                </div>
+                </div> */}
               </div>
 
               <div className="mb-6">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Detail Produk</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Berat:</span><span className="sm:ml-2">{productData.details.weight}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kondisi:</span><span className="sm:ml-2">{productData.details.condition}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{productData.details.category}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{productData.details.stock} tersedia</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Variant:</span><span className="sm:ml-2">{`${product.variants.length} Variant` || "Tidak ada variant"}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Status:</span><span className="sm:ml-2">{product.stock_status == "in_stock" ? "Tersedia" : "Tidak tersedia"}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{product.category.name}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{product.stock_quantity} tersedia</span></div>
                 </div>
               </div>
+              <ProductVariantSelector product={product} />
 
-              <ActionCartOrBuy stock={productData.details.stock} />
+              {/* <ActionCartOrBuy stock={product.stock_quantity} /> */}
 
 
               {/* Product Description */}
-              <div className="mb-8">
+              <div className="mb-8 mt-3">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Deskripsi Produk</h3>
                 <div className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                  <p className="mb-3">{productData.description.main}</p>
-                  <p className="mb-3"><strong>Keunggulan:</strong></p>
+                  <p className="mb-3">{product.description}</p>
+                  {/* <p className="mb-3"><strong>Keunggulan:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-2 sm:ml-4">
                     {productData.description.features.map((feature, index) => (
                       <li key={index}>{feature}</li>
                     ))}
-                  </ul>
+                  </ul> */}
                 </div>
               </div>
             </div>
@@ -158,9 +147,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       <section className="py-6 sm:py-8 bg-white md-px-10">
         <div className="container mx-auto px-4">
 
-          <CardRating productData={productData} />
+          <CardRating product={product} />
 
-          <ReviewCard reviews={productData.reviews.items} />
+          <ReviewCard productId={product.id} />
 
         </div>
       </section>
@@ -182,18 +171,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       <section className="py-8 sm:py-12 bg-gray-50  md:px-10">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">Produk Serupa</h2>
-                <ProductSectionHorizontal relatedProducts={
-            [
-              { category: "Makanan", id: 1, name: "Browseer", price: 1000, rating: 4.5 },
-              { category: "Makanan", id: 2, name: "Browseer", price: 1000, rating: 4.5 },
-              { category: "Makanan", id: 9, name: "Browseer", price: 1000, rating: 4.5 },
-            ]
-          } />
+          <ProductSectionHorizontal />
         </div>
       </section>
 
 
-      <Footer />
+      <AnimatedWrapper>
+        <ContactSection />
+      </AnimatedWrapper>
 
     </div>
   );

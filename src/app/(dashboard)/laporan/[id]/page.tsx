@@ -1,35 +1,35 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+// import { useState, ChangeEvent, FormEvent } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
+// import Head from 'next/head';
 import { Navbar } from '@/components/shared/Navbar';
 import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
 import Footer from '@/components/layout/Footer';
 
 const DetailReportIssuePage = () => {
-    const [issueCategory, setIssueCategory] = useState('');
-    const [titleCount, setTitleCount] = useState(0);
-    const [descCount, setDescCount] = useState(0);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    // const [issueCategory, setIssueCategory] = useState('');
+    // const [titleCount, setTitleCount] = useState(0);
+    // const [descCount, setDescCount] = useState(0);
+    // const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitleCount(e.target.value.length);
-    };
+    // const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    //     setTitleCount(e.target.value.length);
+    // };
 
-    const handleDescChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        setDescCount(e.target.value.length);
-    };
+    // const handleDescChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    //     setDescCount(e.target.value.length);
+    // };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setShowSuccessModal(true);
-    };
+    // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     setShowSuccessModal(true);
+    // };
 
     return (
         <>
             <div className="bg-gray-50">
-                <Navbar withMenu={false} isAuth={true} />
+                <Navbar withMenu={false} />
 
                 <div className="container mx-auto px-4 py-4 sm:py-8 md:px-10">
                     {/* <!-- Breadcrumb --> */}
@@ -73,9 +73,7 @@ const DetailReportIssuePage = () => {
                         >
                             <div>
                                 <div className="flex items-center space-x-3 mb-2">
-                                    <span className="text-lg font-mono text-gray-600"
-                                    >#RPT-2024-001234</span
-                                    >
+                                    <span className="text-lg font-mono text-gray-600">#RPT-2024-001234</span>
                                     <span
                                         className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800"
                                     >
@@ -167,11 +165,9 @@ const DetailReportIssuePage = () => {
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <span className="font-medium text-gray-800"
-                                                >John Doe (Anda)</span
-                                                >
+                                                >John Doe (Anda)</span>
                                                 <span className="text-sm text-gray-500"
-                                                >15 Agu 2024, 14:30</span
-                                                >
+                                                >15 Agu 2024, 14:30</span>
                                             </div>
                                             <div className="bg-blue-50 rounded-lg p-4">
                                                 <p className="text-gray-700">
@@ -194,11 +190,9 @@ const DetailReportIssuePage = () => {
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <span className="font-medium text-gray-800"
-                                                >Ahmad (Tim Support)</span
-                                                >
+                                                >Ahmad (Tim Support)</span >
                                                 <span className="text-sm text-gray-500"
-                                                >15 Agu 2024, 15:45</span
-                                                >
+                                                >15 Agu 2024, 15:45</span>
                                             </div>
                                             <div className="bg-gray-50 rounded-lg p-4">
                                                 <p className="text-gray-700">
@@ -223,11 +217,9 @@ const DetailReportIssuePage = () => {
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <span className="font-medium text-gray-800"
-                                                >Ahmad (Tim Support)</span
-                                                >
+                                                >Ahmad (Tim Support)</span>
                                                 <span className="text-sm text-gray-500"
-                                                >16 Agu 2024, 09:15</span
-                                                >
+                                                >16 Agu 2024, 09:15</span>
                                             </div>
                                             <div className="bg-gray-50 rounded-lg p-4">
                                                 <p className="text-gray-700 mb-3">
@@ -258,11 +250,9 @@ const DetailReportIssuePage = () => {
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <span className="font-medium text-gray-800"
-                                                >John Doe (Anda)</span
-                                                >
+                                                >John Doe (Anda)</span>
                                                 <span className="text-sm text-gray-500"
-                                                >16 Agu 2024, 10:30</span
-                                                >
+                                                >16 Agu 2024, 10:30</span>
                                             </div>
                                             <div className="bg-blue-50 rounded-lg p-4">
                                                 <p className="text-gray-700">

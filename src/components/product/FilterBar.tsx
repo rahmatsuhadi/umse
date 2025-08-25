@@ -1,11 +1,33 @@
 "use client"
+import { useCategories } from "@/features/categories/hooks";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const FilterSortModal = () => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [isSortModalOpen, setIsSortModalOpen] = useState(false);
     const [minPrice, setMinPrice] = useState<number | string>('');
     const [maxPrice, setMaxPrice] = useState<number | string>('');
+
+     const categoriesParams = searchParams.get('category')?.split(',') || [];
+
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(categoriesParams);
+    const [selectedSort, setSelectedSort] = useState<string>('');
+
+    const { data } = useCategories();
+
+    const categories = data?.data || []
+
+    const toggleCategory = (slug: string) => {
+        setSelectedCategories((prev) =>
+            prev.includes(slug)
+                ? prev.filter((item) => item !== slug)
+                : [...prev, slug]
+        );
+    };
+
 
     const filterModalRef = useRef<HTMLDivElement>(null);
     const sortModalRef = useRef<HTMLDivElement>(null);
@@ -20,12 +42,43 @@ const FilterSortModal = () => {
         setMaxPrice('');
     };
 
+    useEffect(() => {
+        const categories = searchParams.get('category')?.split(',') || [];
+        setSelectedCategories(categories);
+    }, [searchParams]);
+
     const applyFilter = () => {
-        console.log('Filter applied');
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (selectedCategories.length > 0) {
+            params.set('category', selectedCategories.join(','));
+        } else {
+            params.delete('category');
+        }
+
+        // Set new values
+        if (minPrice) params.set('minPrice', String(minPrice));
+        else params.delete('minPrice');
+
+        if (maxPrice) params.set('maxPrice', String(maxPrice));
+        else params.delete('maxPrice');
+
+        // Update the URL
+        router.replace(`?${params.toString()}`, { scroll: false });
+        closeFilterModal();
     };
 
     const applySorting = () => {
-        console.log('Sorting applied');
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (selectedSort) {
+            params.set('sort', selectedSort);
+        } else {
+            params.delete('sort');
+        }
+
+        router.push(`?${params.toString()}`, { scroll: false });
+        closeSortModal();
     };
 
     // Handle click outside to close modals
@@ -116,48 +169,17 @@ const FilterSortModal = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                             <div className="space-y-2">
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-700">Semua Kategori</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-700">Makanan & Minuman</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-700">Fashion & Aksesoris</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-700">Kerajinan Tangan</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-700">Kecantikan & Kesehatan</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-700">Pertanian Organik</span>
-                                </label>
+                                {categories?.map((category) => (
+                                    <label key={category.slug} className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedCategories.includes(category.slug)}
+                                            onChange={() => toggleCategory(category.slug)}
+                                            className="rounded border-gray-300 text-primary focus:ring-primary"
+                                        />
+                                        <span className="ml-2 text-sm text-gray-700">{category.name}</span>
+                                    </label>
+                                ))}
                             </div>
                         </div>
 
@@ -231,51 +253,68 @@ const FilterSortModal = () => {
                                     type="radio"
                                     name="sort"
                                     value="popular"
+                                    checked={selectedSort === 'popular'}
+                                    onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
                                 <span className="ml-3 text-sm text-gray-700">Terpopuler</span>
                             </label>
+
                             <label className="flex items-center">
                                 <input
                                     type="radio"
                                     name="sort"
                                     value="newest"
+                                    checked={selectedSort === 'newest'}
+                                    onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
                                 <span className="ml-3 text-sm text-gray-700">Terbaru</span>
                             </label>
+
                             <label className="flex items-center">
                                 <input
                                     type="radio"
                                     name="sort"
                                     value="price-low"
+                                    checked={selectedSort === 'price-low'}
+                                    onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
                                 <span className="ml-3 text-sm text-gray-700">Harga Terendah</span>
                             </label>
+
                             <label className="flex items-center">
                                 <input
                                     type="radio"
                                     name="sort"
                                     value="price-high"
+                                    checked={selectedSort === 'price-high'}
+                                    onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
                                 <span className="ml-3 text-sm text-gray-700">Harga Tertinggi</span>
                             </label>
+
                             <label className="flex items-center">
                                 <input
                                     type="radio"
                                     name="sort"
                                     value="rating"
+                                    checked={selectedSort === 'rating'}
+                                    onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
                                 <span className="ml-3 text-sm text-gray-700">Rating Tertinggi</span>
                             </label>
+
                             <label className="flex items-center">
                                 <input
                                     type="radio"
                                     name="sort"
                                     value="name"
+                                    checked={selectedSort === 'name'}
+                                    onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
                                 <span className="ml-3 text-sm text-gray-700">Nama A-Z</span>

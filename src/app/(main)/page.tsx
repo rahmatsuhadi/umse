@@ -1,57 +1,66 @@
 import CategoriesSection from "@/components/features/home/CategoriesSection";
 import FeaturesSection from "@/components/features/home/FeatureSection";
 import StoresSection from "@/components/landing/StoresSection";
-import Footer from "@/components/layout/Footer";
+import { BannerCarousel } from "@/components/product/BannerCarousel";
 import FilterSortModal from "@/components/product/FilterBar";
 import ProductSection from "@/components/product/ProductSection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
 import { Separator } from "@/components/ui/separator";
+import { FilterProvider } from "../context/FilterProduct";
+import ContactSection from "@/components/landing/Contact";
 
 
 interface ProductsPageProps {
     searchParams: Promise<{
-        auth: boolean
+        page: string;
+        q: string;
     }>
 }
 
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-    const { auth } = await searchParams
+export default async function ProductsPage({ }: ProductsPageProps) {
     return (
         <div>
-            <Navbar withMenu={true} isAuth={auth} />
+            <Navbar />
             <div className="">
 
-                <div className="md:px-10">
-                    <FilterSortModal />
-                </div>
+                <BannerCarousel />
 
 
-                <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
-                    <div className="text-center mb-4 sm:mb-6 pt-10">
-                        <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
-                            Layanan Kami
-                        </h2>
-                        <p className="text-xs sm:text-sm text-gray-600">
-                            Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
-                        </p>
+                <FilterProvider>
+
+                    <div className="md:px-10">
+                        <FilterSortModal />
                     </div>
 
-                    <FeaturesSection />
-                </AnimatedWrapper>
+
+                    <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
+                        <div className="text-center mb-4 sm:mb-6 pt-10">
+                            <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
+                                Layanan Kami
+                            </h2>
+                            <p className="text-xs sm:text-sm text-gray-600">
+                                Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
+                            </p>
+                        </div>
+
+                        <FeaturesSection />
+                    </AnimatedWrapper>
 
 
 
-                <AnimatedWrapper className="md:px-10">
-                    <CategoriesSection />
-                </AnimatedWrapper>
+                    <AnimatedWrapper className="md:px-10">
+                        <CategoriesSection />
+                    </AnimatedWrapper>
 
 
-                <Separator />
+                    <Separator />
 
-                <AnimatedWrapper className="md:px-10">
-                    <ProductSection />
-                </AnimatedWrapper>
+                    <AnimatedWrapper className="md:px-10">
+                        <ProductSection />
+                    </AnimatedWrapper>
+
+                </FilterProvider>
 
 
                 <AnimatedWrapper className="md:px-10">
@@ -64,8 +73,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             </div>
 
 
-            <Footer />
-
+            <AnimatedWrapper>
+                <ContactSection />
+            </AnimatedWrapper>
 
         </div>
     );

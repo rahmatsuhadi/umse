@@ -1,6 +1,5 @@
 
 
-import Breadcrumb from "@/components/shared/Breadcrumb";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,9 +16,6 @@ export default function ProductLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-
-    const productName = "Keripik Tempe Original"
-
 
     return (
         <div>
@@ -51,7 +47,6 @@ export default function ProductLayout({
 
 
             {/* ===== Breadcrumb ===== */}
-            <Breadcrumb currentPage={productName} />
            </div>
             {children}
         </div>
