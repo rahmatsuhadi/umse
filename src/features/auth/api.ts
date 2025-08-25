@@ -61,3 +61,23 @@ export const updateProfile = (data: UpdateProfileData): Promise<User> => {
     },
   });
 };
+
+
+
+export type ChangePasswordData = {
+  old_password: string;
+  new_password: string;
+  new_password_confirmation: string;
+};
+
+
+/**
+ * Mengirim password  ke server.
+ * Backend diharapkan mengembalikan data .
+ */
+export const changePassword = (credentials: ChangePasswordData): Promise<{message:string}> => {
+    return apiClient<{message:string}>('/user/password', {
+        method: 'PATCH',
+        body: JSON.stringify(credentials),
+    });
+};

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { login, register, getMe, logout, UpdateProfileData, updateProfile } from "./api";
+import { login, register, getMe, logout, UpdateProfileData, updateProfile, ChangePasswordData, changePassword } from "./api";
 import type { User, LoginCredentials, RegisterData } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ export const useLogin = () => {
     onSuccess: ({ data }, variables) => {
       const { token, user } = data;
 
-      if(user.role !="customer"){
+      if (user.role != "customer") {
 
         toast.error('Anda bukan customer')
         return
@@ -37,7 +37,7 @@ export const useLogin = () => {
 
       // 1. Set data pengguna ke cache setelah login berhasil
       queryClient.setQueryData(["user"], data.user);
-      
+
 
       if (token) {
         // 3. Simpan token ke dalam cookie
@@ -58,7 +58,8 @@ export const useLogin = () => {
       // Tampilkan notifikasi error
       toast.error("Login Gagal", {
         // description: "Pastikan kredensial Anda benar.",
-        description: error.message || "Pastikan kredensial Anda benar.",
+        description: "Pastikan kredensial Anda benar.",
+        // description: error.message || "Pastikan kredensial Anda benar.",
       });
     }
   });
@@ -127,7 +128,6 @@ export const useLogout = () => {
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   return useMutation({
     mutationFn: (data: UpdateProfileData) => updateProfile(data),
@@ -139,10 +139,31 @@ export const useUpdateProfile = () => {
       toast.success("Profil Berhasil Disimpan!");
 
       // 3. Arahkan kembali ke halaman profil
-      router.push('/pengguna/edit');
+      // router.push('/pengguna/edit');
     },
     onError: (error) => {
       toast.error("Gagal Menyimpan Profil", { description: error.message });
+    }
+  });
+};
+
+export const usePasswordChange = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ChangePasswordData) => changePassword(data),
+    onSuccess: () => {
+      // 1. Invalidate query 'user' agar data di seluruh aplikasi ter-update
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+
+      // 2. Tampilkan notifikasi sukses
+      toast.success("Password Berhasil Diubah!");
+
+      // 3. Arahkan kembali ke halaman profil
+      // router.push('/pengguna/edit');
+    },
+    onError: (error) => {
+      toast.error("Gagal Mengubah Password", { description: error.message });
     }
   });
 };
