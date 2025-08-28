@@ -9,24 +9,44 @@ import ProductVariantSelector from '@/components/product/ProductVariantSelector'
 import Image from 'next/image';
 import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
 import ContactSection from '@/components/landing/Contact';
+import { trimDescription } from '@/lib/seoMetadataUtils';
+import { ProductShareModal } from '@/components/product/CopyAndShareLink';
 
+const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || "http://localhost:3000"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   try {
-    const id = (await params).id;
     const { data: product } = await getProductById(id);
+
+    // Gambar untuk Open Graph dan Twitter Card
+    const ogImageUrl = product.media[0]?.media_url || '/assets/no-image.jpg';
+
+    const trimmedDescription = trimDescription(product.description);
+
     return {
-      title: product.name,
-      description: product.description,
+      title: product.name,  // Dinamis berdasarkan produk
+      description: trimmedDescription,  // Deskripsi produk
+      openGraph: {
+        title: product.name,
+        description: trimmedDescription,
+        url: `${APP_URL}/produk/${product.id}`,  // URL produk
+        image: ogImageUrl,
+        type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
+      },
+      twitter: {
+        title: product.name,
+        description: trimmedDescription,
+        image: ogImageUrl,
+        card: 'summary_large_image',  // Format Twitter Card yang besar
+      },
     };
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message)
-
-    }
+    console.log(error);
     return {
-      title: "Produk Tidak Ditemukan",
-      description: "Halaman yang Anda cari tidak ada.",
+      title: 'Produk Tidak Ditemukan',
+      description: 'Halaman yang Anda cari tidak ada.',
     };
   }
 }
@@ -72,13 +92,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             {/* Product Information */}
             <div>
               <div className="mb-4">
-                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">{product.category.name}</span>
+                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">
+                  {product.category.name}
+                </span>
                 <div className="mt-2">
                   <StarRating rating={Number(product.average_rating)} count={totalReviews} />
                 </div>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
+
 
               <div className="flex flex-wrap items-baseline mb-6 gap-2">
                 <span className="text-2xl sm:text-3xl font-bold text-primary">{product.price.formatted}</span>
@@ -136,6 +159,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   </ul> */}
                 </div>
               </div>
+              <div className="mt-2"> <ProductShareModal productName={product.name} productUrl={APP_URL + "/produk/" + product.id} /></div>
             </div>
 
           </div>

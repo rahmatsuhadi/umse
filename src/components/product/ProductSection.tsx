@@ -62,7 +62,7 @@ const ProductSection = () => {
     return (
         <section className="py-12 ">
             <div className="container mx-auto px-4">
-
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">Produk</h2>
                 {!isLoading && products.length === 0 && (
                     <div className="text-center text-gray-500 py-12">
                         <i className="fas fa-box-open text-4xl mb-4 text-gray-400"></i>
@@ -83,7 +83,7 @@ const ProductSection = () => {
                         ))
                         : products.map((product) => (
                             <motion.div key={product.id} variants={itemVariants}>
-                                <Link href={"/p/" + product.id}>
+                                <Link href={"/produk/" + product.id}>
                                     <CardProduct product={product} />
                                 </Link>
                             </motion.div>

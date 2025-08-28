@@ -9,6 +9,7 @@ import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import { FaSpinner } from "react-icons/fa";
+import { Input } from "../ui/input";
 
 export default function ProductVariantSelector({ product }: { product: Product }) {
   // State untuk menyimpan varian yang sedang dipilih
@@ -102,6 +103,7 @@ export default function ProductVariantSelector({ product }: { product: Product }
             <Button variant="ghost" size="icon" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
               <Minus className="h-4 w-4" />
             </Button>
+            {/* <Input className="w-12 text-center font-bold" value={quantity} onChange={(v) => setQuantity(Number(v.target.value))} /> */}
             <span className="w-12 text-center font-bold">{quantity}</span>
             <Button variant="ghost" size="icon" onClick={() => handleQuantityChange(1)} disabled={quantity >= currentStock}>
               <Plus className="h-4 w-4" />

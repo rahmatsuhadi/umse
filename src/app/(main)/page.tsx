@@ -9,6 +9,8 @@ import { Navbar } from "@/components/shared/Navbar";
 import { Separator } from "@/components/ui/separator";
 import { FilterProvider } from "../context/FilterProduct";
 import ContactSection from "@/components/landing/Contact";
+import { Metadata } from "next";
+import { APP_URL } from "@/lib/envConfig";
 
 
 interface ProductsPageProps {
@@ -17,6 +19,32 @@ interface ProductsPageProps {
         q: string;
     }>
 }
+
+export const metadata: Metadata = {
+    title: "Sleman Mart - Marketplace UMKM dengan Produk Berkualitas",
+    description: "Temukan berbagai produk berkualitas dari UMKM Sleman Mart. Jelajahi kategori, fitur, dan toko-toko terbaik dengan penawaran menarik.",
+    openGraph: {
+        title: "Sleman Mart - Marketplace UMKM",
+        description: "Marketplace terbaik untuk produk UMKM di Sleman. Dapatkan produk berkualitas dan layanan terbaik.",
+        images: [
+            {
+                url: APP_URL + "/slemanmartlogo.png",
+                width: 800,
+                height: 600,
+                alt: "Sleman Mart - Marketplace UMKM"
+            }
+        ],
+        url: APP_URL + "",
+        siteName: "Sleman Mart",
+    },
+    twitter: {
+        card: "summary_large_image",
+        site: "@SlemanMart",
+        title: "Sleman Mart - Marketplace UMKM",
+        description: "Marketplace UMKM Sleman dengan produk berkualitas dan penawaran menarik.",
+        images: APP_URL + "/slemanmartlogo.png"
+    }
+};
 
 export default async function ProductsPage({ }: ProductsPageProps) {
     return (
@@ -57,6 +85,7 @@ export default async function ProductsPage({ }: ProductsPageProps) {
                     <Separator />
 
                     <AnimatedWrapper className="md:px-10">
+                      
                         <ProductSection />
                     </AnimatedWrapper>
 

@@ -18,7 +18,7 @@ export default function ProductSectionHorizontal() {
                     <CardProductSkleton key={index} />
                 ))
                 : products.map((product) => (
-                        <Link key={product.id} href={"/p/" + product.id}>
+                        <Link key={product.id} href={"/produk/" + product.id}>
                             <CardProduct product={product} />
                         </Link>
                 ))}
