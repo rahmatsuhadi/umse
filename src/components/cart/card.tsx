@@ -43,7 +43,14 @@ export const CartItemCard = ({
             />
             <div className="bg-gray-200 rounded w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
                 {/* <i className="fas fa-image text-gray-400"></i> */}
-                <Image src={media} width={100} height={100} alt="thumb-product" />
+                {/* <Image src={media} width={100} height={100} alt="thumb-product" /> */}
+                <Image
+                    className="w-full h-full object-cover rounded-lg"
+                    src={media}
+                    width={100}  // Atur lebar sesuai keinginan
+                    height={100} // Atur tinggi sesuai keinginan
+                    alt={"thumb-" + title}
+                />
             </div>
             <div className="flex-1 min-w-0">
                 <h4 className="font-bold text-gray-800 text-sm sm:text-base">{title}</h4>
@@ -75,7 +82,7 @@ interface StoreCartItemProps {
     storeName: string;
     storeLocation: string;
     // shipping: number;
-    img:string;
+    img: string;
     storeId: string;
     items: CartItem[];
 }
@@ -93,6 +100,7 @@ export const StoreCartItem = ({
     const [itemChecked, setItemChecked] = useState<boolean[]>(new Array(items.length).fill(false)); // State untuk checkbox item
 
     const selectedItems = items.filter((_, idx) => itemChecked[idx]);
+
 
     const { mutate: updateItem, } = useUpdateCartItem();
     const { mutate: removeItem, } = useRemoveCartItem();
@@ -132,12 +140,11 @@ export const StoreCartItem = ({
     const onCheckout = () => {
         // Logika checkout untuk toko ini
 
-
         if (selectedItems.length === 0) return;
 
         localStorage.setItem("checkout_items", JSON.stringify(selectedItems));
 
-        router.push("/pembayaran?store=" + storeId);
+        router.push("/checkout?store=" + storeId);
     }
 
     return (
@@ -151,7 +158,8 @@ export const StoreCartItem = ({
                     />
                     <div className="bg-primary rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mr-3">
                         {/* <i className="fas fa-store text-white text-sm sm:text-base"></i> */}
-                        <Image src={img} className='rounded-full' alt='store-img' width={200} height={200}/>
+                        <Image src={img} className='rounded-full' alt='store-img' width={200} height={200} />
+
                     </div>
                     <div>
                         <h3 className="font-bold text-gray-800 text-sm sm:text-base">{storeName}</h3>
@@ -189,7 +197,7 @@ export const StoreCartItem = ({
                     <div className="text-left sm:text-right">
                         {/* <p className="text-base sm:text-lg font-bold text-gray-800">Total: Rp {items.reduce((acc, item) => acc + item.price * item.quantity, 0) + shipping}</p> */}
                         {/* <Link href={"/checkout"}> */}
-                        <button type="button" disabled={itemChecked.length == 0} onClick={onCheckout} className="bg-primary text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300 mt-2 text-sm sm:text-base w-full sm:w-auto">
+                        <button type="button" disabled={selectedItems.length == 0} onClick={onCheckout} className="bg-primary disabled:bg-primary/50 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300 mt-2 text-sm sm:text-base w-full sm:w-auto">
                             <i className="fas fa-shopping-cart mr-2"></i>Checkout Toko Ini
                         </button>
                         {/* </Link> */}
