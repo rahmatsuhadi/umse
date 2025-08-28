@@ -41,11 +41,11 @@ export default function OrderDetailModal({ open, order, onClose }: Props) {
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>Pesanan #{order.id}</DialogTitle>
-            <DialogClose asChild>
+            {/* <DialogClose asChild>
               <button className="text-gray-500 hover:text-gray-700">
                 <i className="fas fa-times text-lg"></i>
               </button>
-            </DialogClose>
+            </DialogClose> */}
           </div>
           <DialogDescription className="text-sm text-gray-600">
             {formatDate(order.date)}

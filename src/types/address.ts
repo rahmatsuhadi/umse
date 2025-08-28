@@ -13,6 +13,7 @@ export interface Address {
   address: string;
   postal_code?: string;
   is_primary: boolean;
+  note:string;
   label: string; // Contoh: "Rumah", "Kantor"
 }
 

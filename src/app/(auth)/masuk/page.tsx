@@ -74,9 +74,9 @@ export default function LoginPage() {
   return (
     <div className="flex relative items-center  justify-center min-h-[80vh] px-4 ">
 
-      <div className="hidden lg:block absolute left-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
+      {/* <div className="hidden lg:block absolute left-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
         <Illustration1 className="w-full h-auto" />
-      </div>
+      </div> */}
 
       <Card className="w-full max-w-md z-20">
         <CardHeader className="text-center">
@@ -88,6 +88,7 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                disabled={isPending}
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
@@ -113,6 +114,7 @@ export default function LoginPage() {
               <FormField
                 control={form.control}
                 name="password"
+                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
@@ -161,8 +163,11 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
 
-      <div className="hidden lg:block absolute right-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
+      {/* <div className="hidden lg:block absolute right-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
         <Illustration2 className="w-full h-auto" />
+      </div> */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-7xl bg-cover opacity-40 bg-center">
+        <Illustration2 className="w-full h-[80vh] object-cover" />
       </div>
     </div>
   );

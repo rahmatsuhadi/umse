@@ -5,6 +5,8 @@ import { getProvinces, getRegencies, getDistricts, getVillages } from "./api";
 export const useProvinces = () => {
   return useQuery({
     queryKey: ["provinces"],
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     queryFn: getProvinces,
   });
 };
@@ -13,6 +15,8 @@ export const useProvinces = () => {
 export const useRegencies = (provinceId: string) => {
   return useQuery({
     queryKey: ["regencies", provinceId],
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     queryFn: () => getRegencies(provinceId),
     enabled: !!provinceId, // Ini kuncinya: query hanya berjalan jika provinceId tidak kosong
   });
@@ -22,6 +26,8 @@ export const useRegencies = (provinceId: string) => {
 export const useDistricts = (regencyId: string) => {
   return useQuery({
     queryKey: ["districts", regencyId],
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     queryFn: () => getDistricts(regencyId),
     enabled: !!regencyId,
   });
@@ -31,6 +37,8 @@ export const useDistricts = (regencyId: string) => {
 export const useVillages = (districtId: string) => {
   return useQuery({
     queryKey: ["villages", districtId],
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     queryFn: () => getVillages(districtId),
     enabled: !!districtId,
   });

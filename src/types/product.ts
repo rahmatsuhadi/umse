@@ -26,7 +26,7 @@ export interface Variant {
   name: string;
   price: Price;
   stock_quantity: number;
-  thumbnail: Media | null;
+  thumbnail: Media;
   options: VariantOption[];
 }
 
