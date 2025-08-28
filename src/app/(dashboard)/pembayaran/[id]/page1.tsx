@@ -37,7 +37,7 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
     };
 
     return (
-        <div className="bg-gray-50 font-jakarta">
+        <div className="bg-gray-50 min-h-[100vh] font-jakarta">
             {/* header */}
 
             <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
@@ -97,7 +97,7 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
 
 
                             {step == "checkout" ? (
-                                <CheckoutItem/>
+                                <CheckoutItem />
                             ) :
                                 step == "payment" ? (
                                     <div
