@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
-import CheckoutItem from "@/components/order/step/CheckoutStep";
+import CheckoutItem from "@/components/order/Checkout/CheckoutStep";
 
 
 
@@ -97,7 +97,7 @@ export default function CheckoutPage({ }: { params: Promise<{ storeId: string }>
 
 
                             {step == "checkout" ? (
-                                <CheckoutItem />
+                                <CheckoutItem currentStep="checkout"/>
                             ) :
                                 step == "payment" ? (
                                     <div
