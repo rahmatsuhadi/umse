@@ -21,6 +21,8 @@ export const useProducts = (params: ProductQueryParams) => {
   return useQuery<PaginatedApiResponse<Product>, Error>({
     // Kunci query harus menyertakan params agar cache unik untuk setiap filter
     queryKey: ["products", params],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     queryFn: () => getProducts(params),
   });
 };
