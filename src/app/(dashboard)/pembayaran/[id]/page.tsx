@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
 
 export default function PaymentPage() {
-    const { id } = useParams<{ id: string }>()
+    // const { id } = useParams<{ id: string }>()
 
     const [step, setStep] = useState<CheckoutStep>("payment")
 

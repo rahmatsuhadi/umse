@@ -21,7 +21,7 @@ export default function ContactSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center md:px-32">
           {/* Info Kontak */}
           <div className=''>
-            <h2 className="text-2xl font-bold text-white">Sleman Mart</h2>
+            <p className="text-2xl font-bold text-white">Sleman Mart</p>
             <p className="mt-2 text-white">Dinas Koperasi dan UKM Kabupaten Sleman</p>
             <div className="mt-6 space-y-4">
               <div className="flex items-start">

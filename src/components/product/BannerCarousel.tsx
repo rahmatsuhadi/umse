@@ -27,7 +27,7 @@ export function BannerCarousel() {
 
   return (
     <section className="py-6">
-      <div className="container mx-auto md:px-20 sm:px-10 px-4">
+      <div className="container mx-auto md:px-14 sm:px-10 px-4">
         <Carousel
           plugins={[plugin.current]}
           className="w-full"

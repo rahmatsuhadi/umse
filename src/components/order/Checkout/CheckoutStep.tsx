@@ -1,12 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useAddAddress, useAddresses } from "@/features/address/hooks";
+import {useAddresses } from "@/features/address/hooks";
 import { useDistricts, useRegencies, useVillages } from "@/features/locations/hooks";
 import { useShippingRates } from "@/features/shipping/hooks";
 import { CartItem } from "@/types"
@@ -42,7 +42,6 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
     const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string | null>(null);
 
 
     const { data: addressData, isLoading: loadingAddress } = useAddresses()
@@ -76,12 +75,10 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                 setLoading(false);
             } catch (e) {
                 console.error("Gagal parsing checkout_items", e);
-                setError("Gagal memuat item checkout.");
                 setLoading(false);
             }
         } else {
             setLoading(false);
-            setError("Tidak ada item di keranjang.");
         }
     }, []);
 

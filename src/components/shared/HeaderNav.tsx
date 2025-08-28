@@ -9,7 +9,8 @@ export function NavbarDashboard() {
         <div className="flex items-center justify-between">
            <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-primary" >
-              <Image alt="logo-sleman" src={"/slemanmartlogo.png"} height={80} width={80} />
+              <Image   alt="Slemanmart Logo"
+ src={"/slemanmartlogo.png"} height={80} width={80} />
               {/* Sleman<span className="text-sm font-semibold">Store</span> */}
             </Link>
           </div>

@@ -1,12 +1,9 @@
 import CheckoutItem from "@/components/order/Checkout/CheckoutStep";
 import Image from "next/image";
 import Link from "next/link";
-
-import { motion, AnimatePresence } from 'framer-motion';
 import React from "react";
 import { CheckoutStep, steps } from "@/components/order/step/steps";
 import { StepIndicator } from "@/components/order/step/StepIndicator";
-import { animationVariants } from "@/components/order/step/animate";
 
 export default function CheckoutPage() {
 
@@ -25,7 +22,8 @@ export default function CheckoutPage() {
                             <Link href="/" className="flex items-center gap-2">
                                 <Image
                                     src="/slemanmartlogo.png"
-                                    alt="Slemanmart Logo"
+                                      alt="Slemanmart Logo"
+
                                     width={80}
                                     height={80}
                                 />

@@ -21,7 +21,7 @@ import { Eye, EyeOff, Mail, User2 } from 'lucide-react';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { IoLockClosed } from "react-icons/io5";
 import { useRegister } from '@/features/auth/hooks';
-import { Illustration1, Illustration2 } from '@/components/auth/IllustrasiImages';
+import { Illustration2 } from '@/components/auth/IllustrasiImages';
 import { withMask } from 'use-mask-input';
 const formSchema = z.object({
   phone_number: z.string().min(1, { message: "Nomor HP tidak boleh kosong." }).transform((val) => val.replace(/\s+/g, '')) // hapus semua spasi dulu

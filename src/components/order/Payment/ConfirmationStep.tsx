@@ -1,7 +1,6 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
-import Link from "next/link"
 import { CheckoutStep } from "../step/steps"
 import { animationVariants } from "../step/animate"
 import z from "zod"
