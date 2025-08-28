@@ -22,7 +22,7 @@ import { FaPhoneAlt } from 'react-icons/fa';
 import { IoLockClosed } from "react-icons/io5";
 import { useLogin } from '@/features/auth/hooks';
 import { getToken } from '@/lib/token-service';
-import { Illustration1, Illustration2 } from '@/components/auth/IllustrasiImages';
+import {  Illustration2 } from '@/components/auth/IllustrasiImages';
 import { withMask } from 'use-mask-input';
 const formSchema = z.object({
   // email: z.string()
