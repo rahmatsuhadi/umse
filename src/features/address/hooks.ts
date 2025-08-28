@@ -11,6 +11,8 @@ const ADDRESS_QUERY_KEY = ["addresses"];
 export const useAddresses = () => {
   return useQuery<{ data: Address[] }, Error>({
     queryKey: ADDRESS_QUERY_KEY,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     queryFn: getAddresses,
   });
 };

@@ -122,7 +122,6 @@ const formatPrice = (price: number) => {
 // const viewOrderDetail = (id: string) => alert(`Lihat detail pesanan: ${id}`);
 const trackOrder = (id: string) => alert(`Lacak pesanan: ${id}`);
 // const openReviewModal = (id: string) => alert(`Buka ulasan untuk: ${id}`);
-const cancelOrder = (id: string) => alert(`Batalkan pesanan: ${id}`);
 const confirmReceived = (id: string) => alert(`Konfirmasi terima: ${id}`);
 
 
@@ -224,7 +223,6 @@ export default function OrderList() {
                         viewOrderDetail={() => setSelectedOrder(order)}
                         trackOrder={trackOrder}
                         openReviewModal={() => setShowReviewModal(true)}
-                        cancelOrder={cancelOrder}
                         confirmReceived={confirmReceived}
                     />
                 ))}
