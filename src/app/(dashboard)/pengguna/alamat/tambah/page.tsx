@@ -82,6 +82,7 @@ export default function FormAddressPage({ }: FormAddressPageProps) {
     function onSubmit(values: z.infer<typeof addressSchema>) {
         handleAddAddress({
             ...values,
+            note: values.note || '',
             district_id: Number(values.district_id),
             province_id: Number(values.province_id),
             regency_id: Number(values.regency_id),
