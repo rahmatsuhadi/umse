@@ -14,7 +14,7 @@ export interface Order {
   status: string;
   statusText: string;
   statusClass: string;
-  items: OrderItem[]; 
+  items: OrderItem[];
   shipping: {
     address: string;
     cost: number;
@@ -31,7 +31,6 @@ interface OrderCardProps {
   viewOrderDetail: (id: string) => void;
   trackOrder: (id: string) => void;
   openReviewModal: (id: string) => void;
-  cancelOrder: (id: string) => void;
   confirmReceived: (id: string) => void;
 }
 
@@ -42,7 +41,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
   viewOrderDetail,
   trackOrder,
   openReviewModal,
-  cancelOrder,
   confirmReceived,
 }) => {
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
@@ -65,7 +63,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <div key={idx} className="flex items-center space-x-3">
               <div className="bg-gray-300 w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex relative items-center justify-center flex-shrink-0">
                 {/* <i className="fas fa-image text-gray-500 text-xs sm:text-sm"></i> */}
-                <Image src={"/hero.png"} layout='fill'  alt='gambar' objectFit='cover'/>
+                <Image src={"/hero.png"} layout='fill' alt='gambar' objectFit='cover' />
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.name}</h4>
@@ -114,14 +112,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </button>
             )}
 
-            {order.status === 'pending' && (
-              <button
-                onClick={() => cancelOrder(order.id)}
-                className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-red-600 text-xs sm:text-sm flex items-center"
-              >
-                <i className="fas fa-times mr-1 text-xs"></i>Batal
-              </button>
-            )}
+
           </div>
 
           <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
@@ -142,7 +133,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </div>
         </div>
       </div>
-      
+
     </div>
   );
 };
