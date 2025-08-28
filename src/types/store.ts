@@ -14,8 +14,12 @@ export interface Store {
   address: string;
   // Anda bisa menambahkan tipe lebih detail untuk regency, district, village jika perlu
   regency: { id: number; name: string };
+  regency_id:string,
   district: { id: number; name: string };
+  distric_id:string,
   village: { id: number; name: string };
+  village_id:number
+
   products_count: number;
   created_at: string;
   updated_at: string;
