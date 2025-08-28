@@ -70,12 +70,12 @@ export default function DaftarPage() {
   }
 
   return (
-    <div className="flex items-center relative justify-center min-h-[80vh] px-4   font-jakarta">
+    <div className="flex relative items-center  justify-center min-h-[80vh] px-4 ">
 
-      <div className="hidden lg:block absolute left-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
+      {/* <div className="hidden lg:block absolute left-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
         <Illustration1 className="w-full h-auto" />
-      </div>
-      <Card className="w-full max-w-md">
+      </div> */}
+      <Card className="w-full max-w-md  z-20 mt-5">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-[#36454F]">Daftar</CardTitle>
           <CardDescription className='text-[#36454F]'>Daftar Untuk Melajutkan</CardDescription>
@@ -84,6 +84,7 @@ export default function DaftarPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="name"
                 render={({ field }) => (
@@ -102,6 +103,7 @@ export default function DaftarPage() {
               <FormField
                 control={form.control}
                 name="email"
+                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
@@ -117,6 +119,7 @@ export default function DaftarPage() {
               />
               <FormField
                 control={form.control}
+                disabled={isPending}
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
@@ -142,6 +145,7 @@ export default function DaftarPage() {
               <FormField
                 control={form.control}
                 name="password"
+                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
@@ -170,6 +174,7 @@ export default function DaftarPage() {
               <FormField
                 control={form.control}
                 name="password_confirmation"
+                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Konfirmasi Password</FormLabel>
@@ -209,8 +214,11 @@ export default function DaftarPage() {
         </CardFooter>
       </Card>
 
-      <div className="hidden lg:block absolute right-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
+      {/* <div className="hidden lg:block absolute right-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
         <Illustration2 className="w-full h-auto" />
+      </div> */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-7xl bg-cover opacity-40 bg-center">
+        <Illustration2 className="w-full h-[80vh] object-cover" />
       </div>
     </div>
   );
