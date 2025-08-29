@@ -148,3 +148,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Tambahkan di styles/globals.css atau file CSS yang relevan */
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.embla__container {
+  display: flex;
+}
+
+.embla__slide {
+  position: relative;
+  flex: 0 0 100%;
+}
+
+/* app/globals.css */
+
+.embla-fade .embla__slide {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.embla-fade .embla__slide.is-selected {
+  opacity: 1;
+}
