@@ -39,7 +39,7 @@ export function ProductShareModal({ productUrl, productName }: ProductShareModal
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`,
     whatsapp: `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`,
-    instagram: `https://www.instagram.com/sharer/sharer.php?u=${encodedUrl}`
+    // instagram: `https://www.instagram.com/sharer/sharer.php?u=${encodedUrl}`
   };
 
   return (
@@ -76,11 +76,11 @@ export function ProductShareModal({ productUrl, productName }: ProductShareModal
             </Button>
           </Link>
           
-          <Link href={shareLinks.instagram} target="_blank" rel="noopener noreferrer">
+          {/* <Link href={shareLinks.instagram} target="_blank" rel="noopener noreferrer">
             <Button variant="outline" size="icon" className="h-12 w-12 rounded-full">
               <FaInstagram className="h-6 w-6 text-red-500" />
             </Button>
-          </Link>
+          </Link> */}
         </div>
         
         <div className="flex items-center space-x-2">
