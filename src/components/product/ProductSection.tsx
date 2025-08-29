@@ -45,12 +45,12 @@ const ProductSection = () => {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteProducts({
-        per_page:12,
+        per_page: 12,
         sort: sortParams,
-        
+
         filter: {
             category__slug: categoriesParams,
-            
+
         },
         // sort: sortParams
     }); // Anda bisa menambahkan filter di sini, misal: { filter: { category_slug: 'makanan' }}
@@ -62,7 +62,7 @@ const ProductSection = () => {
     return (
         <section className="py-12 ">
             <div className="container mx-auto px-4">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Produk</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">Produk</h2>
                 {!isLoading && products.length === 0 && (
                     <div className="text-center text-gray-500 py-12">
                         <i className="fas fa-box-open text-4xl mb-4 text-gray-400"></i>
@@ -170,7 +170,7 @@ export const CardProduct = ({ product }: CardProductProps) => {
                 {/* <i className="fas fa-image text-gray-500 text-2xl md:text-3xl"></i> */}
                 {isInView && (
                     <Image
-                        src={product.thumbnail?.media_url || '/hero.png'}
+                        src={product.thumbnail?.media_url || '//hero/hero.png'}
                         alt={product.name}
                         fill
                         className="absolute inset-0 object-cover"
@@ -180,7 +180,10 @@ export const CardProduct = ({ product }: CardProductProps) => {
             </div>
             <div className="p-4 flex flex-col flex-1">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">{product.category.name}</span>
+                    <span className="bg-orange-100 text-orange-800 text-xs sm:text-xs md:text-base px-2 py-1 rounded-full flex-shrink-0 max-w-[60%] truncate">
+                        {product.category.name}
+                    </span>
+
                     <div className="flex items-center text-yellow-400"><i className="fas fa-star text-xs"></i><span className="text-gray-600 text-xs ml-1">{product.average_rating}</span></div>
                 </div>
                 <h3 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-primary">{product.name}</h3>
