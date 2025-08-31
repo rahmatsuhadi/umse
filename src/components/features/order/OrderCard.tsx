@@ -63,7 +63,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <div key={idx} className="flex items-center space-x-3">
               <div className="bg-gray-300 w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex relative items-center justify-center flex-shrink-0">
                 {/* <i className="fas fa-image text-gray-500 text-xs sm:text-sm"></i> */}
-                <Image src={"/hero.png"} layout='fill' alt='gambar' objectFit='cover' />
+                <Image src={"/hero/hero.png"} layout='fill' alt='gambar' objectFit='cover' />
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.name}</h4>

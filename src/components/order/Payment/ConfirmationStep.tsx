@@ -18,11 +18,11 @@ import { useState } from "react"
 const paymentConfirmationSchema = z.object({
     paymentProof: z
         .any()
-        .refine((files) => files?.[0], { message: "Bukti pembayaran harus diunggah" }),
+        .refine((files) => files, { message: "Bukti pembayaran harus diunggah" }),
     senderName: z.string({ error: "Nama pengirim harus diisi" }).min(3, { message: "minimal Nama 3 karakter" }),
     note: z.string().optional(),
     paidAmount: z
-        .number()
+        .number({ error: "Nominal harus berupa angka" })
         .min(1, { message: "Nominal yang dibayar harus lebih besar dari 0" }),
     paymentMethod: z.string({ error: "Metode pembayaran harus dipilih" }).nonempty({ message: "Metode pembayaran harus dipilih" }),
     paymentDateTime: z.string({ error: "Tanggal & waktu pembayaran harus diisi" }).nonempty({ message: "Tanggal & waktu pembayaran harus diisi" }),
@@ -35,7 +35,7 @@ const paymentConfirmationSchema = z.object({
 type PaymentConfirmationForm = z.infer<typeof paymentConfirmationSchema>;
 
 export default function ConfirmationPage({ currentStep: step }: { currentStep: CheckoutStep }) {
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
     const form = useForm<PaymentConfirmationForm>({
@@ -53,32 +53,20 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
         }
     };
 
-    // React Query mutation to send the payment confirmation to the server
-    // const paymentConfirmationMutation = useMutation(
-    //     async (data: PaymentConfirmationForm) => {
-    //         // Replace this with your API call
-    //         // Example: await api.post('/confirmation', data);
-    //         return new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
-    //     }
-    // );
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
             form.setValue("paymentProof", e.target.files[0]);
-            setUploadedFileName(e.target.files[0].name);
 
             const file = e.target.files[0];
 
             if (file.type.startsWith("image/")) {
                 const url = URL.createObjectURL(file);
-                setPreviewUrl(url);
             } else if (file.type === "application/pdf") {
-                setPreviewUrl(null); // No preview for PDF, just show filename
             } else {
-                setPreviewUrl(null);
             }
         }
     };
+
 
     return (
         <AnimatePresence mode="wait">
@@ -125,18 +113,9 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                             <p className="text-gray-600 mb-2">Klik untuk upload bukti pembayaran</p>
                                             <p className="text-sm text-gray-500">Format: JPG, PNG, PDF (Max 5MB)</p>
                                         </div>
-                                        {previewUrl ? (
-                                            <div className="mt-4">
-                                                <p className="text-sm text-gray-700 mb-2">Preview:</p>
-                                                <img
-                                                    src={previewUrl}
-                                                    alt="Preview Bukti Pembayaran"
-                                                    className="max-h-64 mx-auto rounded-md border"
-                                                />
-                                            </div>
-                                        ) : form.watch("paymentProof")?.[0] && (
+                                        {form.watch("paymentProof") && (
                                             <p className="text-sm text-green-600 mt-2">
-                                                File diunggah: {form.watch("paymentProof")[0].name}
+                                                File diunggah: {form.watch("paymentProof").name}
                                             </p>
                                         )}
                                         {form.formState.errors.paymentProof && (
@@ -172,7 +151,7 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                                 <FormLabel className="block text-sm font-medium text-gray-700 mb-2">Nominal yang Dibayar *</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        {...field} type="number" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                                                        {...field} onChange={(e) => field.onChange(Number(e.target.value))} type="number" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                                                         placeholder="62000" />
                                                 </FormControl>
                                                 <FormMessage />
@@ -182,8 +161,8 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
 
                                     <FormField control={form.control} name="paymentMethod" render={({ field }) => (
                                         <FormItem><FormLabel>Metode Pembayaran *</FormLabel>
-                                            <Select>
-                                                <FormControl className="  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
+                                            <Select onValueChange={field.onChange}>
+                                                <FormControl className="  border w-full border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Pilih metode pembayaran" />
                                                     </SelectTrigger>
