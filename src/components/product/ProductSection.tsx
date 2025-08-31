@@ -170,7 +170,7 @@ export const CardProduct = ({ product }: CardProductProps) => {
                 {/* <i className="fas fa-image text-gray-500 text-2xl md:text-3xl"></i> */}
                 {isInView && (
                     <Image
-                        src={product.thumbnail?.media_url || '//hero/hero.png'}
+                        src={product.thumbnail?.media_url || '/hero/hero.png'}
                         alt={product.name}
                         fill
                         className="absolute inset-0 object-cover"
