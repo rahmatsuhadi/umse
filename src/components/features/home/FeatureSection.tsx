@@ -1,13 +1,14 @@
 'use client'; // Pastikan ada 'use client'
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const features = [
-    { link: "/icon/cart-user.svg", icon: "fas fa-shopping-basket", text: "Pasar Sleman" },
-    { link: "/icon/store.svg", icon: "fas fa-store ", text: "Direktori UMKM" },
-    { link: "/icon/announce.svg", icon: "fas fa-bullhorn", text: "Info Pameran" },
-    { link: "/icon/video-present.svg", icon: "fas fa-graduation-cap ", text: "Info Pelatihan" },
-    { link: "/icon/book-search.svg", icon: "fas fa-book-open ", text: "Literasi UMKM" },
+    { link: "/", icon: "fas fa-shopping-basket", text: "Pasar Sleman" },
+    { link: "?#store", icon: "fas fa-store", text: "Direktori UMKM" },
+    { link: "/pameran", icon: "fas fa-bullhorn", text: "Info Pameran" },
+    { link: "/pelatihan", icon: "fas fa-graduation-cap ", text: "Info Pelatihan" },
+    { link: "/literasi", icon: "fas fa-book-open ", text: "Literasi UMKM" },
 ];
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -28,6 +29,8 @@ const itemVariants = {
 };
 
 export default function FeaturesSection() {
+
+
     return (
         <section className="pb-12 md:pb-20 ">
             <div className="container mx-auto px-4">
@@ -39,20 +42,20 @@ export default function FeaturesSection() {
                     viewport={{ once: true }}
                 >
                     {features.map((feature, index) => (
-                        <motion.div key={index} className="flex flex-col items-center p-2 sm:p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-300 group" variants={itemVariants}>
-                            {/* <div className="flex items-center justify-centermb-4 h-20">
-                                <Image src={feature.link} alt={feature.text} width={100} height={100} />
-                            </div> */}
-                            <div
-                                className="bg-orange-100 rounded-full w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center mb-1 sm:mb-3 group-hover:bg-primary-light transition duration-300"
-                            >
-                                <i
-                                    className={`text-primary text-sm sm:text-lg lg:text-2xl ${feature.icon}`}
-                                ></i>
-                            </div>
+                        <Link href={feature.link} key={index}
+                        >
+                            <motion.div key={index} className="flex flex-col items-center p-2 sm:p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-300 group" variants={itemVariants}>
+                                <div
+                                    className="bg-orange-100 rounded-full w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center mb-1 sm:mb-3 group-hover:bg-primary-light transition duration-300"
+                                >
+                                    <i
+                                        className={`text-primary text-sm sm:text-lg lg:text-2xl ${feature.icon}`}
+                                    ></i>
+                                </div>
 
-                            <h3 className="font-semibold text-slate-700">{feature.text}</h3>
-                        </motion.div>
+                                <h3 className="font-semibold text-slate-700">{feature.text}</h3>
+                            </motion.div>
+                        </Link>
                     ))}
                 </motion.div>
             </div>
