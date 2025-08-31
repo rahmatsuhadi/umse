@@ -15,8 +15,8 @@ import { useCart } from '@/features/cart/hooks';
 const navLinks = [
   { name: 'Beranda', href: '/' },
   { name: 'Profile', href: '/profile' },
-  { name: 'Kontak', href: '#' },
-  { name: 'Blog', href: '#' },
+  { name: 'Pameran', href: '/pameran' },
+  { name: 'Blog', href: '/literasi' },
 ];
 
 export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
@@ -70,7 +70,7 @@ function ProfileDropDown({ user }: { user?: User, isLoading?: boolean }) {
     };
   }, []);
 
-  const {mutate: logout} = useLogout()
+  const { mutate: logout } = useLogout()
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -80,7 +80,7 @@ function ProfileDropDown({ user }: { user?: User, isLoading?: boolean }) {
       >
         <User2 className="w-5 h-5 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
         {user ? (
-          <span className="hidden sm:inline text-sm sm:text-base">{user.name || 'Profile'}</span>
+          <span  className="hidden sm:inline text-sm sm:text-base max-w-[120px] truncate" title={user.name || 'Profile'}>{user.name || 'Profile'}</span>
         ) : (
           <Skeleton className="h-5 w-20" />
         )}
@@ -109,7 +109,7 @@ function ProfileDropDown({ user }: { user?: User, isLoading?: boolean }) {
             </Link>
 
             <hr className="my-2" />
-            <button type='button' onClick={() =>logout()} className="flex items-center h-full hover:cursor-pointer w-full px-4 py-2 text-red-600 hover:bg-red-50">
+            <button type='button' onClick={() => logout()} className="flex items-center h-full hover:cursor-pointer w-full px-4 py-2 text-red-600 hover:bg-red-50">
               <i className="fas fa-sign-out-alt mr-3"></i>
               <span>Keluar</span>
             </button>
@@ -127,7 +127,7 @@ function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const {data} = useCart();
+  const { data } = useCart();
 
   const cartCount = data?.data.items_count || 0
 
@@ -174,9 +174,9 @@ function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cartCount}</span>
             </Link>
 
-            
-              <ProfileDropDown user={user?.data} isLoading={isLoading} />
-        
+
+            <ProfileDropDown user={user?.data} isLoading={isLoading} />
+
           </div>
 
         </div>
@@ -199,8 +199,8 @@ function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cartCount}</span>
               </Link>
 
-                <ProfileDropDown user={user?.data} isLoading={isLoading} />
- 
+              <ProfileDropDown user={user?.data} isLoading={isLoading} />
+
             </div>
           </div>
         )}
@@ -249,7 +249,7 @@ function NavbarNotAuth({ withMenu = true }: { withMenu?: boolean }) {
               </div>
             )}
 
-            
+
 
             {/* Auth Desktop - Show only after loading */}
 
@@ -265,10 +265,10 @@ function NavbarNotAuth({ withMenu = true }: { withMenu?: boolean }) {
           </div>
 
           <div className="md:hidden">
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2">
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2">
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
 
 
 
