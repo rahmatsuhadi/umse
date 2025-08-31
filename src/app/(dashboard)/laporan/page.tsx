@@ -33,8 +33,11 @@ const ReportPage = () => {
 
                 <div className="container mx-auto px-4 py-4 sm:py-8 md:px-10">
                     {/* <!-- Breadcrumb --> */}
-                    <Breadcrumb currentPage='Status Laporan' active/>
-                    
+                    <Breadcrumb breadcrumbs={[
+                        { name: "Beranda", link: "/" },
+                        { name: "Laporan", active: true }
+                    ]} />
+
 
 
                     {/* <!-- Page Header --> */}
@@ -225,7 +228,7 @@ const ReportPage = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3">
-                                     <Link
+                                    <Link
                                         href="/laporan/21sadsadsa21?ticket=RPT-2024-001234"
                                         className="px-4 py-2 text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition duration-300"
                                     >
@@ -285,7 +288,7 @@ const ReportPage = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3">
-                                     <Link
+                                    <Link
                                         href="/laporan/21sadsadsa21?ticket=RPT-2024-001234"
                                         className="px-4 py-2 text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition duration-300"
                                     >
