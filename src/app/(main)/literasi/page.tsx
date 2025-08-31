@@ -1,11 +1,9 @@
 import ContactSection from "@/components/landing/Contact";
-import ArticleCard from "@/components/literasi/ArticleCard";
 import LiteracyFilter from "@/components/literasi/Filter";
 import LiteracySection from "@/components/literasi/LiteracySection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
-import Pagination from "@/components/shared/Pagination";
 
 export default function LiterasiPage() {
     return (

@@ -7,7 +7,6 @@ import React, { useState } from "react";
 import { CheckoutStep, steps } from "@/components/order/step/steps";
 import { StepIndicator } from "@/components/order/step/StepIndicator";
 import PaymentStep from "@/components/order/Payment/PaymentStep";
-import { useParams } from "next/navigation";
 import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
 
 export default function PaymentPage() {

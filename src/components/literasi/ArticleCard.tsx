@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 
-interface ArticleCardProps {
+// interface ArticleCardProps {
 
-}
+// }
 
-export default function ArticleCard(props: ArticleCardProps) {
+export default function ArticleCard() {
     return (
         <article
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300"
