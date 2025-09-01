@@ -83,7 +83,7 @@ export default function PaymentStep({
                     </h5>
                     <ol className="text-sm text-blue-700 space-y-1">
                       <li>1. Buka aplikasi mobile banking atau e-wallet Anda</li>
-                      <li>2. Pilih menu "Scan QR" atau "QRIS"</li>
+                      <li>{`2. Pilih menu "Scan QR" atau "QRIS"`}</li>
                       <li>3. Arahkan kamera ke QR code di atas</li>
                       <li>4. Masukkan nominal sesuai total pembayaran</li>
                       <li>5. Konfirmasi dan selesaikan pembayaran</li>
