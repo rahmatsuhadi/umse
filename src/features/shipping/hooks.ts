@@ -8,7 +8,7 @@ export const useShippingRates = ({
     items, 
     origin_village_id 
 }: { destination_village_id?: number, items: ItemShipping[], origin_village_id?: number }) => {
-    return useQuery<{ data: ResponseShippingRates }, Error>({
+    return useQuery<{ data: ResponseShippingRates[] }, Error>({
         queryKey: ["shippingRates", destination_village_id,origin_village_id ], // Kunci query unik untuk produk ini
         refetchOnReconnect:false,
         refetchOnWindowFocus: false,

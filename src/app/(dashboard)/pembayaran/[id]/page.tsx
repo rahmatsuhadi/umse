@@ -8,14 +8,22 @@ import { CheckoutStep, steps } from "@/components/order/step/steps";
 import { StepIndicator } from "@/components/order/step/StepIndicator";
 import PaymentStep from "@/components/order/Payment/PaymentStep";
 import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
+import { useParams, useRouter } from "next/navigation";
+import { useGetOrderPayments } from "@/features/order/hooks";
 
 export default function PaymentPage() {
-    // const { id } = useParams<{ id: string }>()
+    const { id } = useParams<{ id: string }>()
 
     const [step, setStep] = useState<CheckoutStep>("payment")
 
 
+    const { data, isLoading } = useGetOrderPayments(id)
+
+    const order = data?.data
+
+
     const currentStepIndex = steps.findIndex(s => s.key === step);
+    const router = useRouter()
 
     return (
         <div className="bg-gray-50 min-h-[100vh] font-jakarta">
@@ -51,9 +59,10 @@ export default function PaymentPage() {
                             ))}
                         </nav>
 
-                        <Link href="/keranjang" className="text-gray-600 hover:text-primary">
+                        <button onClick={() => router.back()} className="text-gray-600 hover:cursor-pointer hover:text-primary">
                             <i className="fas fa-arrow-left mr-2"></i>Kembali
-                        </Link>
+
+                        </button>
                     </div>
                 </div>
             </header>
@@ -66,11 +75,13 @@ export default function PaymentPage() {
 
                     <StepIndicator currentStep={step} />
 
-                    {step == "payment" ?
-                        <PaymentStep currentStep={step} onConfirmation={() => setStep("confirmation")} />
+                    {isLoading || !order ? (
+                        <p>Loading</p>
+                    ) : step == "payment" ?
+                        <PaymentStep order={order} currentStep={step} onConfirmation={() => setStep("confirmation")} />
 
                         :
-                        <ConfirmationPage currentStep={step} />
+                        <ConfirmationPage id={id} currentStep={step} />
                     }
 
                 </div>

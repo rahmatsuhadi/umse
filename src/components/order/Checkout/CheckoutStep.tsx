@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import {useAddresses } from "@/features/address/hooks";
+import { useAddresses, useAddressPrimary } from "@/features/address/hooks";
 import { useDistricts, useRegencies, useVillages } from "@/features/locations/hooks";
 import { useShippingRates } from "@/features/shipping/hooks";
 import { CartItem } from "@/types"
@@ -21,8 +21,10 @@ import z from "zod";
 import { animationVariants } from "../step/animate";
 import { CheckoutStep } from "../step/steps";
 import { useRouter } from "next/navigation";
+import { useCreateOrder } from "@/features/order/hooks";
 
 const province_id = 34
+const service_name = "jne"
 // Skema validasi dengan Zod
 const addressSchema = z.object({
     recipientName: z.string().min(1, "Nama penerima wajib diisi."),
@@ -32,7 +34,7 @@ const addressSchema = z.object({
     district_id: z.string().min(1, "Kecamatan wajib dipilih."),
     village_id: z.string().min(1, "Kelurahan wajib dipilih."),
     postalCode: z.string().min(5, "Kode pos tidak valid.").max(5, "Kode pos tidak valid."),
-    note: z.string(),
+    note: z.string().optional(),
 });
 
 export default function CheckoutItem({ currentStep: step }: { currentStep: CheckoutStep }) {
@@ -44,26 +46,27 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
     const [loading, setLoading] = useState<boolean>(true)
 
 
-    const { data: addressData, isLoading: loadingAddress } = useAddresses()
-    const address = addressData?.data || []
+    const { data: addressData, isLoading: loadingAddress } = useAddressPrimary()
+    const address = addressData?.data
 
-    const addres = address.length ? address[0] : null
+    const addres = address
 
     const store = cartItems.length > 0 ? cartItems[0].store : null
 
+    const form = useForm<z.infer<typeof addressSchema>>({
+        resolver: zodResolver(addressSchema),
+        defaultValues: {
+            recipientName: "",
+            recipientPhone: "",
+            fullAddress: "",
+            regency_id: "",
+            district_id: "",
+            village_id: "",
+            postalCode: "",
+        }
+    });
 
-    const { data, isLoading: isLoadingShippingRates } = useShippingRates({
-        origin_village_id: store?.village_id,
-        items: cartItems.map((item => {
-            return {
-                cart_item_id: item.id,
-                product_id: item.product.id,
-                quantity: item.quantity,
-                variant_id: item.variant?.id || '',
-            }
-        })),
-        destination_village_id: addres?.village_id,
-    })
+
 
 
     useEffect(() => {
@@ -87,23 +90,32 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
         (acc, item) => acc + item.quantity * (item.variant ? item.variant.price.value : item.product.price.value),
         0
     );
-    const shipping = 2000;
-    const total = subtotal + shipping;
 
 
-    const form = useForm<z.infer<typeof addressSchema>>({
-        resolver: zodResolver(addressSchema),
-        defaultValues: {
-            recipientName: "",
-            recipientPhone: "",
-            fullAddress: "",
-            regency_id: "",
-            district_id: "",
-            village_id: "",
-            postalCode: "",
-            note: ""
-        }
-    });
+
+
+    const watchedVillage = form.watch('village_id');
+
+
+
+    const { data: shippingRate, isLoading: isLoadingShippingRates } = useShippingRates({
+        origin_village_id: store?.village_id,
+        items: cartItems.map((item => {
+            return {
+                cart_item_id: item.id,
+                // product_id: item.product.id,
+                quantity: item.quantity,
+                // variant_id: item.variant?.id || '',
+            }
+        })),
+        destination_village_id: watchedVillage ? Number(watchedVillage) : undefined,
+    })
+
+
+    const shipping = shippingRate?.data ? shippingRate.data.find(item => item.service === service_name) : null
+
+
+    const total = subtotal + (Number(shipping?.cost.value ?? 0));
 
     useEffect(() => {
         if (addres) {
@@ -114,7 +126,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
             form.setValue("district_id", String(addres.district_id))
             form.setValue("village_id", String(addres.village_id))
             form.setValue("postalCode", String(addres.postal_code))
-            form.setValue("note", addres.note)
+            if(addres.note) form.setValue("note", addres.note)
         }
 
     }, [addres])
@@ -134,23 +146,39 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
     const router = useRouter()
 
+    const { mutate } = useCreateOrder()
+
     const handleOrderSubmit = (data: z.infer<typeof addressSchema>) => {
         const orderData = {
             ...data,
             items: cartItems.map((item) => ({
                 cart_item_id: item.id,
-                cart_product_id: item.product.id,
+                // product_id: item.product.id,
                 quantity: item.quantity,
-                variant_id: item.variant?.id || '',
+                // variant_id: item.variant?.id || '',
             })),
-            shipping: shipping,
+            shipping_service: service_name,
+            shipping_service_type: "REG23",
+            store_id: store?.id || '',
             total: total,
+            address: {
+                address_line: data.fullAddress,
+                district_id: Number(data.district_id),
+                province_id: province_id,
+                regency_id: Number(data.regency_id),
+                village_id: Number(data.village_id),
+                recipient_name: data.recipientName,
+                recipient_phone_number: data.recipientPhone,
+                postal_code: Number(data.postalCode),
+                note: data.note
+            },
         };
-        router.replace("/pembayaran/" + 12345667889 )
+        mutate(orderData)
+        // router.replace("/pembayaran/" + 12345667889 )
     }
 
 
-    const isLoading = loading || loadingAddress || isLoadingRegencies || isLoadingDistricts || isLoadingVillages;
+    const isLoading = loading || loadingAddress
 
 
 
@@ -328,7 +356,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="font-bold text-gray-800">
-                                                            Rp {(item.variant ? item.variant.price.value : item.product.price.value * item.quantity).toLocaleString()}
+                                                            Rp {((item.variant ? item.variant.price.value : item.product.price.value) * item.quantity).toLocaleString()}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -337,15 +365,10 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
                                         {/* Summary */}
                                         <div className="border-t border-gray-200 pt-4 mt-4">
-                                            {/* <div className="flex justify-between items-center mb-2">
-                            <span className="text-gray-600">Subtotal</span>
-                            <span className="font-medium">
-                                Rp {subtotal.toLocaleString()}
-                            </span>
-                        </div> */}
+
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-gray-600">Ongkos Kirim</span>
-                                                <span className="font-medium">Rp {shipping.toLocaleString()}</span>
+                                                <span className="font-medium">{shipping ? shipping.cost.formatted : "Rp.0 "} {shippingRate?.data ? `( ${shipping?.service_name})` : ''}</span>
                                             </div>
                                             <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2">
                                                 <span>Total</span>

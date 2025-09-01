@@ -1,112 +1,22 @@
 "use client"
 
 import React, { useEffect, useState } from "react";
-import OrderCard, { Order } from "./OrderCard";
+import OrderCard from "./OrderCard";
 import { useRouter, useSearchParams } from "next/navigation";
 import OrderDetailModal from "./OrderDetailModal";
 import ReviewModal from "./ReviewModal";
+import { useInfiniteOrders } from "@/features/order/hooks";
+import { Order } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const orders = [
-    {
-        id: "SLM240001",
-        date: "2025-01-15",
-        status: "shipped",
-        statusText: "Dikirim",
-        statusClass: "bg-blue-100 text-blue-800",
-        items: [
-            {
-                name: "Keripik Tempe Original",
-                seller: "Toko Cemilan Sleman",
-                price: 15000,
-                quantity: 2,
-                image: "placeholder",
-            },
-        ],
-        shipping: {
-            address: "Jl. Kaliurang KM 5, Sleman",
-            cost: 10000,
-        },
-        total: 40000,
-        trackingNumber: "JNE123456789",
-    },
-    {
-        id: "SLM239998",
-        date: "2025-01-10",
-        status: "completed",
-        statusText: "Selesai",
-        statusClass: "bg-green-100 text-green-800",
-        items: [
-            {
-                name: "Batik Jumputan",
-                seller: "Batik Sleman Asri",
-                price: 125000,
-                quantity: 1,
-                image: "placeholder",
-            },
-        ],
-        shipping: {
-            address: "Jl. Magelang KM 3, Sleman",
-            cost: 15000,
-        },
-        total: 140000,
-        canReview: true,
-    },
-    {
-        id: "SLM239995",
-        date: "2025-01-08",
-        status: "processing",
-        statusText: "Diproses",
-        statusClass: "bg-yellow-100 text-yellow-800",
-        items: [
-            {
-                name: "Gula Aren Organik",
-                seller: "Aren Murni Sleman",
-                price: 25000,
-                quantity: 3,
-                image: "placeholder",
-            },
-        ],
-        shipping: {
-            address: "Jl. Solo KM 10, Sleman",
-            cost: 10000,
-        },
-        total: 85000,
-    },
-    {
-        id: "SLM239990",
-        date: "2025-01-05",
-        status: "pending",
-        statusText: "Menunggu Konfirmasi",
-        statusClass: "bg-gray-100 text-gray-800",
-        items: [
-            {
-                name: "Madu Hutan Murni",
-                seller: "Madu Asli Sleman",
-                price: 85000,
-                quantity: 1,
-                image: "placeholder",
-            },
-            {
-                name: "Dodol Nangka",
-                seller: "Dodol Tradisional",
-                price: 18000,
-                quantity: 2,
-                image: "placeholder",
-            },
-        ],
-        shipping: {
-            address: "Jl. Godean KM 7, Sleman",
-            cost: 12000,
-        },
-        total: 133000,
-    },
-];
 
 const formatDate = (dateStr: string) => {
     const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "long",
         day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
     };
     return new Date(dateStr).toLocaleDateString("id-ID", options);
 };
@@ -135,12 +45,31 @@ const TABS = [
 
 
 export default function OrderList() {
-    const [ordersData] = useState(orders);
+    // const [ordersData] = useState(orders);
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const statusFromParams = searchParams.get("status") || "";
+    const startDate = searchParams.get("startDate") || "";
+    const endDate = searchParams.get("endDate") || "";
     const [activeStatus, setActiveStatus] = useState<string>(statusFromParams);
+
+    // Bangun filter secara dinamis
+    const filter: Record<string, string> = {};
+
+    if (statusFromParams) {
+        filter.status = statusFromParams;
+    }
+
+    if (startDate || endDate) {
+        filter.created_at = `${startDate}:${endDate}`;
+    }
+
+
+    const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteOrders({ filter: filter })
+
+
+    const ordersData = data?.pages.flatMap(page => page.data) ?? [];
 
     // Sync state to URL param on tab change
     const handleTabChange = (status: string) => {
@@ -152,7 +81,9 @@ export default function OrderList() {
         } else {
             params.delete("status");
         }
-        router.replace(`?${params.toString()}`);
+        router.replace(`?${params.toString()}`, {
+            scroll: false
+        });
     };
 
     // Keep state in sync if user uses browser back/forward
@@ -178,6 +109,7 @@ export default function OrderList() {
     }) => {
         console.log("Review submitted:", data);
     };
+
 
     return (
         <div className="lg:col-span-3">
@@ -214,22 +146,34 @@ export default function OrderList() {
 
             {/* <!-- Orders Container --> */}
             <div id="ordersContainer" className="space-y-3 sm:space-y-4">
-                {filteredOrders.map((order) => (
-                    <OrderCard
-                        key={order.id}
-                        order={order}
-                        formatDate={formatDate}
-                        formatPrice={formatPrice}
-                        viewOrderDetail={() => setSelectedOrder(order)}
-                        trackOrder={trackOrder}
-                        openReviewModal={() => setShowReviewModal(true)}
-                        confirmReceived={confirmReceived}
-                    />
-                ))}
+                {isLoading ? Array(2).fill(null).map((_, index) => (
+                    <div key={index} className="bg-white rounded-lg shadow-md mb-6 animate-pulse py-8 border px-4">
+                        <div className="flex items-center justify-between">
+                            <Skeleton className="h-10 pl-2 w-[180px] my-2" />
+                            <Skeleton className="h-10 pl-2 w-[180px] my-2" />
+                        </div>
+                        <Skeleton className="h-10 pl-2 w-[180px] my-2" />
+                        <Skeleton className="h-10 pl-2 w-full my-2" />
+                        <Skeleton className="h-10 pl-2 w-[100px] my-2" />
+                    </div>
+                )) :
+
+                    filteredOrders.map((order) => (
+                        <OrderCard
+                            key={order.id}
+                            order={order}
+                            formatDate={formatDate}
+                            formatPrice={formatPrice}
+                            viewOrderDetail={() => setSelectedOrder(order)}
+                            trackOrder={trackOrder}
+                            openReviewModal={() => setShowReviewModal(true)}
+                            confirmReceived={confirmReceived}
+                        />
+                    ))}
 
                 <OrderDetailModal
                     open={!!selectedOrder}
-                    order={selectedOrder}
+                    orderId={selectedOrder?.id || ''}
                     onClose={() => setSelectedOrder(null)}
                 />
                 <ReviewModal
@@ -238,10 +182,10 @@ export default function OrderList() {
                     onSubmit={handleSubmitReview}
                 />
                 {/* <!-- Empty State --> */}
-                {
-                    filteredOrders.length === 0 && (
+                { !isLoading &&
+                    filteredOrders.length == 0 && (
                         <div
-                            className="hidden bg-white rounded-lg shadow-md p-8 sm:p-12 text-center"
+                            className="bg-white rounded-lg shadow-md p-8 sm:p-12 text-center"
                         >
                             <i
                                 className="fas fa-shopping-bag text-4xl sm:text-6xl text-gray-300 mb-4"
@@ -263,14 +207,18 @@ export default function OrderList() {
                 }
 
                 {/* <!-- Load More --> */}
-                < div className="text-center mt-6 sm:mt-8" >
-                    <button
-                        // onclick="loadMoreOrders()"
-                        className="bg-gray-200 text-gray-700 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-300 transition duration-300 text-sm sm:text-base"
-                    >
-                        <i className="fas fa-plus mr-2"></i>Muat Lebih Banyak
-                    </button>
-                </div>
+                {hasNextPage && (
+                    <div className="text-center mt-6 sm:mt-8" >
+                        <button
+                            type="button"
+                            onClick={() => fetchNextPage()}
+                            className="bg-gray-200 text-gray-700 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-300 transition duration-300 text-sm sm:text-base"
+                        >
+                            <i className="fas fa-plus mr-2"></i>Muat Lebih Banyak
+                        </button>
+                    </div>
+                )}
+
 
 
             </div>

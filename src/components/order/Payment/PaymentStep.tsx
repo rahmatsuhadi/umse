@@ -3,9 +3,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { animationVariants } from "../step/animate";
 import { CheckoutStep } from "../step/steps";
+import { Order } from "@/types";
+import Image from "next/image";
 
 
-export default function PaymentStep({ currentStep: step, onConfirmation }: { onConfirmation: () => void, currentStep: CheckoutStep }) {
+export default function PaymentStep({ currentStep: step, order, onConfirmation }: { order:Order, onConfirmation: () => void, currentStep: CheckoutStep }) {
 
     const onPaymentSubmit = () => {
         console.log("TESTING")
@@ -43,79 +45,12 @@ export default function PaymentStep({ currentStep: step, onConfirmation }: { onC
                                     className="w-64 h-64 bg-gray-100 flex items-center justify-center rounded-lg"
                                 >
                                     {/* <!-- QR Code Pattern --> */}
-                                    <div className="grid grid-cols-8 gap-1">
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-white rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                        <div className="w-6 h-6 bg-black rounded-sm"></div>
-                                    </div>
+                                    <Image 
+                                    src={order.store.qris_url}
+                                    width={500}
+                                    height={500}
+                                    alt="Order Qris"
+                                    />
                                 </div>
                             </div>
 
@@ -125,7 +60,7 @@ export default function PaymentStep({ currentStep: step, onConfirmation }: { onC
                             <p className="text-gray-600 mb-4">
                                 Total yang harus dibayar:
                                 <span id="totalPayment" className="font-bold text-primary"
-                                >Rp 62.000</span>
+                                >{order.total.formatted}</span>
                             </p>
 
                             {/* <!-- Payment Instructions --> */}
@@ -144,7 +79,7 @@ export default function PaymentStep({ currentStep: step, onConfirmation }: { onC
                             </div>
 
                             {/* <!-- Payment Timer --> */}
-                            <div
+                            {/* <div
                                 className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6"
                             >
                                 <div className="flex items-center justify-center">
@@ -155,7 +90,7 @@ export default function PaymentStep({ currentStep: step, onConfirmation }: { onC
                                     <span id="countdown" className="font-bold text-orange-800 ml-2"
                                     >14:59</span>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <button onClick={() => onPaymentSubmit()}
                                 className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition duration-300">
