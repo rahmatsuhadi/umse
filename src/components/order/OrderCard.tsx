@@ -31,7 +31,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <p className="text-xs sm:text-sm text-gray-600">{formatDate(order?.created_at)}</p>
           </div>
           <span className={`${getStatusBadgeClass(order.status)} px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium`}>
-            {order.payment_status == "pending" ? order.payment_status_label : order.status_label}
+            {order.payment_status == "pending" && order.status=="awaiting_payment"   ? order.payment_status_label : order.status_label}
           </span>
         </div>
 

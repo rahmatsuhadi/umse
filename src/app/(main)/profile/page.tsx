@@ -1,6 +1,6 @@
-import AnnouncementsSection from "@/components/features/home/AnouncementSection";
-import FeaturesSection from "@/components/features/home/FeatureSection";
-import HeroSection from "@/components/features/home/HeroSection";
+import AnnouncementsSection from "@/components/home/AnouncementSection";
+import FeaturesSection from "@/components/home/FeatureSection";
+import HeroSection from "@/components/home/HeroSection";
 import ContactSection from "@/components/landing/Contact";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";

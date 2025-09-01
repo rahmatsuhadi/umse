@@ -36,6 +36,7 @@ export const getStatusBadgeClass = (status: string): string => {
       return "bg-green-100 text-green-800";
     case "awaiting_payment":
     case "processing":
+      return "bg-blue-100 text-yellow-800";
     case "shipped":
       return "bg-yellow-100 text-yellow-800";
     case "cancelled":
