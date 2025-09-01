@@ -1,15 +1,18 @@
-import OrderFilter from "@/components/features/order/OrderFIlter";
-import OrderList from "@/components/features/order/OrderList";
+
 import Footer from "@/components/layout/Footer";
+import OrderFilter from "@/components/order/OrderFIlter";
+import OrderList from "@/components/order/OrderList";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
 import Link from "next/link";
 
 export default function OrderPage() {
     return (
-        <div>
+        <div className="bg-gray-50 ">
             <Navbar withMenu={false} />
-            <div className="container mx-auto px-4 py-4 sm:py-8 md:px-10">
+            
+            <main className="container mx-auto px-4 py-6">
+                
                 {/* <!-- Breadcrumb --> */}
                 <nav className="mb-4 sm:mb-6">
                     <ol
@@ -49,7 +52,9 @@ export default function OrderPage() {
                     <OrderList />
 
                 </div>
-            </div>
+
+            
+            </main>
 
 
 

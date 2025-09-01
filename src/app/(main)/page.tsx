@@ -1,5 +1,5 @@
-import CategoriesSection from "@/components/features/home/CategoriesSection";
-import FeaturesSection from "@/components/features/home/FeatureSection";
+import CategoriesSection from "@/components/home/CategoriesSection";
+import FeaturesSection from "@/components/home/FeatureSection";
 import StoresSection from "@/components/landing/StoresSection";
 import { BannerCarousel } from "@/components/product/BannerCarousel";
 import FilterSortModal from "@/components/product/FilterBar";
