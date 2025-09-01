@@ -5,7 +5,7 @@ export interface User {
   email: string;
   phone_number: string;
   role: 'customer' | 'seller' | 'admin'; // Peran pengguna di sistem
-  avatarUrl?: string; // Tanda tanya (?) berarti properti ini opsional
+  profile_url?: string; // Tanda tanya (?) berarti properti ini opsional
 }
 
 // Tipe untuk data yang dikirim saat melakukan login

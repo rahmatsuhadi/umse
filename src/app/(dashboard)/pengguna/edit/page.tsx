@@ -51,7 +51,7 @@ export default function EditProfilePage() {
             form.setValue('phone_number', user.phone_number
                 ? user.phone_number : ''
             )
-            setPhotoPreview(user.avatarUrl || null);
+            setPhotoPreview(user.profile_url || null);
         }
     }, [user, form]);
 
@@ -91,9 +91,15 @@ export default function EditProfilePage() {
                                     <FormItem className="flex flex-col items-center">
                                         <FormControl>
                                             <div className="flex flex-col items-center">
-                                                <Avatar className="w-24 h-24 mb-2 border-4 border-gray-200">
-                                                    <AvatarImage src={photoPreview || user?.avatarUrl} alt="Profile" />
-                                                    <AvatarFallback><i className="fas fa-user text-2xl"></i></AvatarFallback>
+                                                <Avatar className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-2 border-4 border-gray-200">
+                                                    <AvatarImage
+                                                        src={photoPreview || user?.profile_url}
+                                                        alt="Profile"
+                                                        className="object-cover w-full h-full"
+                                                    />
+                                                    <AvatarFallback>
+                                                        <i className="fas fa-user text-3xl md:text-5xl"></i>
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <Label htmlFor="photo-upload" className="bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors -mt-8 mr-[-60px] z-10">
                                                     <i className="fas fa-camera text-sm"></i>
