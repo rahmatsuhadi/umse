@@ -24,7 +24,6 @@ const formatDate = (dateStr: string) => {
 
 // ✅ Dummy handlers (bisa ganti dengan navigasi atau modals)
 // const viewOrderDetail = (id: string) => alert(`Lihat detail pesanan: ${id}`);
-const trackOrder = (id: string) => alert(`Lacak pesanan: ${id}`);
 // const openReviewModal = (id: string) => alert(`Buka ulasan untuk: ${id}`);
 const confirmReceived = (id: string) => alert(`Konfirmasi terima: ${id}`);
 
@@ -34,6 +33,7 @@ const TABS = [
     { label: "Menunggu", value: "pending" },
     { label: "Diproses", value: "processing" },
     { label: "Dikirim", value: "shipped" },
+    { label: "Sampai", value: "delivered" },
     { label: "Selesai", value: "completed" },
 ];
 
@@ -62,8 +62,17 @@ export default function OrderList() {
 
     const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteOrders({ filter: filter })
 
-
     const ordersData = data?.pages.flatMap(page => page.data) ?? [];
+
+    const counts = data?.pages[0].meta.count || {
+        awaiting_payment: 0,
+        pending: 0,
+        processing: 0,
+        shipped: 0,
+        cancelled: 0,
+        completed: 0,
+        total: 0,
+    }
 
     // Sync state to URL param on tab change
     const handleTabChange = (status: string) => {
@@ -114,26 +123,32 @@ export default function OrderList() {
                         className="flex space-x-2 sm:space-x-8 px-4 sm:px-6 overflow-x-auto"
                         aria-label="Tabs"
                     >
-                        {TABS.map((tab) => (
-                            <button
-                                key={tab.value}
-                                onClick={() => handleTabChange(tab.value)}
-                                className={`tab-button border-b-2 ${activeStatus === tab.value
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                    } py-3 sm:py-4 px-1 text-xs sm:text-sm font-medium whitespace-nowrap`}
-                            >
-                                {tab.label}
-                                <span
-                                    className={`hidden sm:inline ${activeStatus === tab.value
-                                        ? "bg-primary text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                        } px-2 py-1 rounded-full text-xs ml-2`}
+                        {TABS.map((tab) => {
+                            const count =
+                                tab.value && counts?.[tab.value as keyof typeof counts] !== undefined
+                                    ? counts[tab.value as keyof typeof counts]
+                                    : ordersData?.length || 0;
+                            return (
+                                <button
+                                    key={tab.value}
+                                    onClick={() => handleTabChange(tab.value)}
+                                    className={`tab-button border-b-2 ${activeStatus === tab.value
+                                        ? "border-primary text-primary"
+                                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        } py-3 sm:py-4 px-1 text-xs sm:text-sm font-medium whitespace-nowrap`}
                                 >
-                                    {tab.value ? getCountByStatus(tab.value) : ordersData.length}
-                                </span>
-                            </button>
-                        ))}
+                                    {tab.label}
+                                    <span
+                                        className={`hidden sm:inline ${activeStatus === tab.value
+                                            ? "bg-primary text-white"
+                                            : "bg-gray-200 text-gray-700"
+                                            } px-2 py-1 rounded-full text-xs ml-2`}
+                                    >
+                                        {count}
+                                    </span>
+                                </button>
+                            )
+                        })}
                     </nav>
                 </div>
             </div>
@@ -150,7 +165,7 @@ export default function OrderList() {
                         <Skeleton className="h-10 pl-2 w-full my-2" />
                         <Skeleton className="h-10 pl-2 w-[14%] my-2" />
                     </div>
-                )) :
+                )) : filteredOrders.length > 0 ?
 
                     filteredOrders.map((order) => (
                         <OrderCard
@@ -158,25 +173,11 @@ export default function OrderList() {
                             order={order}
                             formatDate={formatDate}
                             viewOrderDetail={() => setSelectedOrder(order)}
-                            trackOrder={trackOrder}
+                            // trackOrder={trackOrder}
                             openReviewModal={() => setShowReviewModal(true)}
                             confirmReceived={confirmReceived}
                         />
-                    ))}
-
-                <OrderDetailModal
-                    open={!!selectedOrder}
-                    orderId={selectedOrder?.id || ''}
-                    onClose={() => setSelectedOrder(null)}
-                />
-                <ReviewModal
-                    open={showReviewModal}
-                    onClose={() => setShowReviewModal(false)}
-                    onSubmit={handleSubmitReview}
-                />
-                {/* <!-- Empty State --> */}
-                { !isLoading &&
-                    filteredOrders.length == 0 && (
+                    )) : (
                         <div
                             className="bg-white rounded-lg shadow-md p-8 sm:p-12 text-center"
                         >
@@ -196,8 +197,18 @@ export default function OrderList() {
                                 <i className="fas fa-shopping-bag mr-2"></i>Mulai Belanja
                             </a>
                         </div>
-                    )
-                }
+                    )}
+
+                <OrderDetailModal
+                    open={!!selectedOrder}
+                    orderId={selectedOrder?.id || ''}
+                    onClose={() => setSelectedOrder(null)}
+                />
+                <ReviewModal
+                    open={showReviewModal}
+                    onClose={() => setShowReviewModal(false)}
+                    onSubmit={handleSubmitReview}
+                />
 
                 {/* <!-- Load More --> */}
                 {hasNextPage && (

@@ -5,14 +5,13 @@ import { CheckoutStep } from "../step/steps"
 import { animationVariants } from "../step/animate"
 import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreatePayment } from "@/features/order/hooks"
-import { NumericFormat } from 'react-number-format';
 import { useEffect, useState } from "react"
 
 

@@ -44,21 +44,24 @@ export type UpdateProfileData = Partial<Pick<User, 'name' | 'email' | 'phone_num
 export const updateProfile = (data: UpdateProfileData): Promise<User> => {
   // Saat mengirim file, kita harus menggunakan FormData
   const formData = new FormData();
+
   formData.append('name', data.name || '');
   formData.append('email', data.email || '');
   formData.append('phone_number', data.phone_number || '');
   if (data.profilePhoto) {
     formData.append('profile', data.profilePhoto);
   }
+  
+  formData.append('_method', 'PATCH');
 
   // Kita perlu mengirim dengan header multipart/form-data
   return apiClient<User>('/user', {
-    method: 'PATCH', // atau PUT/PATCH, sesuaikan dengan backend Anda
+    method: 'POST', // atau PUT/PATCH, sesuaikan dengan backend Anda
     body: formData,
-    headers: {
+    // headers: {
       // Hapus Content-Type agar browser otomatis mengaturnya untuk FormData
-      'Content-Type': 'multipart/form-data',
-    },
+      // 'Content-Type': 'multipart/form-data',
+    // },
   });
 };
 

@@ -11,23 +11,29 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhos
  * @returns Promise yang resolve dengan data dari properti 'data' pada ApiResponse
  */
 export async function apiClient<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const defaultHeaders: HeadersInit = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+ 
+
+  const headers: HeadersInit = {
+    Accept: "application/json",
   };
 
   if (typeof window !== 'undefined') {
     // Ganti 'authToken' dengan nama cookie Anda yang sebenarnya
     const token = getToken();
     if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
+      headers['Authorization'] = `Bearer ${token}`;
     }
+  }
+
+  const isFormData = options.body instanceof FormData;
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
   }
 
   const config: RequestInit = {
     ...options,
     headers: {
-      ...defaultHeaders,
+      ...headers,
       ...options.headers,
     },
     // --- OPSI 1: HttpOnly Cookie (Direkomendasikan) ---

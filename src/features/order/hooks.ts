@@ -70,14 +70,14 @@ export const useCreateOrder = () => {
 };
 
 export const useCreatePayment = (id: string) => {
-  // const router = useRouter()
+  const router = useRouter()
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateOrderPayment) => createPayment(id, data),
     onSuccess: (data) => {
       toast.success("Pembayaran Behasil Dikirim!");
-      queryClient.invalidateQueries({ queryKey: ['payments'] });
-      // router.replace("/pembayaran/" + data.data.id)
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      router.replace("/pesanan")
     },
     onError: (error) => {
       toast.error("Gagal Mengirim Pembayaran", { description: error.message });
@@ -88,7 +88,7 @@ export const useCreatePayment = (id: string) => {
 
 export const useGetOrderPayments = (id: string) => {
   return useQuery<{ data: Order }, Error>({
-    queryKey: ['payments', id],
+    queryKey: ['orders', id],
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     enabled: !!id,

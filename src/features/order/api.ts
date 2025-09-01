@@ -96,24 +96,41 @@ export const createOrder = (data: CreateOrderData): Promise<{ data: Order }> => 
   });
 };
 
-/** Menambah alamat baru */
-export const createPayment = (id: string,data: CreateOrderPayment): Promise<{ data: Payment }> => {
+function formatDateToApi(date: string | Date) {
+  const d = new Date(date);
 
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+/** Menambah alamat baru */
+export const createPayment = (id: string, data: CreateOrderPayment): Promise<{ data: Payment }> => {
+  console.log(data)
   const formData = new FormData();
   formData.append('amount', String(data.amount));
-  formData.append('paid_at', data.paid_at);
+  formData.append('paid_at', formatDateToApi(data.paid_at));
   formData.append('sender_name', data.sender_name);
   formData.append('payment_proof', data.payment_proof);
+  if (data.payment_note) {
+    formData.append('payment_note', data.payment_note || '');
+  }
+  formData.append("_method", "POST");
+
 
 
   // Kita perlu mengirim dengan header multipart/form-data
   return apiClient<{ data: Payment }>(`/customer/orders/${id}/payments`, {
-    method: 'POST', 
+    method: 'POST',
     body: formData,
-    headers: {
-      // Hapus Content-Type agar browser otomatis mengaturnya untuk FormData
-      'Content-Type': 'multipart/form-data',
-    },
+    // headers: {
+    //   // Hapus Content-Type agar browser otomatis mengaturnya untuk FormData
+    //   // 'Content-Type': 'multipart/form-data',
+    // },
   });
 
 

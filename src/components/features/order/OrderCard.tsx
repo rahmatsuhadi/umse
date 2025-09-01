@@ -7,7 +7,7 @@ interface OrderCardProps {
   order: Order;
   formatDate: (date: string) => string;
   viewOrderDetail: (id: string) => void;
-  trackOrder: (id: string) => void;
+  // trackOrder: (id: string) => void;
   openReviewModal: (id: string) => void;
   confirmReceived: (id: string) => void;
 }
@@ -16,7 +16,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   order,
   formatDate,
   viewOrderDetail,
-  trackOrder,
+  // trackOrder,
   openReviewModal,
   confirmReceived,
 }) => {
@@ -32,6 +32,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </div>
           <span className={`${getStatusBadgeClass(order.status)} px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium`}>
             {order.status_label}
+            {/* {order.payment_status} */}
           </span>
         </div>
 
@@ -71,14 +72,14 @@ const OrderCard: React.FC<OrderCardProps> = ({
               <i className="fas fa-eye mr-1 text-xs"></i>Detail
             </button>
 
-            {order.status === 'shipped' && (
+            {/* {order.status === 'shipped' && (
               <button
                 onClick={() => trackOrder(order.id)}
                 className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-600 text-xs sm:text-sm flex items-center"
               >
                 <i className="fas fa-truck mr-1 text-xs"></i>Lacak
               </button>
-            )}
+            )} */}
 
             {order.status=="completed" && (
               <button
@@ -92,12 +93,12 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
           </div>
 
-          <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-            {/* {order.status === 'completed' && (
+          {/* <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+            {order.status === 'completed' && (
               <span className="text-green-600 text-xs sm:text-sm">
                 <i className="fas fa-check mr-1"></i>Sudah direview
               </span>
-            )} */}
+            )}
 
             {order.status === 'shipped' && (
               <button
@@ -107,7 +108,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 <i className="fas fa-check mr-1 text-xs"></i>Terima
               </button>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 

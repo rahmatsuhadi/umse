@@ -2,7 +2,7 @@
 
 import Pagination from "../shared/Pagination"
 import ArticleCard from "./ArticleCard"
-import { motion, useInView } from 'framer-motion'; // 1. Impor motion dari framer-motion
+import { motion } from 'framer-motion'; // 1. Impor motion dari framer-motion
 
 
 

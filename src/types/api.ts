@@ -23,6 +23,15 @@ export interface Meta {
   current_page: number;
   from: number;
   last_page: number;
+  count: {
+    awaiting_payment: number
+    cancelled: number
+    completed: number
+    pending: number
+    processing: number
+    total: number
+    shipped: number
+  }
   links: MetaLink[];
   path: string;
   per_page: number;
