@@ -1,9 +1,10 @@
+import { Price } from "./product";
 
 
 export interface ItemShipping {
-    quantity: number;
+    quantity?: number;
     cart_item_id: string
-    product_id: string
+    product_id?: string
     variant_id?: string
 }
 
@@ -17,6 +18,6 @@ export interface ResponseShippingRates {
     service: string,
     service_name: string,
     service_type: string,
-    cost: string,
+    cost: Price,
     etd: string
 }

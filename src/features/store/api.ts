@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { Product, PaginatedApiResponse, Store } from "@/types";
+import type {PaginatedApiResponse, Store } from "@/types";
 
 // Tipe untuk parameter query
 type StoreQueryParams = {

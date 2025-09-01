@@ -54,7 +54,7 @@ export const useLogin = () => {
       // 3. Arahkan pengguna ke halaman utama atau dashboard
       router.push(variables.redirectUrl || '/');
     },
-    onError: (error) => {
+    onError: () => {
       // Tampilkan notifikasi error
       toast.error("Login Gagal", {
         // description: "Pastikan kredensial Anda benar.",

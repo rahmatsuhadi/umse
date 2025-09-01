@@ -22,7 +22,7 @@ export default function CheckoutPage() {
                             <Link href="/" className="flex items-center gap-2">
                                 <Image
                                     src="/slemanmartlogo.png"
-                                      alt="Slemanmart Logo"
+                                    alt="Slemanmart Logo"
 
                                     width={80}
                                     height={80}
@@ -61,7 +61,7 @@ export default function CheckoutPage() {
 
                     <StepIndicator currentStep={step} />
 
-                   <CheckoutItem currentStep={step}/>
+                    <CheckoutItem currentStep={step} />
                 </div>
             </div>
         </div>

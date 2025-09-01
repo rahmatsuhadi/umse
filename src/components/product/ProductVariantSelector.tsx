@@ -9,7 +9,6 @@ import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import { FaSpinner } from "react-icons/fa";
-import { Input } from "../ui/input";
 
 export default function ProductVariantSelector({ product }: { product: Product }) {
   // State untuk menyimpan varian yang sedang dipilih

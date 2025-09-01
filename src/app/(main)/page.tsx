@@ -7,10 +7,10 @@ import ProductSection from "@/components/product/ProductSection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
 import { Separator } from "@/components/ui/separator";
-import { FilterProvider } from "../context/FilterProduct";
 import ContactSection from "@/components/landing/Contact";
 import { Metadata } from "next";
 import { APP_URL } from "@/lib/envConfig";
+import { FilterProvider } from "@/context/FilterProduct";
 
 
 interface ProductsPageProps {
@@ -60,6 +60,7 @@ export default async function ProductsPage({ }: ProductsPageProps) {
                     <div className="md:px-10">
                         <FilterSortModal />
                     </div>
+                    
 
 
                     <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
@@ -92,8 +93,8 @@ export default async function ProductsPage({ }: ProductsPageProps) {
                 </FilterProvider>
 
 
-                <AnimatedWrapper className="md:px-10">
-                    <div className="text-center mb-8">
+                <AnimatedWrapper className="md:px-10" >
+                    <div className="text-center mb-8" id="store" >
                         <h2 className="text-xl font-bold text-gray-800 mb-2">Toko UMKM Partner Kami</h2>
                         <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
                     </div>

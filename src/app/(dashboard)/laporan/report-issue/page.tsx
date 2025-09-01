@@ -35,7 +35,12 @@ const FormReportIssuePage = () => {
                 <div className="container mx-auto px-4 py-4 sm:py-8 md:px-10">
 
                     {/* <!-- Breadcrumb --> */}
-                    <Breadcrumb currentPage='Laporan Masalah' />
+
+                     <Breadcrumb breadcrumbs={[
+                            { name: "Beranda", link: "/" },
+                            { name: "Laporan Masalah", active: true }
+                          ]} />
+                    
                     
                     {/* <!-- Back Button --> */}
                     <div className="mb-6">

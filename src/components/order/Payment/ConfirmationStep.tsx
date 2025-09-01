@@ -5,80 +5,99 @@ import { CheckoutStep } from "../step/steps"
 import { animationVariants } from "../step/animate"
 import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { useState } from "react"
+import { useCreatePayment } from "@/features/order/hooks"
+import { NumericFormat } from 'react-number-format';
+import { useEffect, useState } from "react"
 
 
 const paymentConfirmationSchema = z.object({
     paymentProof: z
         .any()
-        .refine((files) => files?.[0], { message: "Bukti pembayaran harus diunggah" }),
+        .refine((files) => files, { message: "Bukti pembayaran harus diunggah" }),
     senderName: z.string({ error: "Nama pengirim harus diisi" }).min(3, { message: "minimal Nama 3 karakter" }),
     note: z.string().optional(),
     paidAmount: z
-        .number()
+        .number({ error: "Nominal harus berupa angka" })
         .min(1, { message: "Nominal yang dibayar harus lebih besar dari 0" }),
-    paymentMethod: z.string({ error: "Metode pembayaran harus dipilih" }).nonempty({ message: "Metode pembayaran harus dipilih" }),
+    // paymentMethod: z.string({ error: "Metode pembayaran harus dipilih" }).nonempty({ message: "Metode pembayaran harus dipilih" }),
     paymentDateTime: z.string({ error: "Tanggal & waktu pembayaran harus diisi" }).nonempty({ message: "Tanggal & waktu pembayaran harus diisi" }),
     termsAgreement: z.boolean().refine(val => val === true, {
         message: "Anda harus menyetujui syarat dan ketentuan",
     }),
 });
 
+const formatRupiah = (number: number) => {
+    if (number === null || isNaN(number)) return '';
+    return `Rp ${number.toLocaleString('id-ID')}`;
+};
+
 
 type PaymentConfirmationForm = z.infer<typeof paymentConfirmationSchema>;
 
-export default function ConfirmationPage({ currentStep: step }: { currentStep: CheckoutStep }) {
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+export default function ConfirmationPage({ currentStep: step, id }: { id: string, currentStep: CheckoutStep }) {
+    // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    // const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
     const form = useForm<PaymentConfirmationForm>({
         resolver: zodResolver(paymentConfirmationSchema),
+        defaultValues: {
+            paidAmount: 0,
+            paymentDateTime: Date(),
+            // paymentMethod: "",
+            senderName: '',
+            termsAgreement: false
+        }
     });
 
-    const handleUploadConfirmation = async (data: PaymentConfirmationForm) => {
-        try {
-            // Example mutation call to handle payment confirmation (you should replace it with your actual API call)
-            // Using react-query useMutation hook for submitting the form data
-            // await paymentConfirmationMutation.mutateAsync(data);
-            toast.success("Konfirmasi pembayaran berhasil dikirim!");
-        } catch (error) {
-            toast.error("Gagal mengirim konfirmasi pembayaran!");
-        }
-    };
+    const [displayValue, setDisplayValue] = useState('');
 
-    // React Query mutation to send the payment confirmation to the server
-    // const paymentConfirmationMutation = useMutation(
-    //     async (data: PaymentConfirmationForm) => {
-    //         // Replace this with your API call
-    //         // Example: await api.post('/confirmation', data);
-    //         return new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
-    //     }
-    // );
+    useEffect(() => {
+        // Sync the display value with the form's numerical value
+        const subscription = form.watch((value, { name }) => {
+            if (name === 'paidAmount' && value.paidAmount !== undefined) {
+                setDisplayValue(formatRupiah(value.paidAmount));
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [form]);
+
+    const { mutate, isPending } = useCreatePayment(id)
+
+    const handleUploadConfirmation = async (data: PaymentConfirmationForm) => {
+
+        mutate({
+            amount: data.paidAmount,
+            payment_proof: data.paymentProof,
+            paid_at: data.paymentDateTime,
+            payment_note: data.note,
+            sender_name: data.senderName
+            // method: data.paymentMethod
+        })
+
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
             form.setValue("paymentProof", e.target.files[0]);
-            setUploadedFileName(e.target.files[0].name);
 
             const file = e.target.files[0];
 
             if (file.type.startsWith("image/")) {
                 const url = URL.createObjectURL(file);
-                setPreviewUrl(url);
             } else if (file.type === "application/pdf") {
-                setPreviewUrl(null); // No preview for PDF, just show filename
             } else {
-                setPreviewUrl(null);
             }
         }
     };
+
+    const isAgreementChecked = form.watch("termsAgreement")
+
 
     return (
         <AnimatePresence mode="wait">
@@ -125,18 +144,9 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                             <p className="text-gray-600 mb-2">Klik untuk upload bukti pembayaran</p>
                                             <p className="text-sm text-gray-500">Format: JPG, PNG, PDF (Max 5MB)</p>
                                         </div>
-                                        {previewUrl ? (
-                                            <div className="mt-4">
-                                                <p className="text-sm text-gray-700 mb-2">Preview:</p>
-                                                <img
-                                                    src={previewUrl}
-                                                    alt="Preview Bukti Pembayaran"
-                                                    className="max-h-64 mx-auto rounded-md border"
-                                                />
-                                            </div>
-                                        ) : form.watch("paymentProof")?.[0] && (
+                                        {form.watch("paymentProof") && (
                                             <p className="text-sm text-green-600 mt-2">
-                                                File diunggah: {form.watch("paymentProof")[0].name}
+                                                File diunggah: {form.watch("paymentProof").name}
                                             </p>
                                         )}
                                         {form.formState.errors.paymentProof && (
@@ -150,6 +160,7 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                 {/* Form Pembayaran */}
                                 <div className="grid md:grid-cols-2 gap-4 mb-6">
                                     <FormField
+                                        disabled={isPending}
                                         control={form.control}
                                         name="senderName"
                                         render={({ field }) => (
@@ -165,6 +176,7 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                         )}
                                     />
                                     <FormField
+                                        disabled={isPending}
                                         control={form.control}
                                         name="paidAmount"
                                         render={({ field }) => (
@@ -172,18 +184,27 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                                 <FormLabel className="block text-sm font-medium text-gray-700 mb-2">Nominal yang Dibayar *</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        {...field} type="number" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                                                        placeholder="62000" />
+                                                        value={displayValue}
+                                                        disabled={field.disabled}
+                                                        onChange={(e) => {
+                                                            const cleanValue = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                                                            const numValue = Number(cleanValue);
+                                                            field.onChange(numValue); // Update the form's actual numerical value
+                                                        }}
+                                                        type="tel" // Use 'tel' to bring up a numeric keypad on mobile
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                                                        placeholder="Rp 62.000"
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
 
-                                    <FormField control={form.control} name="paymentMethod" render={({ field }) => (
+                                    {/* <FormField control={form.control} name="paymentMethod" render={({ field }) => (
                                         <FormItem><FormLabel>Metode Pembayaran *</FormLabel>
-                                            <Select>
-                                                <FormControl className="  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
+                                            <Select onValueChange={field.onChange}>
+                                                <FormControl className="  border w-full border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Pilih metode pembayaran" />
                                                     </SelectTrigger>
@@ -214,11 +235,12 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                             </Select>
                                             <FormMessage />
                                         </FormItem>
-                                    )} />
+                                    )} /> */}
 
 
 
                                     <FormField
+                                        disabled={isPending}
                                         control={form.control}
                                         name="paymentDateTime"
                                         render={({ field }) => (
@@ -226,10 +248,10 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                                 <FormLabel className="block text-sm font-medium text-gray-700 mb-2">Tanggal & Waktu Pembayaran *</FormLabel>
                                                 <FormControl className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
                                                     <Input
-                                                        {...field} type="datetime-local"
+                                                        {...field} className="w-full" type="datetime-local"
                                                         placeholder="62000" />
                                                 </FormControl>
-                                                <FormMessage />
+                                                {/* <FormMessage /> */}
                                             </FormItem>
                                         )}
                                     />
@@ -240,6 +262,7 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
                                 {/* Catatan Tambahan */}
                                 <div className="mb-6">
                                     <FormField
+                                        disabled={isPending}
                                         control={form.control}
                                         name="note"
                                         render={({ field }) => (
@@ -279,10 +302,12 @@ export default function ConfirmationPage({ currentStep: step }: { currentStep: C
 
                                 {/* Kirim Konfirmasi */}
                                 <Button
+                                    disabled={isPending || !isAgreementChecked}
                                     type="submit"
                                     className="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition duration-300"
                                 >
-                                    <i className="fas fa-paper-plane mr-2"></i>Kirim Konfirmasi Pembayaran
+                                    {isPending ? 'Menyimpan...' : (<><i className="fas fa-paper-plane mr-2"></i>Kirim Konfirmasi Pembayaran</>)}
+
                                 </Button>
                             </form>
 

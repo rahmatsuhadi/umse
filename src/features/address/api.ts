@@ -6,8 +6,8 @@ export type CreateAddressData = Omit<Address, 'id' | 'province' | 'regency' | 'd
 export type UpdateAddressData = Partial<CreateAddressData>;
 
 /** Mengambil semua alamat pengguna */
-export const getAddresses = (): Promise<{data:Address[]}> => {
-  return apiClient<{data:Address[]}>('/customer/saved-addresses');
+export const getAddresses = (): Promise<{ data: Address[] }> => {
+  return apiClient<{ data: Address[] }>('/customer/saved-addresses');
 };
 
 /** Menambah alamat baru */
@@ -19,9 +19,16 @@ export const addAddress = (data: CreateAddressData): Promise<Address> => {
 };
 
 /** Melihat Detail alamat */
-export const getAddressById = (id: string ): Promise<{data:Address}> => {
-  return apiClient<{data:Address}>(`/customer/saved-addresses/${id}`);
+export const getAddressById = (id: string): Promise<{ data: Address }> => {
+  return apiClient<{ data: Address }>(`/customer/saved-addresses/${id}`);
 };
+
+
+/** Melihat Detail alamat Primary */
+export const getPrimaryAddress = (): Promise<{ data: Address }> => {
+  return apiClient<{ data: Address }>(`/customer/saved-addresses/primary`);
+};
+
 
 /** Mengupdate alamat */
 export const updateAddress = ({ id, data }: { id: string; data: UpdateAddressData }): Promise<Address> => {
@@ -40,7 +47,7 @@ export const deleteAddress = (id: string): Promise<void> => {
 
 /** Menjadikan alamat sebagai default */
 export const setDefaultAddress = (id: string): Promise<Address> => {
-    return apiClient<Address>(`/customer/saved-addresses/${id}/make-as-primary`, {
-        method: 'POST',
-    });
+  return apiClient<Address>(`/customer/saved-addresses/${id}/make-as-primary`, {
+    method: 'POST',
+  });
 };

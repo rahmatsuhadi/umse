@@ -37,19 +37,16 @@ export function BannerCarousel() {
         >
           <CarouselContent>
             {banners.map((banner, index) => (
-              <CarouselItem key={index}>
-                <Card className="overflow-hidden">
-                  <CardContent className="relative w-full">
-                    <div className="w-full h-0 pb-[30.5%] relative"> {/* Aspect ratio container */}
-                      <Image
-                        src={banner.src} 
-                        alt={banner.alt}
-                        layout="fill"  // Mengisi seluruh kontainer
-                        objectFit="cover" // Pastikan gambar memenuhi kontainer dengan aspect ratio yang benar
-                        priority={index === 0} // Prioritaskan gambar pertama untuk LCP
-                        className="absolute inset-0 object-cover" 
-                      />
-                    </div>
+              <CarouselItem key={index} className="w-full">
+                <Card className="overflow-hidden w-full">
+                  <CardContent className="p-0 relative  h-[150px] sm:h-[200px] md:h-[300px] lg:h-[400px]">
+                    <Image
+                      src={banner.src}
+                      alt={banner.alt}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                    />
                   </CardContent>
                 </Card>
               </CarouselItem>

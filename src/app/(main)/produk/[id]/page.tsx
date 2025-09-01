@@ -78,7 +78,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="bg-gray-50">
 
-      <Breadcrumb currentPage={product.name} />
+
+      <Breadcrumb breadcrumbs={[
+        { name: "Beranda", link: "/" },
+        { name: product.name, active: true }
+      ]} />
 
 
       {/* ===== Product Detail Section ===== */}

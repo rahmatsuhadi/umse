@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAddresses, addAddress, updateAddress, deleteAddress, setDefaultAddress, getAddressById } from "./api";
+import { getAddresses, addAddress, updateAddress, deleteAddress, setDefaultAddress, getAddressById, getPrimaryAddress } from "./api";
 import type { CreateAddressData, UpdateAddressData } from "./api";
 import { toast } from "sonner";
 import { Address } from "@/types";
@@ -78,6 +78,21 @@ export const useAddress = (id: string) => {
 };
 
 
+/**
+ * BARU: Hook untuk mengambil satu data alamat detail.
+ */
+export const useAddressPrimary = () => {
+  return useQuery<{ data: Address }, Error>({
+    // Query key menyertakan ID agar setiap alamat di-cache secara individual
+    queryKey: ["address-primary"],
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    queryFn: () => getPrimaryAddress(),
+    // Query hanya akan berjalan jika `id` memiliki nilai
+  });
+};
+
+
 export const useSetDefaultAddress = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -91,3 +106,4 @@ export const useSetDefaultAddress = () => {
     }
   });
 };
+

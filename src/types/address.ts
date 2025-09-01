@@ -17,7 +17,7 @@ export interface Address {
   label: string; // Contoh: "Rumah", "Kantor"
 }
 
-interface Location{
+export interface Location{
   id:string
   name:string
 }
