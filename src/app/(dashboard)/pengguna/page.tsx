@@ -1,6 +1,7 @@
 "use client"
 import { Navbar } from "@/components/shared/Navbar";
 import { useLogout, useUser } from "@/features/auth/hooks";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -37,10 +38,12 @@ export default function PesananPage() {
                             <div className="flex flex-col items-center -mt-16 mb-4">
                                 {/* Profile Photo */}
                                 <div className="relative mb-4">
-                                    <img
+                                    <Image
                                         id="profilePhoto"
-                                        src={user?.avatarUrl || 'https://img.pikbest.com/png-images/20241013/islamic-cartoon-profile-picture_10957076.png!sw800'}
+                                        src={user?.profile_url || '/assets/no-image.jpg'}
                                         alt="Profile"
+                                        width={400}
+                                        height={400}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                     />
                                 </div>

@@ -21,12 +21,6 @@ const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", options);
 };
 
-const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-    }).format(price);
-};
 
 // ✅ Dummy handlers (bisa ganti dengan navigasi atau modals)
 // const viewOrderDetail = (id: string) => alert(`Lihat detail pesanan: ${id}`);
@@ -149,12 +143,12 @@ export default function OrderList() {
                 {isLoading ? Array(2).fill(null).map((_, index) => (
                     <div key={index} className="bg-white rounded-lg shadow-md mb-6 animate-pulse py-8 border px-4">
                         <div className="flex items-center justify-between">
-                            <Skeleton className="h-10 pl-2 w-[180px] my-2" />
-                            <Skeleton className="h-10 pl-2 w-[180px] my-2" />
+                            <Skeleton className="h-10 pl-2 w-[14%] my-2" />
+                            <Skeleton className="h-10 pl-2 w-[14%] my-2" />
                         </div>
-                        <Skeleton className="h-10 pl-2 w-[180px] my-2" />
+                        <Skeleton className="h-10 pl-2 w-[14%] my-2" />
                         <Skeleton className="h-10 pl-2 w-full my-2" />
-                        <Skeleton className="h-10 pl-2 w-[100px] my-2" />
+                        <Skeleton className="h-10 pl-2 w-[14%] my-2" />
                     </div>
                 )) :
 
@@ -163,7 +157,6 @@ export default function OrderList() {
                             key={order.id}
                             order={order}
                             formatDate={formatDate}
-                            formatPrice={formatPrice}
                             viewOrderDetail={() => setSelectedOrder(order)}
                             trackOrder={trackOrder}
                             openReviewModal={() => setShowReviewModal(true)}

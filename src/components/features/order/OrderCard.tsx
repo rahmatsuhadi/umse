@@ -6,7 +6,6 @@ import { getStatusBadgeClass } from './OrderDetailModal';
 interface OrderCardProps {
   order: Order;
   formatDate: (date: string) => string;
-  formatPrice: (price: number) => string;
   viewOrderDetail: (id: string) => void;
   trackOrder: (id: string) => void;
   openReviewModal: (id: string) => void;
@@ -16,7 +15,6 @@ interface OrderCardProps {
 const OrderCard: React.FC<OrderCardProps> = ({
   order,
   formatDate,
-  formatPrice,
   viewOrderDetail,
   trackOrder,
   openReviewModal,
