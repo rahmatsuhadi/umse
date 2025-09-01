@@ -1,11 +1,8 @@
 
-import ExhibitionCard from "@/components/exhibition/ExhibitionCard";
 import ExhibitionFilter from "@/components/exhibition/ExhibitionFilter";
 import ExhibitionSection from "@/components/exhibition/ExhibitionSection";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
-import TrainingFilter from "@/components/training/TrainingFilter";
-import TrainingSection from "@/components/training/TrainingSection";
 
 export default function PameranPage() {
     return (

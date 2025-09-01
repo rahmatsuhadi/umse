@@ -3,7 +3,6 @@ import ContactSection from "@/components/landing/Contact";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
-import Image from "next/image";
 
 export default function DetailPameran() {
     return (

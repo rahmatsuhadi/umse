@@ -5,11 +5,12 @@ import { ItemShipping } from "./shipping"
 import { Store } from "./store"
 import { User } from "./user"
 
-export type StatusOrder = 'awaiting_payment' | 'processing' | 'paid' | 'shipped' | 'completed' | 'delivered' | 'cancelled' | 'refunded'
+export type StatusOrder = 'awaiting_payment' | 'processing' | 'paid' | 'shipped' | 'completed' | 'delivered' | 'cancelled' | 'refunded' | 'pending'
 export type StatusPayment = 'unpaid' | 'pending' | 'uploaded' | 'verified' | 'rejected' | 'expired' | 'refunded'
 
 export interface Order {
     order_number: string
+    
     id: string
     customer_id: string
     customer: User
@@ -21,6 +22,13 @@ export interface Order {
     shipping_province: Location
     shipping_address_line: string
     shipping_postal_code: string
+    payment_due_at:string
+    shipping_service:string
+    shipping_service_type:string
+    estimated_delivery:string
+    tracking_number:string
+    cancellation_reason?:string
+    
     status: StatusOrder
     stats_label: string
     shipping_cost: Price

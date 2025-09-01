@@ -126,7 +126,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
             form.setValue("district_id", String(addres.district_id))
             form.setValue("village_id", String(addres.village_id))
             form.setValue("postalCode", String(addres.postal_code))
-            if(addres.note) form.setValue("note", addres.note)
+            if (addres.note) form.setValue("note", addres.note)
         }
 
     }, [addres])
@@ -144,9 +144,8 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
     const districts = districtsData?.data || [];
     const villages = villagesData?.data || [];
 
-    const router = useRouter()
 
-    const { mutate } = useCreateOrder()
+    const { mutate, isPending } = useCreateOrder()
 
     const handleOrderSubmit = (data: z.infer<typeof addressSchema>) => {
         const orderData = {
@@ -381,6 +380,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
                                     <div className="grid md:grid-cols-2 gap-4 mb-6">
                                         <FormField
+                                            disabled={isPending}
                                             control={form.control}
                                             name="recipientName"
                                             render={({ field }) => (
@@ -396,6 +396,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                         />
 
                                         <FormField
+                                            disabled={isPending}
                                             control={form.control}
                                             name="recipientPhone"
                                             render={({ field }) => (
@@ -418,6 +419,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                         />
 
                                         <FormField
+                                            disabled={isPending}
                                             control={form.control}
                                             name="fullAddress"
                                             render={({ field }) => (
@@ -432,82 +434,86 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField control={form.control} name="regency_id" render={({ field }) => (
-                                            <FormItem><FormLabel>Kabupaten/Kota *</FormLabel>
-                                                <Select
-                                                    disabled={isLoadingRegencies}
-                                                    defaultValue={String(addres?.regency_id || "")}
-                                                    onValueChange={(v) => {
-                                                        field.onChange(v)
-                                                        form.setValue('district_id', '')
-                                                        form.setValue('village_id', '')
-                                                    }}>
-                                                    <FormControl className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Pilih Kabupaten/Kota">
-                                                                {regencies.find(reg => Number(reg.id) == Number(field.value))?.name || 'Pilih Kabupaten/Kota'}
-                                                            </SelectValue>
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {regencies.map(city => (
-                                                            <SelectItem key={city.id} value={city.id}>{city.name}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField control={form.control} name="district_id" render={({ field }) => (
-                                            <FormItem><FormLabel>Kecamatan *</FormLabel>
-                                                <Select
-                                                    disabled={isLoadingDistricts}
-                                                    defaultValue={String(addres?.district_id || "")}
-                                                    onValueChange={(v) => {
-                                                        field.onChange(v)
-                                                        form.setValue('village_id', '')
-                                                    }}>
-                                                    <FormControl className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Pilih Kecamatan">
-                                                                {districts.find(dist => Number(dist.id) == Number(field.value))?.name || 'Pilih Kecamatan'}
-                                                            </SelectValue>
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {districts.map(d => (
-                                                            <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField control={form.control} name="village_id" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Kelurahan *</FormLabel>
-                                                <Select
-                                                    disabled={isLoadingVillages}
-                                                    defaultValue={String(addres?.village_id || "")}
-                                                    onValueChange={field.onChange}
-                                                >
-                                                    <FormControl className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Pilih Kelurahan">
-                                                                {villages.find(vill => Number(vill.id) == Number(field.value))?.name || 'Pilih Kelurahan'}
-                                                            </SelectValue>
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {villages.map(v => (
-                                                            <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
                                         <FormField
+                                            disabled={isPending} control={form.control} name="regency_id" render={({ field }) => (
+                                                <FormItem><FormLabel>Kabupaten/Kota *</FormLabel>
+                                                    <Select
+                                                        disabled={isLoadingRegencies}
+                                                        defaultValue={String(addres?.regency_id || "")}
+                                                        onValueChange={(v) => {
+                                                            field.onChange(v)
+                                                            form.setValue('district_id', '')
+                                                            form.setValue('village_id', '')
+                                                        }}>
+                                                        <FormControl className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Pilih Kabupaten/Kota">
+                                                                    {regencies.find(reg => Number(reg.id) == Number(field.value))?.name || 'Pilih Kabupaten/Kota'}
+                                                                </SelectValue>
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {regencies.map(city => (
+                                                                <SelectItem key={city.id} value={city.id}>{city.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        <FormField
+                                            disabled={isPending} control={form.control} name="district_id" render={({ field }) => (
+                                                <FormItem><FormLabel>Kecamatan *</FormLabel>
+                                                    <Select
+                                                        disabled={isLoadingDistricts}
+                                                        defaultValue={String(addres?.district_id || "")}
+                                                        onValueChange={(v) => {
+                                                            field.onChange(v)
+                                                            form.setValue('village_id', '')
+                                                        }}>
+                                                        <FormControl className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Pilih Kecamatan">
+                                                                    {districts.find(dist => Number(dist.id) == Number(field.value))?.name || 'Pilih Kecamatan'}
+                                                                </SelectValue>
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {districts.map(d => (
+                                                                <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        <FormField
+                                            disabled={isPending} control={form.control} name="village_id" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Kelurahan *</FormLabel>
+                                                    <Select
+                                                        disabled={isLoadingVillages}
+                                                        defaultValue={String(addres?.village_id || "")}
+                                                        onValueChange={field.onChange}
+                                                    >
+                                                        <FormControl className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary">
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Pilih Kelurahan">
+                                                                    {villages.find(vill => Number(vill.id) == Number(field.value))?.name || 'Pilih Kelurahan'}
+                                                                </SelectValue>
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {villages.map(v => (
+                                                                <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        <FormField
+                                            disabled={isPending}
                                             control={form.control}
                                             name="postalCode"
                                             render={({ field }) => (
@@ -529,6 +535,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
 
                                         <FormField
+                                            disabled={isPending}
                                             control={form.control}
                                             name="note"
                                             render={({ field }) => (
@@ -545,11 +552,15 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                         />
                                     </div>
                                     {/* Tombol Lanjut */}
+
                                     <Button
+                                        disabled={isPending}
                                         type="submit"
                                         className="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition duration-300"
                                     >
-                                        <i className="fas fa-credit-card mr-2"></i>Lanjut ke Pembayaran
+                                        {isPending ? 'Membuat Pesanan...' : (<><i className="fas fa-credit-card mr-2"></i>Lanjut ke Pembayaran</>)}
+
+
                                     </Button>
                                 </div>
                             </form>

@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useInView } from 'framer-motion'; // 1. Impor motion dari framer-motion
+import { motion } from 'framer-motion'; // 1. Impor motion dari framer-motion
 import ExhibitionCard from './ExhibitionCard';
 import Pagination from '../shared/Pagination';
 

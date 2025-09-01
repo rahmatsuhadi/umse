@@ -13,6 +13,7 @@ export const useUser = () => {
   return useQuery<{ data: User, message: string }, Error>({
     queryKey: ["user"], // Kunci unik untuk query ini
     queryFn: getMe,     // Fungsi API yang dipanggil
+    refetchOnWindowFocus:false,
     retry: false,       // Jangan coba ulang jika gagal (misal, karena belum login)
   });
 };

@@ -13,6 +13,12 @@ type StoreQueryParams = {
 /**
  * Mengambil daftar produk dengan paginasi dan filter.
  */
+
+
+
+/**
+ * Mengambil daftar produk dengan paginasi dan filter.
+ */
 export const getStores = (params: StoreQueryParams): Promise<PaginatedApiResponse<Store>> => {
   params  ={
     ...params,

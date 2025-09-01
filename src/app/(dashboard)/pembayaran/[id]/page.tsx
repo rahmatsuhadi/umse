@@ -10,6 +10,7 @@ import PaymentStep from "@/components/order/Payment/PaymentStep";
 import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
 import { useParams, useRouter } from "next/navigation";
 import { useGetOrderPayments } from "@/features/order/hooks";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 export default function PaymentPage() {
     const { id } = useParams<{ id: string }>()
@@ -76,12 +77,12 @@ export default function PaymentPage() {
                     <StepIndicator currentStep={step} />
 
                     {isLoading || !order ? (
-                        <p>Loading</p>
+                       <LoadingSpinner text="Sedang memuat detail pesanan..." />
                     ) : step == "payment" ?
                         <PaymentStep order={order} currentStep={step} onConfirmation={() => setStep("confirmation")} />
 
                         :
-                        <ConfirmationPage id={id} currentStep={step} />
+                        <ConfirmationPage paidTotal={order.total.value} id={id} currentStep={step} />
                     }
 
                 </div>

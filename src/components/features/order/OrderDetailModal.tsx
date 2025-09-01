@@ -67,8 +67,8 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
               </div>
               {/* <DialogDescription className="text-sm text-gray-600">
-                
-              </DialogDescription> */}
+                  
+                </DialogDescription> */}
             </DialogHeader>
             <div>
               <p className="text-sm text-gray-500">Memuat data pemesanan...</p>
@@ -94,13 +94,84 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                 {order.status_label}
               </span>
 
-              {order.status === "awaiting_payment" && (
-                <Link
-                  href={`/pembayaran/${order.id}`}
-                  className="text-sm text-blue-600 hover:underline flex items-center gap-1"
-                >
-                  <i className="fas fa-credit-card" /> Ke Pembayaran
-                </Link>
+
+            </div>
+
+
+            {/* Status Detail Section */}
+            <div className="mt-1 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
+              {order.status === "awaiting_payment" && order.payment_status == "pending" && (
+                <>
+                  <p className="text-yellow-700 font-medium">
+                    Status Pembayaran: {order.payment_status_label}
+                  </p>
+                </>
+              )}
+
+              {order.status === "awaiting_payment" && order.payment_status == "unpaid" && (
+                <>
+                  <p className="text-yellow-700 font-medium">
+                    Menunggu pembayaran sebelum{" "}
+                    {formatDate(order.payment_due_at)}
+                  </p>
+                  <Link
+                    href={`/pembayaran/${order.id}`}
+                    className="inline-block text-blue-600 hover:underline text-sm"
+                  >
+                    <i className="fas fa-credit-card mr-1" />
+                    Lanjutkan Pembayaran
+                  </Link>
+                </>
+              )}
+
+              {order.status === "pending" && (
+                <p className="text-gray-700">
+                  Pesanan sedang menunggu konfirmasi dari penjual.
+                </p>
+              )}
+
+              {order.status === "processing" && (
+                <p className="text-gray-700">
+                  Pesanan sedang diproses dan dikemas oleh penjual.
+                </p>
+              )}
+
+              {order.status === "shipped" && (
+                <>
+                  <p className="text-gray-700">
+                    Pesanan telah dikirim dengan {order.shipping_service?.toUpperCase()}{" "}
+                    ({order.shipping_service_type})
+                  </p>
+                  <p className="text-gray-600">
+                    Estimasi sampai: {order.estimated_delivery} hari
+                  </p>
+                  {order.tracking_number && (
+                    <p className="text-blue-600 font-mono break-all">
+                      Resi: {order.tracking_number}
+                    </p>
+                  )}
+                </>
+              )}
+
+              {order.status === "delivered" && (
+                <p className="text-green-700 font-medium">
+                  Pesanan sudah sampai di alamat tujuan.
+                </p>
+              )}
+
+              {order.status === "completed" && (
+                <p className="text-green-700 font-medium">
+                  Pesanan selesai 🎉 Terima kasih sudah berbelanja!
+                </p>
+              )}
+
+              {(order.status === "cancelled") && (
+                <p className="text-red-600">
+                  Pesanan dibatalkan.{" "}
+                  {order.cancellation_reason && (
+                    <span>Alasan: {order.cancellation_reason}</span>
+                  )}
+                </p>
               )}
             </div>
 
@@ -153,11 +224,11 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
               </div>
 
               {/* {order.trackingNumber && (
-            <div className="mt-6 p-3 bg-blue-50 rounded-lg">
-              <h4 className="font-medium text-blue-800 mb-1 text-sm">Nomor Resi</h4>
-              <p className="font-mono text-blue-600 text-sm break-all">{order.trackingNumber}</p>
-            </div>
-          )} */}
+              <div className="mt-6 p-3 bg-blue-50 rounded-lg">
+                <h4 className="font-medium text-blue-800 mb-1 text-sm">Nomor Resi</h4>
+                <p className="font-mono text-blue-600 text-sm break-all">{order.trackingNumber}</p>
+              </div>
+            )} */}
             </div>
 
             <DialogFooter>
