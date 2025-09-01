@@ -100,7 +100,15 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
             {/* Status Detail Section */}
             <div className="mt-1 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
-              {order.status === "awaiting_payment" && (
+              {order.status === "awaiting_payment" && order.payment_status == "pending" && (
+                <>
+                  <p className="text-yellow-700 font-medium">
+                    Status Pembayaran: {order.payment_status_label}
+                  </p>
+                </>
+              )}
+
+              {order.status === "awaiting_payment" && order.payment_status == "unpaid" && (
                 <>
                   <p className="text-yellow-700 font-medium">
                     Menunggu pembayaran sebelum{" "}

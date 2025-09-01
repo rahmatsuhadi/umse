@@ -39,7 +39,7 @@ const formatRupiah = (number: number) => {
 
 type PaymentConfirmationForm = z.infer<typeof paymentConfirmationSchema>;
 
-export default function ConfirmationPage({ currentStep: step, id }: { id: string, currentStep: CheckoutStep }) {
+export default function ConfirmationPage({ currentStep: step, id, paidTotal }: { paidTotal: number, id: string, currentStep: CheckoutStep }) {
     // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     // const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
@@ -130,7 +130,7 @@ export default function ConfirmationPage({ currentStep: step, id }: { id: string
                                         <input
                                             id="paymentProof"
                                             type="file"
-                                            accept="image/*,.pdf"
+                                            accept="image/*"
                                             className="hidden"
                                             onChange={handleFileChange}
                                         />
@@ -141,7 +141,7 @@ export default function ConfirmationPage({ currentStep: step, id }: { id: string
                                         >
                                             <i className="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
                                             <p className="text-gray-600 mb-2">Klik untuk upload bukti pembayaran</p>
-                                            <p className="text-sm text-gray-500">Format: JPG, PNG, PDF (Max 5MB)</p>
+                                            <p className="text-sm text-gray-500">Format: JPG, PNG (Max 5MB)</p>
                                         </div>
                                         {form.watch("paymentProof") && (
                                             <p className="text-sm text-green-600 mt-2">
@@ -192,7 +192,7 @@ export default function ConfirmationPage({ currentStep: step, id }: { id: string
                                                         }}
                                                         type="tel" // Use 'tel' to bring up a numeric keypad on mobile
                                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                                                        placeholder="Rp 62.000"
+                                                        placeholder={formatRupiah(paidTotal)}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -248,7 +248,7 @@ export default function ConfirmationPage({ currentStep: step, id }: { id: string
                                                 <FormControl className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
                                                     <Input
                                                         {...field} className="w-full" type="datetime-local"
-                                                        placeholder="62000" />
+                                                        />
                                                 </FormControl>
                                                 {/* <FormMessage /> */}
                                             </FormItem>
@@ -305,7 +305,7 @@ export default function ConfirmationPage({ currentStep: step, id }: { id: string
                                     type="submit"
                                     className="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition duration-300"
                                 >
-                                    {isPending ? 'Menyimpan...' : (<><i className="fas fa-paper-plane mr-2"></i>Kirim Konfirmasi Pembayaran</>)}
+                                    {isPending ? 'Mengirim Konfirmasi...' : (<><i className="fas fa-paper-plane mr-2"></i>Kirim Konfirmasi Pembayaran</>)}
 
                                 </Button>
                             </form>

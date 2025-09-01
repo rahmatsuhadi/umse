@@ -31,8 +31,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <p className="text-xs sm:text-sm text-gray-600">{formatDate(order?.created_at)}</p>
           </div>
           <span className={`${getStatusBadgeClass(order.status)} px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium`}>
-            {order.status_label}
-            {/* {order.payment_status} */}
+            {order.payment_status == "pending" ? order.payment_status_label : order.status_label}
           </span>
         </div>
 
@@ -57,7 +56,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
         <div className="bg-gray-50 rounded-lg p-2 sm:p-3 mb-4">
           <div className="flex justify-between text-xs sm:text-sm">
             <span className="text-gray-600">
-              {totalItems} item 
+              {totalItems} item
             </span>
             <span className="font-semibold text-gray-800">Total: {order.total.formatted}</span>
           </div>
@@ -81,7 +80,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </button>
             )} */}
 
-            {order.status=="completed" && (
+            {order.status == "completed" && (
               <button
                 onClick={() => openReviewModal(order.id)}
                 className="bg-primary text-white px-3 sm:px-4 py-2 rounded-md hover:bg-primary-dark text-xs sm:text-sm flex items-center"

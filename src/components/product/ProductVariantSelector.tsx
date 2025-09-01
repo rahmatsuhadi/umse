@@ -109,7 +109,7 @@ export default function ProductVariantSelector({ product }: { product: Product }
             </Button>
           </div>
         </div>
-        <Separator />
+        {/* <Separator /> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={handleAddToCart} disabled={currentStock === 0 || isPending}>
 
@@ -126,9 +126,9 @@ export default function ProductVariantSelector({ product }: { product: Product }
             )}
 
           </Button>
-          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary" disabled={currentStock === 0 || true}>
+          {/* <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary" disabled={currentStock === 0 || true}>
             Beli Langsung
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { PaginatedApiResponse, Product, Store } from "@/types";
 import { getStoreById, getStores } from "./api";
 
@@ -32,4 +32,40 @@ export const useStore = (id: string) => {
         queryFn: () => getStoreById(id),
         enabled: !!id, // Hanya jalankan query jika slug ada
     });
+};
+
+
+/**
+ * Hook untuk mengambil daftar store dengan infinite scroll / load more.
+ */
+export const useInfiniteStores = (filters: Omit<StoresQueryParams, 'page'>) => {
+  return useInfiniteQuery<PaginatedApiResponse<Store>, Error>({
+    queryKey: ["stores", "infinite", filters],
+
+    // `pageParam` akan otomatis dikelola oleh TanStack Query
+    queryFn: ({ pageParam = 1 }) => {
+
+      return getStores({ ...filters, page: pageParam as number })
+    },
+
+    // Halaman awal yang akan diambil
+    initialPageParam: 1,
+
+    // Fungsi ini memberitahu React Query cara mendapatkan nomor halaman berikutnya
+    // getNextPageParam: (lastPage, allPages) => {
+
+    getNextPageParam: (lastPage) => {
+      const currentPage = lastPage.meta.current_page;
+      const totalPages = lastPage.meta.last_page;
+
+      // Jika halaman saat ini belum mencapai halaman terakhir,
+      // kembalikan nomor halaman berikutnya.
+      if (currentPage < totalPages) {
+        return currentPage + 1;
+      }
+
+      // Jika sudah di halaman terakhir, kembalikan undefined untuk menandakan tidak ada lagi data.
+      return undefined;
+    },
+  });
 };
