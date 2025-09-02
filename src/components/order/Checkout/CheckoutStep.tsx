@@ -145,8 +145,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
     const villages = villagesData?.data || [];
 
 
-    const { mutate, isPending } = useCreateOrder()
-
+    const { mutate, isPending} = useCreateOrder()
     const handleOrderSubmit = (data: z.infer<typeof addressSchema>) => {
         const orderData = {
             ...data,
@@ -438,7 +437,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                             disabled={isPending} control={form.control} name="regency_id" render={({ field }) => (
                                                 <FormItem><FormLabel>Kabupaten/Kota *</FormLabel>
                                                     <Select
-                                                        disabled={isLoadingRegencies}
+                                                        disabled={isLoadingRegencies || field.disabled}
                                                         defaultValue={String(addres?.regency_id || "")}
                                                         onValueChange={(v) => {
                                                             field.onChange(v)
@@ -465,7 +464,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                             disabled={isPending} control={form.control} name="district_id" render={({ field }) => (
                                                 <FormItem><FormLabel>Kecamatan *</FormLabel>
                                                     <Select
-                                                        disabled={isLoadingDistricts}
+                                                        disabled={isLoadingDistricts  || field.disabled}
                                                         defaultValue={String(addres?.district_id || "")}
                                                         onValueChange={(v) => {
                                                             field.onChange(v)
@@ -492,7 +491,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 <FormItem>
                                                     <FormLabel>Kelurahan *</FormLabel>
                                                     <Select
-                                                        disabled={isLoadingVillages}
+                                                        disabled={isLoadingVillages  || field.disabled}
                                                         defaultValue={String(addres?.village_id || "")}
                                                         onValueChange={field.onChange}
                                                     >
@@ -520,7 +519,8 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 <FormItem>
                                                     <FormLabel>Kode Pos</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="55xxx" className="w-full border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary" maxLength={5} {...field} />
+                                                        <Input 
+                                                        {...field} placeholder="55xxx" className="w-full border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary" maxLength={5} {...field} />
 
                                                     </FormControl>
                                                     <FormMessage />
@@ -542,9 +542,9 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 <FormItem>
                                                     <FormLabel>Catatan untuk Penjual (Opsional)</FormLabel>
                                                     <FormControl>
-                                                        <Textarea cols={5}
+                                                        <Textarea {...field}  cols={5}
                                                             placeholder="Contoh: Kirim sore hari, jangan gunakan kantong plastik hitam"
-                                                            {...field} className="w-full border border-gray-300 rounded-lg px-3 py-4 focus:outline-none focus:border-primary" />
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-4 focus:outline-none focus:border-primary" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>

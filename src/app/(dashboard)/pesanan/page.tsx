@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function OrderPage() {
     return (
-        <div className="bg-gray-50 ">
+        <div className=" w-full min-h-screen">
             <Navbar withMenu={false} />
             
             <main className="container mx-auto px-4 py-6">
@@ -58,7 +58,7 @@ export default function OrderPage() {
 
 
 
-            <AnimatedWrapper>
+            <AnimatedWrapper className="mt-15" >
                 <Footer />
             </AnimatedWrapper>
 

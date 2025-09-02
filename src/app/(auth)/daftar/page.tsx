@@ -78,7 +78,7 @@ export default function DaftarPage() {
       <Card className="w-full max-w-md  z-20 mt-5">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-[#36454F]">Daftar</CardTitle>
-          <CardDescription className='text-[#36454F]'>Daftar Untuk Melajutkan</CardDescription>
+          <CardDescription className='text-[#36454F]'>Daftar Untuk Melanjutkan</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

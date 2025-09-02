@@ -26,6 +26,7 @@ export interface Meta {
   count: {
     awaiting_payment: number
     cancelled: number
+    delivered: number
     completed: number
     pending: number
     processing: number

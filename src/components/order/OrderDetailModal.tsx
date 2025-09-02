@@ -13,7 +13,6 @@ import { useGetOrderPayments } from "@/features/order/hooks";
 import Image from "next/image";
 import Link from "next/link";
 
-
 type Props = {
   open: boolean;
   orderId: string;
@@ -21,131 +20,175 @@ type Props = {
 };
 
 const formatDate = (dateStr: string) => {
+  if (!dateStr) return "-";
   return new Date(dateStr).toLocaleDateString("id-ID", {
     year: "numeric",
     month: "long",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
 export const getStatusBadgeClass = (status: string): string => {
   switch (status) {
+    // Success/Completed states
     case "completed":
     case "delivered":
     case "paid":
       return "bg-green-100 text-green-800";
-    case "awaiting_payment":
+
+    // In progress states
+    case "pending":
     case "processing":
-      return "bg-blue-100 text-yellow-800";
     case "shipped":
+    case "partially_paid":
+      return "bg-blue-100 text-blue-800";
+
+    // Waiting states
+    case "awaiting_payment":
+    case "unpaid":
       return "bg-yellow-100 text-yellow-800";
+
+    // Error/Cancelled states
     case "cancelled":
     case "refunded":
+    case "expired":
       return "bg-red-100 text-red-800";
+
     default:
       return "bg-gray-100 text-gray-800";
   }
 };
 
+
 export default function OrderDetailModal({ open, orderId, onClose }: Props) {
-
-
-  const { data, isLoading, error } = useGetOrderPayments(orderId)
-  const order = data?.data
+  const { data, isLoading } = useGetOrderPayments(orderId);
+  const order = data?.data;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
-
         {isLoading || !order ? (
           <>
             <DialogHeader>
-              <div className="flex items-center justify-between">
-                <DialogTitle>
-                  Detail Pesanan
-                  {/* <Skeleton className="h-10 w-[100px]"/> */}
-                </DialogTitle>
-
-              </div>
-              {/* <DialogDescription className="text-sm text-gray-600">
-                  
-                </DialogDescription> */}
+              <DialogTitle>Detail Pesanan</DialogTitle>
             </DialogHeader>
-            <div>
-              <p className="text-sm text-gray-500">Memuat data pemesanan...</p>
-
-            </div>
+            <p className="text-sm text-gray-500">Memuat data pemesanan...</p>
           </>
         ) : (
           <>
+            {/* Header */}
             <DialogHeader>
               <div className="flex items-center justify-between">
                 <DialogTitle>Pesanan # {order?.order_number}</DialogTitle>
-
               </div>
               <DialogDescription className="text-sm text-gray-600">
                 {formatDate(order.created_at)}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="py-2 border-b border-gray-200 flex items-center justify-between">
+            {/* Status Badge */}
+            <div className="py-2 border-b border-gray-200 flex items-center gap-2">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(order.status)}`}
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(
+                  order.status
+                )}`}
               >
-                {order.status_label}
+                {order.payment_status == "pending" ? order.payment_status_label : order.status_label}
+
               </span>
-
-
             </div>
 
 
             {/* Status Detail Section */}
-            <div className="mt-1 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
-              {order.status === "awaiting_payment" && order.payment_status == "pending" && (
-                <>
-                  <p className="text-yellow-700 font-medium">
-                    Status Pembayaran: {order.payment_status_label}
-                  </p>
-                </>
-              )}
+            <div className="mt-3 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
+
+              
 
               {order.status === "awaiting_payment" && order.payment_status == "unpaid" && (
                 <>
                   <p className="text-yellow-700 font-medium">
-                    Menunggu pembayaran sebelum{" "}
-                    {formatDate(order.payment_due_at)}
+                    Menunggu pembayaran sebelum {formatDate(order.payment_due_at)}
                   </p>
-                  <Link
-                    href={`/pembayaran/${order.id}`}
-                    className="inline-block text-blue-600 hover:underline text-sm"
-                  >
-                    <i className="fas fa-credit-card mr-1" />
-                    Lanjutkan Pembayaran
-                  </Link>
+                  <Link href={`/pembayaran/${order.id}`} className="inline-block text-blue-600 hover:underline text-sm" > <i className="fas fa-credit-card mr-1" /> Lanjutkan Pembayaran </Link>
+                </>
+              )}
+
+              {order.payment_status == "pending" && (
+                <>
+                  <p className="text-yellow-700 font-medium">
+                    Menunggu Konfirmasi pembayaran dari penjual
+                  </p>
                 </>
               )}
 
               {order.status === "pending" && (
                 <p className="text-gray-700">
-                  Pesanan sedang menunggu konfirmasi dari penjual.
+                  Pesanan sedang menunggu konfirmasi dari penjual sejak{" "}
+                  {formatDate(order.created_at)}.
                 </p>
               )}
 
               {order.status === "processing" && (
                 <p className="text-gray-700">
-                  Pesanan sedang diproses dan dikemas oleh penjual.
+                  Pesanan sedang diproses dan dikemas oleh penjual
                 </p>
               )}
 
               {order.status === "shipped" && (
                 <>
                   <p className="text-gray-700">
-                    Pesanan telah dikirim dengan {order.shipping_service?.toUpperCase()}{" "}
-                    ({order.shipping_service_type})
+                    Pesanan dikirim {formatDate(order.shipped_at)} dengan{" "}
+                    {order.shipping_service?.toUpperCase()} ({order.shipping_service_type})
                   </p>
-                  <p className="text-gray-600">
-                    Estimasi sampai: {order.estimated_delivery} hari
-                  </p>
+                  {order.estimated_delivery && (
+                    <p className="text-gray-600">
+                      Estimasi sampai:{" "}
+                      {(() => {
+                        const [min, max] = order.estimated_delivery
+                          .split("-")
+                          .map((n: string) => parseInt(n.trim()));
+
+                        const shippedDate = new Date(order.shipped_at);
+                        const minDate = new Date(
+                          shippedDate.getTime() + min * 24 * 60 * 60 * 1000
+                        );
+                        const maxDate = new Date(
+                          shippedDate.getTime() + max * 24 * 60 * 60 * 1000
+                        );
+
+                        // Format
+                        const options: Intl.DateTimeFormatOptions = { day: "numeric" };
+                        const monthYearOptions: Intl.DateTimeFormatOptions = {
+                          month: "long",
+                          year: "numeric",
+                        };
+
+                        const sameMonth =
+                          minDate.getMonth() === maxDate.getMonth() &&
+                          minDate.getFullYear() === maxDate.getFullYear();
+
+                        if (sameMonth) {
+                          return `${minDate.toLocaleDateString("id-ID", options)} – ${maxDate.toLocaleDateString(
+                            "id-ID",
+                            options
+                          )} ${maxDate.toLocaleDateString("id-ID", monthYearOptions)}`;
+                        } else {
+                          // Kalau beda bulan/tahun, tampil lengkap dua-duanya
+                          return `${minDate.toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })} – ${maxDate.toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}`;
+                        }
+                      })()}
+                    </p>
+                  )}
                   {order.tracking_number && (
                     <p className="text-blue-600 font-mono break-all">
                       Resi: {order.tracking_number}
@@ -156,7 +199,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
               {order.status === "delivered" && (
                 <p className="text-green-700 font-medium">
-                  Pesanan sudah sampai di alamat tujuan.
+                  Pesanan diterima {formatDate(order.delivered_at)}.
                 </p>
               )}
 
@@ -166,49 +209,92 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                 </p>
               )}
 
-              {(order.status === "cancelled") && (
+              {order.status === "cancelled" && (
                 <p className="text-red-600">
-                  Pesanan dibatalkan.{" "}
+                  Pesanan dibatalkan {formatDate(order.cancelled_at)}.{" "}
                   {order.cancellation_reason && (
                     <span>Alasan: {order.cancellation_reason}</span>
                   )}
                 </p>
               )}
+
+              {order.status === "expired" && (
+                <p className="text-gray-700">
+                  Pesanan kadaluarsa.
+                </p>
+              )}
+
+
+                {order.note && (
+                  <p className="text-gray-600">
+                    <span className="font-medium">Catatan: </span>
+                    {order.note}
+                  </p>
+                )}
             </div>
 
-
+            {/* Items */}
             <div className="py-4">
               <h3 className="font-semibold mb-2">Item Pesanan</h3>
               <div className="space-y-4 mb-6">
                 {order.items.map((item, i) => (
-                  <div key={i} className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3">
+                  <div
+                    key={i}
+                    className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3"
+                  >
                     <div className="bg-gray-300 w-12 h-12 rounded-lg flex items-center justify-center relative">
-                      <Image src={item.product.thumbnail.media_url} layout='fill' alt='gambar' objectFit='cover' className='rounded-sm' />
+                      <Image
+                        src={item.product.thumbnail.media_url}
+                        layout="fill"
+                        alt="gambar"
+                        objectFit="cover"
+                        className="rounded-sm"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
-                      <p className="text-xs text-gray-600 truncate">{order.store.name}</p>
+                      <h4 className="font-medium text-sm truncate">
+                        {item.product.name}
+                      </h4>
+                      <p className="text-xs text-gray-600 truncate">
+                        {order.store.name}
+                      </p>
                       <div className="flex justify-between mt-1">
-                        <span className="text-primary font-bold text-sm">{item.variant ? item.variant.price.formatted : item.product.price.formatted}</span>
-                        <span className="text-gray-600 text-xs">x{item.quantity}</span>
+                        <span className="text-primary font-bold text-sm">
+                          {item.variant
+                            ? item.variant.price.formatted
+                            : item.product.price.formatted}
+                        </span>
+                        <span className="text-gray-600 text-xs">
+                          x{item.quantity}
+                        </span>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
+              {/* Address */}
               <h3 className="font-semibold mb-2">Alamat Pengiriman</h3>
               <div className="bg-gray-50 rounded-lg p-3 mb-6">
                 <p className="text-gray-800 text-sm leading-relaxed">
-                  {order.shipping_address_line}, {order.shipping_village.name}, {order.shipping_district?.name}, {order.shipping_regency?.name}, {order.shipping_province?.name}, {order.shipping_postal_code}
+                  {order.shipping_address_line},{" "}
+                  {order.shipping_village.name},{" "}
+                  {order.shipping_district?.name},{" "}
+                  {order.shipping_regency?.name},{" "}
+                  {order.shipping_province?.name},{" "}
+                  {order.shipping_postal_code}
                 </p>
+                {order.shipping_note && (
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Catatan: </span>
+                    {order.shipping_note}
+                  </p>
+                )}
               </div>
 
-
-
+              {/* Payment Summary */}
               <h3 className="font-semibold mb-2">Ringkasan Pembayaran</h3>
               <div className="space-y-2 text-sm">
-
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>{order.subtotal.formatted}</span>
@@ -223,13 +309,6 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                   <span className="text-primary">{order.total.formatted}</span>
                 </div>
               </div>
-
-              {/* {order.trackingNumber && (
-              <div className="mt-6 p-3 bg-blue-50 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-1 text-sm">Nomor Resi</h4>
-                <p className="font-mono text-blue-600 text-sm break-all">{order.trackingNumber}</p>
-              </div>
-            )} */}
             </div>
 
             <DialogFooter>
@@ -239,7 +318,6 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
             </DialogFooter>
           </>
         )}
-
       </DialogContent>
     </Dialog>
   );

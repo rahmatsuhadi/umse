@@ -34,7 +34,9 @@ const TABS = [
     { label: "Diproses", value: "processing" },
     { label: "Dikirim", value: "shipped" },
     { label: "Sampai", value: "delivered" },
+    { label: "Canceled", value: "cancelled" },
     { label: "Selesai", value: "completed" },
+    { label: "Expired", value: "expired" },
 ];
 
 
@@ -70,9 +72,11 @@ export default function OrderList() {
         processing: 0,
         shipped: 0,
         cancelled: 0,
+        delivered: 0,
         completed: 0,
         total: 0,
     }
+
 
     // Sync state to URL param on tab change
     const handleTabChange = (status: string) => {
@@ -124,10 +128,13 @@ export default function OrderList() {
                         aria-label="Tabs"
                     >
                         {TABS.map((tab) => {
+
                             const count =
-                                tab.value && counts?.[tab.value as keyof typeof counts] !== undefined
-                                    ? counts[tab.value as keyof typeof counts]
-                                    : ordersData?.length || 0;
+                                tab.value === ""
+                                    ? counts?.["total"] ?? 0
+                                    : tab.value && counts?.[tab.value as keyof typeof counts] !== undefined
+                                        ? counts[tab.value as keyof typeof counts]
+                                        :  0;
                             return (
                                 <button
                                     key={tab.value}
@@ -139,7 +146,7 @@ export default function OrderList() {
                                 >
                                     {tab.label}
                                     <span
-                                        className={`hidden sm:inline ${activeStatus === tab.value
+                                        className={`hidden lg:inline ${activeStatus === tab.value
                                             ? "bg-primary text-white"
                                             : "bg-gray-200 text-gray-700"
                                             } px-2 py-1 rounded-full text-xs ml-2`}
@@ -155,7 +162,7 @@ export default function OrderList() {
 
             {/* <!-- Orders Container --> */}
             <div id="ordersContainer" className="space-y-3 sm:space-y-4">
-                {isLoading ? Array(2).fill(null).map((_, index) => (
+                {isLoading ? Array(1).fill(null).map((_, index) => (
                     <div key={index} className="bg-white rounded-lg shadow-md mb-6 animate-pulse py-8 border px-4">
                         <div className="flex items-center justify-between">
                             <Skeleton className="h-10 pl-2 w-[14%] my-2" />
