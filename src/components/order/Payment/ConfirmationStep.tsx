@@ -15,10 +15,32 @@ import { useCreatePayment } from "@/features/order/hooks"
 import { useEffect, useState } from "react"
 
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // bytes
+const ACCEPTED_FILE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/jpg",
+];
+
+const getCurrentDateTimeLocal = () => {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); 
+  return now.toISOString().slice(0, 16); 
+}
+
 const paymentConfirmationSchema = z.object({
     paymentProof: z
-        .any()
-        .refine((files) => files, { message: "Bukti pembayaran harus diunggah" }),
+    .custom<File>((file) => {
+      return file instanceof File;
+    }, {
+      message: "File harus diunggah"
+    })
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: "Ukuran file maksimal 5MB",
+    })
+    .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), {
+      message: "Format file tidak didukung (hanya JPG, PNG, atau PDF)",
+    }),
     senderName: z.string({ error: "Nama pengirim harus diisi" }).min(3, { message: "minimal Nama 3 karakter" }),
     note: z.string().optional(),
     paidAmount: z
@@ -43,11 +65,12 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal }: {
     // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     // const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
+
     const form = useForm<PaymentConfirmationForm>({
         resolver: zodResolver(paymentConfirmationSchema),
         defaultValues: {
             paidAmount: 0,
-            paymentDateTime: Date(),
+            paymentDateTime: getCurrentDateTimeLocal(),
             // paymentMethod: "",
             senderName: '',
             termsAgreement: false
@@ -141,7 +164,7 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal }: {
                                         >
                                             <i className="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
                                             <p className="text-gray-600 mb-2">Klik untuk upload bukti pembayaran</p>
-                                            <p className="text-sm text-gray-500">Format: JPG, PNG (Max 5MB)</p>
+                                            <p className="text-sm text-gray-500">Format Image: JPG, PNG, JPEG, ... (Max 5MB)</p>
                                         </div>
                                         {form.watch("paymentProof") && (
                                             <p className="text-sm text-green-600 mt-2">
@@ -247,7 +270,7 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal }: {
                                                 <FormLabel className="block text-sm font-medium text-gray-700 mb-2">Tanggal & Waktu Pembayaran *</FormLabel>
                                                 <FormControl className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
                                                     <Input
-                                                        {...field} className="w-full" type="datetime-local"
+                                                        {...field}  className="w-full" type="datetime-local"
                                                         />
                                                 </FormControl>
                                                 {/* <FormMessage /> */}

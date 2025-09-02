@@ -5,7 +5,7 @@ import { ItemShipping } from "./shipping"
 import { Store } from "./store"
 import { User } from "./user"
 
-export type StatusOrder = 'awaiting_payment' | 'processing' | 'paid' | 'shipped' | 'completed' | 'delivered' | 'cancelled' | 'refunded' | 'pending'
+export type StatusOrder = 'awaiting_payment' | 'processing' | 'expired'| 'paid' | 'shipped' | 'completed' | 'delivered' | 'cancelled' | 'refunded' | 'pending'
 export type StatusPayment = 'unpaid' | 'pending' | 'uploaded' | 'verified' | 'rejected' | 'expired' | 'refunded'
 
 export interface Order {
@@ -28,10 +28,15 @@ export interface Order {
     estimated_delivery:string
     tracking_number:string
     cancellation_reason?:string
-    
+    delivered_at:string
+    cancelled_at:string
+    paid_at:string
+    expired_at:string
+    shipped_at:string
     status: StatusOrder
     stats_label: string
     shipping_cost: Price
+    shipping_note?: string
     subtotal: Price
     store_id: string
     store: Store & {

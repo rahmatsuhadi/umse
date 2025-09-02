@@ -58,9 +58,11 @@ export default function OrderFilter() {
                         <option value="">Semua Status</option>
                         <option value="pending">Menunggu Konfirmasi</option>
                         <option value="processing">Diproses</option>
-                        <option value="packed">Dikemas</option>
                         <option value="shipped">Dikirim</option>
+                        <option value="delivered">Sampai</option>
+                        <option value="cancelled">Cancel</option>
                         <option value="completed">Selesai</option>
+                        <option value="expired">Expired</option>
                     </select>
                 </div>
 
