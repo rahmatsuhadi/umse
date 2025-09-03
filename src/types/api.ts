@@ -15,6 +15,7 @@ export interface ApiResponse<T> {
 export interface MetaLink {
   url: string | null;
   label: string;
+  page:number
   active: boolean;
 }
 

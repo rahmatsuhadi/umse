@@ -1,12 +1,13 @@
 import { Location } from "./address"
 import { CartItem } from "./cart"
+import { Payment } from "./payment"
 import { Price } from "./product"
-import { ItemShipping } from "./shipping"
+import { ItemShipping, ShippingItem } from "./shipping"
 import { Store } from "./store"
 import { User } from "./user"
 
 export type StatusOrder = 'awaiting_payment' | 'processing' | 'expired'| 'paid' | 'shipped' | 'completed' | 'delivered' | 'cancelled' | 'refunded' | 'pending'
-export type StatusPayment = 'unpaid' | 'pending' | 'uploaded' | 'verified' | 'rejected' | 'expired' | 'refunded'
+export type StatusPayment = 'unpaid' | 'pending' | 'paid' | 'uploaded' | 'verified' | 'rejected' | 'expired' | 'refunded'
 
 export interface Order {
     order_number: string
@@ -24,6 +25,7 @@ export interface Order {
     shipping_postal_code: string
     payment_due_at:string
     shipping_service:string
+    payment:Payment
     shipping_service_type:string
     estimated_delivery:string
     tracking_number:string
@@ -38,11 +40,12 @@ export interface Order {
     shipping_cost: Price
     shipping_note?: string
     subtotal: Price
+    can_be_reviewed: boolean
     store_id: string
     store: Store & {
         qris_url: string
     }
-    items: CartItem[]
+    items: ShippingItem[]
     status_label: string
     shipping_recipient_name: string
     shipping_recipient_phone_number: string

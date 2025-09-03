@@ -10,9 +10,9 @@ export default function OrderPage() {
     return (
         <div className=" w-full min-h-screen">
             <Navbar withMenu={false} />
-            
+
             <main className="container mx-auto px-4 py-6">
-                
+
                 {/* <!-- Breadcrumb --> */}
                 <nav className="mb-4 sm:mb-6">
                     <ol
@@ -22,7 +22,7 @@ export default function OrderPage() {
                             <Link href="/" className="hover:text-primary flex-shrink-0"
                             >Beranda</Link>
                         </li>
-                        
+
                         <li><i className="fas fa-chevron-right text-xs flex-shrink-0"></i></li>
                         <li className="text-gray-900 truncate">Pesanan Saya</li>
                     </ol>
@@ -44,8 +44,7 @@ export default function OrderPage() {
 
                 <div className="grid lg:grid-cols-4 gap-4 sm:gap-8">
                     {/* <!-- Order Filters --> */}
-                   <OrderFilter/>
-
+                    <OrderFilter />
 
                     {/* <!-- Orders List --> */}
 
@@ -53,7 +52,7 @@ export default function OrderPage() {
 
                 </div>
 
-            
+
             </main>
 
 

@@ -1,4 +1,6 @@
+import { CartItem } from "./cart";
 import { Price } from "./product";
+import { Review } from "./review";
 
 
 export interface ItemShipping {
@@ -12,6 +14,13 @@ export interface ShippingRates {
     destination_village_id?: number;
     items: ItemShipping[];
     origin_village_id?: number
+}
+
+export interface ShippingItem extends CartItem{
+    product_name:string
+    review?:Review
+    order_id:string
+    
 }
 
 export interface ResponseShippingRates {

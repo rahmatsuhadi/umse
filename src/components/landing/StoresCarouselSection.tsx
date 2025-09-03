@@ -22,7 +22,7 @@ export default function StoresCarouselSection() {
             {stores.map((store, index) => (
               <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4">
                 <div className="p-1">
-                  <Link href={"/toko/123"} className="group">
+                  <Link href={"/umkm/123"} className="group">
                     <Card className="overflow-hidden h-full transition-all group-hover:shadow-lg group-hover:-translate-y-1">
                       {/* Bagian Gambar */}
                       <div className="relative w-full aspect-[4/3] bg-gray-100">

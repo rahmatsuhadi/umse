@@ -30,6 +30,7 @@ const addressSchema = z.object({
     postal_code: z.string().min(5, "Kode pos tidak valid.").max(5, "Kode pos tidak valid."),
     is_primary: z.boolean(),
     label: z.string().min(1, "Label alamat wajib diisi."),
+    note: z.string().optional(),
 });
 
 interface FormAddressPageProps {
@@ -48,6 +49,17 @@ export default function FormAddressPage({ }: FormAddressPageProps) {
     const form = useForm<z.infer<typeof addressSchema>>({
         resolver: zodResolver(addressSchema),
         defaultValues: {
+            address: '',
+            district_id: '',
+            is_primary: false,
+            label: '',
+            note: '',
+            postal_code: '',
+            province_id: '',
+            regency_id: '',
+            recipient_name: '',
+            recipient_phone_number: '',
+            village_id: '',
         }
     });
 
@@ -81,6 +93,7 @@ export default function FormAddressPage({ }: FormAddressPageProps) {
             form.setValue("village_id", String(existingAddress.village_id))
             form.setValue("is_primary", existingAddress.is_primary)
             form.setValue("label", existingAddress.label)
+            form.setValue("note", existingAddress.note)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [existingAddress])
@@ -261,6 +274,10 @@ export default function FormAddressPage({ }: FormAddressPageProps) {
                                 )} />
                                 <FormField control={form.control} name="postal_code" render={({ field }) => (
                                     <FormItem><FormLabel>Kode Pos *</FormLabel><FormControl><Input placeholder="55xxx" maxLength={5} {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField control={form.control} name="note" render={({ field }) => (
+                                    <FormItem><FormLabel>Note tambahan</FormLabel><FormControl>
+                                        <Textarea placeholder="contoh: rumah warna hijau hadap barat" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={form.control} name="is_primary" render={({ field }) => (
                                     <FormItem className="flex items-center gap-2 space-y-0 pt-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><Label className="font-normal"><i className="fas fa-star mr-2 text-yellow-500"></i>Jadikan alamat utama</Label></FormItem>

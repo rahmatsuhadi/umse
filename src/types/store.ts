@@ -19,6 +19,7 @@ export interface Store {
   distric_id:string,
   village: { id: number; name: string };
   village_id:number
+  user:User
 
   products_count: number;
   created_at: string;

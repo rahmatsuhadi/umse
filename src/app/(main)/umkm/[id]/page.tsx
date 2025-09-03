@@ -1,5 +1,6 @@
 import ContactSection from "@/components/landing/Contact";
 import ProductSection from "@/components/product/ProductSection";
+import ProductSectionStore from "@/components/product/ProductSectionStore";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             openGraph: {
                 title: store.name,
                 description: trimmedDescription,
-                url: `${APP_URL}/store/${store.id}`,  // URL produk
+                url: `${APP_URL}/umkm/${store.id}`,  // URL produk
                 image: ogImageUrl,
                 type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
             },
@@ -68,6 +69,7 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
         notFound();
     }
 
+
     return (
         <div>
             <Navbar />
@@ -84,7 +86,7 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
 
             <AnimatedWrapper className="md:px-10">
 
-                <ProductSection />
+                <ProductSectionStore id={id} />
             </AnimatedWrapper>
 
             <AnimatedWrapper>

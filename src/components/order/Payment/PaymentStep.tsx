@@ -6,6 +6,7 @@ import { CheckoutStep } from "../step/steps";
 import { Order } from "@/types";
 import Image from "next/image";
 import CountdownTimer from "./CountDownPayment";
+import { formatDate } from "@/lib/format-date";
 
 
 export default function PaymentStep({
@@ -17,8 +18,15 @@ export default function PaymentStep({
   onConfirmation: () => void;
   currentStep: CheckoutStep;
 }) {
-  const allowedStatuses = ["unpaid", "partially_paid"];
+  const allowedStatuses = ["unpaid", "partially_paid", 'rejected', 'expired'];
+
+  const now = new Date();
+
+  const paid_expired_at = new Date(order.payment_due_at); // Convert payment_due_at to Date object
+
   const isAllowed = allowedStatuses.includes(order.payment_status);
+
+  const isPaymentExpired = paid_expired_at <= now;
 
   const onPaymentSubmit = () => {
     onConfirmation();
@@ -38,7 +46,7 @@ export default function PaymentStep({
           id="paymentSection"
           className="bg-white rounded-lg shadow-md mb-6"
         >
-          {isAllowed ? (
+           {isAllowed && !isPaymentExpired ? (
             <>
               {/* Header */}
               <div className="p-6 border-b border-gray-200">
@@ -68,10 +76,7 @@ export default function PaymentStep({
                   </h4>
                   <p className="text-gray-600 mb-4">
                     Total yang harus dibayar:{" "}
-                    <span
-                      id="totalPayment"
-                      className="font-bold text-primary"
-                    >
+                    <span id="totalPayment" className="font-bold text-primary">
                       {order.total.formatted}
                     </span>
                   </p>
@@ -98,10 +103,7 @@ export default function PaymentStep({
                       <span className="text-orange-700">
                         Selesaikan pembayaran dalam:
                       </span>
-                      <span
-                        id="countdown"
-                        className="font-bold text-orange-800 ml-2"
-                      >
+                      <span id="countdown" className="font-bold text-orange-800 ml-2">
                         <CountdownTimer targetDate={order.payment_due_at} />
                       </span>
                     </div>
@@ -111,20 +113,27 @@ export default function PaymentStep({
                     onClick={onPaymentSubmit}
                     className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition duration-300"
                   >
-                    <i className="fas fa-check mr-2"></i>Sudah Bayar? Konfirmasi
-                    Sekarang
+                    <i className="fas fa-check mr-2"></i>Sudah Bayar? Konfirmasi Sekarang
                   </button>
                 </div>
               </div>
             </>
           ) : (
-            /* Jika status bukan unpaid / partially_paid */
+            // Jika pembayaran tidak tersedia atau sudah lewat
             <div className="p-6 text-center text-gray-600">
               <i className="fas fa-info-circle text-blue-500 text-2xl mb-2"></i>
-              <p>
-                Status pesanan Anda saat ini{" "}
-                <span className="font-semibold">{order.payment_status}</span>.
-              </p>
+              {isPaymentExpired ? (
+                <p>
+                  Pembayaran sudah melewati batas waktu yang ditentukan pada{" "}
+                  <span className="font-semibold">{formatDate(order.payment_due_at)}</span>.
+                  Pembayaran tidak dapat dilakukan.
+                </p>
+              ) : (
+                <p>
+                  Status pesanan Anda saat ini{" "}
+                  <span className="font-semibold">{order.payment_status}</span>.
+                </p>
+              )}
               <p>Pembayaran tidak tersedia untuk status ini.</p>
             </div>
           )}

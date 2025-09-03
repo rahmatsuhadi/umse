@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { useGetOrderPayments } from "@/features/order/hooks";
 import Image from "next/image";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
+import { formatDate } from "@/lib/format-date";
 
 type Props = {
   open: boolean;
@@ -19,16 +21,7 @@ type Props = {
   onClose: () => void;
 };
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return "-";
-  return new Date(dateStr).toLocaleDateString("id-ID", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+
 
 export const getStatusBadgeClass = (status: string): string => {
   switch (status) {
@@ -53,6 +46,7 @@ export const getStatusBadgeClass = (status: string): string => {
     // Error/Cancelled states
     case "cancelled":
     case "refunded":
+    case "rejected":
     case "expired":
       return "bg-red-100 text-red-800";
 
@@ -70,12 +64,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
         {isLoading || !order ? (
-          <>
-            <DialogHeader>
-              <DialogTitle>Detail Pesanan</DialogTitle>
-            </DialogHeader>
-            <p className="text-sm text-gray-500">Memuat data pemesanan...</p>
-          </>
+          <OrderDetailModalSkeleton />
         ) : (
           <>
             {/* Header */}
@@ -91,11 +80,10 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
             {/* Status Badge */}
             <div className="py-2 border-b border-gray-200 flex items-center gap-2">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(
-                  order.status
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(order.status == "awaiting_payment" ? order.payment_status : order.status
                 )}`}
               >
-                {order.payment_status == "pending" ? order.payment_status_label : order.status_label}
+                {order.status == "awaiting_payment" ? order.payment_status_label : order.status_label}
 
               </span>
             </div>
@@ -103,39 +91,53 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
             {/* Status Detail Section */}
             <div className="mt-3 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
-
-              
-
-              {order.status === "awaiting_payment" && order.payment_status == "unpaid" && (
+              {/* Status "Awaiting Payment" */}
+              {order.status === "awaiting_payment" && (
                 <>
-                  <p className="text-yellow-700 font-medium">
-                    Menunggu pembayaran sebelum {formatDate(order.payment_due_at)}
-                  </p>
-                  <Link href={`/pembayaran/${order.id}`} className="inline-block text-blue-600 hover:underline text-sm" > <i className="fas fa-credit-card mr-1" /> Lanjutkan Pembayaran </Link>
+                  {order.payment_status === "rejected" && (
+                    <>
+                      <p className="text-yellow-700 font-medium">Pembayaran ditolak oleh penjual.</p>
+                      {order.payment?.rejection_reason && (
+                        <p className="text-yellow-700 font-medium">
+                          Alasan: {order.payment.rejection_reason }
+                        </p>
+                      )}
+                    </>
+                  )}
+                  {order.payment_status === "unpaid" && (
+                    <p className="text-yellow-700 font-medium">
+                      Menunggu pembayaran sebelum {formatDate(order.payment_due_at)}
+                    </p>
+                  )}
+                  {order.payment_status === "pending" && (
+                    <p className="text-yellow-700 font-medium">
+                      Menunggu Konfirmasi pembayaran dari penjual
+                    </p>
+                  )}
+                  {order.payment_status === "paid" && (
+                    <p className="text-gray-700">
+                      Pembayaran Terverifikasi. Pesanan sedang menunggu konfirmasi dari penjual
+                      {order.payment?.verified_at && ` sejak ${formatDate(order.payment.verified_at)}.`}
+                    </p>
+                  )}
                 </>
               )}
 
-              {order.payment_status == "pending" && (
-                <>
-                  <p className="text-yellow-700 font-medium">
-                    Menunggu Konfirmasi pembayaran dari penjual
-                  </p>
-                </>
-              )}
-
-              {order.status === "pending" && (
-                <p className="text-gray-700">
-                  Pesanan sedang menunggu konfirmasi dari penjual sejak{" "}
-                  {formatDate(order.created_at)}.
+              {/* Status "Pending" with Paid Payment */}
+              {order.status === "pending" && order.payment_status === "paid" && (
+                <p className="text-yellow-700 font-medium">
+                  Pembayaran Berhasil. Menunggu konfirmasi pesanan diproses penjual
                 </p>
               )}
 
+              {/* Status "Processing" */}
               {order.status === "processing" && (
                 <p className="text-gray-700">
                   Pesanan sedang diproses dan dikemas oleh penjual
                 </p>
               )}
 
+              {/* Status "Shipped" */}
               {order.status === "shipped" && (
                 <>
                   <p className="text-gray-700">
@@ -175,7 +177,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                             options
                           )} ${maxDate.toLocaleDateString("id-ID", monthYearOptions)}`;
                         } else {
-                          // Kalau beda bulan/tahun, tampil lengkap dua-duanya
+                          // Kalau beda bulan/tahun, tampilkan lengkap dua-duanya
                           return `${minDate.toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "long",
@@ -190,48 +192,47 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                     </p>
                   )}
                   {order.tracking_number && (
-                    <p className="text-blue-600 font-mono break-all">
-                      Resi: {order.tracking_number}
-                    </p>
+                    <p className="text-blue-600 font-mono break-all">Resi: {order.tracking_number}</p>
                   )}
                 </>
               )}
 
+              {/* Status "Delivered" */}
               {order.status === "delivered" && (
                 <p className="text-green-700 font-medium">
-                  Pesanan diterima {formatDate(order.delivered_at)}.
+                  Pesanan terkirim {formatDate(order.delivered_at)}.
                 </p>
               )}
 
+              {/* Status "Completed" */}
               {order.status === "completed" && (
                 <p className="text-green-700 font-medium">
                   Pesanan selesai 🎉 Terima kasih sudah berbelanja!
                 </p>
               )}
 
+              {/* Status "Cancelled" */}
               {order.status === "cancelled" && (
                 <p className="text-red-600">
                   Pesanan dibatalkan {formatDate(order.cancelled_at)}.{" "}
-                  {order.cancellation_reason && (
-                    <span>Alasan: {order.cancellation_reason}</span>
-                  )}
+                  {order.cancellation_reason && <span>Alasan: {order.cancellation_reason}</span>}
                 </p>
               )}
 
+              {/* Status "Expired" */}
               {order.status === "expired" && (
-                <p className="text-gray-700">
-                  Pesanan kadaluarsa.
-                </p>
+                <p className="text-gray-700">Pesanan kadaluarsa.</p>
               )}
 
-
-                {order.note && (
-                  <p className="text-gray-600">
-                    <span className="font-medium">Catatan: </span>
-                    {order.note}
-                  </p>
-                )}
+              {/* Order Notes */}
+              {order.note && (
+                <p className="text-gray-600">
+                  <span className="font-medium">Catatan: </span>
+                  {order.note}
+                </p>
+              )}
             </div>
+
 
             {/* Items */}
             <div className="py-4">
@@ -322,3 +323,65 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
     </Dialog>
   );
 }
+
+
+const OrderDetailModalSkeleton = () => {
+  return (
+    <div className="">
+      {/* Header */}
+      <DialogHeader className="space-y-1">
+        <DialogTitle></DialogTitle>
+        <div className="h-4 w-2/3 bg-gray-300 rounded"></div>
+        <div className="h-3 w-1/3 bg-gray-300 rounded"></div>
+      </DialogHeader>
+
+      {/* Status Badge */}
+      <div className="py-2 border-b border-gray-200 flex items-center gap-2">
+        <Skeleton className="w-24 h-4 rounded-full" />
+      </div>
+
+      {/* Status Detail Section */}
+      <div className="mt-3 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
+        <Skeleton className="w-full h-4" />
+        <Skeleton className="w-full h-4" />
+        <Skeleton className="w-full h-4" />
+      </div>
+
+      {/* Items */}
+      <div className="">
+        <h3 className="font-semibold mb-2">Item Pesanan</h3>
+        <div className="space-y-4 mb-6">
+          {[...Array(1)].map((_, i) => (
+            <div key={i} className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3">
+              <Skeleton className="w-12 h-12 rounded-lg" />
+              <div className="flex-1 min-w-0">
+                <Skeleton className="w-1/2 h-4 mb-2" />
+                <Skeleton className="w-1/3 h-4 mb-2" />
+                <Skeleton className="w-1/4 h-4" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Address */}
+      <div className="py-1">
+        <h3 className="font-semibold mb-2">Alamat Pengiriman</h3>
+        <div className="bg-gray-50 rounded-lg p-3 mb-6">
+          <Skeleton className="w-full h-6 mb-4" />
+          <Skeleton className="w-2/3 h-4" />
+        </div>
+      </div>
+
+      {/* Payment Summary */}
+      <div className="">
+        <h3 className="font-semibold mb-2">Ringkasan Pembayaran</h3>
+        <div className="space-y-2 text-sm">
+          <Skeleton className="w-full h-6" />
+          <Skeleton className="w-full h-6" />
+          <Skeleton className="w-full h-6" />
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -12,7 +12,7 @@ export default function OrderFilter() {
     const [status, setStatus] = useState<string>(searchParams.get("status") || "");
     const [startDate, setStartDate] = useState<string>(searchParams.get("startDate") || "");
     const [endDate, setEndDate] = useState<string>(searchParams.get("endDate") || "");
-    const [searchTerm, setSearchTerm] = useState<string>(searchParams.get("search") || "");
+    const [searchTerm, setSearchTerm] = useState<string>(searchParams.get("q") || "");
 
     // Function to apply filters and update the URL with query parameters
     const applyFilters = () => {
@@ -20,7 +20,7 @@ export default function OrderFilter() {
             status,
             startDate,
             endDate,
-            searchTerm,
+            q: searchTerm,
         };
 
         // Clean up empty filter values to avoid unnecessary query params
@@ -38,7 +38,7 @@ export default function OrderFilter() {
         setStatus(searchParams.get("status") || "");
         setStartDate(searchParams.get("startDate") || "");
         setEndDate(searchParams.get("endDate") || "");
-        setSearchTerm(searchParams.get("search") || "");
+        setSearchTerm(searchParams.get("q") || "");
     }, [searchParams]);
 
     return (
