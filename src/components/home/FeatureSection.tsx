@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const features = [
     { link: "/", icon: "fas fa-shopping-basket", text: "Pasar Sleman" },
-    { link: "?#store", icon: "fas fa-store", text: "Direktori UMKM" },
+    { link: "/umkm", icon: "fas fa-store", text: "Direktori UMKM" },
     { link: "/pameran", icon: "fas fa-bullhorn", text: "Info Pameran" },
     { link: "/pelatihan", icon: "fas fa-graduation-cap ", text: "Info Pelatihan" },
     { link: "/literasi", icon: "fas fa-book-open ", text: "Literasi UMKM" },

@@ -123,7 +123,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <i className="fas fa-map-marker-alt mr-1 flex-shrink-0"></i>
-                      <span className="truncate">{product.store.address}</span>
+
+                      <span className="truncate w-48 sm:w-full">{product.store.address}</span>
                     </div>
                   </div>
                 </div>

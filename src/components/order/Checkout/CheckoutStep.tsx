@@ -20,11 +20,13 @@ import { withMask } from "use-mask-input";
 import z from "zod";
 import { animationVariants } from "../step/animate";
 import { CheckoutStep } from "../step/steps";
-import { useRouter } from "next/navigation";
 import { useCreateOrder } from "@/features/order/hooks";
 
 const province_id = 34
 const service_name = "jne"
+
+const service_type = "REG23";
+
 // Skema validasi dengan Zod
 const addressSchema = z.object({
     recipientName: z.string().min(1, "Nama penerima wajib diisi."),
@@ -98,7 +100,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
 
 
-    const { data: shippingRate, isLoading: isLoadingShippingRates } = useShippingRates({
+    const { data: shippingRate, isLoading: isLoadingShippingRates, error: errorShippingRates } = useShippingRates({
         origin_village_id: store?.village_id,
         items: cartItems.map((item => {
             return {
@@ -145,10 +147,10 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
     const villages = villagesData?.data || [];
 
 
-    const { mutate, isPending} = useCreateOrder()
+    const { mutate, isPending } = useCreateOrder()
     const handleOrderSubmit = (data: z.infer<typeof addressSchema>) => {
         const orderData = {
-            ...data,
+            // ...data,
             items: cartItems.map((item) => ({
                 cart_item_id: item.id,
                 // product_id: item.product.id,
@@ -156,9 +158,9 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                 // variant_id: item.variant?.id || '',
             })),
             shipping_service: service_name,
-            shipping_service_type: "REG23",
+            shipping_service_type: service_type,
             store_id: store?.id || '',
-            total: total,
+            // total: total,
             address: {
                 address_line: data.fullAddress,
                 district_id: Number(data.district_id),
@@ -198,100 +200,8 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
 
                     {isLoading ? (
-                        <div className="p-6">
-                            {/* Store Info */}
-                            <div className="bg-primary-light/20 border border-primary-dark rounded-lg p-4 mb-6">
-                                <div className="flex items-center">
-                                    {/* <i className="fas fa-store text-primary text-xl mr-3"></i> */}
-                                    <Skeleton className="w-13 h-13 rounded-full" />
-                                    <div>
-                                        <Skeleton className="h-5 w-32" />
-                                        <Skeleton className="h-5 w-52 mt-2" />
-                                    </div>
-                                </div>
-                            </div>
+                        <SkeletonPage />
 
-                            {/* Items */}
-                            <div className="mb-6">
-                                <h4 className="font-bold text-gray-800 mb-4">Item Pesanan</h4>
-                                <div className="space-y-4">
-
-                                    {/* card */}
-                                    {Array(2).fill(null).map((_, index) => (
-                                        <div key={index} className="flex items-center bg-gray-50 rounded-lg p-4">
-                                            <Skeleton className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mr-4" />
-                                            <div className="flex-1">
-                                                <Skeleton className="w-28 h-5" />
-                                                <Skeleton className="w-12 h-3 mt-2" />
-                                                <Skeleton className="w-32 h-3 mt-2" />
-                                            </div>
-                                            <Skeleton className="float-right h-4 w-20" />
-                                        </div>
-                                    ))}
-
-                                    {/* card */}
-
-
-                                </div>
-
-                                {/* Summary */}
-                                <div className="border-t border-gray-200 pt-4 mt-4">
-
-                                    <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2">
-                                        <span>Total</span>
-                                        <Skeleton className="h-5 w-20" />
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-                            <form className="grid md:grid-cols-2 gap-4 mb-6">
-                                <div>
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-9 w-full mt-2" />
-                                </div>
-                                <div>
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-9 w-full mt-2" />
-                                </div>
-                                <div>
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-9 w-full mt-2" />
-                                </div>
-                                <div>
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-9 w-full mt-2" />
-                                </div>
-                                <div className="col-span-2">
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-14 w-full mt-2" />
-                                </div>
-                                <div>
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-9 w-full mt-2" />
-                                </div>
-                                <div>
-                                    <Skeleton className="h-4 w-32" />
-                                    <Skeleton className="h-9 w-full mt-2" />
-                                </div>
-
-
-                            </form>
-                            {/* </div> */}
-
-                            <div className="mb-6">
-
-
-
-                                <Skeleton className="h-4 w-32" />
-                                <Skeleton className="h-14 w-full mt-2" />
-                            </div>
-                            {/* Tombol Lanjut */}
-
-                            <Skeleton className="w-full h-9" />
-                        </div>
                     ) : cartItems.length == 0 ? (
                         <div className="py-10 px-6 flex items-center justify-center">
                             <div className="max-w-md border p-6 rounded-lg shadow-sm text-center">
@@ -366,7 +276,12 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-gray-600">Ongkos Kirim</span>
-                                                <span className="font-medium">{shipping ? shipping.cost.formatted : "Rp.0 "} {shippingRate?.data ? `( ${shipping?.service_name})` : ''}</span>
+                                                {isLoadingShippingRates ? (
+                                                    <span>Mengkalkulasi ongkos kirim...</span>
+                                                ) : (
+                                                    <span className="font-medium">{shipping ? shipping.cost.formatted : "Rp.0 "} {shippingRate?.data ? `( ${shipping?.service_name})` : ''}</span>
+
+                                                )}
                                             </div>
                                             <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2">
                                                 <span>Total</span>
@@ -464,7 +379,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                             disabled={isPending} control={form.control} name="district_id" render={({ field }) => (
                                                 <FormItem><FormLabel>Kecamatan *</FormLabel>
                                                     <Select
-                                                        disabled={isLoadingDistricts  || field.disabled}
+                                                        disabled={isLoadingDistricts || field.disabled}
                                                         defaultValue={String(addres?.district_id || "")}
                                                         onValueChange={(v) => {
                                                             field.onChange(v)
@@ -491,7 +406,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 <FormItem>
                                                     <FormLabel>Kelurahan *</FormLabel>
                                                     <Select
-                                                        disabled={isLoadingVillages  || field.disabled}
+                                                        disabled={isLoadingVillages || field.disabled}
                                                         defaultValue={String(addres?.village_id || "")}
                                                         onValueChange={field.onChange}
                                                     >
@@ -519,8 +434,8 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 <FormItem>
                                                     <FormLabel>Kode Pos</FormLabel>
                                                     <FormControl>
-                                                        <Input 
-                                                        {...field} placeholder="55xxx" className="w-full border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary" maxLength={5} {...field} />
+                                                        <Input
+                                                            {...field} placeholder="55xxx" className="w-full border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary" maxLength={5} {...field} />
 
                                                     </FormControl>
                                                     <FormMessage />
@@ -542,7 +457,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                                 <FormItem>
                                                     <FormLabel>Catatan untuk Penjual (Opsional)</FormLabel>
                                                     <FormControl>
-                                                        <Textarea {...field}  cols={5}
+                                                        <Textarea {...field} cols={5}
                                                             placeholder="Contoh: Kirim sore hari, jangan gunakan kantong plastik hitam"
                                                             className="w-full border border-gray-300 rounded-lg px-3 py-4 focus:outline-none focus:border-primary" />
                                                     </FormControl>
@@ -554,7 +469,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                     {/* Tombol Lanjut */}
 
                                     <Button
-                                        disabled={isPending}
+                                        disabled={isPending || !!errorShippingRates || isLoadingShippingRates}
                                         type="submit"
                                         className="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition duration-300"
                                     >
@@ -578,3 +493,103 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 }
 
 
+
+
+const SkeletonPage = () => {
+    return (
+        <div className="p-6">
+            {/* Store Info */}
+            <div className="bg-primary-light/20 border border-primary-dark rounded-lg p-4 mb-6">
+                <div className="flex items-center">
+                    {/* <i className="fas fa-store text-primary text-xl mr-3"></i> */}
+                    <Skeleton className="w-13 h-13 rounded-full" />
+                    <div>
+                        <Skeleton className="h-5 w-32" />
+                        <Skeleton className="h-5 w-52 mt-2" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Items */}
+            <div className="mb-6">
+                <h4 className="font-bold text-gray-800 mb-4">Item Pesanan</h4>
+                <div className="space-y-4">
+
+                    {/* card */}
+                    {Array(2).fill(null).map((_, index) => (
+                        <div key={index} className="flex items-center bg-gray-50 rounded-lg p-4">
+                            <Skeleton className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mr-4" />
+                            <div className="flex-1">
+                                <Skeleton className="w-28 h-5" />
+                                <Skeleton className="w-12 h-3 mt-2" />
+                                <Skeleton className="w-32 h-3 mt-2" />
+                            </div>
+                            <Skeleton className="float-right h-4 w-20" />
+                        </div>
+                    ))}
+
+                    {/* card */}
+
+
+                </div>
+
+                {/* Summary */}
+                <div className="border-t border-gray-200 pt-4 mt-4">
+
+                    <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2">
+                        <span>Total</span>
+                        <Skeleton className="h-5 w-20" />
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <form className="grid md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-9 w-full mt-2" />
+                </div>
+                <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-9 w-full mt-2" />
+                </div>
+                <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-9 w-full mt-2" />
+                </div>
+                <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-9 w-full mt-2" />
+                </div>
+                <div className="col-span-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-14 w-full mt-2" />
+                </div>
+                <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-9 w-full mt-2" />
+                </div>
+                <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-9 w-full mt-2" />
+                </div>
+
+
+            </form>
+            {/* </div> */}
+
+            <div className="mb-6">
+
+
+
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-14 w-full mt-2" />
+            </div>
+            {/* Tombol Lanjut */}
+
+            <Skeleton className="w-full h-9" />
+        </div>
+    )
+}

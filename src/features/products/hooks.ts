@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getProducts, getProductBySlug } from "./api";
+import { getProducts, getProductBySlug, getProductsByStore } from "./api";
 import type { PaginatedApiResponse, Product } from "@/types";
 
 type ProductQueryParams = {
@@ -62,6 +62,43 @@ export const useInfiniteProducts = (filters: Omit<ProductQueryParams, 'page'>) =
     },
   });
 };
+
+
+/**
+ * Hook untuk mengambil daftar produk dengan infinite scroll / load more.
+ */
+export const useInfiniteProductsByStoreId = (id: string, filters: Omit<ProductQueryParams, 'page'>) => {
+  return useInfiniteQuery<PaginatedApiResponse<Product>, Error>({
+    queryKey: ["products", 'store', "infinite", filters],
+
+    // `pageParam` akan otomatis dikelola oleh TanStack Query
+    queryFn: ({ pageParam = 1 }) => {
+
+      return getProductsByStore(id, { ...filters, page: pageParam as number })
+    },
+
+    // Halaman awal yang akan diambil
+    initialPageParam: 1,
+
+    // Fungsi ini memberitahu React Query cara mendapatkan nomor halaman berikutnya
+    // getNextPageParam: (lastPage, allPages) => {
+
+    getNextPageParam: (lastPage) => {
+      const currentPage = lastPage.meta.current_page;
+      const totalPages = lastPage.meta.last_page;
+
+      // Jika halaman saat ini belum mencapai halaman terakhir,
+      // kembalikan nomor halaman berikutnya.
+      if (currentPage < totalPages) {
+        return currentPage + 1;
+      }
+
+      // Jika sudah di halaman terakhir, kembalikan undefined untuk menandakan tidak ada lagi data.
+      return undefined;
+    },
+  });
+};
+
 
 // Hook untuk mengambil satu produk
 export const useProduct = (slug: string) => {

@@ -17,30 +17,30 @@ import { useEffect, useState } from "react"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // bytes
 const ACCEPTED_FILE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/jpg",
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
 ];
 
 const getCurrentDateTimeLocal = () => {
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); 
-  return now.toISOString().slice(0, 16); 
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
 }
 
 const paymentConfirmationSchema = z.object({
     paymentProof: z
-    .custom<File>((file) => {
-      return file instanceof File;
-    }, {
-      message: "File harus diunggah"
-    })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: "Ukuran file maksimal 5MB",
-    })
-    .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), {
-      message: "Format file tidak didukung (hanya JPG, PNG, atau PDF)",
-    }),
+        .custom<File>((file) => {
+            return file instanceof File;
+        }, {
+            message: "File harus diunggah"
+        })
+        .refine((file) => file.size <= MAX_FILE_SIZE, {
+            message: "Ukuran file maksimal 5MB",
+        })
+        .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), {
+            message: "Format file tidak didukung (hanya JPG, PNG, atau PDF)",
+        }),
     senderName: z.string({ error: "Nama pengirim harus diisi" }).min(3, { message: "minimal Nama 3 karakter" }),
     note: z.string().optional(),
     paidAmount: z
@@ -61,7 +61,7 @@ const formatRupiah = (number: number) => {
 
 type PaymentConfirmationForm = z.infer<typeof paymentConfirmationSchema>;
 
-export default function ConfirmationPage({ currentStep: step, id, paidTotal }: { paidTotal: number, id: string, currentStep: CheckoutStep }) {
+export default function ConfirmationPage({ currentStep: step, id, paidTotal, backToPayment }: { backToPayment: () => void, paidTotal: number, id: string, currentStep: CheckoutStep }) {
     // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     // const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
@@ -131,8 +131,11 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal }: {
                 exit="exit"
                 transition={{ duration: 0.3 }}
             >
+
+
                 <div id="confirmationSection" className="bg-white rounded-lg shadow-md mb-6">
                     <div className="p-6 border-b border-gray-200">
+                        <Button className=" mb-2 hover:cursor-pointer" onClick={backToPayment}>Kembali</Button>
                         <h3 className="text-lg font-bold text-gray-800">Konfirmasi Pembayaran</h3>
                         <p className="text-sm text-gray-600">
                             Upload bukti pembayaran untuk menyelesaikan pesanan
@@ -270,8 +273,8 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal }: {
                                                 <FormLabel className="block text-sm font-medium text-gray-700 mb-2">Tanggal & Waktu Pembayaran *</FormLabel>
                                                 <FormControl className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
                                                     <Input
-                                                        {...field}  className="w-full" type="datetime-local"
-                                                        />
+                                                        {...field} className="w-full" type="datetime-local"
+                                                    />
                                                 </FormControl>
                                                 {/* <FormMessage /> */}
                                             </FormItem>

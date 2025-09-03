@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
 import React, { useState } from "react";
 import { CheckoutStep, steps } from "@/components/order/step/steps";
 import { StepIndicator } from "@/components/order/step/StepIndicator";
@@ -11,6 +10,7 @@ import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
 import { useParams, useRouter } from "next/navigation";
 import { useGetOrderPayments } from "@/features/order/hooks";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import PaymentStatusCard from "@/components/order/shared/PaymentStatusCard";
 
 export default function PaymentPage() {
     const { id } = useParams<{ id: string }>()
@@ -77,12 +77,15 @@ export default function PaymentPage() {
                     <StepIndicator currentStep={step} />
 
                     {isLoading || !order ? (
-                       <LoadingSpinner text="Sedang memuat detail pesanan..." />
+                        <LoadingSpinner text="Sedang memuat detail pesanan..." />
                     ) : step == "payment" ?
                         <PaymentStep order={order} currentStep={step} onConfirmation={() => setStep("confirmation")} />
 
                         :
-                        <ConfirmationPage paidTotal={order.total.value} id={id} currentStep={step} />
+                        <>
+                            {/* <PaymentStatusCard order={order} status={{label: order.payment_status_label, status: order.payment_status}}/> */}
+                            <ConfirmationPage paidTotal={order.total.value} id={id} currentStep={step} backToPayment={() => setStep("payment")} />
+                        </>
                     }
 
                 </div>

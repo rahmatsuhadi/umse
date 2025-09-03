@@ -37,7 +37,7 @@ type OrderQueryParams = {
   page?: number;
   per_page?: number;
   include?: string;
-  category?: string;
+  q?: string;
   search?: string;
 };
 

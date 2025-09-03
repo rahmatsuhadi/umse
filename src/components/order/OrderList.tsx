@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import OrderCard from "./OrderCard";
 import { useRouter, useSearchParams } from "next/navigation";
 import OrderDetailModal from "./OrderDetailModal";
-import ReviewModal from "./ReviewModal";
 import { useInfiniteOrders } from "@/features/order/hooks";
-import { Order } from "@/types";
+import { Order, ShippingItem } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAddReview } from "@/features/reviews/hooks";
+import { ReviewModalOrder } from "./review/ReviewModal";
 
 
 const formatDate = (dateStr: string) => {
@@ -22,14 +23,12 @@ const formatDate = (dateStr: string) => {
 };
 
 
-// ✅ Dummy handlers (bisa ganti dengan navigasi atau modals)
-// const viewOrderDetail = (id: string) => alert(`Lihat detail pesanan: ${id}`);
-// const openReviewModal = (id: string) => alert(`Buka ulasan untuk: ${id}`);
 const confirmReceived = (id: string) => alert(`Konfirmasi terima: ${id}`);
 
 
 const TABS = [
     { label: "Semua", value: "" },
+    { label: "Menunggu Pembayaran", value: "awaiting_payment" },
     { label: "Menunggu", value: "pending" },
     { label: "Diproses", value: "processing" },
     { label: "Dikirim", value: "shipped" },
@@ -48,6 +47,7 @@ export default function OrderList() {
     const statusFromParams = searchParams.get("status") || "";
     const startDate = searchParams.get("startDate") || "";
     const endDate = searchParams.get("endDate") || "";
+    const search = searchParams.get("q") || "";
     const [activeStatus, setActiveStatus] = useState<string>(statusFromParams);
 
     // Bangun filter secara dinamis
@@ -62,7 +62,7 @@ export default function OrderList() {
     }
 
 
-    const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteOrders({ filter: filter })
+    const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteOrders({ filter: filter, ...(search && { search }) })
 
     const ordersData = data?.pages.flatMap(page => page.data) ?? [];
 
@@ -102,39 +102,38 @@ export default function OrderList() {
         activeStatus ? order.status === activeStatus : true
     );
 
-    const getCountByStatus = (status: string) =>
-        ordersData.filter((order) => order.status === status).length;
 
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [selectedItemReview, setSelectedItemReview] = useState<ShippingItem | null>(null);
+
 
     const handleSubmitReview = (data: {
         rating: number;
         comment: string;
         files: File[];
+        itemId: string,
     }) => {
-        console.log("Review submitted:", data);
+        console.log("Review submitted:", selectedItemReview);
     };
 
-
     return (
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 ">
             {/* <!-- Order Status Tabs --> */}
-            <div className="bg-white rounded-lg shadow-md mb-4 sm:mb-6">
-                <div className="border-b border-gray-200">
+            <div className="bg-white rounded-lg shadow-md mb-4 sm:mb-6 ">
+                <div className="border-b border-gray-200 ">
                     <nav
-                        className="flex space-x-2 sm:space-x-8 px-4 sm:px-6 overflow-x-auto"
+                        className="flex flex-wrap space-x-2 px-4 sm:px-6"
                         aria-label="Tabs"
                     >
                         {TABS.map((tab) => {
-
                             const count =
                                 tab.value === ""
                                     ? counts?.["total"] ?? 0
                                     : tab.value && counts?.[tab.value as keyof typeof counts] !== undefined
                                         ? counts[tab.value as keyof typeof counts]
-                                        :  0;
+                                        : 0;
+
                             return (
                                 <button
                                     key={tab.value}
@@ -142,7 +141,7 @@ export default function OrderList() {
                                     className={`tab-button border-b-2 ${activeStatus === tab.value
                                         ? "border-primary text-primary"
                                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        } py-3 sm:py-4 px-1 text-xs sm:text-sm font-medium whitespace-nowrap`}
+                                        } py-3 sm:py-4 px-3 text-xs sm:text-sm font-medium whitespace-nowrap`}
                                 >
                                     {tab.label}
                                     <span
@@ -154,7 +153,7 @@ export default function OrderList() {
                                         {count}
                                     </span>
                                 </button>
-                            )
+                            );
                         })}
                     </nav>
                 </div>
@@ -181,7 +180,7 @@ export default function OrderList() {
                             formatDate={formatDate}
                             viewOrderDetail={() => setSelectedOrder(order)}
                             // trackOrder={trackOrder}
-                            openReviewModal={() => setShowReviewModal(true)}
+                            openReviewModal={(item) => setSelectedItemReview(item)}
                             confirmReceived={confirmReceived}
                         />
                     )) : (
@@ -211,11 +210,17 @@ export default function OrderList() {
                     orderId={selectedOrder?.id || ''}
                     onClose={() => setSelectedOrder(null)}
                 />
-                <ReviewModal
-                    open={showReviewModal}
-                    onClose={() => setShowReviewModal(false)}
-                    onSubmit={handleSubmitReview}
-                />
+
+                {selectedItemReview && (
+                    <ReviewModalOrder
+                        orderId={selectedItemReview.order_id}
+                        open={!!selectedItemReview}
+                        item={selectedItemReview}
+                        onClose={() => setSelectedItemReview(null)}
+                    />
+
+                )}
+
 
                 {/* <!-- Load More --> */}
                 {hasNextPage && (
@@ -229,8 +234,6 @@ export default function OrderList() {
                         </button>
                     </div>
                 )}
-
-
 
             </div>
             <div>

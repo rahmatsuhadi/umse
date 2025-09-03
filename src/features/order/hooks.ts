@@ -10,7 +10,7 @@ type OrderQueryParams = {
   per_page?: number;
   search?: string;
   filter?: {
-    created_at?:string
+    created_at?: string
     // category_id?: string;          // UUID
     status?: string;       // string
   };
@@ -28,7 +28,7 @@ export const useInfiniteOrders = (filters: Omit<OrderQueryParams, 'page'>) => {
     // `pageParam` akan otomatis dikelola oleh TanStack Query
     queryFn: ({ pageParam = 1 }) => {
 
-      return getOrders({ ...filters, page: pageParam as number })
+      return getOrders({ ...filters, q: filters.search, page: pageParam as number })
     },
 
     // Halaman awal yang akan diambil

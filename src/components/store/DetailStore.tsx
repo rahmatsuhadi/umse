@@ -1,8 +1,41 @@
+"use client"
+
 import { Store } from "@/types";
 import Image from "next/image";
 import { StarRating } from "../product/ReviewCard";
+import { useCallback } from "react";
 
-export default function DetailStoreInfoCard({store}:{store:Store}) {
+export function getWhatsAppLink(phone: string, message?: string): string {
+    let cleaned = phone.replace(/[^0-9+]/g, "");
+
+    if (cleaned.startsWith("08")) {
+        cleaned = "62" + cleaned.substring(1);
+    }
+
+    if (cleaned.startsWith("+62")) {
+        cleaned = cleaned.replace("+62", "62");
+    }
+
+    if (!cleaned.startsWith("62")) {
+        throw new Error("Nomor tidak valid. Harus diawali 08, 62, atau +62");
+    }
+
+    const baseUrl = `https://wa.me/${cleaned}`;
+    return message ? `${baseUrl}?text=${encodeURIComponent(message)}` : baseUrl;
+}
+
+export default function DetailStoreInfoCard({ store }: { store: Store }) {
+
+    const handleWhatsAppClick = useCallback(() => {
+        try {
+            const message = `Halo, saya ingin menanyakan tentang produk di toko ${store.name}`;
+            const link = getWhatsAppLink(store.user.phone_number, message);
+            window.open(link, "_blank"); // buka WA di tab baru
+        } catch (error) {
+            alert("Nomor WhatsApp toko tidak valid");
+        }
+    }, [store]);
+
     return (
         <section className="py-8 bg-white">
             <div className="container mx-auto px-4">
@@ -68,7 +101,7 @@ export default function DetailStoreInfoCard({store}:{store:Store}) {
                                         <div className="text-sm text-gray-600">Produk</div>
                                     </div>
                                     <div className="text-center flex items-center flex-col">
-                                        <StarRating rating={store.average_rating}/>
+                                        <StarRating rating={store.average_rating} />
                                         <div className="text-2xl font-bold text-primary">{store.average_rating}</div>
                                         <div className="text-sm text-gray-600">Rating Toko</div>
                                     </div>
@@ -81,12 +114,12 @@ export default function DetailStoreInfoCard({store}:{store:Store}) {
                                         <span className="ml-3"
                                         >{store.address}</span>
                                     </div>
-                                    
+
                                     <div className="flex items-center text-gray-700">
                                         <i className="fas fa-user text-primary w-5"></i>
                                         <span className="ml-3">{store.owner.name}</span>
                                     </div>
-                                    
+
                                     <div className="flex items-center text-gray-700">
                                         <i className="fas fa-map-marker text-primary w-5"></i>
                                         <span className="ml-3">{store.village.name}, {store.district.name}</span>
@@ -105,6 +138,7 @@ export default function DetailStoreInfoCard({store}:{store:Store}) {
                             {/* <!-- Action Buttons --> */}
                             <div className="flex space-x-4 mt-6">
                                 <button
+                                    onClick={handleWhatsAppClick}
                                     className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300"
                                 >
                                     <i className="fab fa-whatsapp mr-2"></i>Chat WhatsApp
