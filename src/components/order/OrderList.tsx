@@ -7,7 +7,6 @@ import OrderDetailModal from "./OrderDetailModal";
 import { useInfiniteOrders } from "@/features/order/hooks";
 import { Order, ShippingItem } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAddReview } from "@/features/reviews/hooks";
 import { ReviewModalOrder } from "./review/ReviewModal";
 
 
@@ -107,15 +106,6 @@ export default function OrderList() {
 
     const [selectedItemReview, setSelectedItemReview] = useState<ShippingItem | null>(null);
 
-
-    const handleSubmitReview = (data: {
-        rating: number;
-        comment: string;
-        files: File[];
-        itemId: string,
-    }) => {
-        console.log("Review submitted:", selectedItemReview);
-    };
 
     return (
         <div className="lg:col-span-3 ">

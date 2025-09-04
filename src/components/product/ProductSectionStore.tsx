@@ -1,8 +1,7 @@
 "use client";
-import { motion, useInView } from 'framer-motion'; // 1. Impor motion dari framer-motion
-import { useInfiniteProducts, useInfiniteProductsByStoreId } from "@/features/products/hooks";
+import { motion } from 'framer-motion'; // 1. Impor motion dari framer-motion
+import { useInfiniteProductsByStoreId } from "@/features/products/hooks";
 import Link from "next/link";
-import { useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CardProduct, CardProductSkleton } from './ProductSection';
 

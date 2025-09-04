@@ -1,4 +1,4 @@
-import { CartItem, Order, ShippingItem, StatusPayment } from "@/types";
+import { Order, StatusPayment } from "@/types";
 import { getStatusBadgeClass } from "../OrderDetailModal";
 
 interface Props {
@@ -60,8 +60,8 @@ export default function PaymentStatusCard({ status, order }: Props) {
   return (
     <div className="bg-white rounded-lg shadow-md mb-6 p-6">
       <div className="flex items-center mb-4">
-        <div className={`w-12 h-12 ${getStatusBadgeClass(status.status)} rounded-full flex items-center justify-center mr-4`}>
-          <i className={`${paymentStatus.icon} text-${paymentStatus.color}-500 text-xl`}></i>
+        <div className={`w-12 xs:w-8 sm:w-12 h-12 ${getStatusBadgeClass(status.status)} rounded-full flex items-center justify-center mr-4`}>
+          <i className={`${paymentStatus.icon} text-${paymentStatus.color}-500 text-lg  md:text-xl`}></i>
         </div>
         <div>
           <h2 className="text-xl font-bold text-gray-800">{paymentStatus.title}</h2>

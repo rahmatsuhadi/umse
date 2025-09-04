@@ -6,7 +6,7 @@ type ProductQueryParams = {
   page?: number;
   limit?: number;
   per_page?: number;
-  search?: string;
+  q?: string;
   filter?: {
     // category_id?: string;          // UUID
     category__slug?: string;       // string

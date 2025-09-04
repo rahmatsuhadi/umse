@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData, useQueryClient, useMutation } from "@tanstack/react-query";
 import { addReviewByOrderId, CreateReviewData, getReviews } from "./api";
 import type { Review, PaginatedApiResponse } from "@/types";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 type ReviewQueryParams = {
@@ -25,7 +25,7 @@ export const useReviews = ({ productId, page = 1, per_page = 5 }: ReviewQueryPar
 
 
 export const useAddReview = (id:string) => {
-  const router = useRouter()
+  // const router = useRouter()
   
   const queryClient = useQueryClient();
   return useMutation({

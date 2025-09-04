@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component
-import { Skeleton } from "@/components/ui/skeleton"; // For skeleton loading if needed
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 type RejectionModalProps = {
@@ -17,7 +16,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
     <Dialog >
       <DialogTrigger asChild>
         <Button
-          className=" text-white py-6 px-6 font-medium transition duration-300 bg-red-500 hover:bg-red-700 hover:cursor-pointer ">Lihat Alasan Penolakan</Button>
+          className=" text-white py-5 px-5 font-medium transition duration-300 bg-red-500 hover:bg-red-700 hover:cursor-pointer ">Lihat Alasan Penolakan</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

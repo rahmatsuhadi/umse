@@ -6,42 +6,45 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-
 export default function CategoriesSection() {
   const { data, isLoading } = useCategories();
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  // 1. Ambil satu parameter kategori, defaultnya string kosong
-  const categoryParam = searchParams.get('category') || '';
-
-  // 2. State sekarang hanya menyimpan satu string kategori
-  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam);
+  const categoryParam = searchParams.get('category');
+  const initialCategories = categoryParam ? categoryParam.split(',') : [];
+  
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
 
   const categories = data?.data || [];
 
-  // Sinkronkan state jika URL berubah (misalnya dari tombol back/forward browser)
+  // Sinkronkan state jika URL berubah
   useEffect(() => {
-    const category = searchParams.get('category') || '';
-    setSelectedCategory(category);
+    const category = searchParams.get('category');
+    if (category) {
+      setSelectedCategories(category.split(','));
+    } else {
+      setSelectedCategories([]);
+    }
   }, [searchParams]);
 
-  // 3. Logika disederhanakan untuk menangani satu kategori
   const handleCategoryClick = (slug: string) => {
-    // Jika slug yang diklik sama dengan yang sudah aktif, reset. Jika beda, set yang baru.
-    const nextCategory = selectedCategory === slug ? '' : slug;
+    let updatedCategories = [...selectedCategories];
+    
+    if (updatedCategories.includes(slug)) {
+      updatedCategories = updatedCategories.filter(category => category !== slug);
+    } else {
+      updatedCategories.push(slug);
+    }
 
-    // Update state
-    setSelectedCategory(nextCategory);
+    setSelectedCategories(updatedCategories);
 
-    // Update query params
     const params = new URLSearchParams(searchParams.toString());
 
-    if (nextCategory) {
-      // Set parameter dengan slug kategori yang baru
-      params.set('category', nextCategory);
+    if (updatedCategories.length > 0) {
+      // Gabungkan kategori yang dipilih menjadi string yang dipisahkan koma
+      params.set('category', updatedCategories.join(','));
     } else {
-      // Hapus parameter jika tidak ada kategori yang dipilih
       params.delete('category');
     }
 
@@ -63,11 +66,11 @@ export default function CategoriesSection() {
             ))
           ) : (
             categories.map((category) => {
-              // 4. Pengecekan 'isActive' menjadi perbandingan string biasa
-              const isActive = selectedCategory === category.slug;
+              // 4. Pengecekan 'isActive' untuk banyak kategori
+              const isActive = selectedCategories.includes(category.slug);
               return (
                 <div
-                  key={category.id} // Lebih baik menggunakan ID unik dari data
+                  key={category.id}
                   onClick={() => handleCategoryClick(category.slug)}
                   className={`flex flex-col items-center p-3 sm:p-4 ${isActive ? 'bg-primary text-white' : 'bg-orange-50'} hover:bg-orange-100 rounded-lg border ${isActive ? 'border-primary' : 'border-orange-200'} hover:border-primary transition duration-300 group cursor-pointer`}
                 >

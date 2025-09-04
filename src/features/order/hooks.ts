@@ -1,4 +1,4 @@
-import { Order, PaginatedApiResponse, Payment } from "@/types";
+import { Order, PaginatedApiResponse } from "@/types";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createOrder, CreateOrderData, CreateOrderPayment, createPayment, getOrders, getPaymentOrderById } from "./api";
 import { useRouter } from "next/navigation";
@@ -74,7 +74,7 @@ export const useCreatePayment = (id: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateOrderPayment) => createPayment(id, data),
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Pembayaran Behasil Dikirim!");
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       router.replace("/pesanan")

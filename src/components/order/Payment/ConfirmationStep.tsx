@@ -108,13 +108,7 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal, bac
         if (e.target.files?.[0]) {
             form.setValue("paymentProof", e.target.files[0]);
 
-            const file = e.target.files[0];
-
-            if (file.type.startsWith("image/")) {
-                const url = URL.createObjectURL(file);
-            } else if (file.type === "application/pdf") {
-            } else {
-            }
+            // const file = e.target.files[0];
         }
     };
 

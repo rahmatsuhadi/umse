@@ -289,7 +289,7 @@ export function ReviewModalOrder({ open, onClose, items, orderId }: Props) {
 
 
 
-export function ReviewModal({ open, onClose, orderId }: Props) {
+export function ReviewModal({ open, onClose}: Props) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState<number | null>(null);
   const [comment, setComment] = useState("");

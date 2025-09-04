@@ -1,5 +1,5 @@
 "use client"
-import { useInfiniteStores, usePaginationStores } from "@/features/store/hooks";
+import { usePaginationStores } from "@/features/store/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";

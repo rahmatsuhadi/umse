@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useGetOrderPayments } from "@/features/order/hooks";
 import Image from "next/image";
-import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 import { formatDate } from "@/lib/format-date";
 

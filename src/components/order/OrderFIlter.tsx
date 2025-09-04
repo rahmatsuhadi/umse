@@ -30,7 +30,7 @@ export default function OrderFilter() {
 
         // Update the URL with the new query parameters
         const queryString = new URLSearchParams(query).toString();
-        router.push(`${pathname}?${queryString}`);
+        router.push(`${pathname}?${queryString}`, {scroll:false});
     };
 
     // Synchronize state with URL search parameters whenever the URL changes
@@ -93,7 +93,7 @@ export default function OrderFilter() {
                     <input
                         type="text"
                         id="searchOrder"
-                        placeholder="Nomor pesanan atau nama produk"
+                        placeholder="Nomor pesanan"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
