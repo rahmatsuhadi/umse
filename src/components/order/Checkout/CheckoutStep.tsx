@@ -292,7 +292,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
                                     {/* <div className="grid md:grid-cols-2 gap-4 mb-6"> */}
 
-                                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                                    <div className="grid gird-cols-1 md:grid-cols-2 gap-4 mb-6">
                                         <FormField
                                             disabled={isPending}
                                             control={form.control}
@@ -337,7 +337,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
                                             control={form.control}
                                             name="fullAddress"
                                             render={({ field }) => (
-                                                <FormItem className="col-span-2">
+                                                <FormItem className="md:col-span-2">
                                                     <FormLabel>Alamat Lengkap *</FormLabel>
                                                     <FormControl className="">
                                                         <Textarea cols={10}
