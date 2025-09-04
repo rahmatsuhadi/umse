@@ -5,8 +5,7 @@ interface CountdownTimerProps {
   targetDate: string; // ISO string dari API
 }
 
-const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
-  const calculateTimeLeft = () => {
+export const calculateTimeLeft = (targetDate:string) => {
     const difference = +new Date(targetDate) - +new Date();
     if (difference <= 0) return null;
 
@@ -17,11 +16,14 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
     };
   };
 
-  const [timeLeft, setTimeLeft] = useState<ReturnType<typeof calculateTimeLeft>>(calculateTimeLeft());
+const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
+  
+
+  const [timeLeft, setTimeLeft] = useState<ReturnType<typeof calculateTimeLeft>>(calculateTimeLeft(targetDate));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      setTimeLeft(calculateTimeLeft(targetDate));
     }, 1000);
 
     return () => clearInterval(timer);

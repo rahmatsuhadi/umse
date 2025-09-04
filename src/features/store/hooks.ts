@@ -1,5 +1,5 @@
 import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import type { PaginatedApiResponse, Product, Store } from "@/types";
+import type { PaginatedApiResponse, Store } from "@/types";
 import { getStoreById, getStores } from "./api";
 
 type StoresQueryParams = {

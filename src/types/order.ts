@@ -1,8 +1,7 @@
 import { Location } from "./address"
-import { CartItem } from "./cart"
 import { Payment } from "./payment"
 import { Price } from "./product"
-import { ItemShipping, ShippingItem } from "./shipping"
+import { ShippingItem } from "./shipping"
 import { Store } from "./store"
 import { User } from "./user"
 

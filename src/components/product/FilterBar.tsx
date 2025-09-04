@@ -2,6 +2,7 @@
 import { useCategories } from "@/features/categories/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import SearchBar from "./SearchBar";
 
 const FilterSortModal = () => {
     const router = useRouter();
@@ -102,6 +103,15 @@ const FilterSortModal = () => {
         };
     }, []);
 
+      const sortOptions = [
+    { value: '-total_sales', label: 'Terpopuler' },
+    { value: '-created_at', label: 'Terbaru' },
+    { value: 'price', label: 'Harga Rendah' },
+    { value: '-price', label: 'Harga Tinggi' },
+    { value: '-average_rating', label: 'Rating Tertinggi' },
+    { value: 'name', label: 'Nama A-Z' },
+  ];
+
     return (
         <>
 
@@ -110,18 +120,7 @@ const FilterSortModal = () => {
                 <div className="container mx-auto px-4 ">
                     <div className="flex items-center gap-3">
                         {/* <!-- Search Bar --> */}
-                        <div className="flex-1">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="Cari produk..."
-                                    className="w-full pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary"
-                                />
-                                <i
-                                    className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                                ></i>
-                            </div>
-                        </div>
+                        <SearchBar/>
 
                         {/* <!-- Filter Icon --> */}
                         <button
@@ -248,77 +247,22 @@ const FilterSortModal = () => {
 
                     <div className="p-4">
                         <div className="space-y-3">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    value="popular"
-                                    checked={selectedSort === 'popular'}
-                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                    className="border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span className="ml-3 text-sm text-gray-700">Terpopuler</span>
-                            </label>
+                            {sortOptions.map((item, i) => (
 
-                            <label className="flex items-center">
+                            <label className="flex items-center" key={i}>
                                 <input
                                     type="radio"
                                     name="sort"
-                                    value="newest"
-                                    checked={selectedSort === 'newest'}
+                                    value={item.value}
+                                    checked={selectedSort === item.value}
                                     onChange={(e) => setSelectedSort(e.target.value)}
                                     className="border-gray-300 text-primary focus:ring-primary"
                                 />
-                                <span className="ml-3 text-sm text-gray-700">Terbaru</span>
+                                <span className="ml-3 text-sm text-gray-700">{item.label}</span>
                             </label>
+                            ))}
 
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    value="price-low"
-                                    checked={selectedSort === 'price-low'}
-                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                    className="border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span className="ml-3 text-sm text-gray-700">Harga Terendah</span>
-                            </label>
-
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    value="price-high"
-                                    checked={selectedSort === 'price-high'}
-                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                    className="border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span className="ml-3 text-sm text-gray-700">Harga Tertinggi</span>
-                            </label>
-
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    value="rating"
-                                    checked={selectedSort === 'rating'}
-                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                    className="border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span className="ml-3 text-sm text-gray-700">Rating Tertinggi</span>
-                            </label>
-
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    value="name"
-                                    checked={selectedSort === 'name'}
-                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                    className="border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span className="ml-3 text-sm text-gray-700">Nama A-Z</span>
-                            </label>
+                            
                         </div>
                     </div>
 

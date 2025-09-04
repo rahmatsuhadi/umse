@@ -1,5 +1,4 @@
 import ContactSection from "@/components/landing/Contact";
-import ProductSection from "@/components/product/ProductSection";
 import ProductSectionStore from "@/components/product/ProductSectionStore";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";

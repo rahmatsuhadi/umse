@@ -1,6 +1,6 @@
-import { ItemShipping, Order, ShippingItem } from '@/types';
+import { Order, ShippingItem } from '@/types';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React from 'react';
 import { getStatusBadgeClass } from './OrderDetailModal';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';

@@ -32,7 +32,7 @@ export default function DetailStoreInfoCard({ store }: { store: Store }) {
             const link = getWhatsAppLink(store.user.phone_number, message);
             window.open(link, "_blank"); // buka WA di tab baru
         } catch (error) {
-            alert("Nomor WhatsApp toko tidak valid");
+            console.log((error as Error).message)
         }
     }, [store]);
 

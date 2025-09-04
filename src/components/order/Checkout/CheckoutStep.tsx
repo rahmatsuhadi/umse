@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useAddresses, useAddressPrimary } from "@/features/address/hooks";
+import { useAddressPrimary } from "@/features/address/hooks";
 import { useDistricts, useRegencies, useVillages } from "@/features/locations/hooks";
 import { useShippingRates } from "@/features/shipping/hooks";
 import { CartItem } from "@/types"

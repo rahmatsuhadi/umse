@@ -2,8 +2,8 @@
 import Footer from "@/components/layout/Footer";
 import { ComparationCardPayment, PaymentGuideLinePayment, RejectedCardPayment } from "@/components/order/Payment/CardPaymentAlert";
 import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
-import CountdownTimer from "@/components/order/Payment/CountDownPayment";
-import PaymentStatusCard, { OrderSummary } from "@/components/order/shared/PaymentStatusCard";
+import CountdownTimer, { calculateTimeLeft } from "@/components/order/Payment/CountDownPayment";
+import  { OrderSummary } from "@/components/order/shared/PaymentStatusCard";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
@@ -21,6 +21,8 @@ export default function PaymentStatusPage() {
     const order = data?.data;
 
     const router = useRouter()
+
+    const countdown = calculateTimeLeft(order?.payment_due_at ?? new Date().toISOString())
 
     if (!isLoading && order?.payment && order?.payment.status != "rejected") return notFound()
 
@@ -59,7 +61,7 @@ export default function PaymentStatusPage() {
                             </div>
 
                             <PaymentGuideLinePayment />
-                            {order.status != "expired" && (
+                            {order.status != "expired" || !!!countdown && (
                                 <>
                                     <ConfirmationPage backToPayment={() => router.push(`/pembayaran/${id}/status`)} paidTotal={order.total.value} id={id} currentStep={"payment"} />
                                     <ComparationCardPayment />

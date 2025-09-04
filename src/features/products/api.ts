@@ -7,7 +7,7 @@ type ProductQueryParams = {
   per_page?: number;
   include?: string;
   category?: string;
-  search?: string;
+  q?: string;
 };
 
 /**

@@ -33,6 +33,8 @@ const ProductSection = () => {
     // });
 
     const searchParams = useSearchParams()
+    
+    const search = searchParams.get('q') || ''
 
     const categoriesParams = searchParams.get('category') || ''
 
@@ -47,7 +49,7 @@ const ProductSection = () => {
     } = useInfiniteProducts({
         per_page: 12,
         sort: sortParams,
-
+        q: search,
         filter: {
             category__slug: categoriesParams,
 

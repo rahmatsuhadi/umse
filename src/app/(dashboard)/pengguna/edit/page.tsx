@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useUpdateProfile, useUser } from "@/features/auth/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -23,13 +24,14 @@ const profileSchema = z.object({
 export default function EditProfilePage() {
 
 
-    const { data } = useUser();
+    const { data, isLoading } = useUser();
 
     const user = data?.data;
 
 
     const { mutate: updateUser, isPending } = useUpdateProfile();
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [fileError, setFileError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof profileSchema>>({
         resolver: zodResolver(profileSchema),
@@ -44,16 +46,15 @@ export default function EditProfilePage() {
     // Pra-isi form dengan data pengguna saat data tersedia
     useEffect(() => {
         if (user) {
-            form.setValue('name', user.name);
-            form.setValue('email', user.email
-                ? user.email
-                : '');
-            form.setValue('phone_number', user.phone_number
+            form.setValue('name', user?.name ?? '');
+            form.setValue('email', user?.email ?? '');
+            form.setValue('phone_number', user?.phone_number
                 ? user.phone_number : ''
             )
             setPhotoPreview(user.profile_url || null);
         }
-    }, [user, form]);
+    }, [user]);
+
 
     function onSubmit(values: z.infer<typeof profileSchema>) {
         const dataToSubmit = {
@@ -62,6 +63,7 @@ export default function EditProfilePage() {
         };
         updateUser(dataToSubmit);
     }
+
 
 
 
@@ -91,51 +93,94 @@ export default function EditProfilePage() {
                                     <FormItem className="flex flex-col items-center">
                                         <FormControl>
                                             <div className="flex flex-col items-center">
-                                                <Avatar className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-2 border-4 border-gray-200">
-                                                    <AvatarImage
-                                                        src={photoPreview || user?.profile_url}
-                                                        alt="Profile"
-                                                        className="object-cover w-full h-full"
-                                                    />
-                                                    <AvatarFallback>
-                                                        <i className="fas fa-user text-3xl md:text-5xl"></i>
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <Label htmlFor="photo-upload" className="bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors -mt-8 mr-[-60px] z-10">
-                                                    <i className="fas fa-camera text-sm"></i>
-                                                </Label>
-                                                <Input
-                                                    id="photo-upload"
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    onChange={(e) => {
-                                                        field.onChange(e.target.files);
-                                                        if (e.target.files && e.target.files[0]) {
-                                                            setPhotoPreview(URL.createObjectURL(e.target.files[0]));
-                                                        }
-                                                    }}
-                                                />
+                                                {isLoading ? (
+                                                    <Skeleton className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44  rounded-full" />
+                                                ) : (
+                                                    <>
+                                                        <Avatar className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-2 border-4 border-gray-200">
+                                                            <AvatarImage
+                                                                src={photoPreview || user?.profile_url}
+                                                                alt="Profile"
+                                                                className="object-cover w-full h-full"
+                                                            />
+                                                            <AvatarFallback>
+                                                                <i className="fas fa-user text-3xl md:text-5xl"></i>
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                        <Label htmlFor="photo-upload" className="bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors -mt-8 mr-[-60px] z-10">
+                                                            <i className="fas fa-camera text-sm"></i>
+                                                        </Label>
+                                                        <Input
+                                                            id="photo-upload"
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="hidden"
+                                                            // onChange={(e) => handleFileChange(e, field)}
+                                                            onChange={(e) => {
+
+                                                                // field.onChange(e.target.files);
+                                                                // if (e.target.files && e.target.files[0]) {
+                                                                //     setPhotoPreview(URL.createObjectURL(e.target.files[0]));
+                                                                // }
+
+                                                                const file = e.target.files?.[0];
+                                                                const maxSize = 2 * 1024 * 1024; // 2MB
+
+                                                                if (file) {
+                                                                    if (file.size > maxSize) {
+                                                                        setFileError("Ukuran file terlalu besar. Maksimal 2MB.");
+                                                                        field.onChange(null); // Reset file
+                                                                        setPhotoPreview(null); // Reset preview
+                                                                    } else {
+                                                                        setFileError(null); // Clear error
+                                                                        field.onChange(e.target.files); // Update form value
+                                                                        setPhotoPreview(URL.createObjectURL(file)); // Update preview image
+                                                                    }
+                                                                }
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
                                             </div>
                                         </FormControl>
                                         <FormMessage />
+                                        {fileError && <div className="text-red-500 text-sm mt-2">{fileError}</div>}
                                     </FormItem>
                                 )}
                             />
 
-                            <FormField control={form.control} name="name" render={({ field }) => (
-                                <FormItem><FormLabel>Nama Lengkap *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                            <FormField control={form.control} name="email" render={({ field }) => (
-                                <FormItem><FormLabel>Email *</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                            <FormField control={form.control} name="phone_number" render={({ field }) => (
-                                <FormItem><FormLabel>Nomor Telepon</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
+                            {isLoading ? (
+                                <div>
+                                    <Skeleton className="h-5 w-[17%] mb-2" />
+                                    <Skeleton className="h-8 w-full mb-7" />
 
-                            <Button type="submit" className="w-full hover:cursor-pointer" disabled={isPending}>
-                                {isPending ? (<><i className="fas fa-spinner fa-spin mr-2"></i>Menyimpan...</>) : (<><i className="fas fa-save mr-2"></i>Simpan Perubahan</>)}
-                            </Button>
+                                    <Skeleton className="h-5 w-[17%] mb-2" />
+                                    <Skeleton className="h-8 w-full mb-7" />
+
+                                    <Skeleton className="h-5 w-[17%] mb-2" />
+                                    <Skeleton className="h-8 w-full mb-7" />
+
+                                    <Skeleton className="h-8 w-full mb-2" />
+                                </div>
+                            ) : (
+                                <>
+                                    <FormField control={form.control} name="name" render={({ field }) => (
+                                        <FormItem><FormLabel>Nama Lengkap *</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                    )} />
+                                    <FormField control={form.control} name="email" render={({ field }) => (
+                                        <FormItem><FormLabel>Email *</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+                                    )} />
+                                    <FormField control={form.control} name="phone_number" render={({ field }) => (
+                                        <FormItem><FormLabel>Nomor Telepon</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
+                                    )} />
+
+                                    <Button type="submit" className="w-full hover:cursor-pointer" disabled={isPending}>
+                                        {isPending ? (<><i className="fas fa-spinner fa-spin mr-2"></i>Menyimpan...</>) : (<><i className="fas fa-save mr-2"></i>Simpan Perubahan</>)}
+                                    </Button>
+                                </>
+                            )}
+
+
                         </form>
                     </Form>
                 </Card>

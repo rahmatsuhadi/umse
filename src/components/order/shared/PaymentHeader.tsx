@@ -1,8 +1,11 @@
+import { formatDate } from "@/lib/format-date";
+
 interface Props {
   orderId: string;
+  date: string;
 }
 
-export default function PaymentHeader({ orderId }: Props) {
+export default function PaymentHeader({ orderId,date }: Props) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -13,7 +16,7 @@ export default function PaymentHeader({ orderId }: Props) {
           </p>
         </div>
         <div className="mt-4 md:mt-0">
-          <span className="text-sm text-gray-500">1 September 2025</span>
+          <span className="text-sm text-gray-500">{formatDate(date)}</span>
         </div>
       </div>
     </div>

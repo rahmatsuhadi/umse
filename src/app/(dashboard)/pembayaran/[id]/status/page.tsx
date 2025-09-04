@@ -12,7 +12,7 @@ import { useGetOrderPayments } from "@/features/order/hooks";
 import { useParams, useRouter } from "next/navigation";
 
 
-export default function PaymentStatusPage({ params }: { params: Promise<{ id: string }> }) {
+export default function PaymentStatusPage() {
 
     const { id } = useParams<{ id: string }>()
 
@@ -37,21 +37,22 @@ export default function PaymentStatusPage({ params }: { params: Promise<{ id: st
                         <SkeletonPage />
                     ) : (
                         <>
-                            <PaymentHeader orderId={order.order_number} />
+                            <PaymentHeader orderId={order.order_number} date={order.payment.created_at} />
                             <PaymentStatusCard status={{ status: order.payment_status, label: order.status_label }}
                                 order={order} />
 
-                            <div className="flex items-center gap-2">
-                                {order.payment && order.payment.status == "rejected" && (
+                            {order.payment && order.payment.status == "rejected" && (
+                                <div className="flex items-center gap-2 flex-wrap">
                                     <RejectionModal
                                         reason={order.payment.rejection_reason ?? ''}
                                         onUploadAgain={() => router.replace(`/pembayaran/${order.id}/upload-ulang`)}
                                     />
-                                )}
+                                    <Button onClick={() => router.replace(`/pembayaran/${order.id}/upload-ulang`)}
+                                        className=" text-white py-5 px-5 font-medium transition duration-300  hover:cursor-pointer ">Ulangi Pembayaran</Button>
+                                </div>
+                            )}
 
-                                <Button onClick={() =>router.replace(`/pembayaran/${order.id}/upload-ulang`)}
-                                    className=" text-white py-6 px-6 font-medium transition duration-300  hover:cursor-pointer ">Ulangi Pembayaran</Button>
-                            </div>
+
 
                         </>
                     )}

@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { Address, Order, PaginatedApiResponse, Payment } from "@/types";
+import type {  Order, PaginatedApiResponse, Payment } from "@/types";
 
 export interface CreateOrderData {
   items: {

@@ -10,7 +10,6 @@ import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
 import { useParams, useRouter } from "next/navigation";
 import { useGetOrderPayments } from "@/features/order/hooks";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
-import PaymentStatusCard from "@/components/order/shared/PaymentStatusCard";
 
 export default function PaymentPage() {
     const { id } = useParams<{ id: string }>()

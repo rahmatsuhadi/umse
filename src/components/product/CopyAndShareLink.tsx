@@ -1,7 +1,5 @@
 "use client";
-
-import { useState } from "react";
-import { Copy, Share2, Twitter, Facebook, MessageSquare } from "lucide-react";
+import { Copy, Share2} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
