@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
-import type { Cart, CartItem, Product, Variant } from "@/types"; // Impor tipe dari file types Anda
+import type {Product, Variant } from "@/types"; // Impor tipe dari file types Anda
 import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";

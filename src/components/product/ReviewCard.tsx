@@ -86,7 +86,6 @@ export function ReviewCard({ productId, store }: ReviewCardProps) {
     hasNextPage,
     isFetchingNextPage,
     status,
-    error
   } = useReviews({ productId });
   const reviews = data?.pages.flatMap(page => page.data) ?? [];
 

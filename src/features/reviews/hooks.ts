@@ -1,4 +1,4 @@
-import { useQuery, keepPreviousData, useQueryClient, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useInfiniteQuery } from "@tanstack/react-query";
 import { addReviewByOrderId, CreateReviewData, getReviews } from "./api";
 import type { Review, PaginatedApiResponse } from "@/types";
 // import { useRouter } from "next/navigation";

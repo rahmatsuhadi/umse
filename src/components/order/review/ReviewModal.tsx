@@ -54,7 +54,7 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Beri Ulasan untuk "{item.product.name}"</DialogTitle>
+                    <DialogTitle>{`Beri Ulasan untuk "${item.product.name}"`}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="pt-4 space-y-4">
