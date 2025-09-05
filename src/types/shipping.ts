@@ -4,8 +4,8 @@ import { Review } from "./review";
 
 
 export interface ItemShipping {
-    quantity?: number;
-    cart_item_id: string
+    quantity: number;
+    cart_item_id?: string
     product_id?: string
     variant_id?: string
 }

@@ -1,4 +1,4 @@
-import { useQuery, keepPreviousData, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery, keepPreviousData, useQueryClient, useMutation, useInfiniteQuery } from "@tanstack/react-query";
 import { addReviewByOrderId, CreateReviewData, getReviews } from "./api";
 import type { Review, PaginatedApiResponse } from "@/types";
 // import { useRouter } from "next/navigation";
@@ -6,33 +6,61 @@ import { toast } from "sonner";
 
 type ReviewQueryParams = {
   productId: string;
-  page?: number;
+  // page?: number;
   per_page?: number;
 };
 
-export const useReviews = ({ productId, page = 1, per_page = 5 }: ReviewQueryParams) => {
-  return useQuery<PaginatedApiResponse<Review>, Error>({
-    // Query key harus menyertakan ID produk dan halaman untuk cache yang benar
-    queryKey: ["reviews", productId, { page, per_page }],
-    queryFn: () => getReviews({ productId, page, per_page }),
-    // Opsi ini membuat data lama tetap terlihat saat data halaman baru dimuat
-    // sehingga UI tidak berkedip ke state loading (baik untuk UX paginasi)
-    placeholderData: keepPreviousData,
-    enabled: !!productId, // Hanya jalankan query jika productId ada
+export const useReviews = ({ productId, per_page = 5 }: ReviewQueryParams) => {
+  return useInfiniteQuery<PaginatedApiResponse<Review>, Error>({
+    // 1. Query key sekarang tidak menyertakan halaman, karena semua halaman
+    //    akan disimpan di bawah satu key ini.
+    queryKey: ["reviews", productId],
+
+    // 2. queryFn sekarang menerima objek dengan 'pageParam'.
+    //    'pageParam' akan berisi nomor halaman yang akan di-fetch.
+    queryFn: ({ pageParam = 1 }) => getReviews({ productId, page: pageParam as number, per_page }),
+
+    // 3. 'initialPageParam' adalah nilai awal untuk 'pageParam' pada fetch pertama.
+    initialPageParam: 1,
+
+    // 4. 'getNextPageParam' adalah fungsi krusial. Fungsinya adalah untuk
+    //    menentukan halaman BERIKUTNYA berdasarkan data dari halaman TERAKHIR.
+    getNextPageParam: (lastPage, allPages) => {
+      // 'lastPage' adalah data dari fetch terakhir (respons API Anda).
+      // Kita perlu memeriksa apakah ada halaman berikutnya.
+
+      // Asumsi: Respons API Anda memiliki struktur seperti { data: [...], meta: { current_page: 1, last_page: 10 } }
+      // Sesuaikan ini dengan struktur respons API Anda!
+      const currentPage = lastPage.meta.current_page;
+      const lastPageNum = lastPage.meta.last_page;
+
+      if (currentPage < lastPageNum) {
+        // Jika halaman saat ini belum menjadi halaman terakhir,
+        // kembalikan nomor halaman berikutnya.
+        return currentPage + 1;
+      }
+
+      // Jika sudah di halaman terakhir, kembalikan undefined/null
+      // untuk memberitahu React Query bahwa tidak ada halaman lagi.
+      return undefined;
+    },
+
+    enabled: !!productId,
   });
 };
 
 
-
-export const useAddReview = (id:string) => {
+export const useAddReview = (id: string) => {
   // const router = useRouter()
-  
+
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateReviewData) => addReviewByOrderId(id,data),
+    mutationFn: (data: CreateReviewData) => addReviewByOrderId(id, data),
     onSuccess: () => {
       toast.success("Produk Berhasil Di Review");
-      queryClient.invalidateQueries({ queryKey: ['reviews', 'orders'] });
+      queryClient.refetchQueries({
+        queryKey: ['orders', 'infinite']
+      })
     },
     onError: (error) => {
       toast.error("Gagal review Produk", { description: error.message });

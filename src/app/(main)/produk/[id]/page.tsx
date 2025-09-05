@@ -178,7 +178,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
           <CardRating product={product} />
 
-          <ReviewCard productId={product.id} />
+          <ReviewCard store={product.store} productId={product.id} />
 
         </div>
       </section>

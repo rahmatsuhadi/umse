@@ -1,3 +1,6 @@
+import { Media } from "./product";
+import { User } from "./user";
+
 // Tipe untuk data pengguna yang memberikan ulasan
 export interface Reviewer {
   id: string;
@@ -10,7 +13,10 @@ export interface Review {
   id: string;
   rating: number; // 1-5
   content: string;
+  reply_content?:string
+  replied_at?:string
   created_at: string; // ISO date string
-  reviewer: Reviewer;
+  reviewer: User;
+  media: Media[]
   
 }

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
-import type { Product, Variant } from "@/types"; // Impor tipe dari file types Anda
+import type { Cart, CartItem, Product, Variant } from "@/types"; // Impor tipe dari file types Anda
 import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
@@ -62,6 +62,28 @@ export default function ProductVariantSelector({ product }: { product: Product }
 
     addToCart(reqData)
   };
+
+  const handleQuickOrder = async () => {
+
+    const items = [
+      {
+        product_id: product.id,
+        quantity: quantity,
+        store: product.store,
+        variant_id: selectedVariant?.id,
+        variant: selectedVariant || undefined,
+        product: {
+          id: product.id,
+          name: product.name,
+          price: currentPrice,
+          thumbnail: product.thumbnail,
+        }
+      }
+    ]
+    await localStorage.setItem("checkout_items", JSON.stringify(items));
+
+    router.push("/checkout?store=" + product.store.id);
+  }
 
   return (
     <div className="space-y-6">
@@ -126,7 +148,8 @@ export default function ProductVariantSelector({ product }: { product: Product }
             )}
 
           </Button>
-          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary" disabled={currentStock === 0 || true}>
+          <Button onClick={handleQuickOrder} size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary"
+            disabled={currentStock === 0}>
             Beli Langsung
           </Button>
         </div>

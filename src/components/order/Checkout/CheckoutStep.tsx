@@ -100,14 +100,15 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
 
 
+
     const { data: shippingRate, isLoading: isLoadingShippingRates, error: errorShippingRates } = useShippingRates({
         origin_village_id: store?.village_id,
         items: cartItems.map((item => {
             return {
-                cart_item_id: item.id,
-                // product_id: item.product.id,
+                cart_item_id: item.id || undefined,
+                product_id: item.product.id || undefined,
                 quantity: item.quantity,
-                // variant_id: item.variant?.id || '',
+                variant_id: item.variant?.id || undefined,
             }
         })),
         destination_village_id: watchedVillage ? Number(watchedVillage) : undefined,
