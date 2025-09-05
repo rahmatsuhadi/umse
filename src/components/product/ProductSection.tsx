@@ -182,7 +182,7 @@ export const CardProduct = ({ product }: CardProductProps) => {
             </div>
             <div className="p-4 flex flex-col flex-1">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="bg-orange-100 text-orange-800 text-xs sm:text-xs md:text-base px-2 py-1 rounded-full flex-shrink-0 max-w-[60%] truncate">
+                    <span className="bg-orange-100 text-orange-800 text-xs sm:text-xs lg:text-base px-2 py-1 rounded-full flex-shrink-0 max-w-[60%] truncate">
                         {product.category.name}
                     </span>
 
@@ -192,7 +192,7 @@ export const CardProduct = ({ product }: CardProductProps) => {
                 <p className="text-xs text-gray-600 mb-1">{product.store ? product.store.name : "Store"}</p>
                 <p className="text-xs text-gray-500 mb-3">{product.store ? product.store.address : "Location"}</p>
                 <div className="flex items-center justify-between mt-auto">
-                    <div><span className="text-primary font-bold text-sm md:text-lg">Rp {product.price.value.toLocaleString('id-ID')}</span><p className="text-xs text-gray-500">Stok: {product.stock_quantity}</p></div>
+                    <div><span className="text-primary font-bold text-sm md:text-lg">Rp {product.price.value.toLocaleString()}</span><p className="text-xs text-gray-500">Stok: {product.stock_quantity}</p></div>
                     <button onClick={(e) => { console.log(e) }} className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition duration-300"><i className="fas fa-shopping-cart text-sm"></i></button>
                 </div>
             </div>

@@ -100,8 +100,6 @@ export const StoreCartItem = ({
     const [itemChecked, setItemChecked] = useState<boolean[]>(new Array(items.length).fill(false)); // State untuk checkbox item
 
     const selectedItems = items.filter((_, idx) => itemChecked[idx]);
-
-
     const { mutate: updateItem, } = useUpdateCartItem();
     const { mutate: removeItem, } = useRemoveCartItem();
 
