@@ -1,13 +1,14 @@
 import ContactSection from "@/components/landing/Contact";
-import LiteracyFilter from "@/components/literasi/Filter";
-import LiteracySection from "@/components/literasi/LiteracySection";
+import LiteracyFilter from "@/components/literacies/LiteracyFilter";
+import LiteracySection from "@/components/literacies/LiteracySection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function LiterasiPage() {
     return (
-        <div>
+    <div className="bg-gray-50">
             <Navbar />
 
             <Breadcrumb breadcrumbs={[
@@ -15,21 +16,11 @@ export default function LiterasiPage() {
                 { name: "Literasi UMKM", active: true }
             ]} />
 
-
-            <section
-                className="py-12 bg-gradient-to-r from-purple-600 to-purple-700 text-white"
-            >
-                <div className="container mx-auto px-4 text-center">
-                    <div className="mb-8">
-                        <i className="fas fa-book-open text-6xl mb-4"></i>
-                        <h1 className="text-4xl font-bold mb-4">Literasi UMKM</h1>
-                        <p className="text-xl text-purple-100 max-w-2xl mx-auto">
-                            Tingkatkan pengetahuan dan wawasan bisnis melalui artikel, panduan,
-                            dan sumber daya edukasi terlengkap untuk UMKM
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <PageHeader
+                title="Literasi UMKM"
+                subtitle="Tingkatkan pengetahuan dan wawasan bisnis melalui artikel, panduan, dan sumber daya edukasi terlengkap untuk UMKM"
+                icon={<i className="fas fa-book-open text-6xl mb-4"></i>}
+            />
 
 
             <div className="md:px-10 py-10 pt-5">

@@ -4,11 +4,14 @@ import React from 'react';
 import { getStatusBadgeClass } from './OrderDetailModal';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { formatDate } from '@/lib/format-date';
+import { Button } from '../ui/button';
 
 interface OrderCardProps {
   order: Order;
-  formatDate: (date: string) => string;
+  // formatDate: (date: string) => string;
   viewOrderDetail: (id: string) => void;
+  onCompleteOrder: () => void;
   // trackOrder: (id: string) => void;
   openReviewModal: (item: ShippingItem) => void;
   confirmReceived: (id: string) => void;
@@ -16,15 +19,16 @@ interface OrderCardProps {
 
 const OrderCard: React.FC<OrderCardProps> = ({
   order,
-  formatDate,
+  // formatDate,
   viewOrderDetail,
+  onCompleteOrder,
   // trackOrder,
   openReviewModal,
   confirmReceived,
 }) => {
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-  
+
 
   const router = useRouter();
 
@@ -49,7 +53,9 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 <Image src={item.product.thumbnail.media_url} layout='fill' alt='gambar' objectFit='cover' className='rounded-sm' />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.product.name}</h4>
+                <Link href={"/produk/" + item.product.id} className='hover:underline hover:cursor-pointer'>
+                  <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.product.name}</h4>
+                </Link>
                 <p className="text-xs text-gray-600 truncate">{order.store.name}</p>
                 <p className="text-xs sm:text-sm text-primary font-medium">
                   {item.product.variants ? item.variant?.price.formatted : item.product.price.formatted} x {item.quantity}
@@ -114,6 +120,12 @@ const OrderCard: React.FC<OrderCardProps> = ({
               <Link href={`/pembayaran/${order.id}/upload-ulang`} className="bg-orange-500 text-white px-3 sm:px-4  hover:cursor-pointer py-2 rounded-md hover:bg-orange-600 text-xs sm:text-sm flex items-center">
                 <i className="fas fa-upload mr-1 text-xs"></i>Upload Ulang
               </Link>
+            )}
+
+            {order.status === 'delivered' && (
+              <Button onClick={onCompleteOrder} className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-green-600 text-xs sm:text-sm flex items-center">
+                Selesaikan Pesanan
+              </Button>
             )}
 
             {/* {order.status == "completed" &&(

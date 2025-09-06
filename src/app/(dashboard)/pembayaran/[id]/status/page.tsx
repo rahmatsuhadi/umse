@@ -1,5 +1,6 @@
 "use client"
 import Footer from "@/components/layout/Footer";
+import { OrderTimeline } from "@/components/order/Payment/OrderTimeline";
 import RejectionModal from "@/components/order/Payment/RejectedModal";
 import PaymentHeader from "@/components/order/shared/PaymentHeader";
 import PaymentStatusCard from "@/components/order/shared/PaymentStatusCard";
@@ -40,6 +41,8 @@ export default function PaymentStatusPage() {
                             <PaymentHeader orderId={order.order_number} date={order.payment.created_at} />
                             <PaymentStatusCard status={{ status: order.payment_status, label: order.status_label }}
                                 order={order} />
+
+                            <OrderTimeline order={order} />
 
                             {order.payment && order.payment.status == "rejected" && (
                                 <div className="flex items-center gap-2 flex-wrap">

@@ -55,3 +55,10 @@ export interface PaginatedApiResponse<T> {
   meta: Meta;
   links: Links;
 }
+
+
+// Tipe untuk fungsi API generik yang akan kita teruskan
+export type InfiniteQueryApi<TResource, TParams> = (
+  params: TParams & { page: number }
+) => Promise<PaginatedApiResponse<TResource>>;
+

@@ -1,6 +1,7 @@
 "use client"
 import { Navbar } from "@/components/shared/Navbar";
 import { useLogout, useUser } from "@/features/auth/hooks";
+import { formatDate } from "@/lib/format-date";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -72,7 +73,7 @@ export default function PesananPage() {
                 </div>
 
                 {/* Profile Stats */}
-                <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
+                {/* <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white rounded-lg shadow-md p-4 text-center">
                         <div className="text-2xl font-bold text-primary mb-1">15</div>
                         <div className="text-gray-600 text-sm">Total Pesanan</div>
@@ -85,7 +86,7 @@ export default function PesananPage() {
                         <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
                         <div className="text-gray-600 text-sm">Dalam Proses</div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Menu Sections */}
                 <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4">

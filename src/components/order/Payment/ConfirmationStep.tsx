@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreatePayment } from "@/features/order/hooks"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // bytes
@@ -105,11 +106,37 @@ export default function ConfirmationPage({ currentStep: step, id, paidTotal, bac
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.[0]) {
-            form.setValue("paymentProof", e.target.files[0]);
+        // 1. Ambil file dari input
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-            // const file = e.target.files[0];
+        // 2. Definisikan aturan validasi
+        const MAX_FILE_SIZE_MB = 5;
+        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+        const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+
+        // 3. Validasi tipe file
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            const errorMessage = "File harus berupa gambar .";
+            toast.error(errorMessage);
+            form.setError("paymentProof", { type: "filetype", message: errorMessage });
+
+            e.target.value = ""; // Reset input file
+            return;
         }
+
+        // 4. Validasi ukuran file
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+            const errorMessage = `Ukuran file maksimal adalah ${MAX_FILE_SIZE_MB}MB.`;
+            toast.error(errorMessage);
+            form.setError("paymentProof", { type: "filesize", message: errorMessage });
+            e.target.value = ""; // Reset input file
+            return;
+        }
+
+        // 5. Jika semua validasi lolos
+        form.clearErrors("paymentProof"); // Hapus error sebelumnya (jika ada)
+        form.setValue("paymentProof", file, { shouldValidate: true }); // Set nilai dan picu validasi RHF
     };
 
     const isAgreementChecked = form.watch("termsAgreement")

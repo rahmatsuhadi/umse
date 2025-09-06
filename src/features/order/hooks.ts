@@ -1,6 +1,6 @@
 import { Order, PaginatedApiResponse } from "@/types";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createOrder, CreateOrderData, CreateOrderPayment, createPayment, getOrders, getPaymentOrderById } from "./api";
+import { completeOrder, createOrder, CreateOrderData, CreateOrderPayment, createPayment, getOrders, getPaymentOrderById } from "./api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -93,5 +93,25 @@ export const useGetOrderPayments = (id: string) => {
     refetchOnReconnect: false,
     enabled: !!id,
     queryFn: () => getPaymentOrderById(id),
+  });
+};
+
+
+
+export const useCompleteOrder = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (orderId: string) => completeOrder(orderId),
+    onSuccess: () => {
+      toast.success("Pesanan berhasil diselesaikan!");
+      // Invalidate query orders agar daftar pesanan diperbarui
+      queryClient.invalidateQueries({ queryKey: ['orders', 'infinite'] });
+    },
+    onError: (error: Error) => {
+      toast.error("Gagal menyelesaikan pesanan.", {
+        description: error.message,
+      });
+    },
   });
 };

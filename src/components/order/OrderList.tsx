@@ -8,18 +8,8 @@ import { useInfiniteOrders } from "@/features/order/hooks";
 import { Order, ShippingItem } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ReviewModalOrder } from "./review/ReviewModal";
+import { CompleteOrderModal } from "./CompletedOrderModal";
 
-
-const formatDate = (dateStr: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-    };
-    return new Date(dateStr).toLocaleDateString("id-ID", options);
-};
 
 
 const confirmReceived = (id: string) => alert(`Konfirmasi terima: ${id}`);
@@ -32,7 +22,7 @@ const TABS = [
     { label: "Diproses", value: "processing" },
     { label: "Dikirim", value: "shipped" },
     { label: "Sampai", value: "delivered" },
-    { label: "Canceled", value: "cancelled" },
+    // { label: "Canceled", value: "cancelled" },
     { label: "Selesai", value: "completed" },
     { label: "Expired", value: "expired" },
 ];
@@ -106,6 +96,9 @@ export default function OrderList() {
 
     const [selectedItemReview, setSelectedItemReview] = useState<ShippingItem | null>(null);
 
+    const [orderToComplete, setOrderToComplete] = useState<Order | null>(null);
+
+
 
     return (
         <div className="lg:col-span-3 ">
@@ -167,7 +160,8 @@ export default function OrderList() {
                         <OrderCard
                             key={order.id}
                             order={order}
-                            formatDate={formatDate}
+                            onCompleteOrder={() =>setOrderToComplete(order) }
+                            // formatDate={formatDate}
                             viewOrderDetail={() => setSelectedOrder(order)}
                             // trackOrder={trackOrder}
                             openReviewModal={(item) => setSelectedItemReview(item)}
@@ -210,6 +204,15 @@ export default function OrderList() {
                     />
 
                 )}
+                {orderToComplete && (
+                    <CompleteOrderModal 
+                        open={!!orderToComplete}
+                        onClose={() => setOrderToComplete(null)}
+                        order={orderToComplete}
+                    />
+                )}
+
+
 
 
                 {/* <!-- Load More --> */}

@@ -15,7 +15,7 @@ import { useCart } from '@/features/cart/hooks';
 const navLinks = [
   { name: 'Beranda', href: '/' },
   { name: 'Profile', href: '/profile' },
-  { name: 'Pameran', href: '/pameran' },
+  { name: 'Direktori UMKM', href: '/umkm' },
   { name: 'Blog', href: '/literasi' },
 ];
 
