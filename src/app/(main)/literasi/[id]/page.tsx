@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 
 
 // Tipe data untuk detail artikel
-export type ArticleDetail = {
+type ArticleDetail = {
     slug: string;
     title: string;
     summary: string;
@@ -66,7 +66,7 @@ const dummyArticleData: ArticleDetail = {
 };
 
 // Fungsi untuk "mengambil" data berdasarkan slug
-export const getArticleBySlug = async (slug: string): Promise<ArticleDetail | null> => {
+const getArticleBySlug = async (slug: string): Promise<ArticleDetail | null> => {
     console.log(`Fetching article for slug: ${slug}`);
     // Dalam aplikasi nyata, di sini Anda akan memanggil database atau CMS
     // Untuk simulasi, kita hanya akan mengembalikan data dummy jika slug-nya cocok
@@ -121,9 +121,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 
 type PageProps = {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 };
 
 export default async function ArticleDetailPage({ params }: PageProps) {

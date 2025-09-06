@@ -2,7 +2,21 @@ import Image from "next/image";
 import { formatDate } from "@/lib/format-date";
 import { Clock, Eye } from "lucide-react";
 import { ShareButtons } from "./ShareButtons";
-import { ArticleDetail } from "@/app/(main)/literasi/[id]/page";
+
+type ArticleDetail = {
+    slug: string;
+    title: string;
+    summary: string;
+    imageUrl: string;
+    category: {
+        name: string;
+        slug: string;
+    };
+    published_at: string;
+    reading_time: number; // dalam menit
+    views: number;
+    contentHtml: string; // Konten artikel dalam format HTML
+};
 
 type Props = {
     article: ArticleDetail;

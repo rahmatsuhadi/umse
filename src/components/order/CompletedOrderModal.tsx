@@ -30,7 +30,7 @@ export function CompleteOrderModal({ open, onClose, order }: Props) {
           <DialogTitle>Selesaikan Pesanan?</DialogTitle>
           <DialogDescription className="pt-2">
             Apakah Anda yakin ingin menyelesaikan pesanan <strong>{order.order_number}</strong>?
-            Status pesanan akan diubah menjadi "Selesai" dan tindakan ini tidak dapat dibatalkan.
+            {`Status pesanan akan diubah menjadi "Selesai" dan tindakan ini tidak dapat dibatalkan.`}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

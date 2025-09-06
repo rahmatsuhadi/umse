@@ -54,7 +54,7 @@ const queryParams = useMemo(() => {
         filter['min_price'] = min_price;
     }
 
-    const params: any = {
+    const params: { [key: string]: number | string | Record<string, string> } = {
         per_page: 12,
         sort: sort || '-created_at', // Gunakan default sort jika tidak ada
     };
