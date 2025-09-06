@@ -96,6 +96,12 @@ export const createOrder = (data: CreateOrderData): Promise<{ data: Order }> => 
   });
 };
 
+export const completeOrder = (orderId:string):Promise<{message:string}> => {
+  return apiClient<{message:string}>(`/customer/orders/${orderId}/complete`, {
+    method: 'POST',
+  });
+}
+
 function formatDateToApi(date: string | Date) {
   const d = new Date(date);
 

@@ -12,7 +12,8 @@ const FilterSortModal = () => {
     const [minPrice, setMinPrice] = useState<number | string>('');
     const [maxPrice, setMaxPrice] = useState<number | string>('');
 
-     const categoriesParams = searchParams.get('category')?.split(',') || [];
+    const categoriesParams = searchParams.get('category')?.split(',') || [];
+
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>(categoriesParams);
     const [selectedSort, setSelectedSort] = useState<string>('');
@@ -20,6 +21,31 @@ const FilterSortModal = () => {
     const { data } = useCategories();
 
     const categories = data?.data || []
+
+    // 1. useEffect BARU untuk mengatur sort default di URL
+    useEffect(() => {
+        const currentSort = searchParams.get('sort');
+        // Jika tidak ada parameter 'sort' di URL
+        if (!currentSort) {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('sort', '-created_at'); // Atur nilai default
+            // Gunakan router.replace agar tidak menambah riwayat browser
+            router.replace(`?${params.toString()}`, { scroll: false });
+        }
+    }, [searchParams, router]);
+
+    // 2. useEffect BARU untuk menyinkronkan state dengan URL
+    useEffect(() => {
+        const categories = searchParams.get('category')?.split(',') || [];
+        const sort = searchParams.get('sort') || '-created_at'; // Gunakan default jika tidak ada
+
+        setSelectedCategories(categories);
+        setSelectedSort(sort);
+        // Set state harga juga dari URL jika ada
+        setMinPrice(searchParams.get('minPrice') || '');
+        setMaxPrice(searchParams.get('maxPrice') || '');
+
+    }, [searchParams]);
 
     const toggleCategory = (slug: string) => {
         setSelectedCategories((prev) =>
@@ -42,6 +68,8 @@ const FilterSortModal = () => {
         setMinPrice('');
         setMaxPrice('');
     };
+
+
 
     useEffect(() => {
         const categories = searchParams.get('category')?.split(',') || [];
@@ -103,14 +131,14 @@ const FilterSortModal = () => {
         };
     }, []);
 
-      const sortOptions = [
-    { value: '-total_sales', label: 'Terpopuler' },
-    { value: '-created_at', label: 'Terbaru' },
-    { value: 'price', label: 'Harga Rendah' },
-    { value: '-price', label: 'Harga Tinggi' },
-    { value: '-average_rating', label: 'Rating Tertinggi' },
-    { value: 'name', label: 'Nama A-Z' },
-  ];
+    const sortOptions = [
+        { value: '-total_sales', label: 'Terpopuler' },
+        { value: '-created_at', label: 'Terbaru' },
+        { value: 'price', label: 'Harga Rendah' },
+        { value: '-price', label: 'Harga Tinggi' },
+        { value: '-average_rating', label: 'Rating Tertinggi' },
+        { value: 'name', label: 'Nama A-Z' },
+    ];
 
     return (
         <>
@@ -120,7 +148,7 @@ const FilterSortModal = () => {
                 <div className="container mx-auto px-4 ">
                     <div className="flex items-center gap-3">
                         {/* <!-- Search Bar --> */}
-                        <SearchBar/>
+                        <SearchBar />
 
                         {/* <!-- Filter Icon --> */}
                         <button
@@ -249,20 +277,20 @@ const FilterSortModal = () => {
                         <div className="space-y-3">
                             {sortOptions.map((item, i) => (
 
-                            <label className="flex items-center" key={i}>
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    value={item.value}
-                                    checked={selectedSort === item.value}
-                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                    className="border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span className="ml-3 text-sm text-gray-700">{item.label}</span>
-                            </label>
+                                <label className="flex items-center" key={i}>
+                                    <input
+                                        type="radio"
+                                        name="sort"
+                                        value={item.value}
+                                        checked={selectedSort === item.value}
+                                        onChange={(e) => setSelectedSort(e.target.value)}
+                                        className="border-gray-300 text-primary focus:ring-primary"
+                                    />
+                                    <span className="ml-3 text-sm text-gray-700">{item.label}</span>
+                                </label>
                             ))}
 
-                            
+
                         </div>
                     </div>
 

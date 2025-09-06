@@ -11,6 +11,7 @@ import { Metadata } from "next";
 import { APP_URL } from "@/lib/envConfig";
 import { FilterProvider } from "@/context/FilterProduct";
 import StoresSection from "@/components/store/StoresSection";
+import Link from "next/link";
 
 
 interface ProductsPageProps {
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
 
 export default async function ProductsPage({ }: ProductsPageProps) {
     return (
-        <div>
+    <div className="bg-gray-50">
             <Navbar />
             <div className="">
 
@@ -99,6 +100,11 @@ export default async function ProductsPage({ }: ProductsPageProps) {
                         <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
                     </div>
                     <StoresSection />
+                    <div className="flex justify-center my-8">
+                        <Link href={"/store"}  className="bg-primary hover:cursor-pointer  text-white px-10 py-3 rounded-full font-medium hover:bg-primary-dark transition duration-300">
+                            Lihat UMKM lainnya
+                        </Link>
+                    </div>
                 </AnimatedWrapper>
             </div>
 

@@ -101,6 +101,16 @@ export function ReviewCard({ productId, store }: ReviewCardProps) {
     return <ReviewListSkeleton count={1} />;
   }
 
+  if (status === 'success' && reviews.length === 0) {
+    return (
+      <div className="text-center p-8 bg-gray-50 rounded-lg">
+        <i className="fas fa-comment-slash text-4xl text-gray-300 mb-4"></i>
+        <h3 className="text-lg font-semibold text-gray-700">Belum Ada Ulasan</h3>
+        <p className="text-sm text-gray-500 mt-1">Jadilah yang pertama memberikan ulasan untuk produk ini.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {reviews.map(review => (
@@ -123,7 +133,7 @@ export function ReviewCard({ productId, store }: ReviewCardProps) {
                   <h4 className="font-bold text-gray-800 text-sm sm:text-base">{review.reviewer.name}</h4>
                   <div className="flex items-center text-yellow-400 mb-1"><StarRating rating={review.rating} size="xs" /></div>
                 </div>
-                <span className="text-xs sm:text-sm text-gray-500">{new Date(review.created_at).toLocaleDateString()}</span>
+                <span className="text-xs sm:text-sm text-gray-500">{formatDate(review.created_at)}</span>
               </div>
               <p className="text-gray-700 mb-3 text-sm sm:text-base">{review.content}</p>
 
@@ -217,6 +227,7 @@ export function ReviewCard({ productId, store }: ReviewCardProps) {
           </button>
         )}
       </div>
+
 
       {isFetchingNextPage && <div className="mt-4 text-sm text-gray-500">Memuat ulasan selanjutnya...</div>}
 

@@ -11,6 +11,8 @@ import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
 import ContactSection from '@/components/landing/Contact';
 import { trimDescription } from '@/lib/seoMetadataUtils';
 import { ProductShareModal } from '@/components/product/CopyAndShareLink';
+import Link from 'next/link';
+import { formatDate } from '@/lib/format-date';
 
 const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || "http://localhost:3000"
 
@@ -74,7 +76,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const totalReviews = Object.values(product.rating_count).reduce((sum, count) => sum + count, 0);
   const images = product.media.map((item) => item.media_url)
-
+  console.log(formatDate(product.created_at))
   return (
     <div className="bg-gray-50">
 
@@ -120,7 +122,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <Image src={product.store.logo_url} className='rounded-full' alt='store-img' width={200} height={200} />
                   </div>
                   <div className="min-w-0 flex-1">
+                    <Link href={"/store/" + product.store.id} className='hover:underline hover:cursor-pointer'>
                     <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
+                    </Link>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <i className="fas fa-map-marker-alt mr-1 flex-shrink-0"></i>
 
@@ -140,7 +144,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <div className="mb-6">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Detail Produk</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Variant:</span><span className="sm:ml-2">{`${product.variants.length} Variant` || "Tidak ada variant"}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Variant:</span><span className="sm:ml-2">{`${product.variants.length==0 ? "Tidak ada" : product.variants.length} Variant `}</span></div>
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Status:</span><span className="sm:ml-2">{product.stock_status == "in_stock" ? "Tersedia" : "Tidak tersedia"}</span></div>
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{product.category.name}</span></div>
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{product.stock_quantity} tersedia</span></div>

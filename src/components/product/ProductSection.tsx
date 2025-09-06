@@ -4,7 +4,7 @@ import { useInfiniteProducts } from "@/features/products/hooks";
 import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 
@@ -31,32 +31,54 @@ const ProductSection = () => {
     // const { data: productsData, isLoading, isError } = useProducts({
     //     page,
     // });
+const searchParams = useSearchParams();
 
-    const searchParams = useSearchParams()
-    
-    const search = searchParams.get('q') || ''
+const queryParams = useMemo(() => {
+    const q = searchParams.get('q');
+    const category__slug = searchParams.get('category');
+    const max_price = searchParams.get('maxPrice');
+    const min_price = searchParams.get('minPrice');
+    const sort = searchParams.get('sort');
 
-    const categoriesParams = searchParams.get('category') || ''
+    const filter: Record<string, string> = {};
 
-    const sortParams = searchParams.get('sort') || 'created_at:desc'
+    // 2. Bangun objek filter secara dinamis
+    //    Hanya tambahkan properti ke filter jika nilainya ada di URL
+    if (category__slug) {
+        filter['category__slug'] = category__slug;
+    }
+    if (max_price) {
+        filter['max_price'] = max_price;
+    }
+    if (min_price) {
+        filter['min_price'] = min_price;
+    }
 
-    const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading,
-    } = useInfiniteProducts({
+    const params: any = {
         per_page: 12,
-        sort: sortParams,
-        q: search,
-        filter: {
-            category__slug: categoriesParams,
+        sort: sort || '-created_at', // Gunakan default sort jika tidak ada
+    };
 
-        },
-        // sort: sortParams
-    }); // Anda bisa menambahkan filter di sini, misal: { filter: { category_slug: 'makanan' }}
+    if (q) {
+        params.q = q;
+    }
 
+    // Hanya tambahkan objek filter jika tidak kosong
+    if (Object.keys(filter).length > 0) {
+        params.filter = filter;
+    }
+    
+    return params;
+}, [searchParams]);
+
+
+const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+} = useInfiniteProducts(queryParams);
 
     const products = data?.pages.flatMap(page => page.data) ?? [];
 

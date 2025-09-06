@@ -8,15 +8,15 @@ export const getProvinces = (): Promise<{data:Province[]}> => {
 
 /** Mengambil kabupaten/kota berdasarkan ID provinsi */
 export const getRegencies = (provinceId: string): Promise<{data:Regency[]}> => {
-  return apiClient<{data:Regency[]}>(`/regencies?filter[province_id]=${provinceId}`);
+  return apiClient<{data:Regency[]}>(`/regencies?province_id=${provinceId}`);
 };
 
 /** Mengambil kecamatan berdasarkan ID kabupaten/kota */
 export const getDistricts = (regencyId: string): Promise<{data:District[]}> => {
-  return apiClient<{data:District[]}>(`/districts?filter[regency_id]=${regencyId}`);
+  return apiClient<{data:District[]}>(`/districts?regency_id=${regencyId}`);
 };
 
 /** Mengambil desa/kelurahan berdasarkan ID kecamatan */
 export const getVillages = (districtId: string): Promise<{data:Village[]}> => {
-  return apiClient<{data:Village[]}>(`/villages?filter[district_id]=${districtId}`);
+  return apiClient<{data:Village[]}>(`/villages?district_id=${districtId}`);
 };

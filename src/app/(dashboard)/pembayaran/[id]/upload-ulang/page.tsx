@@ -60,8 +60,9 @@ export default function PaymentStatusPage() {
                                 <OrderSummary order={order} />
                             </div>
 
+
                             <PaymentGuideLinePayment />
-                            {order.status != "expired" || !!!countdown && (
+                            {order.payment_status=="rejected" && order.status!=="expired"  && (
                                 <>
                                     <ConfirmationPage backToPayment={() => router.push(`/pembayaran/${id}/status`)} paidTotal={order.total.value} id={id} currentStep={"payment"} />
                                     <ComparationCardPayment />
