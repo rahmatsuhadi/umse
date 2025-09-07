@@ -96,11 +96,6 @@ export const createOrder = (data: CreateOrderData): Promise<{ data: Order }> => 
   });
 };
 
-export const completeOrder = (orderId:string):Promise<{message:string}> => {
-  return apiClient<{message:string}>(`/customer/orders/${orderId}/complete`, {
-    method: 'POST',
-  });
-}
 
 function formatDateToApi(date: string | Date) {
   const d = new Date(date);
@@ -116,7 +111,6 @@ function formatDateToApi(date: string | Date) {
 
 /** Menambah alamat baru */
 export const createPayment = (id: string, data: CreateOrderPayment): Promise<{ data: Payment }> => {
-  console.log(data)
   const formData = new FormData();
   formData.append('amount', String(data.amount));
   formData.append('paid_at', formatDateToApi(data.paid_at));
@@ -149,3 +143,16 @@ export const createPayment = (id: string, data: CreateOrderPayment): Promise<{ d
 export const getPaymentOrderById = (id: string): Promise<{ data: Order }> => {
   return apiClient<{ data: Order }>(`/customer/orders/${id}`);
 };
+
+export const completedOrder = (id: string): Promise<{ message: string }> => {
+  return apiClient<{ message: string }>(`/customer/orders/${id}/status/completed`, {
+    method: 'POST',
+  });
+}
+
+export const deliveredOrder = (id: string): Promise<{ message: string }> => {
+  return apiClient<{ message: string }>(`/customer/orders/${id}/status/delivered`, {
+    method: 'POST',
+  });
+}
+

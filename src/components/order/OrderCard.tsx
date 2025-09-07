@@ -13,6 +13,7 @@ interface OrderCardProps {
   viewOrderDetail: (id: string) => void;
   onCompleteOrder: () => void;
   // trackOrder: (id: string) => void;
+  onDeliveredOrder: () => void;
   openReviewModal: (item: ShippingItem) => void;
   confirmReceived: (id: string) => void;
 }
@@ -22,6 +23,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   // formatDate,
   viewOrderDetail,
   onCompleteOrder,
+  onDeliveredOrder,
   // trackOrder,
   openReviewModal,
   confirmReceived,
@@ -125,6 +127,12 @@ const OrderCard: React.FC<OrderCardProps> = ({
             {order.status === 'delivered' && (
               <Button onClick={onCompleteOrder} className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-green-600 text-xs sm:text-sm flex items-center">
                 Selesaikan Pesanan
+              </Button>
+            )}
+
+             {order.status === 'shipped' && (
+              <Button onClick={onDeliveredOrder} className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-600 text-xs sm:text-sm flex items-center">
+                Pesanan Diterima
               </Button>
             )}
 

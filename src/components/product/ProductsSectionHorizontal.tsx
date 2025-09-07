@@ -3,9 +3,9 @@ import { useProducts } from "@/features/products/hooks";
 import { CardProduct, CardProductSkleton } from "./ProductSection";
 import Link from "next/link";
 
-export default function ProductSectionHorizontal() {
+export default function ProductSectionHorizontal({category_slug}:{category_slug:string}) {
 
-    const { data, isLoading } = useProducts({ per_page: 4 })
+    const { data, isLoading } = useProducts({ per_page: 4,filter: category_slug ? {category__slug: category_slug} : undefined });
 
     const products = data?.data || []
 

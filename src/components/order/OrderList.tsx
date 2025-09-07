@@ -9,6 +9,7 @@ import { Order, ShippingItem } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ReviewModalOrder } from "./review/ReviewModal";
 import { CompleteOrderModal } from "./CompletedOrderModal";
+import { DeliveredOrderModal } from "./DeliveredOrderModal";
 
 
 
@@ -97,6 +98,8 @@ export default function OrderList() {
     const [selectedItemReview, setSelectedItemReview] = useState<ShippingItem | null>(null);
 
     const [orderToComplete, setOrderToComplete] = useState<Order | null>(null);
+    
+    const [orderToDelivered, setDeliveredOrder] = useState<Order | null>(null);
 
 
 
@@ -161,6 +164,7 @@ export default function OrderList() {
                             key={order.id}
                             order={order}
                             onCompleteOrder={() =>setOrderToComplete(order) }
+                            onDeliveredOrder={() => setDeliveredOrder(order)}
                             // formatDate={formatDate}
                             viewOrderDetail={() => setSelectedOrder(order)}
                             // trackOrder={trackOrder}
@@ -209,6 +213,14 @@ export default function OrderList() {
                         open={!!orderToComplete}
                         onClose={() => setOrderToComplete(null)}
                         order={orderToComplete}
+                    />
+                )}
+
+                {orderToDelivered && (
+                    <DeliveredOrderModal 
+                        open={!!orderToDelivered}
+                        onClose={() => setDeliveredOrder(null)}
+                        order={orderToDelivered}
                     />
                 )}
 

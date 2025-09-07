@@ -1,6 +1,6 @@
 import { Order, PaginatedApiResponse } from "@/types";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { completeOrder, createOrder, CreateOrderData, CreateOrderPayment, createPayment, getOrders, getPaymentOrderById } from "./api";
+import { completedOrder, createOrder, CreateOrderData, CreateOrderPayment, createPayment, deliveredOrder, getOrders, getPaymentOrderById } from "./api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -102,9 +102,31 @@ export const useCompleteOrder = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (orderId: string) => completeOrder(orderId),
+    mutationFn: (orderId: string) => completedOrder(orderId),
     onSuccess: () => {
-      toast.success("Pesanan berhasil diselesaikan!");
+      toast.success("Update status pesanan berhasil.");
+      // Invalidate query orders agar daftar pesanan diperbarui
+      queryClient.invalidateQueries({ queryKey: ['orders', 'infinite'] });
+    },
+    onError: (error: Error) => {
+      toast.error("Gagal menyelesaikan pesanan.", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+
+
+
+
+export const useDeliveredOrder = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (orderId: string) => deliveredOrder(orderId),
+    onSuccess: () => {
+      toast.success("Update pesanan berhasil!");
       // Invalidate query orders agar daftar pesanan diperbarui
       queryClient.invalidateQueries({ queryKey: ['orders', 'infinite'] });
     },

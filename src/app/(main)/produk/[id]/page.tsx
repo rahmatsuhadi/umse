@@ -76,7 +76,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const totalReviews = Object.values(product.rating_count).reduce((sum, count) => sum + count, 0);
   const images = product.media.map((item) => item.media_url)
-  console.log(formatDate(product.created_at))
   return (
     <div className="bg-gray-50">
 
@@ -182,7 +181,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
           <CardRating product={product} />
 
-          <ReviewCard store={product.store} productId={product.id} />
 
         </div>
       </section>
@@ -204,7 +202,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <section className="py-8 sm:py-12 bg-gray-50  md:px-10">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">Produk Serupa</h2>
-          <ProductSectionHorizontal />
+          <ProductSectionHorizontal category_slug={product.category.slug} />
         </div>
       </section>
 
