@@ -14,7 +14,7 @@ export default function TrainingSection() {
             </div>
 
             {/* <!-- Pagination --> */}
-           <Pagination/>
+           {/* <Pagination/> */}
         </div>
     </section>
    )
