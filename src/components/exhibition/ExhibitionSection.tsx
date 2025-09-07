@@ -38,7 +38,7 @@ export default function ExhibitionSection() {
           </motion.div>
         ))}
       </motion.div>
-      <Pagination />
+      {/* <Pagination /> */}
     </div>
   )
 }

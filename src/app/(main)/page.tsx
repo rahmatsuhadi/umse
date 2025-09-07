@@ -101,7 +101,7 @@ export default async function ProductsPage({ }: ProductsPageProps) {
                     </div>
                     <StoresSection />
                     <div className="flex justify-center my-8">
-                        <Link href={"/store"}  className="bg-primary hover:cursor-pointer  text-white px-10 py-3 rounded-full font-medium hover:bg-primary-dark transition duration-300">
+                        <Link href={"/umkm"}  className="bg-primary hover:cursor-pointer  text-white px-10 py-3 rounded-full font-medium hover:bg-primary-dark transition duration-300">
                             Lihat UMKM lainnya
                         </Link>
                     </div>

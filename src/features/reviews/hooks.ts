@@ -8,17 +8,21 @@ type ReviewQueryParams = {
   productId: string;
   // page?: number;
   per_page?: number;
+  filter?: {
+    // category_id?: string;          // UUID
+    rating?: number;    
+  };
 };
 
-export const useReviews = ({ productId, per_page = 5 }: ReviewQueryParams) => {
+export const useReviews = ({ productId, per_page = 5 ,filter}: ReviewQueryParams) => {
   return useInfiniteQuery<PaginatedApiResponse<Review>, Error>({
     // 1. Query key sekarang tidak menyertakan halaman, karena semua halaman
     //    akan disimpan di bawah satu key ini.
-    queryKey: ["reviews", productId],
+    queryKey: ["reviews", productId, filter ],
 
     // 2. queryFn sekarang menerima objek dengan 'pageParam'.
     //    'pageParam' akan berisi nomor halaman yang akan di-fetch.
-    queryFn: ({ pageParam = 1 }) => getReviews({ productId, page: pageParam as number, per_page }),
+    queryFn: ({ pageParam = 1 }) => getReviews({ productId, page: pageParam as number, per_page, filter }),
 
     // 3. 'initialPageParam' adalah nilai awal untuk 'pageParam' pada fetch pertama.
     initialPageParam: 1,

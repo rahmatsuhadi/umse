@@ -3,64 +3,11 @@
 import { motion } from 'framer-motion';
 import ArticleCard, { Article } from "./ArticleCard";
 import Pagination from "../shared/Pagination";
+import { usePaginationArticles } from '@/features/articles/hook';
+import { useSearchParams } from 'next/navigation';
+import { ArticleCardSkeleton } from './ArticleCardSkeleton';
+import { FileText } from 'lucide-react';
 
-// 1. Data Dummy untuk artikel (mensimulasikan respons API)
-const dummyArticles: Article[] = [
-  {
-    slug: 'transformasi-digital-umkm',
-    title: 'Transformasi Digital untuk UMKM: Langkah Awal yang Tepat',
-    excerpt: 'Panduan praktis untuk memulai transformasi digital dalam bisnis UMKM dengan teknologi yang terjangkau dan mudah diimplementasikan.',
-    imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
-    category: { name: 'Teknologi', slug: 'teknologi' },
-    reading_time: 8,
-    published_at: '2025-09-05T10:00:00Z',
-  },
-  {
-    slug: 'strategi-pemasaran-media-sosial',
-    title: '5 Strategi Pemasaran Efektif di Media Sosial untuk Pemula',
-    excerpt: 'Pelajari cara memanfaatkan kekuatan media sosial untuk menjangkau lebih banyak pelanggan dan meningkatkan penjualan produk Anda.',
-    imageUrl: 'https://images.unsplash.com/photo-1611162617213-6d22e4f1d6d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
-    category: { name: 'Pemasaran', slug: 'pemasaran' },
-    reading_time: 10,
-    published_at: '2025-09-04T14:30:00Z',
-  },
-  {
-    slug: 'mengelola-keuangan-bisnis',
-    title: 'Tips Cerdas Mengelola Keuangan untuk Bisnis Kecil',
-    excerpt: 'Manajemen keuangan yang baik adalah kunci keberhasilan. Temukan tips praktis untuk mengatur arus kas dan membuat anggaran.',
-    imageUrl: 'https://images.unsplash.com/photo-1554224155-1696413565d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
-    category: { name: 'Keuangan', slug: 'keuangan' },
-    reading_time: 7,
-    published_at: '2025-09-02T09:00:00Z',
-  },
-  {
-    slug: 'memahami-regulasi-pajak',
-    title: 'Memahami Regulasi Pajak Terbaru untuk UMKM di 2025',
-    excerpt: 'Tetap patuh pada peraturan pajak terbaru. Artikel ini merangkum poin-poin penting yang perlu diketahui setiap pemilik UMKM.',
-    imageUrl: 'https://images.unsplash.com/photo-1586486855363-202375b455a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=871&q=80',
-    category: { name: 'Regulasi', slug: 'regulasi' },
-    reading_time: 12,
-    published_at: '2025-08-28T11:00:00Z',
-  },
-  {
-    slug: 'cerita-sukses-kopi-lokal',
-    title: 'Inspirasi dari Balik Secangkir Kopi: Kisah Sukses Brand Lokal',
-    excerpt: 'Bagaimana sebuah kedai kopi kecil di sudut kota bisa menjadi brand yang dicintai banyak orang? Simak perjalanan inspiratifnya.',
-    imageUrl: 'https://images.unsplash.com/photo-1511920183353-3c7c90757d5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80',
-    category: { name: 'Inspirasi', slug: 'inspirasi' },
-    reading_time: 6,
-    published_at: '2025-08-25T16:45:00Z',
-  },
-  {
-    slug: 'layanan-pelanggan-terbaik',
-    title: 'Membangun Loyalitas Melalui Layanan Pelanggan Prima',
-    excerpt: 'Pelanggan yang puas adalah aset berharga. Pelajari cara memberikan layanan yang tidak hanya memuaskan tetapi juga mengesankan.',
-    imageUrl: 'https://images.unsplash.com/photo-1556742044-1a93c8d4a4c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
-    category: { name: 'Panduan Bisnis', slug: 'panduan-bisnis' },
-    reading_time: 9,
-    published_at: '2025-08-22T08:00:00Z',
-  },
-];
 
 // Varian animasi (tidak berubah)
 const containerVariants = {
@@ -80,6 +27,19 @@ const itemVariants = {
 
 
 export default function LiteracySection() {
+
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get('page') || 1);
+  const itemsPerPage = 6; // Tentukan jumlah item per halaman
+
+  const { data, isLoading } = usePaginationArticles({
+    category: "literasi",
+    page: page,
+    per_page: itemsPerPage,
+  });
+
+  const articles = data?.data ?? [];
+
   return (
     <div>
       <motion.div
@@ -88,15 +48,43 @@ export default function LiteracySection() {
         animate="visible"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
       >
-        {dummyArticles.map((article) => (
-          <motion.div key={article.slug} variants={itemVariants}>
-            <ArticleCard article={article} />
-          </motion.div>
-        ))}
+        {isLoading ? (
+          [...Array(itemsPerPage)].map((_, index) => (
+            <motion.div key={`skeleton-${index}`} variants={itemVariants}>
+              <ArticleCardSkeleton />
+            </motion.div>
+          ))
+
+        ) : articles.length > 0 ? (
+          articles?.map((article) => (
+            <motion.div key={article.slug} variants={itemVariants}>
+              <ArticleCard article={{
+                category: {
+                  name: 'wkwkw',
+                  slug: 'wkwkw',
+                },
+                slug: article.slug,
+                title: article.title,
+                excerpt: "",
+                imageUrl: "",
+                published_at: "",
+                reading_time: 0,
+              }} />
+            </motion.div>
+          ))
+        ) : (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-slate-50 rounded-lg text-center">
+            <FileText size={48} className="text-slate-400 mb-4" />
+            <h3 className="text-xl font-semibold text-slate-700">Artikel Tidak Ditemukan</h3>
+            <p className="text-slate-500 mt-2">
+              Belum ada artikel literasi yang dipublikasikan.
+            </p>
+          </div>
+        )}
       </motion.div>
 
       <div className="mt-12">
-        <Pagination />
+        <Pagination meta={data?.meta} isLoading={isLoading} />
       </div>
     </div>
   )
