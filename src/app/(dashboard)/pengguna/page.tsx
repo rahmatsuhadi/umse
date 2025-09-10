@@ -1,7 +1,6 @@
 "use client"
 import { Navbar } from "@/components/shared/Navbar";
 import { useLogout, useUser } from "@/features/auth/hooks";
-import { formatDate } from "@/lib/format-date";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

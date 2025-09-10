@@ -29,6 +29,7 @@ export default function Pagination({ meta, isLoading }: PaginationProps) {
     try {
       return new URL(url).searchParams.get('page');
     } catch (e) {
+      console.log(e)
       return null;
     }
   };

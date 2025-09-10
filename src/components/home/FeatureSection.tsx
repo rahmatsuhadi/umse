@@ -1,4 +1,4 @@
-'use client'; // Pastikan ada 'use client'
+'use client';
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -29,8 +29,6 @@ const itemVariants = {
 };
 
 export default function FeaturesSection() {
-
-
     return (
         <section className="pb-12 md:pb-20 ">
             <div className="container mx-auto px-4">

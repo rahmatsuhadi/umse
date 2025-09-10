@@ -1,15 +1,14 @@
 "use client"
 
-import Image from "next/image";
-import Link from "next/link";
 import React, { useState } from "react";
-import { CheckoutStep, steps } from "@/components/order/step/steps";
-import { StepIndicator } from "@/components/order/step/StepIndicator";
-import PaymentStep from "@/components/order/Payment/PaymentStep";
-import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
-import { useParams, useRouter } from "next/navigation";
+import { StepIndicator } from "@/components/orders/step/StepIndicator";
+import { notFound, useParams } from "next/navigation";
 import { useGetOrderPayments } from "@/features/order/hooks";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { CheckoutStep, steps } from "@/components/checkouts/lib";
+import CheckoutHeader from "@/components/checkouts/CheckoutHeader";
+import PaymentStep from "@/components/payments/PaymentPageStep";
+import ConfirmationPage from "@/components/payments/PaymentConfirmationStep";
 
 export default function PaymentPage() {
     const { id } = useParams<{ id: string }>()
@@ -23,13 +22,38 @@ export default function PaymentPage() {
 
 
     const currentStepIndex = steps.findIndex(s => s.key === step);
-    const router = useRouter()
+
+
+    const renderContent = () => {
+        if (isLoading && !!!order) {
+            return <LoadingSpinner text="Sedang memuat detail pesanan..." />
+        }
+        else if(!order && !isLoading){
+            return notFound()
+        }
+        else if(order && !isLoading){
+            if (step == "payment") {
+                return (
+                    <PaymentStep order={order} currentStep={step} onConfirmation={() => setStep("confirmation")} />
+    
+                )
+            }
+            else {
+                return (
+                    <ConfirmationPage paidTotal={order.total.value} id={id} currentStep={step} backToPayment={() => setStep("payment")} />
+    
+                )
+            }
+        }
+
+
+    }
 
     return (
         <div className="bg-gray-50 min-h-[100vh] font-jakarta">
             {/* header */}
 
-            <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
+            {/* <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex-shrink-0">
@@ -41,9 +65,9 @@ export default function PaymentPage() {
                                     height={80}
                                 />
                             </Link>
-                        </div>
+                        </div> */}
 
-                        <nav className="hidden md:flex items-center space-x-2 text-sm">
+            {/* <nav className="hidden md:flex items-center space-x-2 text-sm">
                             <Link href="/" className="text-gray-600 hover:text-primary">Beranda</Link>
                             <i className="fas fa-chevron-right text-gray-400 text-xs"></i>
 
@@ -57,15 +81,17 @@ export default function PaymentPage() {
                                     </span>
                                 </React.Fragment>
                             ))}
-                        </nav>
+                        </nav> */}
 
-                        <button onClick={() => router.back()} className="text-gray-600 hover:cursor-pointer hover:text-primary">
+            <CheckoutHeader currentStep={step} index={currentStepIndex} />
+
+            {/* <button onClick={() => router.back()} className="text-gray-600 hover:cursor-pointer hover:text-primary">
                             <i className="fas fa-arrow-left mr-2"></i>Kembali
 
                         </button>
-                    </div>
-                </div>
-            </header>
+                    </div> */}
+            {/* </div>
+            </header> */}
 
 
             {/* main content */}
@@ -74,18 +100,8 @@ export default function PaymentPage() {
                 <div className="max-w-4xl mx-auto ">
 
                     <StepIndicator currentStep={step} />
+                    {renderContent()}
 
-                    {isLoading || !order ? (
-                        <LoadingSpinner text="Sedang memuat detail pesanan..." />
-                    ) : step == "payment" ?
-                        <PaymentStep order={order} currentStep={step} onConfirmation={() => setStep("confirmation")} />
-
-                        :
-                        <>
-                            {/* <PaymentStatusCard order={order} status={{label: order.payment_status_label, status: order.payment_status}}/> */}
-                            <ConfirmationPage paidTotal={order.total.value} id={id} currentStep={step} backToPayment={() => setStep("payment")} />
-                        </>
-                    }
 
                 </div>
             </div>

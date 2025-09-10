@@ -5,8 +5,7 @@ import { Navbar } from "@/components/shared/Navbar";
 import ContactSection from "@/components/landing/Contact";
 import { Metadata } from "next";
 import { APP_URL } from "@/lib/envConfig";
-import StoresSection from "@/components/store/StoresSection";
-import ListStoresPaginationSection from "@/components/store/StoreListPagination";
+import StoresListPagination from "@/components/stores/StoreListPagination";
 
 
 interface UmkmPageProps {
@@ -66,7 +65,7 @@ export default async function UmkmPage({ }: UmkmPageProps) {
                         <h2 className="text-xl font-bold text-gray-800 mb-2">Toko UMKM Partner Kami</h2>
                         <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
                     </div>
-                    <ListStoresPaginationSection />
+                    <StoresListPagination />
                 </AnimatedWrapper>
             </div>
 

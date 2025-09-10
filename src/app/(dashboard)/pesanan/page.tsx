@@ -1,32 +1,26 @@
 
 import Footer from "@/components/layout/Footer";
-import OrderFilter from "@/components/order/OrderFIlter";
-import OrderList from "@/components/order/OrderList";
+import OrderFilter from "@/components/orders/OrderFilter";
+import OrderList from "@/components/orders/OrderList";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
-import Link from "next/link";
 
 export default function OrderPage() {
     return (
         <div className=" w-full min-h-screen">
             <Navbar withMenu={false} />
 
+            <Breadcrumb breadcrumbs={[{
+                name: 'Beranda',
+                link: '/'
+            }, {
+                name: 'Pesanan Saya',
+                link: '/pesanan',
+                active: true
+            }]} />
             <main className="container mx-auto px-4 py-6">
 
-                {/* <!-- Breadcrumb --> */}
-                <nav className="mb-4 sm:mb-6">
-                    <ol
-                        className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 overflow-x-auto whitespace-nowrap"
-                    >
-                        <li>
-                            <Link href="/" className="hover:text-primary flex-shrink-0"
-                            >Beranda</Link>
-                        </li>
-
-                        <li><i className="fas fa-chevron-right text-xs flex-shrink-0"></i></li>
-                        <li className="text-gray-900 truncate">Pesanan Saya</li>
-                    </ol>
-                </nav>
 
 
 

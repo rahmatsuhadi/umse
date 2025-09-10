@@ -1,18 +1,18 @@
 
-import ImageGallery from '@/components/product/ImageGallery';
-import { CardRating, ReviewCard, StarRating } from '@/components/product/ReviewCard';
-import ProductSectionHorizontal from '@/components/product/ProductsSectionHorizontal';
 import { getProductById } from '@/features/products/api';
 import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/shared/Breadcrumb';
-import ProductVariantSelector from '@/components/product/ProductVariantSelector';
 import Image from 'next/image';
 import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
 import ContactSection from '@/components/landing/Contact';
 import { trimDescription } from '@/lib/seoMetadataUtils';
-import { ProductShareModal } from '@/components/product/CopyAndShareLink';
 import Link from 'next/link';
-import { formatDate } from '@/lib/format-date';
+import ProductSimilarProduct from '@/components/products/ProductSimilarList';
+import { StarRating } from '@/components/products/ProductStarRating';
+import { ProductRatingReview } from '@/components/products/ProductRatingReview';
+import ProductImageGallery from '@/components/products/ProductImageGallery';
+import { ProductShareModal } from '@/components/products/ProductShareModal';
+import ProductCheckoutButton from '@/components/products/ProductCheckoutButton';
 
 const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || "http://localhost:3000"
 
@@ -53,10 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 }
 
-
-
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-
 
   const id = (await params).id;
 
@@ -68,7 +65,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
     if (error instanceof Error) {
       console.log(error.message)
-
     }
     // Jika produk tidak ditemukan (API melempar error), tampilkan halaman not-found
     notFound();
@@ -76,10 +72,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const totalReviews = Object.values(product.rating_count).reduce((sum, count) => sum + count, 0);
   const images = product.media.map((item) => item.media_url)
+
+
   return (
     <div className="bg-gray-50">
-
-
       <Breadcrumb breadcrumbs={[
         { name: "Beranda", link: "/" },
         { name: product.name, active: true }
@@ -92,7 +88,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-8 lg:mb-12">
 
             {/* Product Images */}
-            <ImageGallery images={images} />
+            <ProductImageGallery images={images} />
 
             {/* Product Information */}
             <div>
@@ -110,8 +106,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
               <div className="flex flex-wrap items-baseline mb-6 gap-2">
                 <span className="text-2xl sm:text-3xl font-bold text-primary">{product.price.formatted}</span>
-                {/* <span className="text-base sm:text-lg text-gray-500 line-through">Rp {productData.originalPrice.toLocaleString('id-ID')}</span> */}
-                {/* <span className="bg-red-100 text-red-800 text-xs sm:text-sm px-2 py-1 rounded">Hemat {productData.discount}%</span> */}
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -131,13 +125,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     </div>
                   </div>
                 </div>
-                {/* <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm gap-2">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center"><i className="fas fa-star text-yellow-400 mr-1"></i><span>{product.store.ra} Rating Toko</span></div>
-                    <div className="flex items-center"><i className="fas fa-box mr-1"></i><span>{product.store.products_count} Produk</span></div>
-                  </div>
-                  <button className="text-primary hover:text-primary-dark font-medium self-start sm:self-auto"><i className="fas fa-eye mr-1"></i>Lihat Toko</button>
-                </div> */}
               </div>
 
               <div className="mb-6">
@@ -149,22 +136,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{product.stock_quantity} tersedia</span></div>
                 </div>
               </div>
-              <ProductVariantSelector product={product} />
-
-              {/* <ActionCartOrBuy stock={product.stock_quantity} /> */}
-
+              <ProductCheckoutButton product={product}/>
 
               {/* Product Description */}
               <div className="mb-8 mt-3">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Deskripsi Produk</h3>
                 <div className="text-gray-600 leading-relaxed text-sm sm:text-base">
                   <p className="mb-3">{product.description}</p>
-                  {/* <p className="mb-3"><strong>Keunggulan:</strong></p>
-                  <ul className="list-disc list-inside space-y-1 ml-2 sm:ml-4">
-                    {productData.description.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul> */}
                 </div>
               </div>
               <div className="mt-2"> <ProductShareModal productName={product.name} productUrl={APP_URL + "/produk/" + product.id} /></div>
@@ -174,35 +152,20 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </div>
       </section>
 
-      {/* <ReviewCard /> */}
-
       <section className="py-6 sm:py-8 bg-white md-px-10">
         <div className="container mx-auto px-4">
 
-          <CardRating product={product} />
+          <ProductRatingReview product={product}  />
 
 
         </div>
       </section>
 
 
-
-
-      {/* ================================== */}
-      {/* BAGIAN BARU: Ulasan Pembeli        */}
-      {/* ================================== */}
-
-
-
-      {/* ================================== */}
-      {/* BAGIAN BARU: Produk Serupa         */}
-      {/* ================================== */}
-
-
       <section className="py-8 sm:py-12 bg-gray-50  md:px-10">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">Produk Serupa</h2>
-          <ProductSectionHorizontal category_slug={product.category.slug} />
+          <ProductSimilarProduct category_slug={product.category.slug} />
         </div>
       </section>
 

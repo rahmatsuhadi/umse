@@ -12,7 +12,6 @@ const DUMMY_REPORTS: Report[] = [
 ];
 
 export default function ReportList() {
-  const searchParams = useSearchParams();
   
   // TODO: Ganti ini dengan data fetching hook (misal: useInfiniteReports)
   // const { data: reports, isLoading } = useInfiniteReports({

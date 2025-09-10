@@ -1,4 +1,3 @@
-import Pagination from "../shared/Pagination";
 import TrainingCard from "./TrainingCard";
 
 export default function TrainingSection() {
