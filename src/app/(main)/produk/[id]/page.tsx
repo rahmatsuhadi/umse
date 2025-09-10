@@ -13,8 +13,9 @@ import { ProductRatingReview } from '@/components/products/ProductRatingReview';
 import ProductImageGallery from '@/components/products/ProductImageGallery';
 import { ProductShareModal } from '@/components/products/ProductShareModal';
 import ProductCheckoutButton from '@/components/products/ProductCheckoutButton';
+import { APP_URL } from '@/lib/envConfig';
 
-const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || "http://localhost:3000"
+
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

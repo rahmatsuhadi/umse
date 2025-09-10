@@ -6,11 +6,11 @@ import { Navbar } from "@/components/shared/Navbar";
 import StoreDetailInfoCard from "@/components/stores/StoreDetail";
 import { Separator } from "@/components/ui/separator";
 import { getStoreById } from "@/features/store/api";
+import { APP_URL } from "@/lib/envConfig";
 import { trimDescription } from "@/lib/seoMetadataUtils";
 import { notFound } from "next/navigation";
 
 
-const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || "http://localhost:3000"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
