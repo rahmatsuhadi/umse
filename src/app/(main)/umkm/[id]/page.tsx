@@ -41,7 +41,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             },
         };
     } catch (error) {
-        console.log(error);
         return {
             title: 'Store Tidak Ditemukan',
             description: 'Halaman yang Anda cari tidak ada.',

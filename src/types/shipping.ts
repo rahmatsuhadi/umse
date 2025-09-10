@@ -17,7 +17,11 @@ export interface ShippingRates {
 }
 
 export interface ShippingItem extends CartItem{
+    product_id:string
     product_name:string
+    product_price:Price
+    variant_name:string
+    variant_price:Price
     review?:Review
     order_id:string
     

@@ -9,9 +9,9 @@ import { useRouter } from "next/navigation";
 export default function PesananPage() {
     const router = useRouter()
 
-    const {data} = useUser()
+    const { data } = useUser()
 
-    const {mutate: handleLogout} = useLogout()
+    const { mutate: handleLogout } = useLogout()
 
     const user = data?.data
 
@@ -19,13 +19,13 @@ export default function PesananPage() {
     const logout = () => {
         handleLogout()
         // Implementasi logout
-        
+
         // Redirect ke login
     };
 
     return (
         <div className="bg-gray-50 ">
-            <Navbar  />
+            <Navbar />
 
             <main className="container mx-auto px-4 py-6">
                 {/* Profile Header */}
@@ -56,7 +56,7 @@ export default function PesananPage() {
                                             {user?.name}
                                         </h1>
                                         <p id="userEmail" className="text-gray-600 mb-3">
-                                           {user?.email}
+                                            {user?.email}
                                         </p>
                                         <button
                                             onClick={() => router.replace('/pengguna/edit')}
@@ -118,7 +118,7 @@ export default function PesananPage() {
                     </div>
 
                     {/* Support & Info */}
-                    <div className="bg-white rounded-lg shadow-md">
+                    {/* <div className="bg-white rounded-lg shadow-md">
                         <div className="p-4 border-b border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-800">
                                 <i className="fas fa-info-circle mr-2 text-primary"></i>Bantuan & Info
@@ -129,20 +129,23 @@ export default function PesananPage() {
                             <MenuItem icon="fas fa-file-alt" label="Syarat & Ketentuan" link="#" />
                             <MenuItem icon="fas fa-user-shield" label="Kebijakan Privasi" link="#" />
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Logout */}
-                    <div className="bg-white rounded-lg shadow-md">
-                        <button
-                            onClick={logout}
-                            className="w-full flex hover:cursor-pointer items-center justify-between p-4 text-red-600 hover:bg-red-50 transition-colors rounded-lg"
-                        >
-                            <div className="flex items-center">
-                                <i className="fas fa-sign-out-alt w-5"></i>
-                                <span className="ml-3 font-medium">Keluar</span>
-                            </div>
-                            <i className="fas fa-chevron-right"></i>
-                        </button>
+                    <div className="">
+
+                        <div className="bg-white rounded-lg shadow-md">
+                            <button
+                                onClick={logout}
+                                className="w-full flex hover:cursor-pointer items-center justify-between p-4 text-red-600 hover:bg-red-50 transition-colors rounded-lg"
+                            >
+                                <div className="flex items-center">
+                                    <i className="fas fa-sign-out-alt w-5"></i>
+                                    <span className="ml-3 font-medium">Keluar</span>
+                                </div>
+                                <i className="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -216,7 +219,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, link }) => {
     return (
         <Link href={link} className="w-full">
             <button
-            type="button"
+                type="button"
                 className=" text-left w-full  hover:cursor-pointer flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
             >
                 <div className="flex items-center">
@@ -228,5 +231,5 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, link }) => {
         </Link>
     )
 
-   
+
 };

@@ -244,7 +244,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                   >
                     <div className="bg-gray-300 w-12 h-12 rounded-lg flex items-center justify-center relative">
                       <Image
-                        src={item.product.thumbnail.media_url}
+                        src={item.product ? item.product.thumbnail.media_url : '/assets/no-image.jpg'}
                         layout="fill"
                         alt="gambar"
                         objectFit="cover"
@@ -253,19 +253,19 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-sm truncate">
-                        {item.product.name}
+                        {item.variant_name || item.product_name}
                       </h4>
                       <p className="text-xs text-gray-600 truncate">
                         {order.store.name}
                       </p>
                       <div className="flex justify-between mt-1">
                         <span className="text-primary font-bold text-sm">
-                          {item.variant
-                            ? item.variant.price.formatted
-                            : item.product.price.formatted}
+                          {item.variant_price
+                            ? item.variant_price.formatted
+                            : item.product_price.formatted}
                         </span>
                         <span className="text-gray-600 text-xs">
-                          x{item.quantity}
+                          x {item.quantity}
                         </span>
                       </div>
                     </div>

@@ -28,7 +28,7 @@ export default function DetailStoreInfoCard({ store }: { store: Store }) {
 
     const handleWhatsAppClick = useCallback(() => {
         try {
-            const message = `Halo, saya ingin menanyakan tentang produk di toko ${store.name}`;
+            const message = `Halo, saya ingin bertanya tentang suatu hal di toko ${store.name}`;
             const link = getWhatsAppLink(store.user.phone_number, message);
             window.open(link, "_blank"); // buka WA di tab baru
         } catch (error) {

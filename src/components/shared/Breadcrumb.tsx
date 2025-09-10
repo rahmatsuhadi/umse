@@ -9,7 +9,7 @@ export default function Breadcrumb({ breadcrumbs }: BreadcrumbProps) {
     return (
         <nav className="border-b px-4 py-3 md:px-8">
             <div className="container mx-auto">
-                <div className="flex items-center text-xs sm:text-sm text-gray-600 overflow-x-auto whitespace-nowrap">
+                <div className="flex items-center text-sm sm:text-base text-gray-600 overflow-x-auto whitespace-nowrap">
                     {breadcrumbs.map((breadcrumb, index) => (
                         <React.Fragment key={index}>
                             {/* Render Link jika ada link */}

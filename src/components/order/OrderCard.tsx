@@ -52,15 +52,20 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <div key={idx} className="flex items-center space-x-3">
               <div className="bg-gray-300 w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex relative items-center justify-center flex-shrink-0">
 
-                <Image src={item.product.thumbnail.media_url} layout='fill' alt='gambar' objectFit='cover' className='rounded-sm' />
+                <Image src={item.product ? item.product.thumbnail.media_url : "/assets/no-image.jpg"} layout='fill' alt='gambar' objectFit='cover' className='rounded-sm' />
               </div>
               <div className="flex-1 min-w-0">
+                {item.product ? (
                 <Link href={"/produk/" + item.product.id} className='hover:underline hover:cursor-pointer'>
-                  <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.product.name}</h4>
+                  <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.product_name}</h4>
                 </Link>
+                ) : (
+                  <h4 className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.product_name}</h4>                  
+                )}
                 <p className="text-xs text-gray-600 truncate">{order.store.name}</p>
                 <p className="text-xs sm:text-sm text-primary font-medium">
-                  {item.product.variants ? item.variant?.price.formatted : item.product.price.formatted} x {item.quantity}
+                  {item.variant_price ? item.variant_price.formatted : item.product_price.formatted} x {item.quantity}
+                  
                 </p>
               </div>
               {/* <div className=""> */}
