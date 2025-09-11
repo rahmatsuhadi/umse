@@ -111,7 +111,7 @@ export default function ProductCheckoutButton({ product }: { product: Product })
                     </Button>
                     <Button onClick={() => handleQuickOrder({ quantity, selectedVariant, price: currentPrice })} size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 hover:text-primary"
                         disabled={currentStock === 0 || isPending}>
-                                Beli Langsung
+                        Beli Langsung
                     </Button>
                 </div>
             </div>
@@ -154,6 +154,13 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     };
 
     const handleQuickOrder = async ({ quantity, selectedVariant, price: currentPrice }: { selectedVariant: Variant | null, quantity: number, price: Price }) => {
+        if (!isAuth) {
+            // Buat URL login dengan parameter redirect
+            const loginUrl = `/masuk?redirect=${pathname}`;
+            router.push(loginUrl);
+            return; // Hentikan eksekusi
+        }
+
         setIsLoading(true)
         const items = [
             {
