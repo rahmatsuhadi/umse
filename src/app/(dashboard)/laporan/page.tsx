@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Navbar } from '@/components/shared/Navbar';
 import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
 import Footer from '@/components/layout/Footer';

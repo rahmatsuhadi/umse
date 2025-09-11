@@ -1,9 +1,9 @@
 "use client"
 import Footer from "@/components/layout/Footer";
-import { OrderTimeline } from "@/components/order/Payment/OrderTimeline";
-import RejectionModal from "@/components/order/Payment/RejectedModal";
-import PaymentHeader from "@/components/order/shared/PaymentHeader";
-import PaymentStatusCard from "@/components/order/shared/PaymentStatusCard";
+import { OrderTimeline } from "@/components/orders/OrderTimeLine";
+import PaymentHeader from "@/components/orders/shared/PaymentHeader";
+import PaymentStatusCard from "@/components/orders/shared/PaymentStatusCard";
+import RejectionModal from "@/components/payments/PaymentRejectModal";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";

@@ -1,9 +1,9 @@
 "use client"
 import Footer from "@/components/layout/Footer";
-import { ComparationCardPayment, PaymentGuideLinePayment, RejectedCardPayment } from "@/components/order/Payment/CardPaymentAlert";
-import ConfirmationPage from "@/components/order/Payment/ConfirmationStep";
-import CountdownTimer, { calculateTimeLeft } from "@/components/order/Payment/CountDownPayment";
-import  { OrderSummary } from "@/components/order/shared/PaymentStatusCard";
+import  { OrderSummary } from "@/components/orders/shared/PaymentStatusCard";
+import CountdownTimer from "@/components/payments/CountDownPayment";
+import { ComparationCardPayment, PaymentGuideLinePayment, RejectedCardPayment } from "@/components/payments/PaymentAlertCard";
+import ConfirmationPage from "@/components/payments/PaymentConfirmationStep";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
@@ -22,7 +22,7 @@ export default function PaymentStatusPage() {
 
     const router = useRouter()
 
-    const countdown = calculateTimeLeft(order?.payment_due_at ?? new Date().toISOString())
+    // const countdown = calculateTimeLeft(order?.payment_due_at ?? new Date().toISOString())
 
     if (!isLoading && order?.payment && order?.payment.status != "rejected") return notFound()
 

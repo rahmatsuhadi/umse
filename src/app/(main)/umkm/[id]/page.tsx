@@ -1,16 +1,16 @@
 import ContactSection from "@/components/landing/Contact";
-import ProductSectionStore from "@/components/product/ProductSectionStore";
+import ProductListByStore from "@/components/products/ProductListByStore";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
-import DetailStoreInfoCard from "@/components/store/DetailStore";
+import StoreDetailInfoCard from "@/components/stores/StoreDetail";
 import { Separator } from "@/components/ui/separator";
 import { getStoreById } from "@/features/store/api";
+import { APP_URL } from "@/lib/envConfig";
 import { trimDescription } from "@/lib/seoMetadataUtils";
 import { notFound } from "next/navigation";
 
 
-const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || "http://localhost:3000"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -41,6 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             },
         };
     } catch (error) {
+        if(error instanceof Error)
+        console.log(error.message)
         return {
             title: 'Store Tidak Ditemukan',
             description: 'Halaman yang Anda cari tidak ada.',
@@ -78,13 +80,13 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
 
             <Separator />
             <div className="md:px-10">
-                <DetailStoreInfoCard store={store} />
+                <StoreDetailInfoCard store={store} />
             </div>
             <Separator />
 
             <AnimatedWrapper className="md:px-10">
 
-                <ProductSectionStore id={id} />
+                <ProductListByStore id={id} />
             </AnimatedWrapper>
 
             <AnimatedWrapper>

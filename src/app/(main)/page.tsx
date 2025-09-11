@@ -1,20 +1,18 @@
-import CategoriesSection from "@/components/home/CategoriesSection";
 import FeaturesSection from "@/components/home/FeatureSection";
-import { BannerCarousel } from "@/components/product/BannerCarousel";
-import FilterSortModal from "@/components/product/FilterBar";
-import ProductSection from "@/components/product/ProductSection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
 import { Separator } from "@/components/ui/separator";
 import ContactSection from "@/components/landing/Contact";
 import { Metadata } from "next";
 import { APP_URL } from "@/lib/envConfig";
-import { FilterProvider } from "@/context/FilterProduct";
-import StoresSection from "@/components/store/StoresSection";
-import Link from "next/link";
+import ProductList from "@/components/products/ProductList";
+import CategoryList from "@/components/categories/CategoryList";
+import StoreList from "@/components/stores/StoreList";
+import FilterSortModal from "@/components/products/ProductFilterSortModal";
+import { BannerCarousel } from "@/components/home/BannerCarousel";
 
 
-interface ProductsPageProps {
+interface HomePage {
     searchParams: Promise<{
         page: string;
         q: string;
@@ -47,7 +45,7 @@ export const metadata: Metadata = {
     }
 };
 
-export default async function ProductsPage({ }: ProductsPageProps) {
+export default async function HomePage({ }: HomePage) {
     return (
     <div className="bg-gray-50">
             <Navbar />
@@ -55,8 +53,6 @@ export default async function ProductsPage({ }: ProductsPageProps) {
 
                 <BannerCarousel />
 
-
-                <FilterProvider>
 
                     <div className="md:px-10">
                         <FilterSortModal />
@@ -80,18 +76,13 @@ export default async function ProductsPage({ }: ProductsPageProps) {
 
 
                     <AnimatedWrapper className="md:px-10">
-                        <CategoriesSection />
+                        <CategoryList />
                     </AnimatedWrapper>
-
-
                     <Separator />
-
                     <AnimatedWrapper className="md:px-10">
-                      
-                        <ProductSection />
+                        <ProductList />
                     </AnimatedWrapper>
 
-                </FilterProvider>
 
 
                 <AnimatedWrapper className="md:px-10" >
@@ -99,12 +90,8 @@ export default async function ProductsPage({ }: ProductsPageProps) {
                         <h2 className="text-xl font-bold text-gray-800 mb-2">Toko UMKM Partner Kami</h2>
                         <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
                     </div>
-                    <StoresSection />
-                    <div className="flex justify-center my-8">
-                        <Link href={"/umkm"}  className="bg-primary hover:cursor-pointer  text-white px-10 py-3 rounded-full font-medium hover:bg-primary-dark transition duration-300">
-                            Lihat UMKM lainnya
-                        </Link>
-                    </div>
+                    <StoreList />
+                    
                 </AnimatedWrapper>
             </div>
 
