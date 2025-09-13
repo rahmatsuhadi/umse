@@ -116,7 +116,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <Image src={product.store.logo_url} className='rounded-full' alt='store-img' width={200} height={200} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <Link href={"/store/" + product.store.id} className='hover:underline hover:cursor-pointer'>
+                    <Link href={"/umkm/" + product.store.id} className='hover:underline hover:cursor-pointer'>
                     <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
                     </Link>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">

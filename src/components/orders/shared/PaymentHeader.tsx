@@ -2,7 +2,7 @@ import { formatDate } from "@/lib/format-date";
 
 interface Props {
   orderId: string;
-  date: string;
+  date: string | null;
 }
 
 export default function PaymentHeader({ orderId,date }: Props) {
@@ -15,9 +15,11 @@ export default function PaymentHeader({ orderId,date }: Props) {
             Pesanan <span id="orderNumber" className="font-medium text-primary">#{orderId}</span>
           </p>
         </div>
+        {date && (
         <div className="mt-4 md:mt-0">
           <span className="text-sm text-gray-500">{formatDate(date)}</span>
         </div>
+        )}
       </div>
     </div>
   );

@@ -38,7 +38,7 @@ export default function PaymentStatusPage() {
                         <SkeletonPage />
                     ) : (
                         <>
-                            <PaymentHeader orderId={order.order_number} date={order.payment.created_at} />
+                            <PaymentHeader orderId={order.order_number} date={order.payment ? order.payment.created_at : null} />
                             <PaymentStatusCard status={{ status: order.payment_status, label: order.status_label }}
                                 order={order} />
 
