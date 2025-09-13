@@ -57,7 +57,7 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error.message)
+      console.log("ERROR", error.message)
       // console.error("[apiClient:fetchError]", {
       //   url,
       //   message: error.message,
