@@ -55,13 +55,16 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
     }
 
     return data;
-  } catch (error: any) {
-    // console.error("[apiClient:fetchError]", {
-    //   url,
-    //   message: error.message,
-    //   stack: error.stack,
-    //   name: error.name,
-    // });
-    throw new Error(error.message || "Gagal terhubung ke server.");
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message)
+      // console.error("[apiClient:fetchError]", {
+      //   url,
+      //   message: error.message,
+      //   stack: error.stack,
+      //   name: error.name,
+      // });      
+    }
+    throw new Error("Gagal terhubung ke server.");
   }
 }
