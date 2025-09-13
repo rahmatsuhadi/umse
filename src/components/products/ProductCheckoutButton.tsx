@@ -162,22 +162,42 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
         }
 
         setIsLoading(true)
-        const items = [
-            {
-                product_id: product.id,
-                quantity: quantity,
-                store: product.store,
-                variant_id: selectedVariant?.id,
-                variant: selectedVariant || undefined,
+
+        const items = [{
                 product: {
                     id: product.id,
                     name: product.name,
-                    price: currentPrice,
                     thumbnail: product.thumbnail,
-                }
+                    price:product.price
+                },
+                variant: selectedVariant ? {
+                    id: selectedVariant.id,
+                    name: selectedVariant.name,
+                    thumbnail: selectedVariant.thumbnail,
+                    price:selectedVariant.price
+                } : null,
+                quantity: quantity,
             }
         ]
-        await localStorage.setItem("checkout_items", JSON.stringify(items));
+
+        const saveLocal = {
+            store:{
+                id:product.store.id,
+                name: product.store.name,
+                slug: product.store.slug,
+                logo_url: product.store.logo_url,
+                qris_url: product.store.qris_url,
+                address: product.store.address,
+                village_id: product.store.village_id,
+                district_id:product.store.district_id,
+                regency_id: product.store.regency_id,
+                description:product.store.description
+            },
+            items
+        }
+
+
+        await localStorage.setItem("checkout_items", JSON.stringify(saveLocal));
         setIsLoading(false)
         router.push("/checkout?store=" + product.store.id);
     }

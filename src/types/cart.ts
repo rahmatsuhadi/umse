@@ -1,4 +1,4 @@
-import { Product, Variant } from "./product";
+import { Price, Product, Variant } from "./product";
 import { Store } from "./store";
 
 export interface CartItem {
@@ -10,6 +10,7 @@ export interface CartItem {
   variant_id?:string
   variant?:Variant
   quantity:number
+  subtotal:Price
 }
 
 export interface Cart {

@@ -31,7 +31,7 @@ export default function ProductImageGallery({ images }: Props) {
             key={index} 
             className={`w-full h-20 md:h-24 bg-gray-200 rounded-lg flex items-center justify-center p-1 cursor-pointer transition-all duration-200 ease-in-out 
               ${selectedImage === url ? 'border-4 border-primary' : 'border-0'}`}
-            onClick={() => setSelectedImage(url)} // Mengganti gambar utama ketika thumbnail diklik
+            onClick={() => setSelectedImage(index +url)} // Mengganti gambar utama ketika thumbnail diklik
           >
             <Image
               width={500}
