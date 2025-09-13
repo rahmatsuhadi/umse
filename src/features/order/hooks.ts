@@ -58,7 +58,8 @@ export const useCreateOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateOrderData) => createOrder(data),
-    onSuccess: (data) => {
+    onSuccess: async(data) => {
+      await localStorage.removeItem("checkout_items")
       toast.success("Berhasil membuat order!");
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       router.replace("/pembayaran/" + data.data.id)
