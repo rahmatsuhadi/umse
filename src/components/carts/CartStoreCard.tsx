@@ -67,7 +67,46 @@ export const CartStoreCard = ({
 
         if (selectedItems.length === 0) return;
 
-        localStorage.setItem("checkout_items", JSON.stringify(selectedItems));
+        const store = selectedItems[0].store
+        
+
+        const items = selectedItems.map(item => {
+            return {
+                id: item.id,
+                product: {
+                    id: item.product.id,
+                    name: item.product.name,
+                    thumbnail: item.product.thumbnail,
+                    price:item.product.price
+                },
+                variant: item.variant ? {
+                    id: item.variant.id,
+                    name: item.variant.name,
+                    thumbnail: item.variant.thumbnail,
+                    price:item.variant.price
+                } : null,
+                quantity: item.quantity,
+                subtotal: item.subtotal
+            }
+        })
+
+        const saveLocal = {
+            store:{
+                id:store.id,
+                name: store.name,
+                slug: store.slug,
+                logo_url: store.logo_url,
+                qris_url: store.qris_url,
+                address: store.address,
+                village_id: store.village_id,
+                district_id:store.district_id,
+                regency_id: store.regency_id,
+                description:store.description
+            },
+            items
+        }
+
+        localStorage.setItem("checkout_items", JSON.stringify(saveLocal));
 
         router.push("/checkout?store=" + storeId);
     }

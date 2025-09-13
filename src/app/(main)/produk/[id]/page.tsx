@@ -17,42 +17,42 @@ import { APP_URL } from '@/lib/envConfig';
 
 
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+// export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+//   const { id } = await params;
 
-  try {
-    const { data: product } = await getProductById(id);
+//   try {
+//     const { data: product } = await getProductById(id);
 
-    // Gambar untuk Open Graph dan Twitter Card
-    const ogImageUrl = product.media[0]?.media_url || '/assets/no-image.jpg';
+//     // Gambar untuk Open Graph dan Twitter Card
+//     const ogImageUrl = product.media[0]?.media_url || '/assets/no-image.jpg';
 
-    const trimmedDescription = trimDescription(product.description);
+//     const trimmedDescription = trimDescription(product.description);
 
-    return {
-      title: product.name,  // Dinamis berdasarkan produk
-      description: trimmedDescription,  // Deskripsi produk
-      openGraph: {
-        title: product.name,
-        description: trimmedDescription,
-        url: `${APP_URL}/produk/${product.id}`,  // URL produk
-        image: ogImageUrl,
-        type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
-      },
-      twitter: {
-        title: product.name,
-        description: trimmedDescription,
-        image: ogImageUrl,
-        card: 'summary_large_image',  // Format Twitter Card yang besar
-      },
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      title: 'Produk Tidak Ditemukan',
-      description: 'Halaman yang Anda cari tidak ada.',
-    };
-  }
-}
+//     return {
+//       title: product.name,  // Dinamis berdasarkan produk
+//       description: trimmedDescription,  // Deskripsi produk
+//       openGraph: {
+//         title: product.name,
+//         description: trimmedDescription,
+//         url: `${APP_URL}/produk/${product.id}`,  // URL produk
+//         image: ogImageUrl,
+//         type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
+//       },
+//       twitter: {
+//         title: product.name,
+//         description: trimmedDescription,
+//         image: ogImageUrl,
+//         card: 'summary_large_image',  // Format Twitter Card yang besar
+//       },
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       title: 'Produk Tidak Ditemukan',
+//       description: 'Halaman yang Anda cari tidak ada.',
+//     };
+//   }
+// }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
 

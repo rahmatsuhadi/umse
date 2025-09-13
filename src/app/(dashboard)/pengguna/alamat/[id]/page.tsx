@@ -85,7 +85,7 @@ export default function FormAddressPage({ }: FormAddressPageProps) {
         if (existingAddress) {
             form.setValue("recipient_name", existingAddress.recipient_name)
             form.setValue("recipient_phone_number", existingAddress.recipient_phone_number)
-            form.setValue("address", existingAddress.address)
+            form.setValue("address", existingAddress.address || '')
             form.setValue("postal_code", String(existingAddress.postal_code))
             form.setValue("province_id", String(existingAddress.province_id))
             form.setValue("regency_id", String(existingAddress.regency_id))
@@ -93,7 +93,7 @@ export default function FormAddressPage({ }: FormAddressPageProps) {
             form.setValue("village_id", String(existingAddress.village_id))
             form.setValue("is_primary", existingAddress.is_primary)
             form.setValue("label", existingAddress.label)
-            form.setValue("note", existingAddress.note)
+            form.setValue("note", existingAddress.note || '')
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [existingAddress])

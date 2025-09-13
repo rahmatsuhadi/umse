@@ -12,6 +12,7 @@ export const useShippingRates = ({
         queryKey: ["shippingRates", destination_village_id,origin_village_id ], // Kunci query unik untuk produk ini
         refetchOnReconnect:false,
         refetchOnWindowFocus: false,
+        retry: false,
         queryFn: () => getShippingRates({
             destination_village_id, items, origin_village_id
         }),
