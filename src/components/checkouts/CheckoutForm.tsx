@@ -66,14 +66,28 @@ export default function CheckoutForm({ address, store, items }: CheckoutFormProp
     }, [address, form]);
 
     const handleOrderSubmit = (data: z.infer<typeof addressSchema>) => {
+
+
         const orderData = {
             // ...data,
-            items: items.map((item) => ({
-                cart_item_id: item.id,
-                // product_id: item.product.id,
-                quantity: item.quantity,
+            items: items.map((item) => {
+                if (item.id) {
+                    return {
+                        cart_item_id: item.id,
+                        quantity: item.quantity,
+                    }
+                }
+                else {
+                    return {
+                        product_id: item.product.id,
+                        quantity: item.quantity,
+                        variant_id: item.variant ? item.variant.id : undefined
+                    }
+                }
+
+
                 // variant_id: item.variant?.id || '',
-            })),
+            }),
             shipping_service: service_name,
             shipping_service_type: service_type,
             store_id: store.id,
@@ -111,7 +125,7 @@ export default function CheckoutForm({ address, store, items }: CheckoutFormProp
     const districts = districtsData?.data || [];
     const villages = villagesData?.data || [];
 
-    const [isValidShip,setIsValidShip] = useState<boolean>(false)
+    const [isValidShip, setIsValidShip] = useState<boolean>(false)
 
 
     const { mutate, isPending } = useCreateOrder()
@@ -147,7 +161,7 @@ export default function CheckoutForm({ address, store, items }: CheckoutFormProp
                         <ShippingCardEstimation
                             items={items}
                             storeVillageId={store.village_id}
-                            handleValidShipping={(val) =>setIsValidShip(val)}
+                            handleValidShipping={(val) => setIsValidShip(val)}
                         />
                     </div>
 

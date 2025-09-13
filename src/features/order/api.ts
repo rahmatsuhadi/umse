@@ -3,7 +3,7 @@ import type {  Order, PaginatedApiResponse, Payment } from "@/types";
 
 export interface CreateOrderData {
   items: {
-    cart_item_id: string,
+    cart_item_id?: string,
     product_id?: string,
     quantity: number
     variant_id?: string,

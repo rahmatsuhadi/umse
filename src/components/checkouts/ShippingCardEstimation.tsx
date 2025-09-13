@@ -29,7 +29,7 @@ export default function ShippingCardEstimation({ items, storeVillageId, handleVa
     const destination_village_id = watch("village_id")
 
     const { data: shippingRate, isLoading: isLoadingShippingRates, error: errorShippingRates } = useShippingRates({
-        origin_village_id: destination_village_id,
+        origin_village_id: storeVillageId,
         items: items.map((item => {
             if (item.id) {
                 return {
