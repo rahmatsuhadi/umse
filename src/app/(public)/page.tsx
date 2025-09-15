@@ -27,7 +27,7 @@ export const metadata: Metadata = {
         description: "Marketplace terbaik untuk produk UMKM di Sleman. Dapatkan produk berkualitas dan layanan terbaik.",
         images: [
             {
-                url: APP_URL + "/slemanmartlogo.png",
+                url: "/slemanmartlogo.png",
                 width: 800,
                 height: 600,
                 alt: "Sleman Mart - Marketplace UMKM"
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
         ],
         url: APP_URL + "",
         siteName: "Sleman Mart",
+        type: "website",
     },
     twitter: {
         card: "summary_large_image",
@@ -47,41 +48,41 @@ export const metadata: Metadata = {
 
 export default async function HomePage({ }: HomePage) {
     return (
-    <div className="bg-gray-50">
+        <div className="bg-gray-50">
             <Navbar />
             <div className="">
 
                 <BannerCarousel />
 
 
-                    <div className="md:px-10">
-                        <FilterSortModal />
+                <div className="md:px-10">
+                    <FilterSortModal />
+                </div>
+
+
+
+                <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
+                    <div className="text-center mb-4 sm:mb-6 pt-10">
+                        <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
+                            Layanan Kami
+                        </h2>
+                        <p className="text-xs sm:text-sm text-gray-600">
+                            Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
+                        </p>
                     </div>
-                    
 
-
-                    <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
-                        <div className="text-center mb-4 sm:mb-6 pt-10">
-                            <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
-                                Layanan Kami
-                            </h2>
-                            <p className="text-xs sm:text-sm text-gray-600">
-                                Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
-                            </p>
-                        </div>
-
-                        <FeaturesSection />
-                    </AnimatedWrapper>
+                    <FeaturesSection />
+                </AnimatedWrapper>
 
 
 
-                    <AnimatedWrapper className="md:px-10">
-                        <CategoryList />
-                    </AnimatedWrapper>
-                    <Separator />
-                    <AnimatedWrapper className="md:px-10">
-                        <ProductList />
-                    </AnimatedWrapper>
+                <AnimatedWrapper className="md:px-10">
+                    <CategoryList />
+                </AnimatedWrapper>
+                <Separator />
+                <AnimatedWrapper className="md:px-10">
+                    <ProductList />
+                </AnimatedWrapper>
 
 
 
@@ -91,7 +92,7 @@ export default async function HomePage({ }: HomePage) {
                         <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
                     </div>
                     <StoreList />
-                    
+
                 </AnimatedWrapper>
             </div>
 

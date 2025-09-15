@@ -1,3 +1,4 @@
+import { TOKEN_COOKIE_NAME } from "@/lib/token-service";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -8,18 +9,17 @@ export const metadata: Metadata = {
     description: "Markeplace UMKM",
 };
 
-export default async function DashboardLayout({
+export default async function ProtectedLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
 
-    const cookieStore = cookies();
-    const token = (await cookieStore).get("slm-token"); 
-    
+    const cookieStore = await cookies();
+    const token = cookieStore.get(TOKEN_COOKIE_NAME);
+
     // Redirect jika tidak ada token
     if (!token) {
-
         const redirectUrl = `/masuk`;
         redirect(redirectUrl); // arahkan ke halaman login
     }

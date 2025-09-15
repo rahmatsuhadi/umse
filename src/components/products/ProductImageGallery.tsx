@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function ProductImageGallery({ images }: Props) {
-  const [selectedImage, setSelectedImage] = useState(images[0]);
+  const [selectedIndex, setSelectedIndex] = useState(0); // simpan index
 
   return (
     <div className="flex flex-col gap-4">
@@ -18,8 +18,8 @@ export default function ProductImageGallery({ images }: Props) {
         <Image
           width={500}
           height={500} 
-          src={selectedImage} 
-          alt="Gambar Utama" 
+          src={images[selectedIndex]} 
+          alt={`Gambar Utama ${selectedIndex + 1}`} 
           className="w-full h-full object-contain"
         />
       </div>
@@ -30,8 +30,8 @@ export default function ProductImageGallery({ images }: Props) {
           <div 
             key={index} 
             className={`w-full h-20 md:h-24 bg-gray-200 rounded-lg flex items-center justify-center p-1 cursor-pointer transition-all duration-200 ease-in-out 
-              ${selectedImage === url ? 'border-4 border-primary' : 'border-0'}`}
-            onClick={() => setSelectedImage(index +url)} // Mengganti gambar utama ketika thumbnail diklik
+              ${selectedIndex === index ? 'border-4 border-primary' : 'border-0'}`}
+            onClick={() => setSelectedIndex(index)} // set index yang dipilih
           >
             <Image
               width={500}
