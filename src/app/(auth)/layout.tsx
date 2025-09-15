@@ -1,14 +1,25 @@
 import { Navbar } from "@/components/shared/Navbar";
+import { TOKEN_COOKIE_NAME } from "@/lib/token-service";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function AuthLayout({
+export default async function AuthLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get(TOKEN_COOKIE_NAME);
+
+    if (token) {
+        redirect('/');
+    }
+
     return (
         <div className="bg-[#f8f9fa] min-h-screen">
-            <Navbar/>
+            <Navbar />
             {children}
         </div>
     );

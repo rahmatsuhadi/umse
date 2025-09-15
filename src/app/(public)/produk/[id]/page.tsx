@@ -1,6 +1,6 @@
 
 import { getProductById } from '@/features/products/api';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Breadcrumb from '@/components/shared/Breadcrumb';
 import Image from 'next/image';
 import { AnimatedWrapper } from '@/components/shared/AnimateWrapper';
@@ -14,45 +14,61 @@ import ProductImageGallery from '@/components/products/ProductImageGallery';
 import { ProductShareModal } from '@/components/products/ProductShareModal';
 import ProductCheckoutButton from '@/components/products/ProductCheckoutButton';
 import { APP_URL } from '@/lib/envConfig';
+import { generateManualDescription } from '@/lib/metadata';
 
 
 
-// export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-//   const { id } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
-//   try {
-//     const { data: product } = await getProductById(id);
+  try {
+    const { data: product } = await getProductById(id);
 
-//     // Gambar untuk Open Graph dan Twitter Card
-//     const ogImageUrl = product.media[0]?.media_url || '/assets/no-image.jpg';
 
-//     const trimmedDescription = trimDescription(product.description);
+    // Gambar untuk Open Graph dan Twitter Card
+    const ogImageUrl = product.media.length > 0 ? product.media[0].media_url : '/assets/no-image.jpg';
 
-//     return {
-//       title: product.name,  // Dinamis berdasarkan produk
-//       description: trimmedDescription,  // Deskripsi produk
-//       openGraph: {
-//         title: product.name,
-//         description: trimmedDescription,
-//         url: `${APP_URL}/produk/${product.id}`,  // URL produk
-//         image: ogImageUrl,
-//         type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
-//       },
-//       twitter: {
-//         title: product.name,
-//         description: trimmedDescription,
-//         image: ogImageUrl,
-//         card: 'summary_large_image',  // Format Twitter Card yang besar
-//       },
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       title: 'Produk Tidak Ditemukan',
-//       description: 'Halaman yang Anda cari tidak ada.',
-//     };
-//   }
-// }
+    const trimmedDescription = trimDescription(product.description);
+
+    return {
+      title: product.name,  // Dinamis berdasarkan produk
+      description: trimmedDescription,  // Deskripsi produk
+      openGraph: {
+        title: product.name,
+        description: generateManualDescription(product),
+        url: `${APP_URL}/produk/${product.id}`,  // URL produk
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: product.name,
+          },
+        ],
+        type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
+      },
+      twitter: {
+        title: product.name,
+        description: generateManualDescription(product),
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: product.name,
+          },
+        ],
+        card: 'summary_large_image',  // Format Twitter Card yang besar
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      title: 'Produk Tidak Ditemukan',
+      description: 'Halaman yang Anda cari tidak ada.',
+    };
+  }
+}
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
@@ -63,11 +79,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     const response = await getProductById(id);
     product = response.data;
   } catch (error) {
-
     if (error instanceof Error) {
-      console.log(error.message)
+      if (error.message === 'MAINTENANCE_MODE') {
+        redirect('/pemeliharaan');
+      }
     }
-    // Jika produk tidak ditemukan (API melempar error), tampilkan halaman not-found
     notFound();
   }
 
@@ -117,7 +133,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   </div>
                   <div className="min-w-0 flex-1">
                     <Link href={"/umkm/" + product.store.id} className='hover:underline hover:cursor-pointer'>
-                    <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
+                      <h3 className="font-bold text-gray-800 text-sm sm:text-base">{product.store.name}</h3>
                     </Link>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <i className="fas fa-map-marker-alt mr-1 flex-shrink-0"></i>
@@ -131,13 +147,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <div className="mb-6">
                 <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Detail Produk</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Variant:</span><span className="sm:ml-2">{`${product.variants.length==0 ? "Tidak ada" : product.variants.length} Variant `}</span></div>
+                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Variant:</span><span className="sm:ml-2">{`${product.variants.length == 0 ? "Tidak ada" : product.variants.length} Variant `}</span></div>
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Status:</span><span className="sm:ml-2">{product.stock_status == "in_stock" ? "Tersedia" : "Tidak tersedia"}</span></div>
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{product.category.name}</span></div>
                   <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{product.stock_quantity} tersedia</span></div>
                 </div>
               </div>
-              <ProductCheckoutButton product={product}/>
+              <ProductCheckoutButton product={product} />
 
               {/* Product Description */}
               <div className="mb-8 mt-3">
@@ -156,7 +172,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <section className="py-6 sm:py-8 bg-white md-px-10">
         <div className="container mx-auto px-4">
 
-          <ProductRatingReview product={product}  />
+          <ProductRatingReview product={product} />
 
 
         </div>

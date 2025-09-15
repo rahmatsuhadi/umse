@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, 
+import {
+  Plus_Jakarta_Sans,
   // Poppins
- } from "next/font/google";
+} from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextTopLoader from 'nextjs-toploader';
+import { APP_URL } from "@/lib/envConfig";
 // const poppins = Poppins({
 //   subsets: ["latin"],
 //   weight: ["400", "500", "600", "700"],
@@ -24,6 +26,17 @@ const jakarta = Plus_Jakarta_Sans({ // Daftarkan font Plus Jakarta Sans
 export const metadata: Metadata = {
   title: "Sleman Mart",
   description: "Markeplace UMKM",
+  metadataBase: new URL(APP_URL),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/en-US',
+      'de-DE': '/de-DE',
+    },
+  },
+  openGraph: {
+    images: '/slemanmartlogo.png',
+  },
 };
 
 export default function RootLayout({
@@ -45,9 +58,9 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} antialiased font-jakarta bg-white`}
       >
-        <NextTopLoader  color="#e57f39" />
+        <NextTopLoader color="#e57f39" />
         <ReactQueryProvider>
-        {children}
+          {children}
         </ReactQueryProvider>
         <Toaster position="bottom-right" />
       </body>

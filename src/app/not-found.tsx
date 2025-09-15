@@ -1,11 +1,38 @@
-"use client"
-
-import { Button } from '@/components/ui/button'
+import ButtonGoBack from '@/components/shared/ButtonGoBack'
 import { FileQuestion } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "404 - Halaman Tidak Ditemukan | Sleman Mart",
+    description: "Maaf, halaman yang Anda cari tidak ditemukan. Silakan periksa kembali URL atau kembali ke beranda Sleman Mart.",
+    robots: {
+        index: false, // Jangan indeks halaman 404
+        follow: false,
+    },
+    openGraph: {
+        title: "404 - Halaman Tidak Ditemukan | Sleman Mart",
+        description: "Maaf, halaman yang Anda cari tidak ditemukan di Sleman Mart.",
+        url: `${process.env.APP_URL}/404`,
+        siteName: "Sleman Mart",
+        images: [
+            {
+                url: `${process.env.APP_URL}/slemanmartlogo.png`,
+                width: 800,
+                height: 600,
+                alt: "Sleman Mart Logo",
+            },
+        ],
+        type: "website",
+    },
+    twitter: {
+        card: "summary",
+        title: "404 - Halaman Tidak Ditemukan | Sleman Mart",
+        description: "Halaman yang Anda cari tidak ditemukan. Kembali ke beranda Sleman Mart.",
+        images: [`${process.env.APP_URL}/slemanmartlogo.png`],
+    },
+};
 
 export default function NotFound() {
-    const router = useRouter()
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 text-center">
             <div className="flex flex-col items-center gap-4">
@@ -16,11 +43,7 @@ export default function NotFound() {
                     Maaf, kami tidak dapat menemukan halaman yang Anda cari. Mungkin halaman tersebut telah dihapus atau URL-nya salah.
                 </p>
                 <div className="mt-4">
-                    <Button onClick={() => router.back()} size="lg" className="bg-primary hover:bg-primary/50">
-                        {/* <Link href="/"> */}
-                        Kembali ke Beranda
-                        {/* </Link> */}
-                    </Button>
+                    <ButtonGoBack />
                 </div>
             </div>
         </div>

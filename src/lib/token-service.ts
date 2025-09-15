@@ -3,7 +3,7 @@
 import Cookies from 'js-cookie';
 
 // Nama cookie bisa diatur di satu tempat
-const TOKEN_COOKIE_NAME = 'slm-token';
+export const TOKEN_COOKIE_NAME = 'slm-token';
 
 /**
  * Menyimpan token ke dalam cookie.

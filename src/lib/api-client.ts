@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { API_URL } from './envConfig';
 import { getToken } from './token-service';
 
@@ -40,6 +41,19 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
   try {
     const response = await fetch(url, config);
 
+     if (response.status === 503) {
+       if (typeof window !== 'undefined') {
+         // Client-side: redirect langsung
+         window.location.href = '/pemeliharaan';
+         return new Promise(() => {}); // never resolve
+        } else {
+        // Server-side: lempar error spesifik
+        const err = new Error('MAINTENANCE_MODE');
+        (err as any).status = 503;
+        throw err;
+      }
+    }
+
     // console.log("[apiClient:response]", {
     //   url,
     //   status: response.status,
@@ -57,7 +71,7 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      console.log("ERROR", error.message)
+      throw new Error( error.message || "Gagal terhubung ke server.");
       // console.error("[apiClient:fetchError]", {
       //   url,
       //   message: error.message,

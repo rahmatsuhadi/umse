@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { getStoreById } from "@/features/store/api";
 import { APP_URL } from "@/lib/envConfig";
 import { trimDescription } from "@/lib/seoMetadataUtils";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 
 
@@ -20,7 +20,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
         // Gambar untuk Open Graph dan Twitter Card
         const ogImageUrl = store.logo_url || '/assets/no-image.jpg';
-
         const trimmedDescription = trimDescription(store.description);
 
         return {
@@ -30,19 +29,29 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
                 title: store.name,
                 description: trimmedDescription,
                 url: `${APP_URL}/umkm/${store.id}`,  // URL produk
-                image: ogImageUrl,
+                images: [{
+                    url: ogImageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: store.name || 'Sleman Mart UMKM Store',
+                }],
                 type: 'website',  // Menunjukkan bahwa ini adalah halaman produk
             },
             twitter: {
                 title: store.name,
                 description: trimmedDescription,
-                image: ogImageUrl,
+                images: [{
+                    url: ogImageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: store.name || 'Sleman Mart UMKM Store',
+                }],
                 card: 'summary_large_image',  // Format Twitter Card yang besar
             },
         };
     } catch (error) {
-        if(error instanceof Error)
-        console.log(error.message)
+        if (error instanceof Error)
+            console.log(error.message)
         return {
             title: 'Store Tidak Ditemukan',
             description: 'Halaman yang Anda cari tidak ada.',
@@ -60,11 +69,13 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
     try {
         const response = await getStoreById(id);
         store = response.data;
+
     } catch (error) {
 
         if (error instanceof Error) {
-            console.log(error.message)
-
+            if (error.message === 'MAINTENANCE_MODE') {
+                redirect('/pemeliharaan');
+            }
         }
         notFound();
     }
