@@ -49,7 +49,6 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
         } else {
         // Server-side: lempar error spesifik
         const err = new Error('MAINTENANCE_MODE');
-        (err as any).status = 503;
         throw err;
       }
     }
