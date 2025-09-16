@@ -11,9 +11,9 @@ export default async function AuthLayout({
 }>) {
 
     const cookieStore = await cookies();
-    const token = cookieStore.get(TOKEN_COOKIE_NAME);
+    const token = cookieStore.get("slm-token");
 
-    if (token) {
+    if (token?.value) {
         redirect('/');
     }
 

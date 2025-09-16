@@ -16,10 +16,10 @@ export default async function ProtectedLayout({
 }>) {
 
     const cookieStore = await cookies();
-    const token = cookieStore.get(TOKEN_COOKIE_NAME);
+    const token = cookieStore.get("slm-token");
 
     // Redirect jika tidak ada token
-    if (!token) {
+    if (!token?.value) {
         const redirectUrl = `/masuk`;
         redirect(redirectUrl); // arahkan ke halaman login
     }
