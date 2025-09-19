@@ -1,10 +1,17 @@
 import ContactSection from "@/components/landing/Contact";
-import LiteracyFilter from "@/components/literacies/LiteracyFilter";
 import LiteracySection from "@/components/literacies/LiteracySection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Pusat Literasi & Edukasi UMKM',
+  
+  description: 'Temukan kumpulan artikel, panduan, dan materi edukasi untuk membantu UMKM di Sleman tumbuh dan berkembang. Pelajari tips bisnis, pemasaran digital, dan manajemen dari Slemanmart.',
+};
+
 
 export default function LiterasiPage() {
     return (
