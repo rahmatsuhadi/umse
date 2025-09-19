@@ -2,6 +2,7 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
+import Link from 'next/link';
 
 const customIcon = new Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -10,7 +11,7 @@ const customIcon = new Icon({
 });
 
 export default function Map() {
-  const position: [number, number] = [-7.70, 110.36]; // Koordinat Sleman, DIY
+  const position: [number, number] = [-7.7178025, 110.3544013]; // Koordinat Sleman, DIY
 
   return (
     <MapContainer 
@@ -25,7 +26,15 @@ export default function Map() {
       />
       <Marker position={position} icon={customIcon}>
         <Popup>
-          Kantor Pusat Sleman Mart. <br /> Beran, Tridadi, Sleman.
+          <b>
+            SlemanMart <br/>
+            Dinas Koperasi dan UKM Kabupaten Sleman
+            <br/><br/>
+            WA: +62 823-2279-8318
+            <br/> <br/>
+
+            <Link href='https://maps.app.goo.gl/iPNUKPNKLAFKGdyT6' target='_blank'>Arah Menuju Lokasi</Link>
+          </b>
         </Popup>
       </Marker>
     </MapContainer>

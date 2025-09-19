@@ -11,4 +11,5 @@ export * from './shipping';
 export * from './user';
 export * from './store';
 export * from './payment';
+export * from './report';
 export * from './api';

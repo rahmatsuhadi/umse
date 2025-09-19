@@ -20,10 +20,10 @@ interface HomePage {
 }
 
 export const metadata: Metadata = {
-    title: "Sleman Mart - Marketplace UMKM dengan Produk Berkualitas",
+    title: "Daftar Produk Unggulan UMKM Sleman",
     description: "Temukan berbagai produk berkualitas dari UMKM Sleman Mart. Jelajahi kategori, fitur, dan toko-toko terbaik dengan penawaran menarik.",
     openGraph: {
-        title: "Sleman Mart - Marketplace UMKM",
+        title: "Daftar Produk Unggulan UMKM Sleman",
         description: "Marketplace terbaik untuk produk UMKM di Sleman. Dapatkan produk berkualitas dan layanan terbaik.",
         images: [
             {
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     twitter: {
         card: "summary_large_image",
         site: "@SlemanMart",
-        title: "Sleman Mart - Marketplace UMKM",
+        title: "Daftar Produk Unggulan UMKM Sleman",
         description: "Marketplace UMKM Sleman dengan produk berkualitas dan penawaran menarik.",
         images: APP_URL + "/slemanmartlogo.png"
     }

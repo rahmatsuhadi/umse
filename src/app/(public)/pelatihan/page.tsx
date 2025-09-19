@@ -4,6 +4,13 @@ import ContactSection from "@/components/landing/Contact";
 import LiteracySection from "@/components/literacies/LiteracySection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Jadwal Pelatihan & Workshop Bisnis untuk UMKM',
+  
+  description: 'Temukan dan daftar berbagai pelatihan bisnis dan workshop yang dirancang khusus untuk UMKM di Sleman. Tingkatkan keahlian Anda dalam pemasaran digital, manajemen keuangan, dan fotografi produk bersama Slemanmart.',
+};
 
 export default function PelatihanPage() {
     return (

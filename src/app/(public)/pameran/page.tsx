@@ -4,6 +4,14 @@ import ContactSection from "@/components/landing/Contact";
 import LiteracySection from "@/components/literacies/LiteracySection";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { Metadata } from "next";
+
+
+export const metadata: Metadata = {
+  title: 'Jadwal Pameran & Expo UMKM Sleman',
+  
+  description: 'Dapatkan informasi terbaru mengenai jadwal pameran, expo, dan bazaar yang menampilkan produk-produk unggulan dari UMKM Sleman. Jangan lewatkan kesempatan untuk mengunjungi dan mendukung karya lokal.',
+};
 
 export default function PelatihanPage() {
     return (

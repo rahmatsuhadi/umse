@@ -7,21 +7,20 @@ import { Search } from 'lucide-react';
 // Opsi filter (bisa diambil dari API jika dinamis)
 const STATUS_OPTIONS = [
   { value: "", label: "Semua Status" },
-  { value: "open", label: "Terbuka" },
-  { value: "in-progress", label: "Sedang Diproses" },
-  { value: "waiting", label: "Menunggu Respon" },
+  { value: "pending", label: "Menunggu Respon" },
+  { value: "in_progress", label: "Sedang Diproses" },
   { value: "resolved", label: "Selesai" },
+  { value: "rejected", label: "Ditolak" },
   { value: "closed", label: "Ditutup" },
 ];
 
 const CATEGORY_OPTIONS = [
   { value: "", label: "Semua Kategori" },
-  { value: "order", label: "Masalah Pesanan" },
   { value: "payment", label: "Masalah Pembayaran" },
   { value: "product", label: "Masalah Produk" },
-  { value: "delivery", label: "Masalah Pengiriman" },
+  { value: "shipping", label: "Masalah Pengiriman" },
   { value: "account", label: "Masalah Akun" },
-  { value: "website", label: "Masalah Website/Aplikasi" },
+  { value: "app", label: "Masalah Website/Aplikasi" },
   { value: "other", label: "Lainnya" },
 ];
 
@@ -37,7 +36,7 @@ export default function ReportFilters() {
   // Efek untuk memperbarui URL saat filter berubah
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     // Set atau hapus parameter berdasarkan nilai state
     status ? params.set('status', status) : params.delete('status');
     category ? params.set('category', category) : params.delete('category');

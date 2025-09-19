@@ -4,6 +4,7 @@ import { FaGlobe, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import 'leaflet/dist/leaflet.css';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
+import Link from 'next/link';
 
 
 export default function ContactSection() {
@@ -26,19 +27,25 @@ export default function ContactSection() {
             <div className="mt-6 space-y-4">
               <div className="flex items-start">
                 <MapPin className="w-5 h-5 text-[#D22F27] mt-1 flex-shrink-0" />
-                <p className="ml-4 text-white/60">Jl. Parasamya No.1, Beran, Tridadi, Sleman</p>
+                <p className="ml-4 text-white/60 hover:underline"> Jl. Parasamya No.6, Beran, Tridadi, Sleman</p>
               </div>
               <div className="flex items-center">
                 <FaWhatsapp className="w-5 h-5 text-[#35BC35]" />
-                <p className="ml-4 text-white/60">+62 822-2219-XXXX</p>
+                <Link className='hover:underline' target='_blank' href={"https://wa.me/6282322798318?text=Salam%20SlemanMart"}>
+                <p className="ml-4 text-white/60 hover:underline">+62 823 2279 8318</p>
+                </Link>
               </div>
               <div className="flex items-center">
                 <FaInstagram className="w-5 h-5 text-[#FA4D4D]" />
-                <p className="ml-4 text-white/60">@dinkopukmsleman</p>
+                <Link className='hover:underline' href={"https://wa.me/6282322798318?text=Salam%20SlemanMart"} target='_blank'>
+                <p className="ml-4 text-white/60 hover:underline"> @dinkopukmsleman</p>
+                </Link>
               </div>
               <div className="flex items-center">
                 <FaGlobe  className="w-5 h-5 text-[#0D6EFD]" />
-                <p className="ml-4 text-white/60">diskopukm.slemankab.go.id</p>
+                <Link className='hover:underline' href={"https://dinkopukm.slemankab.go.id/"} target='_blank'>
+                <p className="ml-4 text-white/60 hover:underline">dinkopukm.slemankab.go.id</p>
+                </Link>
               </div>
             </div>
           </div>

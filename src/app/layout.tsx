@@ -8,11 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextTopLoader from 'nextjs-toploader';
 import { APP_URL } from "@/lib/envConfig";
-// const poppins = Poppins({
-//   subsets: ["latin"],
-//   weight: ["400", "500", "600", "700"],
-//   variable: "--font-poppins",
-// });
+import { FloatingWhatsApp } from "@/components/shared/FloatingMenu";
 
 const jakarta = Plus_Jakarta_Sans({ // Daftarkan font Plus Jakarta Sans
   subsets: ["latin",],
@@ -24,7 +20,7 @@ const jakarta = Plus_Jakarta_Sans({ // Daftarkan font Plus Jakarta Sans
 
 
 export const metadata: Metadata = {
-  title: "Sleman Mart",
+  title: "Slemanmart",
   description: "Markeplace UMKM",
   metadataBase: new URL(APP_URL),
   alternates: {
@@ -64,6 +60,7 @@ export default function RootLayout({
           {children}
         </ReactQueryProvider>
         <Toaster position="bottom-right" />
+         <FloatingWhatsApp />
       </body>
     </html>
   );
