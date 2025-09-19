@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function LiterasiPage() {
     return (
-    <div className="bg-gray-50">
+        <div className="bg-gray-50">
             <Navbar />
 
             <Breadcrumb breadcrumbs={[
@@ -17,6 +17,7 @@ export default function LiterasiPage() {
             ]} />
 
             <PageHeader
+                cardClass="from-purple-600 to-purple-700"
                 title="Literasi UMKM"
                 subtitle="Tingkatkan pengetahuan dan wawasan bisnis melalui artikel, panduan, dan sumber daya edukasi terlengkap untuk UMKM"
                 icon={<i className="fas fa-book-open text-6xl mb-4"></i>}
@@ -24,11 +25,11 @@ export default function LiterasiPage() {
 
 
             <div className="md:px-10 py-10 pt-5">
-                <LiteracyFilter />
+                {/* <LiteracyFilter /> */}
 
                 <AnimatedWrapper>
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">Artikel Terbaru</h2>
-                   <LiteracySection/>
+                    <LiteracySection category="literature" path="/literasi" />
                 </AnimatedWrapper>
 
 

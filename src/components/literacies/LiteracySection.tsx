@@ -1,12 +1,15 @@
 "use client"
 
 import { motion } from 'framer-motion';
-import ArticleCard, { Article } from "./ArticleCard";
+import ArticleCard from "./ArticleCard";
 import Pagination from "../shared/Pagination";
 import { usePaginationArticles } from '@/features/articles/hook';
 import { useSearchParams } from 'next/navigation';
 import { ArticleCardSkeleton } from './ArticleCardSkeleton';
 import { FileText } from 'lucide-react';
+import { API_URL } from '@/lib/envConfig';
+import { CategoryArticle } from '@/types';
+import Link from 'next/link';
 
 
 // Varian animasi (tidak berubah)
@@ -26,14 +29,14 @@ const itemVariants = {
 };
 
 
-export default function LiteracySection() {
+export default function LiteracySection({ category, path }: { path: string, category: CategoryArticle }) {
 
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page') || 1);
   const itemsPerPage = 6; // Tentukan jumlah item per halaman
 
   const { data, isLoading } = usePaginationArticles({
-    category: "literasi",
+    category: category,
     page: page,
     per_page: itemsPerPage,
   });
@@ -58,26 +61,17 @@ export default function LiteracySection() {
         ) : articles.length > 0 ? (
           articles?.map((article) => (
             <motion.div key={article.slug} variants={itemVariants}>
-              <ArticleCard article={{
-                category: {
-                  name: 'wkwkw',
-                  slug: 'wkwkw',
-                },
-                slug: article.slug,
-                title: article.title,
-                excerpt: "",
-                imageUrl: "",
-                published_at: "",
-                reading_time: 0,
-              }} />
+              <Link href={`${path}/${article.id}`} className="group block h-full">
+                <ArticleCard article={article} />
+              </Link>
             </motion.div>
           ))
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-20 bg-slate-50 rounded-lg text-center">
             <FileText size={48} className="text-slate-400 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-700">Artikel Tidak Ditemukan</h3>
+            <h3 className="text-xl font-semibold text-slate-700">Data Tidak Ditemukan</h3>
             <p className="text-slate-500 mt-2">
-              Belum ada artikel literasi yang dipublikasikan.
+              Belum ada  yang dipublikasikan.
             </p>
           </div>
         )}

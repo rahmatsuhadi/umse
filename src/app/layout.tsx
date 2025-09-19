@@ -54,6 +54,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+          <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/46.1.1/ckeditor5.css" />
       </head>
       <body
         className={`${jakarta.variable} antialiased font-jakarta bg-white`}
