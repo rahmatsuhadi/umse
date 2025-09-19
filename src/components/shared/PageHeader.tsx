@@ -4,12 +4,13 @@ type PageHeaderProps = {
   title: string;
   subtitle: string;
   icon: React.ReactNode; 
+  cardClass?:string
 };
 
-export function PageHeader({ title, subtitle, icon }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, icon, cardClass= " from-purple-600 to-purple-700 " }: PageHeaderProps) {
   return (
     <section
-      className="py-12 bg-gradient-to-r from-purple-600 to-purple-700 text-white"
+      className={`py-12 bg-gradient-to-r ${cardClass} text-white`}
     >
       <div className="container mx-auto px-4 text-center">
         <div className="mb-8">

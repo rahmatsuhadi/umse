@@ -1,17 +1,31 @@
 export type StatusPublish = 'draft' | 'published' | 'archived';
 
-export type CategoryArticle = "literasi" | "exhibition" | "training"
+export type CategoryArticle = 'literature' | 'training' | 'exhibition'
+
+
+export interface MetaData{
+    location:string
+}
 
 export interface Article {
     id: string
     title: string
-    description: string
+    excerpt: string
     slug: string
     content: string
     status: StatusPublish
     category: CategoryArticle
-    created_at: Date
-    updated_at: Date
+    category_label:string 
+    created_at: string
+    updated_at: string
+    metadata: MetaData | null
+    thumbnail:{
+        media_path: string
+        media_url:string
+        media_type: "image"
+        id:string
+        article_id:string
+    }
 }
 
 export interface ArticleTraining extends Article {

@@ -1,43 +1,45 @@
-
-import ExhibitionFilter from "@/components/exhibition/ExhibitionFilter";
-import ExhibitionSection from "@/components/exhibition/ExhibitionSection";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
+import ContactSection from "@/components/landing/Contact";
+import LiteracySection from "@/components/literacies/LiteracySection";
+import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
+import { PageHeader } from "@/components/shared/PageHeader";
 
-export default function PameranPage() {
+export default function PelatihanPage() {
     return (
-        <div className="bg-gray-50">
+    <div className="bg-gray-50">
             <Navbar />
 
             <Breadcrumb breadcrumbs={[
                 { name: "Beranda", link: "/" },
-                { name: "Pelatihan", active: true }
+                { name: "Pameran", active: true }
             ]} />
 
-            {/* <!-- Hero Section --> */}
-            <section
-                className="py-12 bg-gradient-to-r from-green-600 to-green-700 text-white"
-            >
-                <div className="container mx-auto px-4 text-center">
-                    <div className="mb-8">
-                        <i className="fas fa-calendar-alt text-6xl mb-4"></i>
-                        <h1 className="text-4xl font-bold mb-4">Info Pameran UMKM</h1>
-                        <p className="text-xl text-primary-light max-w-2xl mx-auto">
-                            Ikuti berbagai pameran dan expo UMKM untuk memamerkan produk,
-                            memperluas jaringan, dan meningkatkan penjualan bisnis Anda
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <PageHeader
+                cardClass="from-green-600 to-green-700"
+                title="Info Pelatihan UMKM"
+                subtitle="Ikuti berbagai pameran dan expo UMKM untuk memamerkan produk, memperluas jaringan, dan meningkatkan penjualan bisnis Anda
+"
+                icon={<i className="fas fa-calendar-cap text-6xl mb-4"></i>}
+            />
 
-            {/* filter */}
 
-            <div className="md:px-10">
+            <div className="md:px-10 py-10 pt-5">
+                {/* <LiteracyFilter /> */}
 
-                <ExhibitionFilter/>
-                <ExhibitionSection/>
+                <AnimatedWrapper>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6">Pameran Terbaru</h2>
+                   <LiteracySection category="exhibition" path="/pameran"/>
+                </AnimatedWrapper>
+
 
             </div>
+
+
+            <AnimatedWrapper>
+                <ContactSection />
+            </AnimatedWrapper>
+
         </div>
     )
 }

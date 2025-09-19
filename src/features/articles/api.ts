@@ -1,12 +1,12 @@
 import { apiClient } from "@/lib/api-client";
-import type { PaginatedApiResponse, Article } from "@/types";
+import type { PaginatedApiResponse, Article, CategoryArticle } from "@/types";
 
 // Tipe untuk parameter query
 export type QueryParams = {
     page?: number;
     per_page?: number;
     search?: string;
-    category: 'literasi' | 'traning' | 'exhibition';
+    category?:CategoryArticle ;
     filter?: {
         [key: string]: string | number; 
     };
@@ -35,6 +35,7 @@ export const getArticles = (params: QueryParams): Promise<PaginatedApiResponse<A
             category: category,
         };
     }
+    console.log(apiParams)
 
     const buildQueryString = (p: QueryParams): string => {
         const parts: string[] = [];
@@ -62,8 +63,8 @@ export const getArticles = (params: QueryParams): Promise<PaginatedApiResponse<A
         return parts.join('&');
     };
 
-    const query = buildQueryString(params);
-    return apiClient<PaginatedApiResponse<Article>>(`/products?${query}`);
+    const query = buildQueryString(apiParams);
+    return apiClient<PaginatedApiResponse<Article>>(`/articles?${query}`);
 };
 
 
@@ -71,5 +72,9 @@ export const getArticles = (params: QueryParams): Promise<PaginatedApiResponse<A
  * Mengambil satu store berdasarkan id-nya.
  */
 export const getArticleById = (id: string): Promise<{ data: Article }> => {
-    return apiClient<{ data: Article }>(`/article/${id}`);
+    return apiClient<{ data: Article }>(`/articles/${id}`);
+};
+
+export const getBannerArticle = (limit:number = 5): Promise<{ data: Article[] }> => {
+    return apiClient<{ data: Article[] }>(`/articles?per_page=${limit}&sort=-created_at`);
 };
