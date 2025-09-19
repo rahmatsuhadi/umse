@@ -50,7 +50,7 @@ export default function ContactSection() {
             </div>
           </div>
           {/* Peta */}
-          <div className="w-full h-80 rounded-lg overflow-hidden">
+          <div className="w-full h-80 rounded-lg relative">
             <MapWithNoSSR />
           </div>
         </div>
