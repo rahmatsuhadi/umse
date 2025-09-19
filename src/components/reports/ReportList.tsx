@@ -17,10 +17,14 @@ export default function ReportList() {
   const queryParams = useMemo(() => {
     const q = searchParams.get('q');
     const category = searchParams.get('category');
+    const status = searchParams.get('status');
     const filter: Record<string, string> = {};
 
     if (category) {
       filter['category'] = category;
+    }
+    if(status){
+      filter['status'] = status
     }
     const params: { [key: string]: number | string | Record<string, string> } = {
       per_page: 5,
