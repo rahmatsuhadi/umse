@@ -1,6 +1,6 @@
 export type StatusPublish = 'draft' | 'published' | 'archived';
 
-export type CategoryArticle = 'literature' | 'training' | 'exhibition'
+export type CategoryArticle = 'literature' | 'training' | 'exhibition' | 'announcement'
 
 
 export interface MetaData{

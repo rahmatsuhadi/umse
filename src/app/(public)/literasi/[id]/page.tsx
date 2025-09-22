@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
 import { getArticleById } from "@/features/articles/api";
 import { APP_URL } from "@/lib/envConfig";
+import { CategoryArticle } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             siteName: 'Slemanmart',
             images: [
                 {
-                    url: article.thumbnail.media_url,
+                    url:  article.thumbnail ? article.thumbnail.media_url : '/assets/no-image.jpg',
                     width: 1200,
                     height: 630,
                     alt: article.title,
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             card: 'summary_large_image',
             title: article.title,
             description: article.excerpt,
-            images: [article.thumbnail.media_url],
+            images: [ article.thumbnail ? article.thumbnail.media_url : '/assets/no-image.jpg'],
         }
     };
 }
@@ -58,7 +59,8 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
     const { data: article } = await getArticleById(id);
 
-    if (!article) {
+    const category:CategoryArticle = "literature";
+    if (!article || category != article.category) {
         notFound();
     }
 

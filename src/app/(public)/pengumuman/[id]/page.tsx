@@ -10,7 +10,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 
     const id = (await params).id
@@ -18,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { data: article } = await getArticleById(id);
 
     if (!article) {
-        return { title: 'Pelatihan Tidak Ditemukan' };
+        return { title: 'Pengumunan Tidak Ditemukan' };
     }
     return {
         title: article.title,
@@ -26,11 +25,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         openGraph: {
             title: article.title,
             description: article.excerpt,
-            url: `${APP_URL}/pameran/${article.id}` , 
+            url: `${APP_URL}/pengumunan/${article.id}` , 
             siteName: 'Slemanmart',
             images: [
                 {
-                    url:  article.thumbnail ? article.thumbnail.media_url : '/assets/no-image.jpg',
+                    url: article.thumbnail ? article.thumbnail.media_url : '/assets/no-image.jpg',
                     width: 1200,
                     height: 630,
                     alt: article.title,
@@ -49,18 +48,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 
+
 type PageProps = {
     params: Promise<{
         id: string;
     }>;
 };
 
-export default async function PelatihanDetailPage({ params }: PageProps) {
+export default async function PengumumanDetailPage({ params }: PageProps) {
     const { id } = await params;
 
     const {data:article} = await getArticleById(id);
 
-    const category:CategoryArticle = "exhibition";
+    const category:CategoryArticle = "announcement";
     if (!article || category != article.category) {
         notFound();
     }
@@ -71,8 +71,6 @@ export default async function PelatihanDetailPage({ params }: PageProps) {
             <Navbar />
             <Breadcrumb breadcrumbs={[{
                 name: "Beranda", link: "/",
-            }, {
-                name: "Pameran", link: "/pameran",
             }, {
                 name: article.title, active: true,
             }]} />

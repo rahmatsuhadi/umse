@@ -29,7 +29,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       <div className="p-6 flex flex-col flex-grow">
         <div className="flex items-center justify-between mb-3 text-sm">
           <span className="bg-sky-100 text-sky-800 font-medium px-3 py-1 rounded-full text-xs">
-            {article.category}
+            {article.category_label}
           </span>
           {!!article.date && (
             <time className="text-slate-500 text-xs">
