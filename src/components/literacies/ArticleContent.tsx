@@ -51,6 +51,14 @@ const MetadataInfo = ({ content }: { content: Article & { date?: string } }) => 
 
 
 export default function ArticleContent({ article }: Props) {
+
+
+    const path = article.category=="announcement" ? "/pengumuman" : 
+                article.category=="exhibition" ? "/pameran" : 
+                article.category=="training" ? "/pelatihan" : 
+                "/literasi"
+
+
     return (
         <section className="py-8 bg-slate-50">
             <div className="container mx-auto px-4">
@@ -92,7 +100,7 @@ export default function ArticleContent({ article }: Props) {
                         />
 
                         {/* Tombol Bagikan (Client Component) */}
-                        <ShareButtons title={article.title} id={article.id} />
+                        <ShareButtons title={article.title} id={article.id}  path={path}  />
 
                     </div>
                     <div className="p-6"></div>
