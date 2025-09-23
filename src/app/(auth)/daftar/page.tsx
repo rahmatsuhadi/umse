@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Ref, useState } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -134,7 +134,7 @@ export default function DaftarPage() {
                           ref={withMask('999 9999 9999 999999', {
                             placeholder: '',
                             showMaskOnHover: false
-                          })}
+                          }) as unknown as Ref<HTMLInputElement>}
                         />
                       </div>
                     </FormControl>
