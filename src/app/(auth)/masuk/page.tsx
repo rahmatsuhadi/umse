@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Ref, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,7 +22,7 @@ import { FaPhoneAlt } from 'react-icons/fa';
 import { IoLockClosed } from "react-icons/io5";
 import { useLogin } from '@/features/auth/hooks';
 import { getToken } from '@/lib/token-service';
-import {  Illustration2 } from '@/components/auth/IllustrasiImages';
+import { Illustration2 } from '@/components/auth/IllustrasiImages';
 import { withMask } from 'use-mask-input';
 const formSchema = z.object({
   // email: z.string()
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-   
+
     handleLogin({ credentials: values, redirectUrl })
   }
 
@@ -103,7 +103,7 @@ export default function LoginPage() {
                           ref={withMask('999 9999 9999 999999', {
                             placeholder: '',
                             showMaskOnHover: false
-                          })}
+                          }) as unknown as Ref<HTMLInputElement>}
                         />
                       </div>
                     </FormControl>

@@ -1,7 +1,7 @@
 import { Address, CartItem, Store } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { Ref, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import CheckoutItemCard from "./CheckoutItem";
@@ -198,7 +198,7 @@ export default function CheckoutForm({ address, store, items }: CheckoutFormProp
                                             ref={withMask('999 9999 9999 999999', {
                                                 placeholder: '',
                                                 showMaskOnHover: false
-                                            })}
+                                            }) as unknown as Ref<HTMLInputElement>}
                                         />
                                     </FormControl>
                                     <FormMessage />
