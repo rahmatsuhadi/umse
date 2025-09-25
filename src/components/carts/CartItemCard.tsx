@@ -14,10 +14,12 @@ interface CartItemProps {
     isChecked: boolean;  // Tambahkan ini untuk mengontrol status checkbox
     onCheck: () => void; // Fungsi untuk mengubah status checkbox item
     media: string
+    disabledUpdateStock:boolean
 }
 
 export const CartItemCard = ({
     title,
+    disabledUpdateStock,
     variant,
     media,
     price,
@@ -54,11 +56,11 @@ export const CartItemCard = ({
         </div>
         <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4">
             <div className="flex items-center border border-gray-300 rounded">
-                <button className="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100" onClick={onDecrement}>
+                <button disabled={disabledUpdateStock} className="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100" onClick={onDecrement}>
                     <i className="fas fa-minus text-xs sm:text-sm"></i>
                 </button>
                 <span className="px-3 sm:px-4 py-1 text-center text-sm">{quantity}</span>
-                <button className="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100" onClick={onIncrement}>
+                <button disabled={disabledUpdateStock} className="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100" onClick={onIncrement}>
                     <i className="fas fa-plus text-xs sm:text-sm"></i>
                 </button>
             </div>

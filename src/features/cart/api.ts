@@ -30,7 +30,7 @@ export const addToCart = (data: AddToCartData): Promise<Cart> => {
 /** Mengupdate kuantitas item di keranjang */
 export const updateCartItem = ({ item_id, quantity,variant_id }: { item_id: string; quantity: number,variant_id?:string  | null }): Promise<Cart> => {
   return apiClient<Cart>(`/customer/cart/items/${item_id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     body: JSON.stringify({ quantity,variant_id }),
   });
 };

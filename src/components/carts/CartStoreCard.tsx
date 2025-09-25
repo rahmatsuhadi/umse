@@ -28,7 +28,7 @@ export const CartStoreCard = ({
     const [itemChecked, setItemChecked] = useState<boolean[]>(new Array(items.length).fill(false)); // State untuk checkbox item
 
     const selectedItems = items.filter((_, idx) => itemChecked[idx]);
-    const { mutate: updateItem, } = useUpdateCartItem();
+    const { mutate: updateItem, isPending } = useUpdateCartItem();
     const { mutate: removeItem, } = useRemoveCartItem();
 
     // Mengubah status checkbox store dan checkbox item
@@ -53,7 +53,7 @@ export const CartStoreCard = ({
         if (newQuantity >= 1) {
             updateItem({
                 item_id: item.id,
-                quantity: 1,
+                quantity: amount,
                 variant_id: item.variant_id
             });
         } else {
@@ -144,6 +144,7 @@ export const CartStoreCard = ({
                         variant={item.variant?.name || 'Tanpa Variant'}
                         price={item.variant?.price || item.product.price}
                         quantity={item.quantity}
+                        disabledUpdateStock={isPending}
                         media={item.product.thumbnail.media_url}
                         onIncrement={() => handleQuantityChange(item, +1)}
                         onDecrement={() => handleQuantityChange(item, -1)}

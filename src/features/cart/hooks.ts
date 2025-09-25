@@ -54,7 +54,7 @@ export const useAddToCart = () => {
 export const useUpdateCartItem = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ item_id, quantity, variant_id }: { item_id: string, quantity: number, variant_id?: string | null }) => updateCartItem({ item_id, quantity, variant_id }),
+    mutationFn: ({ item_id, quantity, variant_id, }: {quantityMode?: number , item_id: string, quantity: number, variant_id?: string | null }) => updateCartItem({ item_id, quantity, variant_id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
     },
