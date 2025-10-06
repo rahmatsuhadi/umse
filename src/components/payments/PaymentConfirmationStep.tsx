@@ -127,7 +127,7 @@ export default function ConfirmationPage({
 
   const handleRemoveFile = () => {
     setPreviewUrl(null);
-    form.setValue("paymentProof", null as any);
+    form.resetField("paymentProof")
     const input = document.getElementById("paymentProof") as HTMLInputElement;
     if (input) input.value = "";
   };
