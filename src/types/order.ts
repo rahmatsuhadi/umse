@@ -38,6 +38,7 @@ export interface Order {
     stats_label: string
     shipping_cost: Price
     shipping_note?: string
+    shipping_notes?: string
     subtotal: Price
     can_be_reviewed: boolean
     store_id: string
@@ -52,6 +53,7 @@ export interface Order {
     note?: string
     created_at: string
     total: Price
+    shipping_proof_images: string[]
 
 
 }

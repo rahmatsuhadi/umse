@@ -29,7 +29,7 @@ export default function ProductCheckoutButton({ product }: { product: Product })
     // Set varian default saat komponen pertama kali dimuat (jika ada varian)
     useEffect(() => {
         if (product.variants && product.variants.length > 0) {
-            // setSelectedVariant(product.variants[0]);
+            setSelectedVariant(product.variants[0]);
         }
     }, [product.variants]);
 
@@ -65,7 +65,7 @@ export default function ProductCheckoutButton({ product }: { product: Product })
                                             setSelectedVariant(variant)
                                         }
                                 }}
-                            >
+                            > 
                                 {variant.name}
                             </Button>
                         ))}

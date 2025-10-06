@@ -20,11 +20,6 @@ export default function OrderPage() {
                 active: true
             }]} />
             <main className="container mx-auto px-4 py-6">
-
-
-
-
-
                 {/* <!-- Page Header --> */}
                 <div className="mb-6 sm:mb-8">
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import Image from "next/image";
 import { formatDate } from "@/lib/format-date";
 import { getStatusBadgeClass } from "../lib";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MediaPreview } from "@/components/shared/MediaPreview";
 
 type Props = {
   open: boolean;
@@ -66,7 +67,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                       <p className="text-yellow-700 font-medium">Pembayaran ditolak oleh penjual.</p>
                       {order.payment?.rejection_reason && (
                         <p className="text-yellow-700 font-medium">
-                          Alasan: {order.payment.rejection_reason }
+                          Alasan: {order.payment.rejection_reason}
                         </p>
                       )}
                     </>
@@ -277,6 +278,19 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                   <span className="text-primary">{order.total.formatted}</span>
                 </div>
               </div>
+
+              {order?.shipping_proof_images?.length > 0 && (
+                <ShippingProofs proofs={order.shipping_proof_images} />
+              )}
+
+              {order.shipping_notes && (
+                <div className="">
+                  <h3>Catatan Pengiriman</h3>
+                  <p>{order.shipping_notes}</p>
+                </div>
+              )
+              }
+
             </div>
 
             <DialogFooter>
@@ -290,6 +304,53 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
     </Dialog>
   );
 }
+
+
+interface ShippingProofsProps {
+  proofs: string[];
+}
+
+function ShippingProofs({ proofs }: ShippingProofsProps) {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  if (!proofs || proofs.length === 0) return null;
+
+  return (
+    <div className="mb-4">
+      <h3 className="font-semibold mb-2">Bukti Pengiriman</h3>
+
+      {/* Grid Gambar */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {proofs.map((proof, i) => (
+          <div
+            key={i}
+            onClick={() => setSelectedImage(proof)}
+            className="relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition"
+          >
+            <Image
+              src={proof}
+              alt={`Bukti Pengiriman ${i + 1}`}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          </div>
+        ))}
+        {selectedImage && (
+          <MediaPreview
+            open={!!selectedImage}
+            onOpenChange={() => setSelectedImage(null)}
+            media={{
+              type: "image",
+              url: selectedImage || '',
+            }}
+          />)}
+      </div>
+
+    </div>
+  );
+}
+
 
 
 const OrderDetailModalSkeleton = () => {

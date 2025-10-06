@@ -71,7 +71,7 @@ export default function CategoryList() {
             className={`flex flex-col items-center p-3 sm:p-4 ${isActive ? 'bg-primary text-white' : 'bg-orange-50'} hover:bg-orange-100 rounded-lg border ${isActive ? 'border-primary' : 'border-orange-200'} hover:border-primary transition duration-300 group cursor-pointer`}
           >
             <div className={`rounded-lg w-10 h-8 sm:w-12 sm:h-10 flex items-center justify-center mb-2 ${isActive ? 'bg-white' : 'bg-primary'}`}>
-              <Image className="object-cover w-full h-full rounded-sm" src={category.icon_url} width={32} height={32} alt={category.name + "key-" + category.id} />
+              <Image className="object-cover w-full h-full rounded-sm" src={category.icon_url || '/assets/no-image.jpg'} width={32} height={32} alt={"key-" + category.id} />
             </div>
             <h3 className={`text-xs sm:text-sm font-medium text-center leading-tight ${isActive ? 'text-white' : 'text-gray-800'}`}>
               {category.name}
