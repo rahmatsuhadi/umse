@@ -58,14 +58,14 @@ export default function ProductCheckoutButton({ product }: { product: Product })
                                 key={variant.id}
                                 variant={selectedVariant?.id === variant.id ? 'default' : 'outline'}
                                 onClick={() => {
-                                        if(selectedVariant && selectedVariant?.id == variant.id){
-                                            setSelectedVariant(null)
-                                        }
-                                        else{
-                                            setSelectedVariant(variant)
-                                        }
+                                    // if(selectedVariant && selectedVariant?.id == variant.id){
+                                    //     setSelectedVariant(null)
+                                    // }
+                                    // else{
+                                    setSelectedVariant(variant)
+                                    // }
                                 }}
-                            > 
+                            >
                                 {variant.name}
                             </Button>
                         ))}
@@ -171,34 +171,34 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
         setIsLoading(true)
 
         const items = [{
-                product: {
-                    id: product.id,
-                    name: product.name,
-                    thumbnail: product.thumbnail,
-                    price:product.price
-                },
-                variant: selectedVariant ? {
-                    id: selectedVariant.id,
-                    name: selectedVariant.name,
-                    thumbnail: selectedVariant.thumbnail,
-                    price:selectedVariant.price
-                } : null,
-                quantity: quantity,
-            }
+            product: {
+                id: product.id,
+                name: product.name,
+                thumbnail: product.thumbnail,
+                price: product.price
+            },
+            variant: selectedVariant ? {
+                id: selectedVariant.id,
+                name: selectedVariant.name,
+                thumbnail: selectedVariant.thumbnail,
+                price: selectedVariant.price
+            } : null,
+            quantity: quantity,
+        }
         ]
 
         const saveLocal = {
-            store:{
-                id:product.store.id,
+            store: {
+                id: product.store.id,
                 name: product.store.name,
                 slug: product.store.slug,
                 logo_url: product.store.logo_url,
                 qris_url: product.store.qris_url,
                 address: product.store.address,
                 village_id: product.store.village_id,
-                district_id:product.store.district_id,
+                district_id: product.store.district_id,
                 regency_id: product.store.regency_id,
-                description:product.store.description
+                description: product.store.description
             },
             items
         }
