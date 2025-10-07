@@ -12,8 +12,11 @@ export const ProductCard = ({ product }: CardProductProps) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
 
+    const price = product.variants_exists ? product.lowest_price : product.price;
     
-    const priceDisplay = `Rp ${product.price.value.toLocaleString()}`
+    const priceDisplay =  `Rp ${price.value.toLocaleString()}`
+
+
     return (
         <div ref={ref} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 group h-full flex flex-col">
             <div className="bg-gray-300 h-40 md:h-48 flex items-center justify-center relative">

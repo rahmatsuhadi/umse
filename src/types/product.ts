@@ -37,6 +37,9 @@ export interface Product {
   name: string;
   slug: string;
   price: Price;
+  lowest_price:Price;
+  highest_price:Price;
+  variants_exists: boolean
   description: string;
   category_id: string;
   category: Category;
