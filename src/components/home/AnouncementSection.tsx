@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useInfiniteArticles } from "@/features/articles/hook";
 import { formatDate } from "@/lib/format-date";
 import Image from "next/image";
+import Link from "next/link";
 
 
 // Komponen Skeleton untuk tampilan loading
@@ -44,7 +45,9 @@ export default function AnnouncementsSection() {
                  <p className="text-sm text-slate-500 mb-2">
                   {formatDate(item.created_at)}
                 </p>
+                <Link href={`/pengumuman/${item.id}`} className="no-underline hover:underline">
                 <h3 className="text-xl font-bold text-primary mb-2">{item.title}</h3>
+                </Link>
                 <p className="text-slate-600 line-clamp-3">{item.excerpt}</p>
               </div>
               
