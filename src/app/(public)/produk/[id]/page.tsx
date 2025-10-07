@@ -144,15 +144,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 </div>
               </div>
 
-              <div className="mb-6">
-                <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">Detail Produk</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Variant:</span><span className="sm:ml-2">{`${product.variants.length == 0 ? "Tidak ada" : product.variants.length} Variant `}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Status:</span><span className="sm:ml-2">{product.stock_status == "in_stock" ? "Tersedia" : "Tidak tersedia"}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Kategori:</span><span className="sm:ml-2">{product.category.name}</span></div>
-                  <div className="flex flex-col sm:flex-row"><span className="text-gray-600 sm:w-24 font-medium">Stok:</span><span className="text-green-600 font-medium sm:ml-2">{product.stock_quantity} tersedia</span></div>
-                </div>
-              </div>
+              
               <ProductCheckoutButton product={product} />
 
               {/* Product Description */}
