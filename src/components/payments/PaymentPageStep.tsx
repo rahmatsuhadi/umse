@@ -1,5 +1,4 @@
-
-"use client"
+"use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { Order } from "@/types";
 import Image from "next/image";
@@ -7,7 +6,6 @@ import CountdownTimer from "./CountDownPayment";
 import { formatDate } from "@/lib/format-date";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
-
 
 export default function PaymentStep({
   currentStep: step,
@@ -18,7 +16,7 @@ export default function PaymentStep({
   onConfirmation: () => void;
   currentStep: CheckoutStep;
 }) {
-  const allowedStatuses = ["unpaid", "partially_paid", 'rejected', 'expired'];
+  const allowedStatuses = ["unpaid", "partially_paid", "rejected", "expired"];
 
   const now = new Date();
 
@@ -42,11 +40,8 @@ export default function PaymentStep({
         exit="exit"
         transition={{ duration: 0.3 }}
       >
-        <div
-          id="paymentSection"
-          className="bg-white rounded-lg shadow-md mb-6"
-        >
-           {isAllowed && !isPaymentExpired ? (
+        <div id="paymentSection" className="bg-white rounded-lg shadow-md mb-6">
+          {isAllowed && !isPaymentExpired ? (
             <>
               {/* Header */}
               <div className="p-6 border-b border-gray-200">
@@ -61,7 +56,7 @@ export default function PaymentStep({
                 <div className="text-center mb-6">
                   {/* QRIS */}
                   <div className="bg-white border-2 border-gray-200 rounded-lg p-8 inline-block mb-4">
-                    <div className="w-64 h-64 bg-gray-100 flex items-center justify-center rounded-lg">
+                    <div className="w-64 min-h-64 bg-gray-100 flex items-center justify-center rounded-lg">
                       <Image
                         src={order.store.qris_url}
                         width={500}
@@ -87,7 +82,9 @@ export default function PaymentStep({
                       Cara Pembayaran:
                     </h5>
                     <ol className="text-sm text-blue-700 space-y-1">
-                      <li>1. Buka aplikasi mobile banking atau e-wallet Anda</li>
+                      <li>
+                        1. Buka aplikasi mobile banking atau e-wallet Anda
+                      </li>
                       <li>{`2. Pilih menu "Scan QR" atau "QRIS"`}</li>
                       <li>3. Arahkan kamera ke QR code di atas</li>
                       <li>4. Masukkan nominal sesuai total pembayaran</li>
@@ -103,7 +100,10 @@ export default function PaymentStep({
                       <span className="text-orange-700">
                         Selesaikan pembayaran dalam:
                       </span>
-                      <span id="countdown" className="font-bold text-orange-800 ml-2">
+                      <span
+                        id="countdown"
+                        className="font-bold text-orange-800 ml-2"
+                      >
                         <CountdownTimer targetDate={order.payment_due_at} />
                       </span>
                     </div>
@@ -113,7 +113,8 @@ export default function PaymentStep({
                     onClick={onPaymentSubmit}
                     className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition duration-300"
                   >
-                    <i className="fas fa-check mr-2"></i>Sudah Bayar? Konfirmasi Sekarang
+                    <i className="fas fa-check mr-2"></i>Sudah Bayar? Konfirmasi
+                    Sekarang
                   </button>
                 </div>
               </div>
@@ -125,8 +126,10 @@ export default function PaymentStep({
               {isPaymentExpired ? (
                 <p>
                   Pembayaran sudah melewati batas waktu yang ditentukan pada{" "}
-                  <span className="font-semibold">{formatDate(order.payment_due_at)}</span>.
-                  Pembayaran tidak dapat dilakukan.
+                  <span className="font-semibold">
+                    {formatDate(order.payment_due_at)}
+                  </span>
+                  . Pembayaran tidak dapat dilakukan.
                 </p>
               ) : (
                 <p>

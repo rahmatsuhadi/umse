@@ -3,17 +3,18 @@ import { formatDate, formatDateOnly } from "@/lib/format-date"; // Asumsi Anda p
 import { Clock, ArrowRight, MapPin } from "lucide-react";
 import { Article } from "@/types";
 
-
 type ArticleCardProps = {
-  article: Article & { date?: string }
+  article: Article & { date?: string };
 };
 
 export default function ArticleCard({ article }: ArticleCardProps) {
-  const displayDate = article.category === 'literature' ? article.updated_at : article.date || article.created_at;
+  const displayDate =
+    article.category === "literature"
+      ? article.updated_at
+      : article.date || article.created_at;
   return (
     // Seluruh kartu sekarang menjadi sebuah link yang dapat diklik
     <article className="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 border">
-
       {/* Bagian Gambar */}
       <div className="relative h-48 w-full">
         <Image
@@ -31,16 +32,17 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           <span className="bg-sky-100 text-sky-800 font-medium px-3 py-1 rounded-full text-xs">
             {article.category_label}
           </span>
-          {!!article.date && (
+          {!!article.date && article.category != "literature" && (
             <time className="text-slate-500 text-xs">
               {formatDateOnly(article.date)}
             </time>
           )}
-
         </div>
 
-
-        <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors duration-300">
+        <h3
+          className="text-lg font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors duration-300
+               overflow-hidden whitespace-nowrap text-ellipsis"
+        >
           {article.title}
         </h3>
 
@@ -51,21 +53,26 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
           <CardFooterInfo content={article} />
           <div className="flex items-center text-primary font-semibold text-sm">
-            Baca Selengkapnya
-            <ArrowRight size={16} className="ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+            Selengkapnya
+            <ArrowRight
+              size={16}
+              className="ml-2 transform group-hover:translate-x-1 transition-transform duration-300"
+            />
           </div>
         </div>
       </div>
     </article>
-
   );
 }
 
-const CardFooterInfo = ({ content }: { content: Article & { date?: string } }) => {
-  console.log(content)
+const CardFooterInfo = ({
+  content,
+}: {
+  content: Article & { date?: string };
+}) => {
   switch (content.category) {
-    case 'exhibition':
-    case 'training':
+    case "exhibition":
+    case "training":
       if (content.metadata?.location) {
         return (
           <div className="flex items-center text-xs text-slate-500">
@@ -78,11 +85,11 @@ const CardFooterInfo = ({ content }: { content: Article & { date?: string } }) =
       return (
         <div className="flex items-center text-xs text-slate-500">
           <Clock size={14} className="mr-2" />
-          <span>{content.date ? formatDate(content.date) : 'Segera'}</span>
+          <span>{content.date ? formatDate(content.date) : "Segera"}</span>
         </div>
       );
 
-    case 'literature':
+    case "literature":
     default:
       // Untuk artikel, tampilkan tanggal publikasi
       return (

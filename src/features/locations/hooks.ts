@@ -12,34 +12,34 @@ export const useProvinces = () => {
 };
 
 // Hook untuk mengambil kabupaten/kota. Hanya aktif jika `provinceId` ada.
-export const useRegencies = (provinceId: string) => {
+export const useRegencies = (provinceId?: string) => {
   return useQuery({
     queryKey: ["regencies", provinceId],
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    queryFn: () => getRegencies(provinceId),
+    queryFn: () => (provinceId ? getRegencies(provinceId) : null),
     enabled: !!provinceId, // Ini kuncinya: query hanya berjalan jika provinceId tidak kosong
   });
 };
 
 // Hook untuk mengambil kecamatan. Hanya aktif jika `regencyId` ada.
-export const useDistricts = (regencyId: string) => {
+export const useDistricts = (regencyId?: string) => {
   return useQuery({
     queryKey: ["districts", regencyId],
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    queryFn: () => getDistricts(regencyId),
+    queryFn: () => (regencyId ? getDistricts(regencyId) : null),
     enabled: !!regencyId,
   });
 };
 
 // Hook untuk mengambil desa/kelurahan. Hanya aktif jika `districtId` ada.
-export const useVillages = (districtId: string) => {
+export const useVillages = (districtId?: string) => {
   return useQuery({
     queryKey: ["villages", districtId],
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    queryFn: () => getVillages(districtId),
+    queryFn: () => (districtId ? getVillages(districtId) : null),
     enabled: !!districtId,
   });
 };

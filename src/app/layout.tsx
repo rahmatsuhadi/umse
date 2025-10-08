@@ -6,32 +6,32 @@ import {
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
 import { APP_URL } from "@/lib/envConfig";
 import { FloatingWhatsApp } from "@/components/shared/FloatingMenu";
 
-const jakarta = Plus_Jakarta_Sans({ // Daftarkan font Plus Jakarta Sans
-  subsets: ["latin",],
-  weight: ["400", "500", "600", "700", "800",],
+const jakarta = Plus_Jakarta_Sans({
+  // Daftarkan font Plus Jakarta Sans
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
   style: ["normal", "italic"],
   variable: "--font-jakarta",
 });
-
 
 export const metadata: Metadata = {
   title: "Slemanmart",
   description: "Markeplace UMKM",
   metadataBase: new URL(APP_URL),
   alternates: {
-    canonical: '/',
+    canonical: "/",
     languages: {
-      'en-US': '/en-US',
-      'de-DE': '/de-DE',
+      "en-US": "/en-US",
+      "de-DE": "/de-DE",
     },
   },
   openGraph: {
-    images: '/slemanmartlogo.png',
+    images: "/slemanmartlogo.png",
   },
 };
 
@@ -50,17 +50,28 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
-          <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/46.1.1/ckeditor5.css" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.ckeditor.com/ckeditor5/46.1.1/ckeditor5.css"
+        />
       </head>
-      <body
-        className={`${jakarta.variable} antialiased font-jakarta bg-white`}
-      >
+      <body className={`${jakarta.variable} antialiased font-jakarta bg-white`}>
         <NextTopLoader color="#e57f39" />
-        <ReactQueryProvider>
-          {children}
-        </ReactQueryProvider>
-        <Toaster position="bottom-right" />
-         <FloatingWhatsApp />
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <Toaster
+          position="bottom-right"
+          theme="light"
+          toastOptions={{
+            duration: 5000, // Durasi lebih lama
+            style: {
+              padding: "16px",
+              fontSize: "16px", // Ukuran teks lebih besar
+              borderRadius: "8px",
+              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+            },
+          }}
+        />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

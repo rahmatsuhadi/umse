@@ -7,48 +7,46 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Jadwal Pelatihan & Workshop Bisnis untuk UMKM',
-  
-  description: 'Temukan dan daftar berbagai pelatihan bisnis dan workshop yang dirancang khusus untuk UMKM di Sleman. Tingkatkan keahlian Anda dalam pemasaran digital, manajemen keuangan, dan fotografi produk bersama Slemanmart.',
+  title: "Jadwal Pelatihan & Workshop Bisnis untuk UMKM",
+
+  description:
+    "Temukan dan daftar berbagai pelatihan bisnis dan workshop yang dirancang khusus untuk UMKM di Sleman. Tingkatkan keahlian Anda dalam pemasaran digital, manajemen keuangan, dan fotografi produk bersama Slemanmart.",
 };
 
 export default function PelatihanPage() {
-    return (
+  return (
     <div className="bg-gray-50">
-            <Navbar />
+      <Navbar />
 
-            <Breadcrumb breadcrumbs={[
-                { name: "Beranda", link: "/" },
-                { name: "Pelatihan", active: true }
-            ]} />
+      <Breadcrumb
+        breadcrumbs={[
+          { name: "Beranda", link: "/" },
+          { name: "Pelatihan", active: true },
+        ]}
+      />
 
-            <PageHeader
-                cardClass="from-green-600 to-green-700"
-                title="Info Pelatihan UMKM"
-                subtitle=" Tingkatkan kemampuan dan pengetahuan bisnis Anda melalui berbagai
+      <PageHeader
+        cardClass="from-green-600 to-green-700"
+        title="Info Pelatihan UMKM"
+        subtitle=" Tingkatkan kemampuan dan pengetahuan bisnis Anda melalui berbagai
                             program pelatihan yang dirancang khusus untuk UMKM"
-                icon={<i className="fas fa-graduation-cap text-6xl mb-4"></i>}
-            />
+        icon={<i className="fas fa-graduation-cap text-6xl mb-4"></i>}
+      />
 
+      <div className="md:px-10 py-10 pt-5 px-5">
+        {/* <LiteracyFilter /> */}
 
-            <div className="md:px-10 py-10 pt-5">
-                {/* <LiteracyFilter /> */}
+        <AnimatedWrapper>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            Pelatihan Terbaru
+          </h2>
+          <LiteracySection path="/pelatihan" category="training" />
+        </AnimatedWrapper>
+      </div>
 
-                <AnimatedWrapper>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">Pelatihan Terbaru</h2>
-                   <LiteracySection 
-                   path="/pelatihan" 
-                   category="training"/>
-                </AnimatedWrapper>
-
-
-            </div>
-
-
-            <AnimatedWrapper>
-                <ContactSection />
-            </AnimatedWrapper>
-
-        </div>
-    )
+      <AnimatedWrapper>
+        <ContactSection />
+      </AnimatedWrapper>
+    </div>
+  );
 }

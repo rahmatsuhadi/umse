@@ -1,18 +1,25 @@
-"use client"
+"use client";
 
-import { AnimatePresence, motion } from "framer-motion"
-import z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { useCreatePayment } from "@/features/order/hooks"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
-import { CheckoutStep } from "@/components/checkouts/lib"
-import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep"
+import { AnimatePresence, motion } from "framer-motion";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useCreatePayment } from "@/features/order/hooks";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { CheckoutStep } from "@/components/checkouts/lib";
+import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -25,15 +32,21 @@ const getCurrentDateTimeLocal = () => {
 
 const paymentConfirmationSchema = z.object({
   paymentProof: z
-    .custom<File>((file) => file instanceof File, { message: "File harus diunggah" })
-    .refine((file) => file.size <= MAX_FILE_SIZE, { message: "Ukuran file maksimal 5MB" })
+    .custom<File>((file) => file instanceof File, {
+      message: "File harus diunggah",
+    })
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: "Ukuran file maksimal 5MB",
+    })
     .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), {
       message: "Format file tidak didukung (hanya JPG atau PNG)",
     }),
   senderName: z.string().min(3, { message: "Minimal 3 karakter" }),
   note: z.string().optional(),
   paidAmount: z.number().min(1, { message: "Nominal harus lebih dari 0" }),
-  paymentDateTime: z.string().nonempty({ message: "Tanggal & waktu pembayaran harus diisi" }),
+  paymentDateTime: z
+    .string()
+    .nonempty({ message: "Tanggal & waktu pembayaran harus diisi" }),
   termsAgreement: z.boolean().refine((val) => val === true, {
     message: "Anda harus menyetujui syarat dan ketentuan",
   }),
@@ -127,7 +140,7 @@ export default function ConfirmationPage({
 
   const handleRemoveFile = () => {
     setPreviewUrl(null);
-    form.resetField("paymentProof")
+    form.resetField("paymentProof");
     const input = document.getElementById("paymentProof") as HTMLInputElement;
     if (input) input.value = "";
   };
@@ -144,12 +157,20 @@ export default function ConfirmationPage({
         exit="exit"
         transition={{ duration: 0.3 }}
       >
-        <div id="confirmationSection" className="bg-white rounded-lg shadow-md mb-6">
+        <div
+          id="confirmationSection"
+          className="bg-white rounded-lg shadow-md mb-6"
+        >
           <div className="p-6 border-b border-gray-200">
-            <Button className="mb-2 hover:cursor-pointer" onClick={backToPayment}>
+            <Button
+              className="mb-2 hover:cursor-pointer"
+              onClick={backToPayment}
+            >
               Kembali
             </Button>
-            <h3 className="text-lg font-bold text-gray-800">Konfirmasi Pembayaran</h3>
+            <h3 className="text-lg font-bold text-gray-800">
+              Konfirmasi Pembayaran
+            </h3>
             <p className="text-sm text-gray-600">
               Upload bukti pembayaran untuk menyelesaikan pesanan
             </p>
@@ -157,7 +178,10 @@ export default function ConfirmationPage({
 
           <div className="p-6">
             <Form {...form}>
-              <form id="confirmationForm" onSubmit={form.handleSubmit(handleUploadConfirmation)}>
+              <form
+                id="confirmationForm"
+                onSubmit={form.handleSubmit(handleUploadConfirmation)}
+              >
                 {/* Upload Bukti Pembayaran */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -211,6 +235,13 @@ export default function ConfirmationPage({
                   </div>
                 </div>
 
+                <div className="bg-white border rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                  <div className=" pt-3 mt-3 flex justify-between text-base font-semibold text-gray-900">
+                    <span>Total yang Harus Dibayarkan</span>
+                    <span> {formatRupiah(paidTotal)}</span>
+                  </div>
+                </div>
+
                 {/* Form lainnya */}
                 <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <FormField
@@ -243,7 +274,10 @@ export default function ConfirmationPage({
                             value={displayValue}
                             disabled={field.disabled}
                             onChange={(e) => {
-                              const cleanValue = e.target.value.replace(/[^0-9]/g, "");
+                              const cleanValue = e.target.value.replace(
+                                /[^0-9]/g,
+                                ""
+                              );
                               const numValue = Number(cleanValue);
                               field.onChange(numValue);
                             }}

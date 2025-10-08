@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Ref, useState } from 'react';
-import Link from 'next/link';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { Ref, useState } from "react";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,43 +14,73 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Mail, User2 } from 'lucide-react';
-import { FaPhoneAlt } from 'react-icons/fa';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Eye, EyeOff, Mail, User2 } from "lucide-react";
+import { FaPhoneAlt } from "react-icons/fa";
 import { IoLockClosed } from "react-icons/io5";
-import { useRegister } from '@/features/auth/hooks';
-import { Illustration2 } from '@/components/auth/IllustrasiImages';
-import { withMask } from 'use-mask-input';
-const formSchema = z.object({
-  phone_number: z.string().min(1, { message: "Nomor HP tidak boleh kosong." }).transform((val) => val.replace(/\s+/g, '')) // hapus semua spasi dulu
-    .refine((val) => /^08[0-9]{8,12}$/.test(val), {
-      message: 'Nomor harus diawali 08 dan panjangnya 10-14 digit',
-    }),
-  // .min(1, { message: "Nomor HP tidak boleh kosong." })
-  // .regex(/^\+62[0-9]{9,13}$/, {
-  //   message: "Format nomor HP tidak valid (gunakan format +62...).",
-  // }),
-  name: z.string().min(1, {
-    message: "Nama tidak boleh kosong.",
-  }),
-  password: z.string().min(1, {
-    message: "Password tidak boleh kosong.",
-  }),
-  password_confirmation: z.string().min(1, {
-    message: "Konfirmasi Password tidak boleh kosong.",
-  }),
-  email: z.string()
-    .min(1, { message: "Email tidak boleh kosong." })
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-      message: "Format email tidak valid.",
-    }),
-});
+import { useRegister } from "@/features/auth/hooks";
+import { Illustration2 } from "@/components/auth/IllustrasiImages";
+import { withMask } from "use-mask-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import SelectASNApiSearch from "@/components/auth/SelectAsn";
+
+const formSchema = z
+  .object({
+    phone_number: z
+      .string()
+      .min(1, { message: "Nomor HP tidak boleh kosong." })
+      .transform((val) => val.replace(/\s+/g, ""))
+      .refine((val) => /^08[0-9]{8,12}$/.test(val), {
+        message: "Nomor harus diawali 08 dan panjangnya 10-14 digit",
+      }),
+    name: z.string().min(1, { message: "Nama tidak boleh kosong." }),
+    password: z.string().min(1, { message: "Password tidak boleh kosong." }),
+    password_confirmation: z
+      .string()
+      .min(1, { message: "Konfirmasi Password tidak boleh kosong." }),
+    email: z
+      .string()
+      .min(1, { message: "Email tidak boleh kosong." })
+      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+        message: "Format email tidak valid.",
+      }),
+    is_asn: z.boolean(),
+    asn_proof_document: z.file().optional(),
+    badan_usaha: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.is_asn && !data.asn_proof_document) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Dokumen ASN harus diisi jika memilih ASN.",
+      path: ["asn_proof_document"],
+    }
+  );
 
 export default function DaftarPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordAgain, setShowPasswordAgain] = useState(false);
+  const [isAsnChecked, setIsAsnChecked] = useState(false); // State untuk memeriksa apakah checkbox ASN dicentang
 
   const { mutate: handleRegister, isPending } = useRegister();
 
@@ -61,30 +91,61 @@ export default function DaftarPage() {
       email: "",
       password: "",
       password_confirmation: "",
-      name: ""
+      name: "",
+      is_asn: false, // Default false untuk is_asn
+      badan_usaha: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    handleRegister(values)
+    handleRegister(values);
   }
 
-  return (
-    <div className="flex relative items-center  justify-center min-h-[80vh] px-4 ">
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    form.clearErrors("asn_proof_document"); // Clear previous errors
+    if (file) {
+      const allowedTypes = [
+        // "application/pdf",
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+      ];
+      const maxSize = 5 * 1024 * 1024;
 
-      {/* <div className="hidden lg:block absolute left-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
-        <Illustration1 className="w-full h-auto" />
-      </div> */}
-      <Card className="w-full max-w-md  z-20 mt-5">
+      if (!allowedTypes.includes(file.type)) {
+        form.setError("asn_proof_document", {
+          type: "manual",
+          message:
+            "Tipe file tidak diperbolehkan. Hanya PDF, JPG, dan PNG yang diperbolehkan.",
+        });
+      } else if (file.size > maxSize) {
+        form.setError("asn_proof_document", {
+          type: "manual",
+          message: "Ukuran file melebihi batas maksimal 5MB.",
+        });
+      } else {
+        form.setValue("asn_proof_document", file); // Clear the value in the form state
+      }
+    }
+  };
+
+  return (
+    <div className="flex relative items-center justify-center min-h-[80vh] px-4">
+      <Card className="w-full max-w-md z-20 mt-5">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-[#36454F]">Daftar</CardTitle>
-          <CardDescription className='text-[#36454F]'>Daftar Untuk Melanjutkan</CardDescription>
+          <CardTitle className="text-3xl font-bold text-[#36454F]">
+            Daftar
+          </CardTitle>
+          <CardDescription className="text-[#36454F]">
+            Daftar Untuk Melanjutkan
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              {/* Field Nama */}
               <FormField
-                disabled={isPending}
                 control={form.control}
                 name="name"
                 render={({ field }) => (
@@ -93,33 +154,44 @@ export default function DaftarPage() {
                     <FormControl>
                       <div className="relative">
                         <User2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input placeholder="Amanda Sekar" className="pl-10 py-5 rounded-xl" {...field} />
+                        <Input
+                          placeholder="Amanda Sekar"
+                          className="pl-10 py-5 rounded-xl"
+                          {...field}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Field Email */}
               <FormField
                 control={form.control}
                 name="email"
-                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input type='email' placeholder="amanda@gmail.com" className="pl-10 py-5 rounded-xl" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="amanda@gmail.com"
+                          className="pl-10 py-5 rounded-xl"
+                          {...field}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Field Nomor HP */}
               <FormField
                 control={form.control}
-                disabled={isPending}
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
@@ -131,10 +203,12 @@ export default function DaftarPage() {
                           {...field}
                           placeholder="08xx xxxx xxxx"
                           className="pl-10 py-5 rounded-xl pr-10"
-                          ref={withMask('999 9999 9999 999999', {
-                            placeholder: '',
-                            showMaskOnHover: false
-                          }) as unknown as Ref<HTMLInputElement>}
+                          ref={
+                            withMask("999 9999 9999 999999", {
+                              placeholder: "",
+                              showMaskOnHover: false,
+                            }) as unknown as Ref<HTMLInputElement>
+                          }
                         />
                       </div>
                     </FormControl>
@@ -142,10 +216,11 @@ export default function DaftarPage() {
                   </FormItem>
                 )}
               />
+
+              {/* Field Password */}
               <FormField
                 control={form.control}
                 name="password"
-                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
@@ -153,7 +228,7 @@ export default function DaftarPage() {
                       <div className="relative">
                         <IoLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
-                          type={showPassword ? 'text' : 'password'}
+                          type={showPassword ? "text" : "password"}
                           placeholder="********"
                           className="pl-10 py-5 rounded-xl"
                           {...field}
@@ -171,10 +246,11 @@ export default function DaftarPage() {
                   </FormItem>
                 )}
               />
+
+              {/* Field Konfirmasi Password */}
               <FormField
                 control={form.control}
                 name="password_confirmation"
-                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Konfirmasi Password</FormLabel>
@@ -182,14 +258,16 @@ export default function DaftarPage() {
                       <div className="relative">
                         <IoLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
-                          type={showPasswordAgain ? 'text' : 'password'}
+                          type={showPasswordAgain ? "text" : "password"}
                           placeholder="********"
                           className="pl-10 py-5 rounded-xl"
                           {...field}
                         />
                         <button
                           type="button"
-                          onClick={() => setShowPasswordAgain(!showPasswordAgain)}
+                          onClick={() =>
+                            setShowPasswordAgain(!showPasswordAgain)
+                          }
                           className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 hover:text-primary"
                         >
                           {showPasswordAgain ? <EyeOff /> : <Eye />}
@@ -200,26 +278,84 @@ export default function DaftarPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full py-6" disabled={isPending}>
-                {isPending ? 'Memproses...' : 'Daftar'}
+
+              {/* Checkbox ASN */}
+              <FormField
+                control={form.control}
+                name="is_asn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <Checkbox
+                        checked={isAsnChecked}
+                        onCheckedChange={() => {
+                          setIsAsnChecked(!isAsnChecked);
+                          field.onChange(!isAsnChecked); // update form state
+                        }}
+                      />
+                      Apakah Anda ASN?
+                    </FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Field ASN Proof Document - Tampil jika is_asn dicentang */}
+              {isAsnChecked && (
+                <FormField
+                  control={form.control}
+                  name="asn_proof_document"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Upload Bukti ASN</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept=" .jpeg, .jpg, .png"
+                          onChange={handleFileChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {/* Field Pilih Badan Usaha - Tampil jika is_asn dicentang */}
+              {isAsnChecked && (
+                <FormField
+                  control={form.control}
+                  name="badan_usaha"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Badan Usaha</FormLabel>
+                      <FormControl>
+                        <SelectASNApiSearch />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                className="w-full py-6"
+                disabled={isPending}
+              >
+                {isPending ? "Memproses..." : "Daftar"}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center gap-2 items-center">
-          <p className="text-sm text-gray-600">
-            Sudah punya akun?
-          </p>
-          <Link href={"/masuk"} className='text-primary underline'>Masuk</Link>
+          <p className="text-sm text-gray-600">Sudah punya akun?</p>
+          <Link href={"/masuk"} className="text-primary underline">
+            Masuk
+          </Link>
         </CardFooter>
       </Card>
-
-      {/* <div className="hidden lg:block absolute right-0 max-w-xs xl:max-w-sm 2xl:max-w-md">
-        <Illustration2 className="w-full h-auto" />
-      </div> */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-7xl bg-cover opacity-40 bg-center">
-        <Illustration2 className="w-full h-[80vh] object-cover" />
-      </div>
     </div>
   );
 }

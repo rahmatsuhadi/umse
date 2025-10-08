@@ -1,22 +1,22 @@
 export interface Province {
-  id: string; // atau number, sesuaikan dengan API Anda
+  id: number; // atau number, sesuaikan dengan API Anda
   name: string;
 }
 
 export interface Regency {
-  id: string;
+  id: number;
   province_id: string;
   name: string;
 }
 
 export interface District {
-  id: string;
+  id: number;
   regency_id: string;
   name: string;
 }
 
 export interface Village {
-  id: string;
+  id: number;
   district_id: string;
   name: string;
 }
