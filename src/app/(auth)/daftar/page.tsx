@@ -322,7 +322,7 @@ export default function DaftarPage() {
               )}
 
               {/* Field Pilih Badan Usaha - Tampil jika is_asn dicentang */}
-              {isAsnChecked && (
+              {/* {isAsnChecked && (
                 <FormField
                   control={form.control}
                   name="badan_usaha"
@@ -336,7 +336,7 @@ export default function DaftarPage() {
                     </FormItem>
                   )}
                 />
-              )}
+              )} */}
 
               {/* Submit Button */}
               <Button
