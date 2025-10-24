@@ -166,8 +166,8 @@ function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
             <Image
               src="/slemanmartlogo.png"
               alt="Slemanmart Logo"
-              width={80}
-              height={80}
+              width={150}
+              height={150}
             />
           </Link>
         </div>
@@ -267,8 +267,8 @@ function NavbarNotAuth({ withMenu = true }: { withMenu?: boolean }) {
               <Image
                 src="/slemanmartlogo.png"
                 alt="Slemanmart Logo"
-                width={80}
-                height={80}
+                width={150}
+                height={150}
               />
             </Link>
           </div>
