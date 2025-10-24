@@ -14,9 +14,8 @@ const UUID_REGEXPS: Record<UUIDVersion, RegExp> = {
 
 export function isUUID(value: unknown, version?: UUIDVersion): boolean {
   if (typeof value !== "string") return false;
-  const v = version ? String(version) : "any";
-  const re = UUID_REGEXPS[v as UUIDVersion];
-  if (!re) return false;
+  const v = version ?? "any";
+  const re = UUID_REGEXPS[v];
   return re.test(value.trim());
 }
 
@@ -43,29 +42,25 @@ export function assertUUID(value: unknown, version?: UUIDVersion): string {
 }
 
 export function generateUUID(): string {
-  // Prefer native randomUUID
-  const globalAny: any = typeof globalThis !== "undefined" ? globalThis : {};
   if (
-    typeof globalAny.crypto === "object" &&
-    typeof globalAny.crypto.randomUUID === "function"
+    typeof globalThis.crypto !== "undefined" &&
+    typeof globalThis.crypto.randomUUID === "function"
   ) {
-    return globalAny.crypto.randomUUID();
+    return globalThis.crypto.randomUUID();
   }
 
   if (
-    typeof globalAny.crypto === "object" &&
-    typeof globalAny.crypto.getRandomValues === "function"
+    typeof globalThis.crypto !== "undefined" &&
+    typeof globalThis.crypto.getRandomValues === "function"
   ) {
     const bytes = new Uint8Array(16);
-    globalAny.crypto.getRandomValues(bytes);
+    globalThis.crypto.getRandomValues(bytes);
 
-    // Per RFC4122 v4:
+    // Set versi dan varian sesuai RFC 4122
     bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
     bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant 10
 
-    const hex: string[] = Array.from(bytes, (b) =>
-      b.toString(16).padStart(2, "0")
-    );
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0"));
     return [
       hex.slice(0, 4).join(""),
       hex.slice(4, 6).join(""),
@@ -75,8 +70,9 @@ export function generateUUID(): string {
     ].join("-");
   }
 
-  const rnd = () => Math.floor(Math.random() * 0xff);
-  const bytes = new Array(16).fill(0).map(() => rnd());
+  // 3️⃣ Fallback untuk environment lama (tanpa crypto)
+  const randomByte = () => Math.floor(Math.random() * 0xff);
+  const bytes = Array.from({ length: 16 }, randomByte);
   bytes[6] = (bytes[6] & 0x0f) | 0x40;
   bytes[8] = (bytes[8] & 0x3f) | 0x80;
   const hex = bytes.map((b) => b.toString(16).padStart(2, "0"));
