@@ -1,17 +1,19 @@
-import { redirect } from 'next/navigation';
-import { API_URL } from './envConfig';
-import { getToken } from './token-service';
+import { API_URL } from "./envConfig";
+import { getToken } from "./token-service";
 
-export async function apiClient<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+export async function apiClient<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
   const headers: HeadersInit = {
     Accept: "application/json",
   };
 
   // Token hanya bisa diambil di client (browser)
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const token = getToken();
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
   }
 
@@ -41,14 +43,14 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
   try {
     const response = await fetch(url, config);
 
-     if (response.status === 503) {
-       if (typeof window !== 'undefined') {
-         // Client-side: redirect langsung
-         window.location.href = '/pemeliharaan';
-         return new Promise(() => {}); // never resolve
-        } else {
+    if (response.status === 503) {
+      if (typeof window !== "undefined") {
+        // Client-side: redirect langsung
+        window.location.href = "/pemeliharaan";
+        return new Promise(() => {}); // never resolve
+      } else {
         // Server-side: lempar error spesifik
-        const err = new Error('MAINTENANCE_MODE');
+        const err = new Error("MAINTENANCE_MODE");
         throw err;
       }
     }
@@ -70,13 +72,13 @@ export async function apiClient<T>(endpoint: string, options: RequestInit = {}):
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error( error.message || "Gagal terhubung ke server.");
+      throw new Error(error.message || "Gagal terhubung ke server.");
       // console.error("[apiClient:fetchError]", {
       //   url,
       //   message: error.message,
       //   stack: error.stack,
       //   name: error.name,
-      // });      
+      // });
     }
     throw new Error("Gagal terhubung ke server.");
   }

@@ -1,9 +1,9 @@
 // components/FloatingWhatsApp.tsx
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { MessageCircle, Send } from 'lucide-react';
+import { useState } from "react";
+import { Send } from "lucide-react";
 
 // 1. Impor komponen yang relevan dari shadcn/ui
 import { Button } from "@/components/ui/button";
@@ -14,24 +14,24 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaWhatsapp } from "react-icons/fa";
 
 export function FloatingWhatsApp() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
-  const phoneNumber = '62895359045706'; // Ganti dengan nomor Anda
+  const phoneNumber = "62895359045706"; // Ganti dengan nomor Anda
 
   const handleSendMessage = () => {
-    if (message.trim() === '') return;
+    if (message.trim() === "") return;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-    window.open(whatsappUrl, '_blank');
+    window.open(whatsappUrl, "_blank");
 
     setIsPopoverOpen(false); // Tutup popover setelah kirim
-    setMessage('');
+    setMessage("");
   };
 
   return (
@@ -46,9 +46,9 @@ export function FloatingWhatsApp() {
           <FaWhatsapp size={50} />
         </Button>
       </PopoverTrigger>
-      
+
       {/* 3. Gunakan PopoverContent untuk menampilkan konten */}
-      <PopoverContent 
+      <PopoverContent
         side="top" // Muncul di atas tombol
         align="end" // Rata kanan dengan tombol
         className="w-80 mr-2 sm:mr-0 z-[1001]" // Beri sedikit margin agar tidak menempel di tepi layar mobile
@@ -61,7 +61,9 @@ export function FloatingWhatsApp() {
             </p>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="message-popover" className="sr-only">Pesan</Label>
+            <Label htmlFor="message-popover" className="sr-only">
+              Pesan
+            </Label>
             <Textarea
               id="message-popover"
               placeholder="Ketik pesan Anda di sini..."
@@ -70,9 +72,9 @@ export function FloatingWhatsApp() {
               onChange={(e) => setMessage(e.target.value)}
             />
           </div>
-          <Button 
-          disabled={!!!message}
-            onClick={handleSendMessage} 
+          <Button
+            disabled={!!!message}
+            onClick={handleSendMessage}
             className="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-600"
           >
             <Send size={18} className="mr-2" />

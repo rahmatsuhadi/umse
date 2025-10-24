@@ -28,17 +28,8 @@ import { Eye, EyeOff, Mail, User2 } from "lucide-react";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoLockClosed } from "react-icons/io5";
 import { useRegister } from "@/features/auth/hooks";
-import { Illustration2 } from "@/components/auth/IllustrasiImages";
 import { withMask } from "use-mask-input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import SelectASNApiSearch from "@/components/auth/SelectAsn";
 
 const formSchema = z
   .object({
@@ -50,7 +41,21 @@ const formSchema = z
         message: "Nomor harus diawali 08 dan panjangnya 10-14 digit",
       }),
     name: z.string().min(1, { message: "Nama tidak boleh kosong." }),
-    password: z.string().min(1, { message: "Password tidak boleh kosong." }),
+    password: z
+      .string()
+      .min(8, { message: "Password minimal 8 karakter." })
+      .regex(/[A-Z]/, {
+        message: "Password harus mengandung minimal satu huruf besar.",
+      })
+      .regex(/[a-z]/, {
+        message: "Password harus mengandung minimal satu huruf kecil.",
+      })
+      .regex(/[0-9]/, {
+        message: "Password harus mengandung minimal satu angka.",
+      })
+      .regex(/[^A-Za-z0-9]/, {
+        message: "Password harus mengandung minimal satu simbol.",
+      }),
     password_confirmation: z
       .string()
       .min(1, { message: "Konfirmasi Password tidak boleh kosong." }),

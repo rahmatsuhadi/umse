@@ -253,16 +253,16 @@ function NavbarNotAuth({ withMenu = true }: { withMenu?: boolean }) {
   return (
     <>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Image
-              src="/logo_kab_sleman.png"
-              alt="Slemanmart Logo"
-              width={80}
-              height={80}
-            />
+          <Image
+            src="/logo_kab_sleman.png"
+            alt="Slemanmart Logo"
+            width={45}
+            height={45}
+          />
 
+          <div className="flex-shrink-0 ml-4">
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/slemanmartlogo.png"
