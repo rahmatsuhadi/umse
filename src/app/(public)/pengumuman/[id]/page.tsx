@@ -5,81 +5,105 @@ import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
 import { getArticleById } from "@/features/articles/api";
 import { APP_URL } from "@/lib/envConfig";
+import { isUUID } from "@/lib/uuid-check";
 import { CategoryArticle } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const id = (await params).id;
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (!isUUID(id)) {
+    return { title: "Pengumuman Tidak Ditemukan" };
+  }
 
-    const id = (await params).id
-
+  try {
     const { data: article } = await getArticleById(id);
 
     if (!article) {
-        return { title: 'Pengumunan Tidak Ditemukan' };
+      return { title: "Pengumuman Tidak Ditemukan" };
     }
+
+    const thumbnailUrl = article.thumbnail?.media_url || "/assets/no-image.jpg";
+
     return {
+      title: article.title,
+      description: article.excerpt,
+      openGraph: {
         title: article.title,
         description: article.excerpt,
-        openGraph: {
-            title: article.title,
-            description: article.excerpt,
-            url: `${APP_URL}/pengumunan/${article.id}` , 
-            siteName: 'Slemanmart',
-            images: [
-                {
-                    url: article.thumbnail ? article.thumbnail.media_url : '/assets/no-image.jpg',
-                    width: 1200,
-                    height: 630,
-                    alt: article.title,
-                },
-            ],
-            locale: 'id_ID',
-            type: 'article', 
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title: article.title,
-            description: article.excerpt,
-            images: [ article.thumbnail ? article.thumbnail.media_url : '/assets/no-image.jpg'],
-        }
+        url: `${APP_URL}/pengumuman/${article.id}`,
+        siteName: "Slemanmart",
+        images: [
+          {
+            url: thumbnailUrl,
+            width: 1200,
+            height: 630,
+            alt: article.title,
+          },
+        ],
+        locale: "id_ID",
+        type: "article",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: article.title,
+        description: article.excerpt,
+        images: [thumbnailUrl],
+      },
     };
+  } catch (error) {
+    return { title: "Pengumuman Tidak Ditemukan" };
+  }
 }
 
-
-
 type PageProps = {
-    params: Promise<{
-        id: string;
-    }>;
+  params: Promise<{
+    id: string;
+  }>;
 };
 
 export default async function PengumumanDetailPage({ params }: PageProps) {
-    const { id } = await params;
+  const { id } = await params;
 
-    const {data:article} = await getArticleById(id);
+  if (!isUUID(id)) return notFound();
 
-    const category:CategoryArticle = "announcement";
+  try {
+    const { data: article } = await getArticleById(id);
+
+    const category: CategoryArticle = "announcement";
+
     if (!article || category != article.category) {
-        notFound();
+      notFound();
     }
 
     return (
-        <div className="">
-            
-            <Navbar />
-            <Breadcrumb breadcrumbs={[{
-                name: "Beranda", link: "/",
-            }, {
-                name: article.title, active: true,
-            }]} />
+      <div className="">
+        <Navbar />
+        <Breadcrumb
+          breadcrumbs={[
+            {
+              name: "Beranda",
+              link: "/",
+            },
+            {
+              name: article.title,
+              active: true,
+            },
+          ]}
+        />
 
-            <ArticleContent article={article} />
+        <ArticleContent article={article} />
 
-            <AnimatedWrapper>
-                <ContactSection />
-            </AnimatedWrapper>
-        </div>
-    )
+        <AnimatedWrapper>
+          <ContactSection />
+        </AnimatedWrapper>
+      </div>
+    );
+  } catch (error) {
+    console.log(error);
+    return notFound();
+  }
 }

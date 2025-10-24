@@ -1,33 +1,52 @@
-
 "use client";
-import React,{useState} from "react"; 
+import React, { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordChange } from "@/features/auth/hooks";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"; 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff } from "lucide-react";
 
 // Skema Zod tidak berubah, sudah bagus
-const passwordSchema = z.object({
-  old_password: z.string().min(1, { message: "Password saat ini diperlukan." }),
-  new_password: z
-    .string()
-    .min(8, { message: "Password baru harus minimal 8 karakter." })
-    // .regex(/[A-Za-z]/, { message: "Password harus mengandung huruf." })
-    // .regex(/[0-9]/, { message: "Password harus mengandung angka." })
-    // .regex(/[\W_]/, { message: "Password harus mengandung simbol." })
-    ,
-  new_password_confirmation: z.string().min(1, { message: "Konfirmasi password diperlukan." }),
-}).refine((data) => data.new_password === data.new_password_confirmation, {
-  message: "Password dan konfirmasi password tidak cocok.",
-  path: ["confirmPassword"],
-});
+const passwordSchema = z
+  .object({
+    old_password: z
+      .string()
+      .min(1, { message: "Password saat ini diperlukan." }),
+    new_password: z
+      .string()
+      .min(8, { message: "Password minimal 8 karakter." })
+      .regex(/[A-Z]/, {
+        message: "Password harus mengandung minimal satu huruf besar.",
+      })
+      .regex(/[a-z]/, {
+        message: "Password harus mengandung minimal satu huruf kecil.",
+      })
+      .regex(/[0-9]/, {
+        message: "Password harus mengandung minimal satu angka.",
+      })
+      .regex(/[^A-Za-z0-9]/, {
+        message: "Password harus mengandung minimal satu simbol.",
+      }),
+    new_password_confirmation: z
+      .string()
+      .min(1, { message: "Konfirmasi password diperlukan." }),
+  })
+  .refine((data) => data.new_password === data.new_password_confirmation, {
+    message: "Password dan konfirmasi password tidak cocok.",
+    path: ["confirmPassword"],
+  });
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
@@ -35,16 +54,16 @@ export default function PasswordSettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  const form = useForm<PasswordFormValues>({ 
+  const form = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
       old_password: "",
       new_password: "",
       new_password_confirmation: "",
-    }
+    },
   });
 
-  const { mutate: updatePassword, isPending: isLoading } = usePasswordChange()
+  const { mutate: updatePassword, isPending: isLoading } = usePasswordChange();
 
   const onSubmit = (data: PasswordFormValues) => {
     // Kirim data yang dibutuhkan oleh API (password lama dan baru)
@@ -58,7 +77,10 @@ export default function PasswordSettingsPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <Link href={"/pengguna/"} className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer">
+              <Link
+                href={"/pengguna/"}
+                className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer"
+              >
                 <i className="fas fa-arrow-left text-xl"></i>
               </Link>
               <h1 className="text-xl font-bold text-gray-800">Keamanan Akun</h1>
@@ -90,8 +112,18 @@ export default function PasswordSettingsPage() {
                           placeholder="Masukkan password saat ini"
                           {...field}
                         />
-                        <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500">
-                          {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowCurrentPassword(!showCurrentPassword)
+                          }
+                          className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                        >
+                          {showCurrentPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </button>
                       </div>
                     </FormControl>
@@ -108,20 +140,29 @@ export default function PasswordSettingsPage() {
                   <FormItem>
                     <Label>Password Baru *</Label>
                     <FormControl>
-                       <div className="relative">
+                      <div className="relative">
                         <Input
                           type={showNewPassword ? "text" : "password"}
                           placeholder="Masukkan password baru"
                           {...field}
                         />
-                        <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500">
-                          {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                        >
+                          {showNewPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </button>
                       </div>
                     </FormControl>
                     <FormMessage />
                     <div className="mt-2 text-xs text-gray-500">
-                      Password harus minimal 8 karakter dengan kombinasi huruf, angka, dan simbol.
+                      Password harus minimal 8 karakter dengan kombinasi huruf,
+                      angka, dan simbol.
                     </div>
                   </FormItem>
                 )}

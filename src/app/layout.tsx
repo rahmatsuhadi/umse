@@ -9,6 +9,7 @@ import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextTopLoader from "nextjs-toploader";
 import { APP_URL } from "@/lib/envConfig";
 import { FloatingWhatsApp } from "@/components/shared/FloatingMenu";
+import { headers } from "next/headers";
 
 const jakarta = Plus_Jakarta_Sans({
   // Daftarkan font Plus Jakarta Sans
@@ -35,11 +36,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = await headers();
+  const nonce = headerList.get("x-nonce") || "";
   return (
     <html lang="en">
       <head>
@@ -54,6 +57,15 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.ckeditor.com/ckeditor5/46.1.1/ckeditor5.css"
         />
+        {process.env.NODE_ENV === "development" && (
+          <script
+            suppressHydrationWarning
+            nonce={nonce}
+            dangerouslySetInnerHTML={{
+              __html: `console.log(" CSP nonce aktif (DEV TOK)")`,
+            }}
+          />
+        )}
       </head>
       <body className={`${jakarta.variable} antialiased font-jakarta bg-white`}>
         <NextTopLoader color="#e57f39" />

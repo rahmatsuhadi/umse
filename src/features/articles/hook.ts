@@ -1,20 +1,15 @@
-import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import type { Article, PaginatedApiResponse } from "@/types";
-import { getArticleById, getArticles, getBannerArticle, QueryParams } from "./api";
-
-
-type ReportQueryParams = {
-  page?: number;
-  limit?: number;
-  per_page?: number;
-  q?: string;
-  filter?: {
-    category?: number;
-    status?: number;
-  };
-  sort?: string
-};
-
+import {
+  getArticleById,
+  getArticles,
+  getBannerArticle,
+  QueryParams,
+} from "./api";
 
 // Hook untuk mengambil satu produk
 export const useArticle = (id: string) => {
@@ -25,7 +20,6 @@ export const useArticle = (id: string) => {
   });
 };
 
-
 // Hook untuk mengambil satu produk
 export const useBannerArticle = (limit: number = 5) => {
   return useQuery<{ data: Article[] }, Error>({
@@ -34,25 +28,20 @@ export const useBannerArticle = (limit: number = 5) => {
   });
 };
 
+export const usePaginationArticles = (params: QueryParams) =>
+  useQuery<PaginatedApiResponse<Article>, Error>({
+    queryKey: ["articles", params],
+    queryFn: () => getArticles({ ...params }),
+    placeholderData: keepPreviousData,
+  });
 
-
-export const usePaginationArticles = (params: QueryParams) => useQuery<PaginatedApiResponse<Article>, Error>({
-  queryKey: ['articles', params],
-  queryFn: () => getArticles({ ...params }),
-  placeholderData: keepPreviousData,
-})
-
-
-
-
-export const useInfiniteArticles = (filters: Omit<QueryParams, 'page'>) => {
+export const useInfiniteArticles = (filters: Omit<QueryParams, "page">) => {
   return useInfiniteQuery<PaginatedApiResponse<Article>, Error>({
     queryKey: ["articles", "infinite", filters],
 
     // `pageParam` akan otomatis dikelola    oleh TanStack Query
     queryFn: ({ pageParam = 1 }) => {
-
-      return getArticles({ ...filters, page: pageParam as number })
+      return getArticles({ ...filters, page: pageParam as number });
     },
 
     // Halaman awal yang akan diambil

@@ -1,16 +1,14 @@
-"use client"
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import ArticleCard from "./ArticleCard";
 import Pagination from "../shared/Pagination";
-import { usePaginationArticles } from '@/features/articles/hook';
-import { useSearchParams } from 'next/navigation';
-import { ArticleCardSkeleton } from './ArticleCardSkeleton';
-import { FileText } from 'lucide-react';
-import { API_URL } from '@/lib/envConfig';
-import { CategoryArticle } from '@/types';
-import Link from 'next/link';
-
+import { usePaginationArticles } from "@/features/articles/hook";
+import { useSearchParams } from "next/navigation";
+import { ArticleCardSkeleton } from "./ArticleCardSkeleton";
+import { FileText } from "lucide-react";
+import { CategoryArticle } from "@/types";
+import Link from "next/link";
 
 // Varian animasi (tidak berubah)
 const containerVariants = {
@@ -28,11 +26,15 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-
-export default function LiteracySection({ category, path }: { path: string, category: CategoryArticle }) {
-
+export default function LiteracySection({
+  category,
+  path,
+}: {
+  path: string;
+  category: CategoryArticle;
+}) {
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get('page') || 1);
+  const page = Number(searchParams.get("page") || 1);
   const itemsPerPage = 6; // Tentukan jumlah item per halaman
 
   const { data, isLoading } = usePaginationArticles({
@@ -57,11 +59,13 @@ export default function LiteracySection({ category, path }: { path: string, cate
               <ArticleCardSkeleton />
             </motion.div>
           ))
-
         ) : articles.length > 0 ? (
           articles?.map((article) => (
             <motion.div key={article.slug} variants={itemVariants}>
-              <Link href={`${path}/${article.id}`} className="group block h-full">
+              <Link
+                href={`${path}/${article.id}`}
+                className="group block h-full"
+              >
                 <ArticleCard article={article} />
               </Link>
             </motion.div>
@@ -69,9 +73,11 @@ export default function LiteracySection({ category, path }: { path: string, cate
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-20 bg-slate-50 rounded-lg text-center">
             <FileText size={48} className="text-slate-400 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-700">Data Tidak Ditemukan</h3>
+            <h3 className="text-xl font-semibold text-slate-700">
+              Data Tidak Ditemukan
+            </h3>
             <p className="text-slate-500 mt-2">
-              Belum ada  yang dipublikasikan.
+              Belum ada yang dipublikasikan.
             </p>
           </div>
         )}
@@ -81,5 +87,5 @@ export default function LiteracySection({ category, path }: { path: string, cate
         <Pagination meta={data?.meta} isLoading={isLoading} />
       </div>
     </div>
-  )
+  );
 }

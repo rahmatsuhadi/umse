@@ -8,10 +8,6 @@ type ArticleCardProps = {
 };
 
 export default function ArticleCard({ article }: ArticleCardProps) {
-  const displayDate =
-    article.category === "literature"
-      ? article.updated_at
-      : article.date || article.created_at;
   return (
     // Seluruh kartu sekarang menjadi sebuah link yang dapat diklik
     <article className="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 border">

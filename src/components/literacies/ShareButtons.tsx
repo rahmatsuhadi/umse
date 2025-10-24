@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Copy } from "lucide-react";
-import { FaFacebook, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { toast } from "sonner";
 
 type Props = {
@@ -24,11 +23,8 @@ export function ShareButtons({ title, id, path = "/literasi" }: Props) {
   const copyToClipboard = () => {
     if (!currentUrl) return;
     navigator.clipboard.writeText(currentUrl);
-    toast.success("Link behasil disalin!")
+    toast.success("Link behasil disalin!");
   };
-
-  const encodedText = encodeURIComponent(`${title} - ${currentUrl}`);
-
 
   return (
     <div className="border-t border-slate-200 pt-6 mt-8">
@@ -48,7 +44,7 @@ export function ShareButtons({ title, id, path = "/literasi" }: Props) {
           <FaFacebook size={16} className="mr-2" /> Facebook
         </a> */}
 
-          {/* <FacebookShareButton url={"https://umse.vercel.app/produk/01991c6d-4cdc-70d6-a2f4-7eb88788caac"}/> */}
+        {/* <FacebookShareButton url={"https://umse.vercel.app/produk/01991c6d-4cdc-70d6-a2f4-7eb88788caac"}/> */}
 
         {/* WhatsApp */}
         {/* <a

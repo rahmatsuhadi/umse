@@ -3,7 +3,6 @@ import Footer from "@/components/layout/Footer";
 import { Navbar } from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLogout, useUser } from "@/features/auth/hooks";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

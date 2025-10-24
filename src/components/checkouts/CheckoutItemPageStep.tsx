@@ -1,150 +1,109 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useAddressPrimary } from "@/features/address/hooks";
-import { useDistricts, useRegencies, useVillages } from "@/features/locations/hooks";
-import { useShippingRates } from "@/features/shipping/hooks";
-import { CartItem, Store } from "@/types"
-import { zodResolver } from "@hookform/resolvers/zod";
+import { CartItem, Store } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form";
-import { withMask } from "use-mask-input";
-import z from "zod";
-import { useCreateOrder } from "@/features/order/hooks";
+import { useEffect, useState } from "react";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import CheckoutEmpty from "@/components/checkouts/CheckoutEmpyt";
 import CheckoutSkeletonPage from "@/components/checkouts/CheckoutSkeletonPage";
-import CheckoutItemCard from "./CheckoutItem";
-import ShippingCardEstimation from "./ShippingCardEstimation";
 import CheckoutForm from "./CheckoutForm";
 
-const province_id = 34
-const service_name = "jne"
-
-const service_type = "REG23";
-
-// Skema validasi dengan Zod
-const addressSchema = z.object({
-    recipientName: z.string().min(1, "Nama penerima wajib diisi."),
-    recipientPhone: z.string().min(10, "Nomor telepon tidak valid."),
-    fullAddress: z.string().min(1, "Alamat lengkap wajib diisi."),
-    regency_id: z.string().min(1, "Kabupaten/Kota wajib dipilih."),
-    district_id: z.string().min(1, "Kecamatan wajib dipilih."),
-    village_id: z.string().min(1, "Kelurahan wajib dipilih."),
-    postalCode: z.string().min(5, "Kode pos tidak valid.").max(5, "Kode pos tidak valid."),
-    note: z.string().optional(),
-});
 export const animationVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
 };
 
-const useLocalCheckoutItem = () =>{
-    const [store, setStore] = useState<Store>();
-    const [isLoading, setLoading] = useState(true);
+const useLocalCheckoutItem = () => {
+  const [store, setStore] = useState<Store>();
+  const [isLoading, setLoading] = useState(true);
 
-    const [items, setItems] = useState<CartItem[]>([])
+  const [items, setItems] = useState<CartItem[]>([]);
 
-    useEffect(() => {
-        const itemData = localStorage.getItem("checkout_items");
-        if (itemData) {
-            try {
-                setLoading(true)
-                const parsed = JSON.parse(itemData);
+  useEffect(() => {
+    const itemData = localStorage.getItem("checkout_items");
+    if (itemData) {
+      try {
+        setLoading(true);
+        const parsed = JSON.parse(itemData);
 
-                if(parsed){
-                    const {store, items = []} = parsed
-                    setStore(store)
-                    setItems(items)
-                }
-                setLoading(false);
-            } catch (e) {
-                console.error("Gagal parsing checkout_items", e);
-                setLoading(false);
-            }
-        } else {
-            setLoading(false);
+        if (parsed) {
+          const { store, items = [] } = parsed;
+          setStore(store);
+          setItems(items);
         }
-    }, []);
-
-    return {store, isLoading, items}
-}
-
-
-export default function CheckoutItem({ currentStep: step }: { currentStep: CheckoutStep }){
-
-
-    const {isLoading,items,store} = useLocalCheckoutItem()
-
-
-    const { data: primaryAddress, isLoading: loadPrimaryAddress } = useAddressPrimary()
-
-    
-
-
-    const renderContent = () =>{
-         if (isLoading || loadPrimaryAddress) {
-            return (<CheckoutSkeletonPage />)
-        }
-        else if (!isLoading && !!store && !!items) {
-            return (
-                <div className="p-6">           
-                    <CheckoutForm 
-                    address={primaryAddress?.data}
-                    store={store}
-                    items={items}
-                    />
-                </div>
-            )
-        }
-        else{
-            return <CheckoutEmpty />
-        }
+        setLoading(false);
+      } catch (e) {
+        console.error("Gagal parsing checkout_items", e);
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
     }
-    
+  }, []);
 
-    return( 
-        <AnimatePresence mode="wait">
-            <motion.div
-                key={step}
-                variants={animationVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={{ duration: 0.3 }}
-            >
-                <div id="orderSection" className="bg-white rounded-lg shadow-md mb-6">
-                    <div className="p-6 border-b border-gray-200">
-                        <h3 className="text-lg font-bold text-gray-800">Detail Pesanan</h3>
-                        <p className="text-sm text-gray-600">Lengkapi informasi pengiriman</p>
-                    </div>
+  return { store, isLoading, items };
+};
 
-                    {renderContent()}
+export default function CheckoutItem({
+  currentStep: step,
+}: {
+  currentStep: CheckoutStep;
+}) {
+  const { isLoading, items, store } = useLocalCheckoutItem();
 
-                </div>
+  const { data: primaryAddress, isLoading: loadPrimaryAddress } =
+    useAddressPrimary();
 
-            </motion.div>
+  const renderContent = () => {
+    if (isLoading || loadPrimaryAddress) {
+      return <CheckoutSkeletonPage />;
+    } else if (!isLoading && !!store && !!items) {
+      return (
+        <div className="p-6">
+          <CheckoutForm
+            address={primaryAddress?.data}
+            store={store}
+            items={items}
+          />
+        </div>
+      );
+    } else {
+      return <CheckoutEmpty />;
+    }
+  };
 
-        </AnimatePresence>
-    )
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={step}
+        variants={animationVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        transition={{ duration: 0.3 }}
+      >
+        <div id="orderSection" className="bg-white rounded-lg shadow-md mb-6">
+          <div className="p-6 border-b border-gray-200">
+            <h3 className="text-lg font-bold text-gray-800">Detail Pesanan</h3>
+            <p className="text-sm text-gray-600">
+              Lengkapi informasi pengiriman
+            </p>
+          </div>
+
+          {renderContent()}
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
 }
-
 
 // export default function CheckoutItem({ currentStep: step }: { currentStep: CheckoutStep }) {
-
-
 
 //     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
 //     const [loading, setLoading] = useState<boolean>(true)
-
 
 //     const { data: addressData, isLoading: loadingAddress } = useAddressPrimary()
 //     const addres = addressData?.data
@@ -164,21 +123,12 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //         }
 //     });
 
-
-
-
-    
-
-
 //     const subtotal = cartItems.reduce(
 //         (acc, item) => acc + item.quantity * (item.variant ? item.variant.price.value : item.product.price.value),
 //         0
 //     );
 
-
 //     const watchedVillage = form.watch('village_id');
-
-
 
 //     const { data: shippingRate, isLoading: isLoadingShippingRates, error: errorShippingRates } = useShippingRates({
 //         origin_village_id: store?.village_id,
@@ -201,12 +151,9 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //         destination_village_id: watchedVillage ? Number(watchedVillage) : undefined,
 //     })
 
-
 //     const shipping = shippingRate?.data ? shippingRate.data.find(item => item.service === service_name) : null
 
-
 //     const total = subtotal + (Number(shipping?.cost.value ?? 0));
-
 
 //     // Watch untuk field terkait
 //     const watchedRegency = form.watch('regency_id');
@@ -220,7 +167,6 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //     const regencies = regenciesData?.data || [];
 //     const districts = districtsData?.data || [];
 //     const villages = villagesData?.data || [];
-
 
 //     const { mutate, isPending } = useCreateOrder()
 //     const handleOrderSubmit = (data: z.infer<typeof addressSchema>) => {
@@ -251,10 +197,7 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //         mutate(orderData)
 //     }
 
-
-//     const isLoading = loading || 
-
-
+//     const isLoading = loading ||
 
 //     const renderContent = () => {
 //         if (isLoading) {
@@ -474,7 +417,6 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 
 //                             <div className="mb-6">
 
-
 //                                 <FormField
 //                                     disabled={isPending}
 //                                     control={form.control}
@@ -501,7 +443,6 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //                             >
 //                                 {isPending ? 'Membuat Pesanan...' : (<><i className="fas fa-credit-card mr-2"></i>Lanjut ke Pembayaran</>)}
 
-
 //                             </Button>
 //                         </div>
 //                     </form>
@@ -510,10 +451,6 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //             )
 //         }
 //     }
-
-    
-
-
 
 //     return (
 //         <AnimatePresence mode="wait">
@@ -540,4 +477,3 @@ export default function CheckoutItem({ currentStep: step }: { currentStep: Check
 //         </AnimatePresence>
 //     )
 // }
-
