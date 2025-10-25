@@ -134,6 +134,7 @@ export default function CheckoutForm({
   const watchedProvince = form.watch("province_id");
   const watchedRegency = form.watch("regency_id");
   const watchedDistrict = form.watch("district_id");
+  const watchedVillage = form.watch("village_id");
 
   const { data: provincesData, isLoading: isLoadingProvinces } = useProvinces();
   const { data: regenciesData, isLoading: isLoadingRegencies } =
@@ -151,6 +152,12 @@ export default function CheckoutForm({
   const [isValidShip, setIsValidShip] = useState<boolean>(false);
 
   const { mutate, isPending } = useCreateOrder();
+
+  useEffect(() => {
+    if (!watchedVillage) {
+      setIsValidShip(false);
+    }
+  }, [watchedVillage]);
 
   return (
     <div>
