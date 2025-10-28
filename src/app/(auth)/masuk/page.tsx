@@ -1,6 +1,6 @@
 "use client";
 
-import { Ref, useEffect, useState } from "react";
+import { Ref, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,9 +28,12 @@ import { Eye, EyeOff } from "lucide-react";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoLockClosed } from "react-icons/io5";
 import { useLogin } from "@/features/auth/hooks";
-import { getToken } from "@/lib/token-service";
+import { getToken, setToken } from "@/lib/token-service";
 import { Illustration2 } from "@/components/auth/IllustrasiImages";
 import { withMask } from "use-mask-input";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 const formSchema = z.object({
   // email: z.string()
   //   .min(1, { message: "Email tidak boleh kosong." })
@@ -52,9 +55,12 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect"); // Dapatkan URL redirect
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<ReCAPTCHA>(null);
 
   const { mutate: handleLogin, isPending } = useLogin();
 
@@ -74,7 +80,42 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    handleLogin({ credentials: values, redirectUrl });
+    if (!captchaToken) return;
+    handleLogin(
+      {
+        credentials: { ...values, captchaToken: captchaToken },
+        redirectUrl,
+      },
+      {
+        onSuccess: ({ data }, variables) => {
+          const { token, user } = data;
+
+          // 1. Set data pengguna ke cache setelah login berhasil
+          queryClient.setQueryData(["user"], data.user);
+
+          if (token) {
+            setToken(token);
+          }
+
+          toast.success("Login Berhasil!", {
+            description: `Selamat datang kembali, ${user.name}.`,
+          });
+
+          captchaRef.current?.reset();
+          setCaptchaToken(null);
+
+          router.push(variables.redirectUrl || "/");
+        },
+        onError: () => {
+          captchaRef.current?.reset();
+          setCaptchaToken(null);
+
+          toast.error("Login Gagal", {
+            description: "Pastikan kredensial Anda benar.",
+          });
+        },
+      }
+    );
   }
 
   return (
@@ -151,10 +192,15 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
+              <ReCAPTCHA
+                ref={captchaRef}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                onChange={setCaptchaToken}
+              />
               <Button
                 type="submit"
                 className="w-full py-6"
-                disabled={isPending}
+                disabled={isPending || !captchaToken}
               >
                 {isPending ? "Memproses..." : "Masuk"}
               </Button>

@@ -13,6 +13,7 @@ export interface User {
 export interface LoginCredentials {
   phone_number: string; // atau email, sesuaikan dengan backend
   password: string;
+  captchaToken: string;
 }
 
 // Tipe untuk data yang dikirim saat pendaftaran customer baru
@@ -25,4 +26,5 @@ export interface RegisterData {
   is_asn: boolean; // Apakah pengguna adalah ASN
   asn_proof_document?: File; // URL atau path ke dokumen bukti ASN, opsional
   password: string;
+  captchaToken: string;
 }

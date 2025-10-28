@@ -1,6 +1,6 @@
 "use client";
 
-import { Ref, useState } from "react";
+import { Ref, useRef, useState } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,6 +30,16 @@ import { IoLockClosed } from "react-icons/io5";
 import { useRegister } from "@/features/auth/hooks";
 import { withMask } from "use-mask-input";
 import { Checkbox } from "@/components/ui/checkbox";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/jpg",
+  "image/webp",
+];
 
 const formSchema = z
   .object({
@@ -80,12 +90,39 @@ const formSchema = z
       message: "Dokumen ASN harus diisi jika memilih ASN.",
       path: ["asn_proof_document"],
     }
-  );
+  )
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Konfirmasi password tidak cocok.",
+    path: ["password_confirmation"],
+  })
+  .superRefine((data, ctx) => {
+    const file = data.asn_proof_document;
+    if (file) {
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["asn_proof_document"],
+          message: "File harus berupa gambar (jpg, jpeg, png, webp).",
+        });
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["asn_proof_document"],
+          message: "Ukuran file maksimal 2MB.",
+        });
+      }
+    }
+  });
 
 export default function DaftarPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordAgain, setShowPasswordAgain] = useState(false);
   const [isAsnChecked, setIsAsnChecked] = useState(false); // State untuk memeriksa apakah checkbox ASN dicentang
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<ReCAPTCHA>(null);
 
   const { mutate: handleRegister, isPending } = useRegister();
 
@@ -103,7 +140,28 @@ export default function DaftarPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    handleRegister(values);
+    if (!captchaToken) return;
+    handleRegister(
+      { ...values, captchaToken: captchaToken },
+      {
+        onSuccess: () => {
+          captchaRef.current?.reset();
+          setCaptchaToken(null);
+          toast.success("Pendaftaran Berhasil!", {
+            description: "Akun Anda telah dibuat. Silakan masuk.",
+          });
+          router.push("/masuk"); // Arahkan ke halaman login setelah daftar
+        },
+        onError: (error) => {
+          captchaRef.current?.reset();
+          setCaptchaToken(null);
+          toast.error("Pendaftaran Gagal", {
+            description:
+              error.message || "Data yang Anda masukkan tidak valid.",
+          });
+        },
+      }
+    );
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -343,11 +401,17 @@ export default function DaftarPage() {
                 />
               )} */}
 
+              <ReCAPTCHA
+                ref={captchaRef}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                onChange={setCaptchaToken}
+              />
+
               {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full py-6"
-                disabled={isPending}
+                disabled={isPending || !captchaToken}
               >
                 {isPending ? "Memproses..." : "Daftar"}
               </Button>
