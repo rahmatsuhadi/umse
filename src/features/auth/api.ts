@@ -5,19 +5,24 @@ import { LoginCredentials, RegisterData, User } from "@/types";
  * Mengirim kredensial login ke server.
  * Backend diharapkan mengembalikan data pengguna dan token.
  */
-export const login = (
-  credentials: LoginCredentials
-): Promise<{ data: { user: User; token: string } }> => {
-  return apiClient<{ data: { user: User; token: string } }>("/auth/login", {
+export const login = async (credentials: LoginCredentials) => {
+  const response = await fetch(`/api/auth/login`, {
     method: "POST",
     body: JSON.stringify(credentials),
   });
+
+  const backendData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(backendData?.message || "Pastikan kredensial Anda benar");
+  }
+  return backendData;
 };
 
 /**
  * Mengirim data pendaftaran pengguna baru ke server.
  */
-export const register = (data: RegisterData): Promise<User> => {
+export const register = async (data: RegisterData): Promise<User> => {
   const formData = new FormData();
 
   // Menambahkan data lainnya ke FormData
@@ -38,11 +43,22 @@ export const register = (data: RegisterData): Promise<User> => {
     formData.append("badan_usaha", data.badan_usaha);
   }
 
-  // Mengirimkan request dengan FormData
-  return apiClient<User>("/auth/register", {
+  formData.append("captchaToken", data.captchaToken);
+
+  const response = await fetch(`/api/auth/register`, {
     method: "POST",
     body: formData,
   });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      responseData?.message || "Kesalahan dalam proses pendaftaran"
+    );
+  }
+
+  return responseData;
 };
 
 export const logout = (): Promise<{ status: boolean }> => {
