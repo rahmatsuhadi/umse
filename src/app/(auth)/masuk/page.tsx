@@ -148,6 +148,7 @@ export default function LoginPage() {
                         <FaPhoneAlt className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
                           {...field}
+                          autoComplete="tel"
                           placeholder="08xx xxxx xxxx"
                           className="pl-10 py-5 rounded-xl pr-10"
                           ref={
@@ -174,6 +175,7 @@ export default function LoginPage() {
                       <div className="relative">
                         <IoLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
+                          autoComplete="current-password"
                           type={showPassword ? "text" : "password"}
                           placeholder="********"
                           className="pl-10 py-5 rounded-xl pr-10"

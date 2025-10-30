@@ -5,7 +5,9 @@ export interface User {
   phone_number: string;
   role: "customer" | "seller" | "admin"; // Peran pengguna di sistem
   profile_url?: string; // Tanda tanya (?) berarti properti ini opsional
+  profile_path: string | null;
   created_at: string;
+  organization_id?: string; // Opsional, hanya untuk seller
   updated_at: string;
 }
 
@@ -22,7 +24,7 @@ export interface RegisterData {
   phone_number: string;
   email: string;
   password_confirmation: string;
-  badan_usaha?: string; // Opsional, hanya untuk seller
+  organization_id?: string; // Opsional, hanya untuk seller
   is_asn: boolean; // Apakah pengguna adalah ASN
   asn_proof_document?: File; // URL atau path ke dokumen bukti ASN, opsional
   password: string;

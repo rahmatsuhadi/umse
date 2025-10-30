@@ -39,8 +39,8 @@ export const register = async (data: RegisterData): Promise<User> => {
   }
 
   // Jika ada badan usaha
-  if (data.badan_usaha) {
-    formData.append("badan_usaha", data.badan_usaha);
+  if (data.organization_id) {
+    formData.append("organization_id", data.organization_id);
   }
 
   formData.append("captchaToken", data.captchaToken);

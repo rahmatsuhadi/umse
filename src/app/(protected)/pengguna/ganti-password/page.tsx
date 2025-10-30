@@ -108,6 +108,7 @@ export default function PasswordSettingsPage() {
                     <FormControl>
                       <div className="relative">
                         <Input
+                          autoComplete="current-password"
                           type={showCurrentPassword ? "text" : "password"}
                           placeholder="Masukkan password saat ini"
                           {...field}
@@ -142,6 +143,7 @@ export default function PasswordSettingsPage() {
                     <FormControl>
                       <div className="relative">
                         <Input
+                          autoComplete="new-password"
                           type={showNewPassword ? "text" : "password"}
                           placeholder="Masukkan password baru"
                           {...field}
@@ -177,6 +179,7 @@ export default function PasswordSettingsPage() {
                     <Label>Konfirmasi Password Baru *</Label>
                     <FormControl>
                       <Input
+                        autoComplete="new-password"
                         type="password"
                         placeholder="Ulangi password baru"
                         {...field}

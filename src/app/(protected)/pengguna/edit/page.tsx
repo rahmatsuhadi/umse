@@ -108,7 +108,7 @@ export default function EditProfilePage() {
                           <>
                             <Avatar className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-2 border-4 border-gray-200">
                               <AvatarImage
-                                src={photoPreview || user?.profile_url}
+                                src={user?.profile_path ? user.profile_url : ""}
                                 alt="Profile"
                                 className="object-cover w-full h-full"
                               />

@@ -9,19 +9,27 @@ export default function ProductLayout({
   return (
     <div>
       <div className="">
-        <header className="bg-white shadow-md md:px-10 sticky top-0">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex-shrink-0">
-                <Link href="/" className="text-2xl font-bold text-primary">
-                  <Image
-                    alt="Slemanmart Logo"
-                    src={"/slemanmartlogo.png"}
-                    height={80}
-                    width={80}
-                  />
-                  {/* Sleman<span className="text-sm font-semibold">Store</span> */}
-                </Link>
+        <header className="bg-white shadow-md sticky top-0">
+          <div className="container mx-auto px-4 ">
+            <div className="flex items-center justify-between min-h-16 py-2">
+              <div className="flex items-center">
+                <Image
+                  src="/logo_kab_sleman.png"
+                  alt="Slemanmart Logo"
+                  width={45}
+                  height={45}
+                />
+
+                <div className="flex-shrink-0 ml-4">
+                  <Link href="/" className="flex items-center gap-2">
+                    <Image
+                      src="/slemanmartlogo.png"
+                      alt="Slemanmart Logo"
+                      width={150}
+                      height={150}
+                    />
+                  </Link>
+                </div>
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4">
                 <Link

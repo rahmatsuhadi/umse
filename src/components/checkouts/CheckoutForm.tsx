@@ -203,6 +203,7 @@ export default function CheckoutForm({
           <div className="grid gird-cols-1 md:grid-cols-2 gap-4 mb-6">
             <FormField
               control={form.control}
+              disabled={isPending}
               name="recipientName"
               render={({ field }) => (
                 <FormItem>
@@ -221,6 +222,7 @@ export default function CheckoutForm({
 
             <FormField
               control={form.control}
+              disabled={isPending}
               name="recipientPhone"
               render={({ field }) => (
                 <FormItem>
@@ -245,6 +247,7 @@ export default function CheckoutForm({
 
             <FormField
               control={form.control}
+              disabled={isPending}
               name="fullAddress"
               render={({ field }) => (
                 <FormItem className="md:col-span-2">
@@ -263,12 +266,13 @@ export default function CheckoutForm({
             />
             <FormField
               control={form.control}
+              disabled={isPending}
               name="province_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Provinsi *</FormLabel>
                   <Select
-                    disabled={isLoadingProvinces}
+                    disabled={isLoadingProvinces || isPending}
                     value={field.value}
                     onValueChange={(v) => {
                       if (!!v) {
@@ -312,13 +316,16 @@ export default function CheckoutForm({
               )}
             />
             <FormField
+              disabled={isPending}
               control={form.control}
               name="regency_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kabupaten/Kota *</FormLabel>
                   <Select
-                    disabled={!watchedProvince || isLoadingRegencies}
+                    disabled={
+                      !watchedProvince || isLoadingRegencies || isPending
+                    }
                     value={field.value || ""}
                     onValueChange={(v) => {
                       if (!!v) {
@@ -362,12 +369,15 @@ export default function CheckoutForm({
             />
             <FormField
               control={form.control}
+              disabled={isPending}
               name="district_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kapanewon *</FormLabel>
                   <Select
-                    disabled={!watchedRegency || isLoadingDistricts}
+                    disabled={
+                      !watchedRegency || isLoadingDistricts || isPending
+                    }
                     value={field.value || ""}
                     onValueChange={(v) => {
                       if (!!v) {
@@ -410,12 +420,15 @@ export default function CheckoutForm({
             />
             <FormField
               control={form.control}
+              disabled={isPending}
               name="village_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kelurahan *</FormLabel>
                   <Select
-                    disabled={!watchedDistrict || isLoadingVillages}
+                    disabled={
+                      !watchedDistrict || isLoadingVillages || isPending
+                    }
                     value={field.value || ""}
                     onValueChange={(v) => {
                       if (!!v) {
@@ -457,6 +470,7 @@ export default function CheckoutForm({
             />
             <FormField
               control={form.control}
+              disabled={isPending}
               name="postalCode"
               render={({ field }) => (
                 <FormItem>
@@ -479,6 +493,7 @@ export default function CheckoutForm({
           <div className="mb-6">
             <FormField
               control={form.control}
+              disabled={isPending}
               name="note"
               render={({ field }) => (
                 <FormItem>

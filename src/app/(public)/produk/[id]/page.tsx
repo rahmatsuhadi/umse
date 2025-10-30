@@ -92,7 +92,6 @@ export default async function ProductDetailPage({
     }
     notFound();
   }
-  console.log(product);
 
   const totalReviews = Object.values(product.rating_count).reduce(
     (sum, count) => sum + count,

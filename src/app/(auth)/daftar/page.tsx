@@ -33,6 +33,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import SelectASNApiSearch from "@/components/auth/SelectAsn";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -77,7 +78,7 @@ const formSchema = z
       }),
     is_asn: z.boolean(),
     asn_proof_document: z.file().optional(),
-    badan_usaha: z.string().optional(),
+    organization_id: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -89,6 +90,18 @@ const formSchema = z
     {
       message: "Dokumen ASN harus diisi jika memilih ASN.",
       path: ["asn_proof_document"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.is_asn && !data.organization_id) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Badan usahan harus diisi jika memilih ASN.",
+      path: ["organization_id"],
     }
   )
   .refine((data) => data.password === data.password_confirmation, {
@@ -135,7 +148,7 @@ export default function DaftarPage() {
       password_confirmation: "",
       name: "",
       is_asn: false, // Default false untuk is_asn
-      badan_usaha: "",
+      organization_id: "",
     },
   });
 
@@ -264,6 +277,7 @@ export default function DaftarPage() {
                         <FaPhoneAlt className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
                           {...field}
+                          autoComplete="tel"
                           placeholder="08xx xxxx xxxx"
                           className="pl-10 py-5 rounded-xl pr-10"
                           ref={
@@ -291,6 +305,7 @@ export default function DaftarPage() {
                       <div className="relative">
                         <IoLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
+                          autoComplete="new-password"
                           type={showPassword ? "text" : "password"}
                           placeholder="********"
                           className="pl-10 py-5 rounded-xl"
@@ -321,6 +336,7 @@ export default function DaftarPage() {
                       <div className="relative">
                         <IoLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
+                          autoComplete="new-password"
                           type={showPasswordAgain ? "text" : "password"}
                           placeholder="********"
                           className="pl-10 py-5 rounded-xl"
@@ -385,21 +401,21 @@ export default function DaftarPage() {
               )}
 
               {/* Field Pilih Badan Usaha - Tampil jika is_asn dicentang */}
-              {/* {isAsnChecked && (
+              {isAsnChecked && (
                 <FormField
                   control={form.control}
-                  name="badan_usaha"
+                  name="organization_id"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Badan Usaha</FormLabel>
                       <FormControl>
-                        <SelectASNApiSearch />
+                        <SelectASNApiSearch onChange={field.onChange} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )} */}
+              )}
 
               <ReCAPTCHA
                 ref={captchaRef}

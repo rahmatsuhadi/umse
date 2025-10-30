@@ -32,7 +32,12 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    images: "/slemanmartlogo.png",
+    images: {
+      url: "/slemanmartlogo.png",
+      width: 1200,
+      height: 630,
+      alt: "Slemanmart Logo",
+    },
   },
 };
 
