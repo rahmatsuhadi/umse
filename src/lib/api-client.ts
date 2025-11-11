@@ -17,7 +17,11 @@ export async function apiClient<T>(
     }
   }
 
-  const isFormData = options.body instanceof FormData;
+  const isFormData =
+    options.body instanceof FormData ||
+    (typeof FormData !== "undefined" &&
+      options.body?.constructor?.name === "FormData");
+
   if (!isFormData) {
     headers["Content-Type"] = "application/json";
   }
