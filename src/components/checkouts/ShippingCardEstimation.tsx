@@ -57,7 +57,10 @@ export default function ShippingCardEstimation({
   });
 
   const shipping = shippingRate?.data
-    ? shippingRate.data.find((item) => item.service === service_name)
+    ? shippingRate.data.find(
+        (item) =>
+          item.service === service_name && item.service_type === service_type
+      )
     : null;
 
   const subtotal = items.reduce(
@@ -69,7 +72,7 @@ export default function ShippingCardEstimation({
   );
 
   const total = shipping ? subtotal + Number(shipping?.cost.value ?? 0) : "-";
-
+  console.log("shipping", shipping);
   useEffect(() => {
     if (shipping) {
       handleValidShipping(!!shipping);
@@ -91,11 +94,15 @@ export default function ShippingCardEstimation({
           <p className="text-red-500 mt-2 max-w-100 truncate">
             {errorShippingRates.message || "Gagal memuat ongkos kirim."}
           </p>
-        ) : (
+        ) : shipping ? (
           <span className="font-medium">
             {shipping ? shipping.cost.formatted : "Rp.0 "}{" "}
             {shippingRate?.data ? `( ${shipping?.service_name})` : ""}
           </span>
+        ) : (
+          <p className="text-red-500 mt-2">
+            Layanan pengiriman tidak tersedia untuk alamat tujuan.
+          </p>
         )}
       </div>
       <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2">
