@@ -59,7 +59,8 @@ export default function ShippingCardEstimation({
   const shipping = shippingRate?.data
     ? shippingRate.data.find(
         (item) =>
-          item.service === service_name && item.service_type === service_type
+          // item.service === service_name && item.service_type === service_type
+          item.service === service_name
       )
     : null;
 
@@ -72,7 +73,6 @@ export default function ShippingCardEstimation({
   );
 
   const total = shipping ? subtotal + Number(shipping?.cost.value ?? 0) : "-";
-  console.log("shipping", shipping);
   useEffect(() => {
     if (shipping) {
       handleValidShipping(!!shipping);
