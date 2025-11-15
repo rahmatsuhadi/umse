@@ -6,7 +6,7 @@ export async function apiClient<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const headers: HeadersInit = {
-    Accept: "application/json",
+    // Accept: "application/json",
   };
 
   // Token hanya bisa diambil di client (browser)
