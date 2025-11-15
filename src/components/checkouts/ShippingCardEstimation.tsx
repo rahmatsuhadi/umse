@@ -1,7 +1,7 @@
 "use client";
 
 import { useShippingRates } from "@/features/shipping/hooks";
-import { Product, Variant } from "@/types";
+import { Product, ResponseShippingRates, Variant } from "@/types";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -14,12 +14,10 @@ interface ShippingCardEstimationProps {
     variant?: Variant;
     quantity: number;
   }>;
-  handleValidShipping?: (val: boolean) => void;
+  handleValidShipping?: (val: ResponseShippingRates) => void;
 }
 
 export const service_name = "jne";
-
-export const service_type = "REG23";
 
 export default function ShippingCardEstimation({
   items,
@@ -57,11 +55,7 @@ export default function ShippingCardEstimation({
   });
 
   const shipping = shippingRate?.data
-    ? shippingRate.data.find(
-        (item) =>
-          // item.service === service_name && item.service_type === service_type
-          item.service === service_name
-      )
+    ? shippingRate.data.find((item) => item.service === service_name)
     : null;
 
   const subtotal = items.reduce(
@@ -75,7 +69,7 @@ export default function ShippingCardEstimation({
   const total = shipping ? subtotal + Number(shipping?.cost.value ?? 0) : "-";
   useEffect(() => {
     if (shipping) {
-      handleValidShipping(!!shipping);
+      handleValidShipping(shipping);
     }
   }, [shipping]);
 

@@ -5,10 +5,7 @@ import { Ref, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import CheckoutItemCard from "./CheckoutItem";
-import ShippingCardEstimation, {
-  service_name,
-  service_type,
-} from "./ShippingCardEstimation";
+import ShippingCardEstimation from "./ShippingCardEstimation";
 import {
   Form,
   FormControl,
@@ -78,6 +75,11 @@ export default function CheckoutForm({
     },
   });
 
+  const [shipping_service, setShippingService] = useState<{
+    name: string;
+    type: string;
+  }>({ name: "", type: "" });
+
   useEffect(() => {
     if (address) {
       form.reset({
@@ -113,8 +115,8 @@ export default function CheckoutForm({
 
         // variant_id: item.variant?.id || '',
       }),
-      shipping_service: service_name,
-      shipping_service_type: service_type,
+      shipping_service: shipping_service.name,
+      shipping_service_type: shipping_service.type,
       store_id: store.id,
       address: {
         address_line: data.fullAddress,
@@ -155,6 +157,10 @@ export default function CheckoutForm({
 
   useEffect(() => {
     if (!watchedVillage) {
+      setShippingService({
+        name: "",
+        type: "",
+      });
       setIsValidShip(false);
     }
   }, [watchedVillage]);
@@ -192,11 +198,18 @@ export default function CheckoutForm({
                 <CheckoutItemCard key={index} item={item} />
               ))}
             </div>
+            {JSON.stringify(shipping_service)}
 
             <ShippingCardEstimation
               items={items}
               storeVillageId={store.village_id}
-              handleValidShipping={(val) => setIsValidShip(val)}
+              handleValidShipping={(val) => {
+                setIsValidShip(!!val);
+                setShippingService({
+                  name: val.service,
+                  type: val.service_type,
+                });
+              }}
             />
           </div>
 
