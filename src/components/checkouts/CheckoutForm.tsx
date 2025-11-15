@@ -198,7 +198,6 @@ export default function CheckoutForm({
                 <CheckoutItemCard key={index} item={item} />
               ))}
             </div>
-            {JSON.stringify(shipping_service)}
 
             <ShippingCardEstimation
               items={items}
