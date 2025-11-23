@@ -19,7 +19,7 @@ export function middleware(req: Request) {
       isDev ? "'unsafe-eval'" : ""
     } 'nonce-${nonce}' https://cdn.ckeditor.com https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
     `style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.ckeditor.com`,
-    `img-src 'self' data: https: https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
+    `img-src 'self' data: https: https://www.google.com https://www.gstatic.com https://www.recaptcha.net blob:`,
     `font-src 'self' data: https://cdnjs.cloudflare.com`,
     `connect-src 'self' https: https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
     `frame-src https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
