@@ -20,7 +20,7 @@ export default function ContactSection() {
           <div className="">
             <p className="text-2xl font-bold text-white">Sleman Mart</p>
             <p className="mt-2 text-white">
-              Dinas Koperasi dan UKM Kabupaten Sleman
+              Dinas Koperasi, Usaha Kecil dan Menengah Kabupaten Sleman
             </p>
             <div className="mt-6 space-y-4">
               <div className="flex items-start">

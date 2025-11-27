@@ -20,7 +20,7 @@ export function FloatingWhatsApp() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [message, setMessage] = useState("");
 
-  const phoneNumber = "62895359045706"; // Ganti dengan nomor Anda
+  const phoneNumber = "6282322798318"; // Ganti dengan nomor Anda
 
   const handleSendMessage = () => {
     if (message.trim() === "") return;
