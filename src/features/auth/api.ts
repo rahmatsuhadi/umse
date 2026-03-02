@@ -20,6 +20,28 @@ export const login = async (credentials: LoginCredentials) => {
 };
 
 /**
+ * Mengirim access_token Google ke server untuk login SSO.
+ */
+export const loginWithGoogle = async (access_token: string) => {
+  const response = await fetch(`/api/auth/google`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ access_token }),
+  });
+
+  const backendData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(backendData?.message || "Gagal login dengan Google.");
+  }
+  return backendData;
+};
+
+
+/**
  * Mengirim data pendaftaran pengguna baru ke server.
  */
 export const register = async (data: RegisterData): Promise<User> => {

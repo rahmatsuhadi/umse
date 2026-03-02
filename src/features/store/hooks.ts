@@ -8,10 +8,9 @@ type StoresQueryParams = {
   per_page?: number;
   search?: string;
   filter?: {
-    // category_id?: string;          // UUID
-    category__slug?: string;       // string
-    min_price?: number;
-    max_price?: number;
+    category__slug?: string;
+    district_id?: string;
+    [key: string]: string | number | undefined;
   };
   sort?: string
 };

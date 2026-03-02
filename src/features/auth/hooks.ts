@@ -12,7 +12,7 @@ import {
 import type { User, LoginCredentials, RegisterData } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { removeToken, setToken } from "@/lib/token-service";
+import { removeToken } from "@/lib/token-service";
 
 /**
  * Hook untuk mengambil data pengguna yang sedang login.

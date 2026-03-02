@@ -37,10 +37,23 @@ export default function ReportFilters() {
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Set atau hapus parameter berdasarkan nilai state
-    status ? params.set('status', status) : params.delete('status');
-    category ? params.set('category', category) : params.delete('category');
-    query ? params.set('q', query) : params.delete('q');
+    if (status) {
+      params.set('status', status);
+    } else {
+      params.delete('status');
+    }
+
+    if (category) {
+      params.set('category', category);
+    } else {
+      params.delete('category');
+    }
+
+    if (query) {
+      params.set('q', query);
+    } else {
+      params.delete('q');
+    }
 
     // Gunakan debounce untuk pencarian agar tidak memicu pencarian pada setiap ketikan
     const handler = setTimeout(() => {

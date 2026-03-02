@@ -26,17 +26,9 @@ const itemVariants = {
 };
 
 
-const ProductListByStore = ({id}:{id:string}) => {
-
-    // Panggil hook untuk mengambil data produk dengan filter saat ini
-    // const { data: productsData, isLoading, isError } = useProducts({
-    //     page,
-    // });
-
+const ProductListByStore = ({ id }: { id: string }) => {
     const searchParams = useSearchParams()
-
     const categoriesParams = searchParams.get('category') || ''
-
     const sortParams = searchParams.get('sort') || 'created_at:desc'
 
     const {
@@ -45,25 +37,21 @@ const ProductListByStore = ({id}:{id:string}) => {
         hasNextPage,
         isFetchingNextPage,
         isLoading,
-    } = useInfiniteProductsByStoreId(id,{
+    } = useInfiniteProductsByStoreId(id, {
         per_page: 12,
         sort: sortParams,
-
         filter: {
             category__slug: categoriesParams,
-
         },
-        // sort: sortParams
-    }); // Anda bisa menambahkan filter di sini, misal: { filter: { category_slug: 'makanan' }}
+    });
 
 
     const products = data?.pages.flatMap(page => page.data) ?? [];
 
     const renderContent = () => {
-        // State: Loading
         if (isLoading) {
             return (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                <div className="product-grid-lg">
                     {Array.from({ length: 8 }).map((_, index) => (
                         <ProductSkeletonCard key={index} />
                     ))}
@@ -71,7 +59,6 @@ const ProductListByStore = ({id}:{id:string}) => {
             );
         }
 
-        // State: Produk tidak ditemukan
         if (products.length === 0) {
             return (
                 <EmptyState
@@ -81,13 +68,12 @@ const ProductListByStore = ({id}:{id:string}) => {
             );
         }
 
-        // State: Product
         return (
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6"
+                className="product-grid-lg"
             >
                 {products.map((product) => (
                     <motion.div key={product.id} variants={itemVariants}>
@@ -96,7 +82,6 @@ const ProductListByStore = ({id}:{id:string}) => {
                         </Link>
                     </motion.div>
                 ))}
-                {/* Skeleton  halaman berikutnya */}
                 {isFetchingNextPage && Array.from({ length: 4 }).map((_, index) => (
                     <ProductSkeletonCard key={`loading-${index}`} />
                 ))}
@@ -105,19 +90,15 @@ const ProductListByStore = ({id}:{id:string}) => {
     };
 
     return (
-        <section className="py-12">
-            <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-bold text-slate-900 mb-6">Produk</h2>
+        <div className="w-full">
+            {renderContent()}
 
-                {renderContent()}
-
-                {hasNextPage && !isFetchingNextPage && (
-                    <div className="flex justify-center my-8">
-                        <LoadMoreButton onClick={() => fetchNextPage()} label='Lihat Selengkapnya' />
-                    </div>
-                )}
-            </div>
-        </section>
+            {hasNextPage && !isFetchingNextPage && (
+                <div className="flex justify-center my-8">
+                    <LoadMoreButton onClick={() => fetchNextPage()} label='Lihat Selengkapnya' />
+                </div>
+            )}
+        </div>
     );
 }
 

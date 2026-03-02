@@ -13,7 +13,7 @@ export interface User {
 
 // Tipe untuk data yang dikirim saat melakukan login
 export interface LoginCredentials {
-  phone_number: string; // atau email, sesuaikan dengan backend
+  email: string;
   password: string;
   captchaToken: string;
 }

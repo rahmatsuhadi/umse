@@ -22,9 +22,10 @@ export const getArticles = (
     ...params,
   };
 
-  const { category, ...otherParams } = params;
+  const { category, search, ...otherParams } = params;
 
-  const apiParams = { ...otherParams };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const apiParams: any = { ...otherParams };
 
   if (category) {
     apiParams.filter = {
@@ -32,7 +33,13 @@ export const getArticles = (
       category: category,
     };
   }
-  console.log(apiParams);
+
+  if (search) {
+    apiParams.filter = {
+      ...apiParams.filter,
+      title: search,
+    };
+  }
 
   const buildQueryString = (p: QueryParams): string => {
     const parts: string[] = [];

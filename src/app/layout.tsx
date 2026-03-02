@@ -4,12 +4,14 @@ import {
   // Poppins
 } from "next/font/google";
 import "./globals.css";
+import "./sleman.css";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextTopLoader from "nextjs-toploader";
 import { APP_URL } from "@/lib/envConfig";
-import { FloatingWhatsApp } from "@/components/shared/FloatingMenu";
+// import { FloatingWhatsApp } from "@/components/shared/FloatingMenu";
 import { headers } from "next/headers";
+import { BottomNav } from "@/components/shared/BottomNav";
 
 const jakarta = Plus_Jakarta_Sans({
   // Daftarkan font Plus Jakarta Sans
@@ -62,6 +64,7 @@ export default async function RootLayout({
           rel="stylesheet"
           href="https://cdn.ckeditor.com/ckeditor5/46.1.1/ckeditor5.css"
         />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {process.env.NODE_ENV === "development" && (
           <script
             suppressHydrationWarning
@@ -74,7 +77,10 @@ export default async function RootLayout({
       </head>
       <body className={`${jakarta.variable} antialiased font-jakarta bg-white`}>
         <NextTopLoader color="#e57f39" />
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          {children}
+          <BottomNav />
+        </ReactQueryProvider>
         <Toaster
           position="bottom-right"
           theme="light"
@@ -88,7 +94,6 @@ export default async function RootLayout({
             },
           }}
         />
-        <FloatingWhatsApp />
       </body>
     </html>
   );

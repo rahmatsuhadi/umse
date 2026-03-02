@@ -14,7 +14,7 @@ const MetadataInfo = ({ content }: { content: Article & { date?: string } }) => 
 
     switch (content.category) {
         case 'exhibition':
-        case 'training':    
+        case 'training':
             return (
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-slate-600 gap-4">
                     {/* Tampilkan Tanggal Acara jika ada */}
@@ -53,24 +53,24 @@ const MetadataInfo = ({ content }: { content: Article & { date?: string } }) => 
 export default function ArticleContent({ article }: Props) {
 
 
-    const path = article.category=="announcement" ? "/pengumuman" : 
-                article.category=="exhibition" ? "/pameran" : 
-                article.category=="training" ? "/pelatihan" : 
+    const path = article.category == "announcement" ? "/pengumuman" :
+        article.category == "exhibition" ? "/pameran" :
+            article.category == "training" ? "/pelatihan" :
                 "/literasi"
 
 
     return (
-        <section className="py-8 bg-slate-50">
-            <div className="container mx-auto px-4">
+        <section style={{ background: 'var(--cream)', padding: '60px 0' }}>
+            <div className="container">
                 <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
                     {/* Header Artikel */}
-                    <header className="p-6 sm:p-8 pb-0">
+                    <header className="p-8 sm:p-10 pb-0">
                         <div className="flex items-center space-x-4 mb-6">
-                            <span className="bg-purple-100 text-purple-800 text-sm font-semibold px-4 py-1.5 rounded-full">
+                            <span className="badge badge-terracotta text-sm font-semibold">
                                 {article.category_label}
                             </span>
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6 leading-tight">
+                        <h1 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: 'var(--text-primary)' }}>
                             {article.title}
                         </h1>
                         <div className="relative h-64 md:h-80 w-full rounded-lg overflow-hidden mb-6">
@@ -86,21 +86,19 @@ export default function ArticleContent({ article }: Props) {
                     </header>
 
                     {/* Konten Utama */}
-                    <div className="px-6 sm:px-8">
-                        <div className="bg-slate-50 rounded-lg p-4 mb-8">
-                            <div className="bg-slate-50 rounded-lg p-4 mb-8">
-                                <MetadataInfo content={article} />
-                            </div>
+                    <div className="px-8 sm:px-10">
+                        <div style={{ background: 'var(--cream-dark)', borderRadius: 'var(--radius-sm)', padding: '16px', marginBottom: '32px' }}>
+                            <MetadataInfo content={article} />
                         </div>
 
                         {/* Render Konten HTML */}
                         <div
-                            className="prose prose-lg max-w-none mb-8 ck-content"
+                            className="prose prose-lg max-w-none mb-10 ck-content"
                             dangerouslySetInnerHTML={{ __html: article.content }}
                         />
 
                         {/* Tombol Bagikan (Client Component) */}
-                        <ShareButtons title={article.title} id={article.id}  path={path}  />
+                        <ShareButtons title={article.title} id={article.id} path={path} />
 
                     </div>
                     <div className="p-6"></div>

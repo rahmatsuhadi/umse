@@ -2,26 +2,29 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, X, User2 } from "lucide-react";
-import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { ShoppingCart, User2 } from "lucide-react";
 import { useLogout, useUser } from "@/features/auth/hooks";
 import { getToken } from "@/lib/token-service";
-import { User } from "@/types";
-import { Skeleton } from "../ui/skeleton";
 import { useCart } from "@/features/cart/hooks";
 
 const navLinks = [
-  { name: "Beranda", href: "/" },
-  { name: "Profile", href: "/profile" },
-  { name: "Direktori UMKM", href: "/umkm" },
-  { name: "Blog", href: "/literasi" },
+  { name: "Beranda", href: "/", icon: "🏠", iconBg: "#D4EFDF" },
+  { name: "Toko Lokal", href: "/umkm", icon: "🏪", iconBg: "#FEF3D0" },
+  { name: "Produk", href: "/produk", icon: "🛍️", iconBg: "#FDE8D8" },
+  { name: "Sleman Food", href: "/sleman-food", icon: "🍱", iconBg: "#FFEDD5" },
+  { name: "Jelajahi", href: "/explore", icon: "🔍", iconBg: "#E8EAF6" },
+  { name: "Profil", href: "/profile", icon: "👤", iconBg: "#E0F2F1" },
 ];
 
 export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsLoading(true);
@@ -30,161 +33,64 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
     setIsLoading(false);
   }, []);
 
-  return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm md:px-10">
-      <>
-        {!isLoading && (
-          <>
-            {isAuth ? (
-              <NavbarAuth withMenu={withMenu} />
-            ) : (
-              <NavbarNotAuth withMenu={withMenu} />
-            )}
-          </>
-        )}
-      </>
-    </nav>
-  );
-}
-
-// Profile Dropdown Component
-function ProfileDropDown({ user }: { user?: User; isLoading?: boolean }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const { mutate: logout } = useLogout();
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMobileSearchOpen(false);
+    }
+  };
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center  hover:cursor-pointer text-primary hover:text-primary-dark transition duration-300"
-      >
-        <User2 className="w-5 h-5 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
-        {user ? (
-          <span
-            className="hidden sm:inline text-sm sm:text-base max-w-[120px] truncate"
-            title={user.name || "Profile"}
-          >
-            {user.name || "Profile"}
-          </span>
-        ) : (
-          <Skeleton className="h-5 w-20" />
-        )}
-        <i className="fas fa-chevron-down text-xs ml-1"></i>
-      </button>
+    <>
+      <div className="top-bar hidden md:flex">
+        <div className="top-bar-inner">
 
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <div className="py-2">
-            <Link
-              href="/"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <i className="fas fa-home mr-3 text-gray-500"></i>
-              <span>Beranda</span>
-            </Link>
-            <Link
-              href="/pengguna"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <i className="fas fa-user mr-3 text-gray-500"></i>
-              <span>Profile</span>
-            </Link>
+          <div className="top-bar-left">
+            <Link href="/panduan-pembeli" className="top-bar-link">Panduan Pembeli</Link>
+            <span style={{ color: 'white', opacity: 0.5 }}>|</span>
+            <Link href="/panduan-merchant" className="top-bar-link">Panduan Merchant</Link>
+          </div>
 
-            <Link
-              href="/pesanan"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <i className="fas fa-box mr-3 text-gray-500"></i>
-              <span>Pesanan Saya</span>
+          <div className="top-bar-right">
+            <Link href="/masuk" className="top-bar-link" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}>
+              Masuk
             </Link>
-            <Link
-              href="/laporan"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <i className="fas fa-exclamation-triangle mr-3 text-gray-500"></i>
-              <span>Laporan Masalah</span>
-            </Link>
-
-            <hr className="my-2" />
-            <button
-              type="button"
-              onClick={() => logout()}
-              className="flex items-center h-full hover:cursor-pointer w-full px-4 py-2 text-red-600 hover:bg-red-50"
-            >
-              <i className="fas fa-sign-out-alt mr-3"></i>
-              <span>Keluar</span>
-            </button>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
-
-function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
-  const { data: user, isLoading } = useUser();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
-
-  const { data } = useCart();
-
-  const cartCount = data?.data.items_count || 0;
-
-  return (
-    <div className="container mx-auto px-4">
-      <div className="flex items-center justify-between min-h-16 py-2">
-        {/* Logo */}
-
-        <Image
-          src="/logo_kab_sleman.png"
-          alt="Slemanmart Logo"
-          width={45}
-          height={45}
-        />
-
-        <div className="flex-shrink-0 ml-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/slemanmartlogo.png"
-              alt="Slemanmart Logo"
-              width={150}
-              height={150}
-            />
+      </div>
+      <nav id="mainNav">
+        <div className="nav-inner">
+          <Link href="/" className="logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/slemanmartlogo.png" alt="Sleman Mart" className="h-9 w-auto" />
           </Link>
-        </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
+          <form className="nav-search" onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Cari produk, toko, artikel..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+            </button>
+          </form>
+
           {withMenu && (
-            <div className="flex items-center space-x-4">
+            <div className="nav-links">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                // For Profil, if not auth, go to /masuk
+                const actualHref = link.name === "Profil" && !isAuth ? "/profile" : link.href;
                 return (
                   <Link
                     key={link.name}
-                    href={link.href}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive ? "text-primary font-semibold" : "text-[#36454F]"
-                    } `}
+                    href={actualHref}
+                    className={`nav-link ${pathname === link.href ? 'active' : ''}`}
                   >
                     {link.name}
                   </Link>
@@ -193,52 +99,268 @@ function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
             </div>
           )}
 
-          {/* Auth Desktop - Show only after loading */}
+          {/* Auth section replaces empty space */}
+          {!isLoading && isAuth && (
+            <div className="desktop-auth" style={{ marginLeft: "16px", display: "flex", alignItems: "center" }}>
+              <AuthSection />
+            </div>
+          )}
 
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <Link
-              href="/keranjang"
-              className="relative text-primary hover:text-primary-dark transition duration-300"
-            >
-              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {cartCount}
-              </span>
-            </Link>
-
-            <ProfileDropDown user={user?.data} isLoading={isLoading} />
-          </div>
+          <button className="nav-search-icon-btn" onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} aria-label="Cari">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </button>
+          <button className="nav-mobile-menu" onClick={() => setIsDrawerOpen(true)} aria-label="Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
         </div>
 
-        {/* Mobile Button */}
-        {!user && (
-          <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2">
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+        {/* Mobile search slide-down */}
+        <div className={`mobile-search-bar ${isMobileSearchOpen ? 'open' : ''}`} id="mobileSearchBar">
+          <form className="mobile-search-inner" onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Cari produk, toko, artikel..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
             </button>
-          </div>
-        )}
+          </form>
+        </div>
+      </nav>
 
-        {/* Mobile Profile Dropdown (auth) */}
-        {user && (
-          <div className="md:hidden">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <Link
-                href="/keranjang"
-                className="relative text-primary hover:text-primary-dark transition duration-300"
-              >
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              </Link>
+      <div className={`drawer-overlay ${isDrawerOpen ? 'open visible' : ''}`} onClick={() => setIsDrawerOpen(false)}></div>
+      <div className={`drawer ${isDrawerOpen ? 'open' : ''}`} id="mobileDrawer">
+        <div className="drawer-header">
+          <div className="drawer-logo">Sleman<span>Mart</span></div>
+          <button className="drawer-close" onClick={() => setIsDrawerOpen(false)}>✕</button>
+        </div>
+        <nav className="drawer-nav">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className={`drawer-nav-item ${pathname === link.href ? 'active' : ''}`}
+              onClick={() => setIsDrawerOpen(false)}
+              style={{ textDecoration: 'none' }}
+            >
+              <div className="drawer-nav-icon" style={{ background: link.iconBg }}>{link.icon}</div>
+              <span>{link.name}</span>
+            </Link>
+          ))}
+          <div className="drawer-divider"></div>
+          <Link href="/literasi" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
+            <div className="drawer-nav-icon" style={{ background: "#E0F2F1" }}>📝</div>
+            <span>Tips & Artikel</span>
+          </Link>
+          <Link href="/kontak" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
+            <div className="drawer-nav-icon" style={{ background: "#FFF3E0" }}>📞</div>
+            <span>Hubungi Kami</span>
+          </Link>
+        </nav>
 
-              <ProfileDropDown user={user?.data} isLoading={isLoading} />
+        <div className="mobile-auth-drawer" style={{ padding: "0 20px 20px" }}>
+          <div className="drawer-divider" style={{ margin: "0 -20px 16px" }}></div>
+          {!isLoading && !isAuth && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <Link href="/daftar" style={{ width: "100%", display: "block", background: "var(--cream-dark)", color: "var(--text-primary)", padding: "12px", borderRadius: "8px", textAlign: "center", fontWeight: 700, textDecoration: "none" }} onClick={() => setIsDrawerOpen(false)}>Daftar</Link>
+              <Link href="/masuk" style={{ width: "100%", display: "block", background: "var(--terracotta)", color: "white", padding: "12px", borderRadius: "8px", textAlign: "center", fontWeight: 700, textDecoration: "none" }} onClick={() => setIsDrawerOpen(false)}>Masuk</Link>
             </div>
+          )}
+          {!isLoading && isAuth && (
+            <MobileAuthSection closeDrawer={() => setIsDrawerOpen(false)} />
+          )}
+        </div>
+
+        <div className="drawer-footer">
+          <p>© 2025 Sleman Mart · Kabupaten Sleman, DIY</p>
+        </div>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .desktop-auth {
+            display: none !important;
+          }
+        }
+      `}</style>
+    </>
+  );
+}
+
+function MobileAuthSection({ closeDrawer }: { closeDrawer: () => void }) {
+  const { data: user } = useUser();
+  const { mutate: logout } = useLogout();
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+      <div style={{ padding: "0 4px 12px", marginBottom: "4px" }}>
+        <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>{user?.data?.name}</p>
+        <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>{user?.data?.email}</p>
+      </div>
+      <Link href="/pengguna" onClick={closeDrawer} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", textDecoration: "none", color: "var(--text-primary)", fontSize: 14, borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.03)" }}>
+        <span>👤</span> Profil Saya
+      </Link>
+      <Link href="/pesanan" onClick={closeDrawer} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", textDecoration: "none", color: "var(--text-primary)", fontSize: 14, borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.03)" }}>
+        <span>📦</span> Pesanan
+      </Link>
+      <button onClick={() => { logout(); closeDrawer(); }} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", color: "#E74C3C", fontSize: 14, fontWeight: 600, background: "rgba(231, 76, 60, 0.1)", border: "none", width: "100%", textAlign: "left", cursor: "pointer", borderRadius: "var(--radius-sm)", marginTop: "8px" }}>
+        <span>🚪</span> Keluar
+      </button>
+    </div>
+  );
+}
+
+
+
+function AuthSection() {
+  const { data: user } = useUser();
+  const { data: cartData } = useCart();
+  const { mutate: logout } = useLogout();
+  const cartCount = cartData?.data?.items_count || 0;
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      {/* Cart */}
+      <Link
+        href="/keranjang"
+        style={{ position: "relative", color: "var(--text-secondary)", textDecoration: "none" }}
+      >
+        <ShoppingCart className="w-5 h-5" />
+        {cartCount > 0 && (
+          <span style={{
+            position: "absolute",
+            top: -6,
+            right: -6,
+            background: "var(--terracotta)",
+            color: "white",
+            fontSize: 10,
+            fontWeight: 700,
+            borderRadius: "50%",
+            width: 16,
+            height: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            {cartCount}
+          </span>
+        )}
+      </Link>
+
+      {/* Profile Dropdown */}
+      <div style={{ position: "relative" }} ref={dropdownRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: 2,
+            background: "none",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          <div style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: "var(--cream-dark)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--terracotta)",
+            overflow: "hidden"
+          }}>
+            <User2 className="w-5 h-5" />
+          </div>
+        </button>
+
+        {isOpen && (
+          <div style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            right: 0,
+            width: 200,
+            background: "white",
+            borderRadius: "var(--radius-md)",
+            boxShadow: "var(--shadow-md)",
+            border: "1px solid var(--cream-dark)",
+            padding: "8px",
+            zIndex: 110
+          }}>
+            <div style={{ padding: "8px 12px", borderBottom: "1px solid var(--cream-dark)", marginBottom: 8 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>{user?.data?.name}</p>
+              <p style={{ fontSize: 11, color: "var(--text-muted)", margin: 0 }}>{user?.data?.email}</p>
+            </div>
+            {[
+              { href: "/pengguna", label: "Profil Saya", icon: "👤" },
+              { href: "/pesanan", label: "Pesanan", icon: "📦" },
+            ].map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "8px 12px",
+                  borderRadius: "var(--radius-sm)",
+                  textDecoration: "none",
+                  color: "var(--text-primary)",
+                  fontSize: 13,
+                }}
+                className="nav-link"
+                onClick={() => setIsOpen(false)}
+              >
+                <span>{item.icon}</span> {item.label}
+              </Link>
+            ))}
+            <button
+              onClick={() => { logout(); setIsOpen(false); }}
+              className="nav-link"
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "8px 12px",
+                borderRadius: "var(--radius-sm)",
+                background: "none",
+                border: "none",
+                color: "#E74C3C",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                textAlign: "left",
+                marginTop: 4
+              }}
+            >
+              <span>🚪</span> Keluar
+            </button>
           </div>
         )}
       </div>
@@ -246,124 +368,3 @@ function NavbarAuth({ withMenu = true }: { withMenu?: boolean }) {
   );
 }
 
-function NavbarNotAuth({ withMenu = true }: { withMenu?: boolean }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
-
-  return (
-    <>
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Image
-            src="/logo_kab_sleman.png"
-            alt="Slemanmart Logo"
-            width={45}
-            height={45}
-          />
-
-          <div className="flex-shrink-0 ml-4">
-            <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="/slemanmartlogo.png"
-                alt="Slemanmart Logo"
-                width={150}
-                height={150}
-              />
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
-            {withMenu && (
-              <div className="flex items-center space-x-4">
-                {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        isActive
-                          ? "text-primary font-semibold"
-                          : "text-[#36454F]"
-                      } `}
-                    >
-                      {link.name}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Auth Desktop - Show only after loading */}
-
-            <div className="hidden md:flex items-center gap-3">
-              <Button
-                asChild
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary/50 hover:text-primary"
-              >
-                <Link href="/daftar">Daftar</Link>
-              </Button>
-              <Button asChild className="bg-primary hover:bg-primary/90">
-                <Link href="/masuk">Masuk</Link>
-              </Button>
-            </div>
-          </div>
-
-          <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2">
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Panel */}
-
-      <div
-        className={`md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t transform transition-all duration-300 origin-top ${
-          isMenuOpen
-            ? "scale-y-100 opacity-100"
-            : "scale-y-0 opacity-0 pointer-events-none"
-        } `}
-      >
-        <div className="flex flex-col space-y-2 p-4">
-          {withMenu &&
-            navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="block px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100"
-              >
-                {link.name}
-              </Link>
-            ))}
-
-          <div className="border-t pt-4 mt-2 space-y-2">
-            <Button
-              asChild
-              variant="outline"
-              className="w-full border-primary hover:border-primary/80 text-primary"
-            >
-              <Link href="/daftar" onClick={() => setIsMenuOpen(false)}>
-                Daftar
-              </Link>
-            </Button>
-            <Button asChild className="w-full bg-primary hover:bg-primary/80">
-              <Link href="/masuk" onClick={() => setIsMenuOpen(false)}>
-                Masuk
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}

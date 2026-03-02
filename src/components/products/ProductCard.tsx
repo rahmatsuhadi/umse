@@ -2,6 +2,7 @@ import { Product } from "@/types";
 import { useInView } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
+import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
 
 interface CardProductProps {
   product: Product;
@@ -10,17 +11,30 @@ interface CardProductProps {
 export const ProductCard = ({ product }: CardProductProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
+  const { mutate: logVisitor } = useCreateVisitorLog();
 
   const price = product.variants_exists ? product.lowest_price : product.price;
 
   const priceDisplay = `Rp ${price.value.toLocaleString()}`;
 
+  const handleWhatsAppClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    logVisitor({ product_id: product.id });
+
+    // @ts-expect-error Type not matched - store.user may not be in type but present in runtime
+    const phone = product.store?.user?.phone_number || product.store?.phone || '';
+    const message = `Halo, saya tertarik dengan produk ${product.name}`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
   return (
     <div
       ref={ref}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 group h-full flex flex-col"
+      className="product-card-lg h-full flex flex-col"
     >
-      <div className="bg-gray-300 h-40 md:h-48 flex items-center justify-center relative">
+      <div className="product-img-lg flex items-center justify-center relative">
         {isInView && (
           <Image
             src={product.thumbnail?.media_url || "/hero/hero.png"}
@@ -31,45 +45,44 @@ export const ProductCard = ({ product }: CardProductProps) => {
           />
         )}
       </div>
-      <div className="p-4 flex flex-col flex-1">
+      <div className="product-body-lg flex flex-col flex-1">
         <div className="flex items-center justify-between mb-2">
-          <span className="bg-orange-100 text-orange-800 text-xs sm:text-xs lg:text-sm px-2 py-1 rounded-full flex-shrink-0 max-w-[60%] truncate">
+          <span className="badge badge-terracotta flex-shrink-0 max-w-[60%] truncate">
             {product.category.name}
           </span>
 
           <div className="flex items-center text-yellow-400">
             <i className="fas fa-star text-xs"></i>
-            <span className="text-gray-600 text-xs ml-1">
+            <span className="text-gray-600 text-xs ml-1 font-semibold">
               {product.average_rating}
             </span>
           </div>
         </div>
         <h3
-          className="font-bold text-gray-800 mb-1 text-sm md:text-base  group-hover:text-primary transition-colors duration-300
+          className="product-name-lg group-hover:text-primary transition-colors duration-300
                overflow-hidden line-clamp-2"
         >
           {product.name}
         </h3>
-        <p className="text-xs text-gray-600 mb-1">
+        <p className="product-shop-lg mb-1">
           {product.store ? product.store.name : "Store"}
         </p>
-        <p className="text-xs text-gray-500 mb-3">
-          {product.store ? product.store.address : "Location"}
-        </p>
-        <div className="flex items-center justify-between mt-auto">
-          <div>
-            <span className="text-primary font-bold text-sm md:text-lg">
+        <div className="product-actions-lg mt-auto p-0">
+          <div className="price-col">
+            <span className="product-price-lg">
               {priceDisplay}
             </span>
-            <p className="text-xs text-gray-500">
+            <div className="sold-row">
               Stok: {product.stock_quantity}
-            </p>
+            </div>
           </div>
           <button
             type="button"
-            className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition duration-300"
+            className="btn-wa-compact"
+            onClick={handleWhatsAppClick}
+            title="Pesan via WhatsApp"
           >
-            <i className="fas fa-shopping-cart text-sm"></i>
+            <i className="fab fa-whatsapp"></i>
           </button>
         </div>
       </div>

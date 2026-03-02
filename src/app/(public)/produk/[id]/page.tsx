@@ -1,19 +1,17 @@
 import { getProductById } from "@/features/products/api";
 import { notFound, redirect } from "next/navigation";
-import Breadcrumb from "@/components/shared/Breadcrumb";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import ContactSection from "@/components/landing/Contact";
 import { trimDescription } from "@/lib/seoMetadataUtils";
-import Link from "next/link";
 import ProductSimilarProduct from "@/components/products/ProductSimilarList";
-import { StarRating } from "@/components/products/ProductStarRating";
 import { ProductRatingReview } from "@/components/products/ProductRatingReview";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
-import { ProductShareModal } from "@/components/products/ProductShareModal";
 import ProductCheckoutButton from "@/components/products/ProductCheckoutButton";
 import { APP_URL } from "@/lib/envConfig";
 import { generateManualDescription } from "@/lib/metadata";
+import ProductStickyWA from "@/components/products/ProductStickyWA";
 
 export async function generateMetadata({
   params,
@@ -25,7 +23,6 @@ export async function generateMetadata({
   try {
     const { data: product } = await getProductById(id);
 
-    // Gambar untuk Open Graph dan Twitter Card
     const ogImageUrl =
       product.media.length > 0
         ? product.media[0].media_url
@@ -34,34 +31,20 @@ export async function generateMetadata({
     const trimmedDescription = trimDescription(product.description);
 
     return {
-      title: product.name, // Dinamis berdasarkan produk
-      description: trimmedDescription, // Deskripsi produk
+      title: product.name,
+      description: trimmedDescription,
       openGraph: {
         title: product.name,
         description: generateManualDescription(product),
-        url: `${APP_URL}/produk/${product.id}`, // URL produk
-        images: [
-          {
-            url: ogImageUrl,
-            width: 1200,
-            height: 630,
-            alt: product.name,
-          },
-        ],
-        type: "website", // Menunjukkan bahwa ini adalah halaman produk
+        url: `${APP_URL}/produk/${product.id}`,
+        images: [{ url: ogImageUrl, width: 1200, height: 630, alt: product.name }],
+        type: "website",
       },
       twitter: {
         title: product.name,
         description: generateManualDescription(product),
-        images: [
-          {
-            url: ogImageUrl,
-            width: 1200,
-            height: 630,
-            alt: product.name,
-          },
-        ],
-        card: "summary_large_image", // Format Twitter Card yang besar
+        images: [{ url: ogImageUrl, width: 1200, height: 630, alt: product.name }],
+        card: "summary_large_image",
       },
     };
   } catch (error) {
@@ -93,123 +76,99 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const totalReviews = Object.values(product.rating_count).reduce(
-    (sum, count) => sum + count,
-    0
-  );
   const images = product.media.map((item) => item.media_url);
+  const mainImage =
+    images[0] || product.thumbnail?.media_url || "/assets/no-image.jpg";
 
   return (
-    <div className="bg-gray-50">
-      <Breadcrumb
-        breadcrumbs={[
-          { name: "Beranda", link: "/" },
-          { name: product.name, active: true },
-        ]}
-      />
+    <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
 
-      {/* ===== Product Detail Section ===== */}
-      <section className="py-4 sm:py-8  md:px-10">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-8 lg:mb-12">
-            {/* Product Images */}
-            <ProductImageGallery images={images} />
+      {/* ===== Product Detail Body ===== */}
+      <div className="product-detail-body">
 
-            {/* Product Information */}
-            <div>
-              <div className="mb-4">
-                <span className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-full">
-                  {product.category.name}
-                </span>
-                <div className="mt-2">
-                  <StarRating
-                    rating={Number(product.average_rating)}
-                    count={totalReviews}
-                  />
-                </div>
-              </div>
+        {/* Breadcrumb */}
+        <div className="detail-breadcrumb">
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <span>Beranda</span>
+          </Link>
+          <span className="sep">›</span>
+          <Link href="/produk" style={{ textDecoration: 'none' }}>
+            <span>Produk</span>
+          </Link>
+          <span className="sep">›</span>
+          <Link href={`/produk?category=${product.category.slug}`} style={{ textDecoration: 'none' }}>
+            <span>{product.category.name}</span>
+          </Link>
+          <span className="sep">›</span>
+          <span className="current">{product.name}</span>
+        </div>
 
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
-                {product.name}
-              </h1>
+        {/* Main 2-Column Layout */}
+        <div className="detail-layout">
 
-              {/* <div className="flex flex-wrap items-baseline mb-6 gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-primary">{product.price.formatted}</span>
-              </div> */}
+          {/* Gallery (Left / Sticky) */}
+          <ProductImageGallery images={images} />
 
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <div className="flex items-start sm:items-center mb-3">
-                  <div className="bg-primary rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mr-3 flex-shrink-0">
-                    {/* <i className="fas fa-store text-white text-sm sm:text-base"></i> */}
-                    <Image
-                      src={product.store.logo_url || "/assets/no-image.jpg"}
-                      className="rounded-full"
-                      alt="store-img"
-                      width={200}
-                      height={200}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <Link
-                      href={"/umkm/" + product.store.id}
-                      className="hover:underline hover:cursor-pointer"
-                    >
-                      <h3 className="font-bold text-gray-800 text-sm sm:text-base">
-                        {product.store.name}
-                      </h3>
-                    </Link>
-                    <div className="flex items-center text-xs sm:text-sm text-gray-600">
-                      <i className="fas fa-map-marker-alt mr-1 flex-shrink-0"></i>
+          {/* Product Info (Right) */}
+          <div className="detail-info">
+            <ProductCheckoutButton product={product} />
+          </div>
 
-                      <span className="truncate w-48 sm:w-full">
-                        {product.store.address}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        </div>
+      </div>
 
-              <ProductCheckoutButton product={product} />
+      {/* ===== Reviews Section ===== */}
+      <div style={{ background: 'var(--cream)', borderTop: '1px solid var(--cream-dark)' }}>
+        <ProductRatingReview product={product} />
+      </div>
 
-              {/* Product Description */}
-              <div className="mb-8 mt-3">
-                <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">
-                  Deskripsi Produk
-                </h3>
-                <div className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                  <p className="mb-3">{product.description}</p>
-                </div>
-              </div>
-              <div className="mt-2">
-                {" "}
-                <ProductShareModal
-                  productName={product.name}
-                  productUrl={APP_URL + "/produk/" + product.id}
-                />
-              </div>
-            </div>
+      {/* ===== Similar Products Section ===== */}
+      <div style={{ background: 'white', paddingTop: '40px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h2 className="section-title" style={{ fontSize: '22px' }}>
+              Produk <span>Serupa</span>
+            </h2>
+            <Link href="/produk" className="see-all-link">Lihat Semua →</Link>
           </div>
         </div>
-      </section>
+        <ProductSimilarProduct category_slug={product.category.slug} />
+      </div>
 
-      <section className="py-6 sm:py-8 bg-white md-px-10">
-        <div className="container mx-auto px-4">
-          <ProductRatingReview product={product} />
-        </div>
-      </section>
-
-      <section className="py-8 sm:py-12 bg-gray-50  md:px-10">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">
-            Produk Serupa
-          </h2>
-          <ProductSimilarProduct category_slug={product.category.slug} />
-        </div>
-      </section>
-
+      {/* ===== Footer / Contact ===== */}
       <AnimatedWrapper>
         <ContactSection />
       </AnimatedWrapper>
+
+      {/* ===== Sticky CTA Bar (Bottom) ===== */}
+      <div className="sticky-cta">
+        <div className="sticky-cta-inner">
+          {/* Product Info */}
+          <div className="sticky-product-info">
+            <div className="sticky-product-img">
+              <Image
+                src={mainImage}
+                alt={product.name}
+                width={48}
+                height={48}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+            <div>
+              <div className="sticky-product-name">{product.name}</div>
+              <div className="sticky-product-price">{product.price.formatted.split(",")[0]}</div>
+            </div>
+          </div>
+
+          {/* WhatsApp CTA */}
+          <ProductStickyWA
+            productId={product.id}
+            productName={product.name}
+            phone={product.store?.user?.phone_number || ''}
+          />
+        </div>
+      </div>
+
     </div>
   );
 }

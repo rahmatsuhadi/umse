@@ -1,9 +1,10 @@
 export interface Category {
-  id: string;
+  id: number;
   name: string;
-  icon_path:string;
-  is_featured:boolean;
-  icon_url: string;
   slug: string; // untuk URL, mis: /produk?kategori=makanan-ringan
+  is_ready_to_serve: boolean;
+  is_frozen: boolean;
+  is_featured: boolean;
+  icon_url: string;
   imageUrl?: string;
 }

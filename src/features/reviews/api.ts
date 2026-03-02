@@ -14,7 +14,7 @@ export type CreateReviewData = {
 export type ReviewQueryParams = {
   productId: string;
   page?: number;
-  filter?:{
+  filter?: {
     rating?: number;
   }
   per_page?: number;
@@ -25,8 +25,9 @@ export type ReviewQueryParams = {
  */
 export const getReviews = (params: ReviewQueryParams): Promise<PaginatedApiResponse<Review>> => {
 
-  const {productId, ...otherParams} = params
-   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { productId, ...otherParams } = params
+
 
   const buildQueryString = (p: Omit<ReviewQueryParams, "productId">): string => {
     const parts: string[] = [];
@@ -39,7 +40,7 @@ export const getReviews = (params: ReviewQueryParams): Promise<PaginatedApiRespo
       // Perlakuan khusus jika key adalah 'filter' dan nilainya adalah objek
       if (key === 'filter' && typeof value === 'object' && value !== null) {
         const filterObject = value as { [s: string]: string | number };
-        
+
         // Loop melalui setiap key di dalam objek filter (misal: 'category__slug')
         for (const filterKey in filterObject) {
           if (Object.prototype.hasOwnProperty.call(filterObject, filterKey)) {
@@ -56,7 +57,7 @@ export const getReviews = (params: ReviewQueryParams): Promise<PaginatedApiRespo
     return parts.join('&');
   };
 
-   const query = buildQueryString(otherParams);
+  const query = buildQueryString(otherParams);
   // Endpoint contoh: /products/ID_PRODUK/reviews?page=1&limit=5
   return apiClient<PaginatedApiResponse<Review>>(`/products/${params.productId}/reviews?${query}`);
 };
@@ -80,5 +81,15 @@ export const addReviewByOrderId = (id: string, data: CreateReviewData): Promise<
   return apiClient<Review>(`/customer/orders/${id}/reviews`, {
     method: 'POST',
     body: formData,
+  });
+};
+
+export const createReview = async (data: {
+  review: string;
+  rating: number;
+}) => {
+  return apiClient("/reviews", {
+    method: "POST",
+    body: JSON.stringify(data),
   });
 };

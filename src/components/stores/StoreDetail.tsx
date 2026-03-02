@@ -4,6 +4,7 @@ import { Store } from "@/types";
 import Image from "next/image";
 import { useCallback } from "react";
 import { StarRating } from "../products/ProductStarRating";
+import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
 
 export function getWhatsAppLink(phone: string, message?: string): string {
     let cleaned = phone.replace(/[^0-9+]/g, "");
@@ -26,15 +27,18 @@ export function getWhatsAppLink(phone: string, message?: string): string {
 
 export default function StoreDetailInfoCard({ store }: { store: Store }) {
 
+    const { mutate: logVisitor } = useCreateVisitorLog();
+
     const handleWhatsAppClick = useCallback(() => {
         try {
-            const message = `Halo, saya ingin bertanya tentang suatu hal di toko ${store.name}`;
+            const message = `Halo, saya tertarik dengan produk dari toko ${store.name}`;
             const link = getWhatsAppLink(store.user.phone_number, message);
-            window.open(link, "_blank"); // buka WA di tab baru
+            logVisitor({ product_id: store.id as unknown as string });
+            window.open(link, "_blank");
         } catch (error) {
             console.log((error as Error).message)
         }
-    }, [store]);
+    }, [store, logVisitor]);
 
     return (
         <section className="py-8 bg-white">

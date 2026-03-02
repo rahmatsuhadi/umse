@@ -1,79 +1,46 @@
-
-import FeaturesSection from "@/components/home/FeatureSection";
-import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
 import ContactSection from "@/components/landing/Contact";
 import { Metadata } from "next";
 import { APP_URL } from "@/lib/envConfig";
-import StoresListPagination from "@/components/stores/StoreListPagination";
-
-
-interface UmkmPageProps {
-    searchParams: Promise<{
-        page: string;
-        q: string;
-    }>
-}
+import MerchantsPage from "@/components/stores/MerchantsPage";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
-    title: "Sleman Mart - Marketplace UMKM dengan Produk Berkualitas",
-    description: "Temukan berbagai produk berkualitas dari UMKM Sleman Mart. Jelajahi kategori, fitur, dan toko-toko terbaik dengan penawaran menarik.",
+    title: "Toko Lokal Sleman — Sleman Mart",
+    description: "Ratusan UMKM terpercaya siap melayani kebutuhanmu. Temukan toko-toko lokal terbaik di Sleman.",
     openGraph: {
-        title: "Sleman Mart - Marketplace UMKM",
-        description: "Marketplace terbaik untuk produk UMKM di Sleman. Dapatkan produk berkualitas dan layanan terbaik.",
+        title: "Toko Lokal Sleman — Sleman Mart",
+        description: "Ratusan UMKM terpercaya siap melayani kebutuhanmu. Temukan toko-toko lokal terbaik di Sleman.",
         images: [
             {
                 url: APP_URL + "/slemanmartlogo.png",
                 width: 800,
                 height: 600,
-                alt: "Sleman Mart - Marketplace UMKM"
+                alt: "Sleman Mart - Toko Lokal Sleman"
             }
         ],
-        url: APP_URL + "",
+        url: APP_URL + "/umkm",
         siteName: "Sleman Mart",
     },
     twitter: {
         card: "summary_large_image",
         site: "@SlemanMart",
-        title: "Sleman Mart - Marketplace UMKM",
-        description: "Marketplace UMKM Sleman dengan produk berkualitas dan penawaran menarik.",
+        title: "Toko Lokal Sleman — Sleman Mart",
+        description: "Ratusan UMKM terpercaya siap melayani kebutuhanmu.",
         images: APP_URL + "/slemanmartlogo.png"
     }
 };
 
-export default async function UmkmPage({ }: UmkmPageProps) {
+export default function UmkmPage() {
     return (
         <div>
             <Navbar />
-            <div className="">
-
-                <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
-                    <div className="text-center mb-4 sm:mb-6 pt-10">
-                        <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
-                            Layanan Kami
-                        </h2>
-                        <p className="text-xs sm:text-sm text-gray-600">
-                            Jelajahi berbagai layanan dan fasilitas yang tersedia di #SlemanMart
-                        </p>
-                    </div>
-
-                    <FeaturesSection />
-                </AnimatedWrapper>
-
-                <AnimatedWrapper className="md:px-10" >
-                    <div className="text-center mb-8" id="store" >
-                        <h2 className="text-xl font-bold text-gray-800 mb-2">Toko UMKM Partner Kami</h2>
-                        <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
-                    </div>
-                    <StoresListPagination />
-                </AnimatedWrapper>
+            <div>
+                <Suspense>
+                    <MerchantsPage />
+                </Suspense>
             </div>
-
-
-            <AnimatedWrapper>
-                <ContactSection />
-            </AnimatedWrapper>
-
+            <ContactSection />
         </div>
     );
 }

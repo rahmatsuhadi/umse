@@ -1,17 +1,14 @@
-import FeaturesSection from "@/components/home/FeatureSection";
-import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import { Navbar } from "@/components/shared/Navbar";
-import { Separator } from "@/components/ui/separator";
+import { HeroSearch } from "@/components/home/HeroSearch";
+import { Subdistricts } from "@/components/home/Subdistricts";
+import { TopProductsHome } from "@/components/home/TopProductsHome";
+import { SlemanFoodSectionsHome } from "@/components/home/SlemanFoodSectionsHome";
+import { TopStores } from "@/components/home/TopStores";
+import { TopLiteracies } from "@/components/home/TopLiteracies";
 import ContactSection from "@/components/landing/Contact";
+import CategoryList from "@/components/categories/CategoryList";
 import { Metadata } from "next";
 import { APP_URL } from "@/lib/envConfig";
-import ProductList from "@/components/products/ProductList";
-import CategoryList from "@/components/categories/CategoryList";
-import StoreList from "@/components/stores/StoreList";
-import FilterSortModal from "@/components/products/ProductFilterSortModal";
-import { BannerCarousel } from "@/components/home/BannerCarousel";
-
-
 interface HomePage {
     searchParams: Promise<{
         page: string;
@@ -48,60 +45,33 @@ export const metadata: Metadata = {
 
 export default async function HomePage({ }: HomePage) {
     return (
-        <div className="bg-gray-50">
+        <div className="pb-20 md:pb-0" style={{ background: "#FFF9F4" }}> {/* padding bottom for sticky nav on mobile */}
             <Navbar />
-            <div className="">
 
-                <BannerCarousel />
+            <main className="min-h-screen">
+                {/* Section 1: Hero Search and Subdistrict Explorer */}
+                <HeroSearch />
+                <Subdistricts />
 
+                {/* Section 2A: Top Products */}
+                <TopProductsHome />
 
-                <div className="md:px-10">
-                    <FilterSortModal />
-                </div>
+                {/* Section 2B: Sleman Food Categories (Siap Saji & Homemade) */}
+                <SlemanFoodSectionsHome />
 
+                {/* Section 2C: Top Local Marketplace */}
+                <TopStores />
 
+                {/* Section 3: Product Categories */}
+                <CategoryList />
 
-                <AnimatedWrapper className="bg-[#f9fafb] md:px-10">
-                    <div className="text-center mb-4 sm:mb-6 pt-10">
-                        <h2 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
-                            Layanan Kami
-                        </h2>
-                        <p className="text-xs sm:text-sm text-gray-600">
-                            Jelajahi berbagai layanan dan fasilitas yang tersedia di #SlemanMart
-                            {/* test commit */}
-                        </p>
-                    </div>
+                {/* Section 4: Tips / Blog / Articles */}
+                <TopLiteracies />
 
-                    <FeaturesSection />
-                </AnimatedWrapper>
+            </main>
 
-
-
-                <AnimatedWrapper className="md:px-10">
-                    <CategoryList />
-                </AnimatedWrapper>
-                <Separator />
-                <AnimatedWrapper className="md:px-10">
-                    <ProductList />
-                </AnimatedWrapper>
-
-
-
-                <AnimatedWrapper className="md:px-10" >
-                    <div className="text-center mb-8" id="store" >
-                        <h2 className="text-xl font-bold text-gray-800 mb-2">Toko UMKM Partner Kami</h2>
-                        <p className="text-gray-600">Bergabunglah dengan ratusan UMKM yang telah mempercayai platform kami</p>
-                    </div>
-                    <StoreList />
-
-                </AnimatedWrapper>
-            </div>
-
-
-            <AnimatedWrapper>
-                <ContactSection />
-            </AnimatedWrapper>
-
+            {/* Section 5: Footer */}
+            <ContactSection />
         </div>
     );
 }

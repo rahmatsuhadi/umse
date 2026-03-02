@@ -8,12 +8,14 @@ type ProductQueryParams = {
   per_page?: number;
   q?: string;
   filter?: {
-    // category_id?: string;          // UUID
-    category__slug?: string;       // string
+    category__slug?: string;
+    district_id?: string;
     min_price?: number;
     max_price?: number;
+    [key: string]: string | number | undefined;
   };
-  sort?: string
+  sort?: string;
+  include?: string;
 };
 
 // Hook untuk mengambil daftar produk

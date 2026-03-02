@@ -13,6 +13,9 @@ export interface District {
   id: number;
   regency_id: string;
   name: string;
+  logo?: string | null;
+  stores_count?: number;
+  products_count?: number;
 }
 
 export interface Village {

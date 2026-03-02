@@ -37,8 +37,8 @@ export interface Product {
   name: string;
   slug: string;
   price: Price;
-  lowest_price:Price;
-  highest_price:Price;
+  lowest_price: Price;
+  highest_price: Price;
   variants_exists: boolean
   description: string;
   category_id: string;
@@ -54,6 +54,9 @@ export interface Product {
   thumbnail: Media;
   media: Media[];
   variants: Variant[];
+  is_ready_to_serve?: boolean | number;
+  is_frozen?: boolean | number;
+  sold_count?: number;
   created_at: string;
   updated_at: string;
 }

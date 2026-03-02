@@ -3,11 +3,11 @@ import { User } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const { phone_number, password, captchaToken } = await req.json();
+  const { email, password, captchaToken } = await req.json();
 
-  if (!phone_number || !password) {
+  if (!email || !password) {
     return NextResponse.json(
-      { message: "Phone Number dan password diperlukan." },
+      { message: "Email dan password diperlukan." },
       { status: 400 }
     );
   }
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       `/auth/login`,
       {
         method: "POST",
-        body: JSON.stringify({ phone_number, password }),
+        body: JSON.stringify({ email, password }),
       }
     );
     return NextResponse.json(backendRes, { status: 200 });

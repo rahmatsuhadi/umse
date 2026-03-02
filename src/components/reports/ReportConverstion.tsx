@@ -5,7 +5,7 @@ import {
 } from "@/features/reports/hook";
 import { formatDate } from "@/lib/format-date";
 import { MessageReport, StatusReport } from "@/types";
-import { Loader, Loader2, MessageSquare } from "lucide-react";
+import { Loader2, MessageSquare } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Card } from "../ui/card";
 
@@ -47,12 +47,12 @@ export default function ReportConversation({ reportId, status }: Props) {
         {isLoading
           ? [1, 2].map((i) => <CardMessageSkeleton key={i} />)
           : messages.map((message, i) => (
-              <CardMessage
-                key={i}
-                isUser={user?.id == message.sender_id}
-                message={message}
-              />
-            ))}
+            <CardMessage
+              key={i}
+              isUser={user?.id == message.sender_id}
+              message={message}
+            />
+          ))}
 
         {!isLoading && messages.length === 0 && (
           <Card className="p-6 text-center">
@@ -85,9 +85,8 @@ const CardMessage = ({ message, isUser }: CardMessageProps) => {
     <div className="flex space-x-4">
       <div className="flex-shrink-0">
         <div
-          className={`w-10 h-10 ${
-            isUser ? "bg-blue-100" : "bg-primary "
-          } rounded-full flex items-center justify-center`}
+          className={`w-10 h-10 ${isUser ? "bg-blue-100" : "bg-primary "
+            } rounded-full flex items-center justify-center`}
         >
           {isUser ? (
             <i className="fas fa-user text-blue-600"></i>
@@ -106,9 +105,8 @@ const CardMessage = ({ message, isUser }: CardMessageProps) => {
           </span>
         </div>
         <div
-          className={`${
-            !isUser ? "bg-gray-50" : " bg-blue-50 "
-          } rounded-lg p-4`}
+          className={`${!isUser ? "bg-gray-50" : " bg-blue-50 "
+            } rounded-lg p-4`}
         >
           <p className="text-gray-700">{message.message}</p>
         </div>
@@ -138,7 +136,6 @@ export function ReportConversationSkeleton() {
 
 const ReplyForm = ({ reportId }: { reportId: string }) => {
   const [message, setMessage] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
 
   const { mutate, isPending } = useAddMesage(reportId);
 
@@ -166,17 +163,7 @@ const ReplyForm = ({ reportId }: { reportId: string }) => {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-vertical"
         ></textarea>
 
-        {/* File Preview */}
-        {files.length > 0 && (
-          <div className="space-y-1 text-sm text-gray-600">
-            {files.map((file, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <i className="fas fa-file text-gray-500"></i>
-                <span>{file.name}</span>
-              </div>
-            ))}
-          </div>
-        )}
+
 
         <div className="flex items-center space-x-4">
           <button

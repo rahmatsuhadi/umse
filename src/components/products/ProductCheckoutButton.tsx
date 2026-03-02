@@ -1,42 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Plus, Minus, ShoppingCart } from "lucide-react";
-import type { Price, Product, Variant } from "@/types"; // Impor tipe dari file types Anda
+import type { Price, Product, Variant } from "@/types";
 import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
-import { FaSpinner } from "react-icons/fa";
+import Link from "next/link";
+import Image from "next/image";
 
 interface CheckoutButtonProps {
   product: Product;
   isAuth?: boolean;
 }
 
-export default function ProductCheckoutButton({
-  product,
-}: {
-  product: Product;
-}) {
+export default function ProductCheckoutButton({ product }: { product: Product }) {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [quantity, setQuantity] = useState(1);
-
   const { data: user } = useUser();
 
-  // Set varian default saat komponen pertama kali dimuat (jika ada varian)
   useEffect(() => {
     if (product.variants && product.variants.length > 0) {
       setSelectedVariant(product.variants[0]);
     }
   }, [product.variants]);
 
-  // Tentukan harga, stok, dan gambar yang akan ditampilkan berdasarkan varian yang dipilih
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant
     ? selectedVariant.stock_quantity
     : product.stock_quantity;
+
+  const formatPrice = (price: Price) => {
+    return price.formatted.split(",")[0];
+  };
 
   const handleQuantityChange = (amount: number) => {
     const newQuantity = quantity + amount;
@@ -45,160 +40,151 @@ export default function ProductCheckoutButton({
     }
   };
 
-  const {
-    handleAddToCart,
-    handleQuickOrder,
-    loading: isPending,
-  } = useCheckout({ isAuth: !!user, product });
+  useCheckout({
+    isAuth: !!user,
+    product,
+  });
 
   const isAvailable = selectedVariant
     ? selectedVariant.stock_quantity > 0
     : product.stock_status === "in_stock";
 
+  // Total ulasan
+  const totalReviews = Object.values(product.rating_count).reduce((a, b) => a + b, 0);
+
   return (
     <>
-      <div className="mb-6">
-        <h3 className="font-bold text-gray-800 mb-3 text-base sm:text-lg">
-          Detail Produk
-        </h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex flex-col sm:flex-row">
-            <span className="text-gray-600 sm:w-24 font-medium">Variant:</span>
-            <span className="sm:ml-2">{`${
-              product.variants.length == 0
-                ? "Tidak ada"
-                : product.variants.length
-            } Variant `}</span>
-          </div>
-          <div className="flex flex-col sm:flex-row">
-            <span className="text-gray-600 sm:w-24 font-medium">Status:</span>
-            <span className="sm:ml-2">
-              {isAvailable ? "Tersedia" : "Tidak Tersedia"}
-            </span>
-          </div>
-          <div className="flex flex-col sm:flex-row">
-            <span className="text-gray-600 sm:w-24 font-medium">Kategori:</span>
-            <span className="sm:ml-2">{product.category.name}</span>
-          </div>
-          <div className="flex flex-col sm:flex-row">
-            <span className="text-gray-600 sm:w-24 font-medium">Stok:</span>
-            <span className="text-green-600 font-medium sm:ml-2">
-              {selectedVariant
-                ? selectedVariant.stock_quantity
-                : product.stock_quantity}{" "}
-              tersedia
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="space-y-6">
-        {/* Pilihan Varian */}
-        {product.variants && product.variants.length > 0 && (
-          <div>
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">
-              Pilih Varian:
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {product.variants.map((variant) => (
-                <Button
-                  key={variant.id}
-                  variant={
-                    selectedVariant?.id === variant.id ? "default" : "outline"
-                  }
-                  onClick={() => {
-                    // if(selectedVariant && selectedVariant?.id == variant.id){
-                    //     setSelectedVariant(null)
-                    // }
-                    // else{
-                    setSelectedVariant(variant);
-                    // }
-                  }}
-                >
-                  {variant.name}
-                </Button>
-              ))}
-            </div>
-          </div>
+      {/* Badges */}
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+        <span className="badge badge-terracotta">🔥 Terlaris</span>
+        {isAvailable ? (
+          <span className="badge badge-forest">✓ Stok Tersedia</span>
+        ) : (
+          <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>✗ Stok Habis</span>
         )}
+        <span className="badge badge-saffron">🏅 Produk Unggulan</span>
+      </div>
 
-        <Separator />
+      {/* Nama Produk */}
+      <h1 id="detailName">{product.name}</h1>
 
-        {/* Harga & Stok Dinamis */}
-        <div>
-          <p className="text-sm text-slate-500">Harga</p>
-          <p className="text-3xl font-bold text-primary">
-            {currentPrice.formatted}
-          </p>
-          <p className="text-sm text-green-600 font-medium mt-1">
-            Stok: {currentStock} tersedia
-          </p>
+      {/* Rating Row — with sold count */}
+      <div className="detail-rating-row">
+        <span className="detail-stars">★★★★★</span>
+        <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)' }}>
+          {Number(product.average_rating).toFixed(1)}
+        </span>
+        <span className="detail-rating-count">({totalReviews} ulasan)</span>
+        <span className="detail-sold">{totalReviews > 0 ? `${totalReviews}+ terjual` : 'Belum ada penjualan'}</span>
+      </div>
+
+      {/* Harga */}
+      <div className="detail-price-row">
+        <span className="detail-price">{formatPrice(currentPrice)}</span>
+        {/* Tampilkan harga lama & diskon jika ada varian dengan harga lebih tinggi */}
+        {product.highest_price && product.highest_price.value > product.lowest_price.value && (
+          <>
+            <span className="detail-price-old">{formatPrice(product.highest_price)}</span>
+            <span className="detail-discount">
+              -{Math.round(((product.highest_price.value - product.lowest_price.value) / product.highest_price.value) * 100)}%
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Merchant Card */}
+      <Link href={"/umkm/" + product.store.id} className="detail-merchant-card" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="detail-merchant-icon" style={{ background: '#D4EFDF', overflow: 'hidden', padding: 0, flexShrink: 0 }}>
+          <Image
+            src={product.store.logo_url || "/assets/no-image.jpg"}
+            alt={product.store.name}
+            width={80}
+            height={80}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }}
+          />
         </div>
+        <div className="detail-merchant-info" style={{ flex: 1, minWidth: 0 }}>
+          <h4>{product.store.name}</h4>
+          <span>⭐ {Number(product.store.average_rating).toFixed(1)} · {product.store.products_count} produk</span>
+          <div className="location">📍 {product.store.district?.name || 'Sleman'}</div>
+        </div>
+        <div style={{ color: 'var(--terracotta)', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
+          Lihat Toko →
+        </div>
+      </Link>
 
-        {/* Aksi Pembelian */}
-        <div>
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-gray-700 font-medium">Jumlah:</span>
-            <div className="flex items-center border rounded-lg w-fit">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleQuantityChange(-1)}
-                disabled={quantity <= 1}
+      {/* Varian — hanya tampil jika ada */}
+      {product.variants && product.variants.length > 0 && (
+        <>
+          <div className="detail-section-label">Varian</div>
+          <div className="variant-options">
+            {product.variants.map((variant) => (
+              <button
+                key={variant.id}
+                className={`variant-btn${selectedVariant?.id === variant.id ? ' active' : ''}`}
+                onClick={() => setSelectedVariant(variant)}
               >
-                <Minus className="h-4 w-4" />
-              </Button>
-              {/* <Input className="w-12 text-center font-bold" value={quantity} onChange={(v) => setQuantity(Number(v.target.value))} /> */}
-              <span className="w-12 text-center font-bold">{quantity}</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleQuantityChange(1)}
-                disabled={quantity >= currentStock}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+                {variant.name}
+              </button>
+            ))}
           </div>
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3"></div> */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90"
-              onClick={() =>
-                handleAddToCart({ quantity, selectedVariant: selectedVariant })
-              }
-              disabled={currentStock === 0 || isPending}
-            >
-              {isPending ? (
-                <>
-                  <FaSpinner className="animate-spin" />
-                  Menambahakan ....
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Tambah ke Keranjang
-                </>
-              )}
-            </Button>
-            <Button
-              onClick={() =>
-                handleQuickOrder({
-                  quantity,
-                  selectedVariant,
-                  price: currentPrice,
-                })
-              }
-              size="lg"
-              variant="outline"
-              className="border-primary text-primary hover:bg-primary/5 hover:text-primary"
-              disabled={currentStock === 0 || isPending}
-            >
-              Beli Langsung
-            </Button>
-          </div>
+        </>
+      )}
+
+      {/* Jumlah */}
+      <div className="detail-section-label">Jumlah</div>
+      <div className="qty-control">
+        <button
+          className="qty-btn"
+          onClick={() => handleQuantityChange(-1)}
+          disabled={quantity <= 1}
+        >
+          −
+        </button>
+        <input
+          className="qty-input"
+          type="number"
+          value={quantity}
+          min={1}
+          max={currentStock}
+          readOnly
+        />
+        <button
+          className="qty-btn"
+          onClick={() => handleQuantityChange(1)}
+          disabled={quantity >= currentStock}
+        >
+          +
+        </button>
+      </div>
+
+      {/* Deskripsi */}
+      <p className="detail-desc">{product.description}</p>
+
+      {/* Specs */}
+      <div className="detail-specs">
+        <div className="spec-row">
+          <span className="spec-label">Kategori</span>
+          <span className="spec-value">{product.category.name}</span>
+        </div>
+        <div className="spec-row">
+          <span className="spec-label">Status</span>
+          <span className="spec-value">{isAvailable ? '✓ Tersedia' : '✗ Stok Habis'}</span>
+        </div>
+        <div className="spec-row">
+          <span className="spec-label">Stok</span>
+          <span className="spec-value">{currentStock} unit</span>
+        </div>
+        <div className="spec-row">
+          <span className="spec-label">Pengiriman</span>
+          <span className="spec-value">Sleman &amp; sekitarnya</span>
         </div>
       </div>
+
+      {/* Store checkout handlers (hidden, exposed via window for sticky CTA) */}
+      <div id="__checkout_handlers" style={{ display: 'none' }}
+        data-product-id={product.id}
+      />
     </>
   );
 }
@@ -206,9 +192,7 @@ export default function ProductCheckoutButton({
 const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
   const router = useRouter();
   const pathname = usePathname();
-
   const { mutate: addToCart, isPending } = useAddToCart();
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleAddToCart = ({
@@ -219,25 +203,14 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     quantity: number;
   }) => {
     if (!isAuth) {
-      // Buat URL login dengan parameter redirect
-      const loginUrl = `/masuk?redirect=${pathname}`;
-      router.push(loginUrl);
-      return; // Hentikan eksekusi
+      router.push(`/masuk?redirect=${pathname}`);
+      return;
     }
-
-    const reqData: {
-      product_id: string;
-      quantity: number;
-      variant_id?: string;
-    } = {
+    const reqData: { product_id: string; quantity: number; variant_id?: string } = {
       product_id: product.id,
-      quantity: quantity,
+      quantity,
     };
-
-    if (selectedVariant) {
-      reqData.variant_id = selectedVariant.id;
-    }
-
+    if (selectedVariant) reqData.variant_id = selectedVariant.id;
     addToCart(reqData);
   };
 
@@ -250,14 +223,10 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     price: Price;
   }) => {
     if (!isAuth) {
-      // Buat URL login dengan parameter redirect
-      const loginUrl = `/masuk?redirect=${pathname}`;
-      router.push(loginUrl);
-      return; // Hentikan eksekusi
+      router.push(`/masuk?redirect=${pathname}`);
+      return;
     }
-
     setIsLoading(true);
-
     const items = [
       {
         product: {
@@ -268,16 +237,15 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
         },
         variant: selectedVariant
           ? {
-              id: selectedVariant.id,
-              name: selectedVariant.name,
-              thumbnail: selectedVariant.thumbnail,
-              price: selectedVariant.price,
-            }
+            id: selectedVariant.id,
+            name: selectedVariant.name,
+            thumbnail: selectedVariant.thumbnail,
+            price: selectedVariant.price,
+          }
           : null,
-        quantity: quantity,
+        quantity,
       },
     ];
-
     const saveLocal = {
       store: {
         id: product.store.id,
@@ -293,7 +261,6 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
       },
       items,
     };
-
     await localStorage.setItem("checkout_items", JSON.stringify(saveLocal));
     setIsLoading(false);
     router.push("/checkout?store=" + product.store.id);

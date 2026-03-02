@@ -11,7 +11,7 @@ export const getRegencies = (
   provinceId: string
 ): Promise<{ data: Regency[] }> => {
   return apiClient<{ data: Regency[] }>(
-    `/regencies?filter[province_id]=${provinceId}`
+    `/regencies?filter%5Bprovince_id%5D=${provinceId}`
   );
 };
 
@@ -20,7 +20,7 @@ export const getDistricts = (
   regencyId: string
 ): Promise<{ data: District[] }> => {
   return apiClient<{ data: District[] }>(
-    `/districts?filter[regency_id]=${regencyId}`
+    `/districts?filter%5Bregency_id%5D=${regencyId}`
   );
 };
 
@@ -29,6 +29,6 @@ export const getVillages = (
   districtId: string
 ): Promise<{ data: Village[] }> => {
   return apiClient<{ data: Village[] }>(
-    `/villages?filter[district_id]=${districtId}`
+    `/villages?filter%5Bdistrict_id%5D=${districtId}`
   );
 };

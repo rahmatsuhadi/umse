@@ -203,7 +203,12 @@ export default function ConfirmationPage({
                           document.getElementById("paymentProof")?.click()
                         }
                       >
-                        <i className="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="/assets/qris-icon.png"
+                          alt="Upload Icon"
+                          className="text-4xl text-gray-400 mb-2"
+                        />
                         <p className="text-gray-600 mb-2">
                           Klik untuk upload bukti pembayaran
                         </p>

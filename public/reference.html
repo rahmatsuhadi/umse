@@ -1,0 +1,4532 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleman Mart — Produk Lokal Sleman</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      /* Primary Palette (per Brand Guideline v1.0) */
+      --terracotta: #F7620A;
+      /* Primary Orange */
+      --terracotta-light: #F98B3F;
+      /* Primary Orange – light */
+      --terracotta-dark: #D45508;
+      /* Primary Orange – dark */
+      --saffron: #F5A623;
+      /* Amber */
+      --saffron-light: #F8C35A;
+      /* Amber – light */
+      --forest: #27AE60;
+      /* Success Green (functional) */
+      --forest-mid: #219653;
+      /* Success Green – mid */
+      --forest-light: #2DBC6A;
+      /* Success Green – light */
+      /* Secondary Palette */
+      --cream: #FFF9F4;
+      /* Warm Cream – page bg */
+      --cream-dark: #F0D5C2;
+      /* Border Beige – borders/dividers */
+      --brown-dark: #1A1008;
+      /* Deep Brown – footer/dark bg */
+      --brown-mid: #6B4C2A;
+      /* Mid Brown */
+      --brown-light: #9B7B5A;
+      /* Mid Brown – lighter */
+      --text-primary: #1A1008;
+      /* Deep Brown – headings */
+      --text-secondary: #4A3728;
+      /* Medium Brown – body text */
+      --text-muted: #6B4C2A;
+      /* Mid Brown – labels/muted */
+      --white: #FFFFFF;
+      --shadow-sm: 0 2px 8px rgba(44, 24, 16, 0.08);
+      --shadow-md: 0 4px 20px rgba(44, 24, 16, 0.12);
+      --shadow-lg: 0 8px 40px rgba(44, 24, 16, 0.18);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ===== UTILITIES ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .section-title span {
+      color: var(--terracotta);
+    }
+
+    .section-subtitle {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 15px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-terracotta {
+      background: #FDE8D8;
+      color: var(--terracotta-dark);
+    }
+
+    .badge-forest {
+      background: #D4EFDF;
+      color: var(--forest);
+    }
+
+    .badge-saffron {
+      background: #FEF3D0;
+      color: #9B6E00;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--terracotta);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--terracotta-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+      background: var(--cream-dark);
+      color: var(--text-primary);
+      border: 2px solid var(--cream-dark);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--terracotta);
+      color: var(--terracotta);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--terracotta);
+      border: 2px solid var(--terracotta);
+    }
+
+    .btn-outline:hover {
+      background: var(--terracotta);
+      color: white;
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background: #1da851;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .btn-lg {
+      padding: 16px 32px;
+      font-size: 16px;
+    }
+
+    /* ===== PAGE MANAGEMENT ===== */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 246, 238, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(200, 87, 58, 0.15);
+      padding: 0 20px;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      height: 64px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--terracotta);
+      cursor: pointer;
+      flex-shrink: 0;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--terracotta);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      color: var(--text-primary);
+    }
+
+    .logo-text span {
+      color: var(--terracotta);
+    }
+
+    .nav-search {
+      flex: 1;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      border: 1.5px solid transparent;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .nav-search:focus-within {
+      border-color: var(--terracotta);
+      background: white;
+    }
+
+    .nav-search input {
+      flex: 1;
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-primary);
+      min-width: 0;
+    }
+
+    .nav-search button {
+      padding: 10px 14px;
+      background: var(--terracotta);
+      border: none;
+      cursor: pointer;
+      color: white;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .nav-link {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      text-decoration: none;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--terracotta);
+      background: rgba(200, 87, 58, 0.08);
+    }
+
+    .nav-mobile-menu {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s;
+    }
+
+    .nav-mobile-menu:hover {
+      color: var(--terracotta);
+    }
+
+    .nav-spacer {
+      display: none;
+      flex: 1;
+    }
+
+    /* ===== MOBILE DRAWER ===== */
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(26, 16, 8, 0.5);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-overlay.open {
+      display: block;
+    }
+
+    .drawer-overlay.visible {
+      opacity: 1;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 201;
+      width: 280px;
+      max-width: 85vw;
+      background: var(--cream);
+      box-shadow: -8px 0 40px rgba(44, 24, 16, 0.2);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--cream-dark);
+      flex-shrink: 0;
+    }
+
+    .drawer-logo {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .drawer-logo span {
+      color: var(--terracotta);
+    }
+
+    .drawer-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 18px;
+      transition: all 0.15s;
+    }
+
+    .drawer-close:hover {
+      background: rgba(200, 87, 58, 0.1);
+      color: var(--terracotta);
+    }
+
+    .drawer-nav {
+      padding: 12px 12px;
+      flex: 1;
+    }
+
+    .drawer-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.15s;
+      margin-bottom: 4px;
+    }
+
+    .drawer-nav-item:hover,
+    .drawer-nav-item.active {
+      background: rgba(200, 87, 58, 0.08);
+      color: var(--terracotta);
+    }
+
+    .drawer-nav-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .drawer-divider {
+      height: 1px;
+      background: var(--cream-dark);
+      margin: 8px 16px;
+    }
+
+    .drawer-footer {
+      padding: 20px;
+      border-top: 1px solid var(--cream-dark);
+      flex-shrink: 0;
+    }
+
+    .drawer-footer p {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .nav-search-icon-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s;
+    }
+
+    .nav-search-icon-btn:hover {
+      color: var(--terracotta);
+    }
+
+    /* Mobile search slide-down bar */
+    .mobile-search-bar {
+      display: none;
+      padding: 10px 16px 14px;
+      border-top: 1px solid var(--cream-dark);
+      background: rgba(250, 246, 238, 0.98);
+    }
+
+    .mobile-search-bar.open {
+      display: block;
+    }
+
+    .mobile-search-inner {
+      display: flex;
+      align-items: center;
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      border: 1.5px solid transparent;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .mobile-search-inner:focus-within {
+      border-color: var(--terracotta);
+      background: white;
+    }
+
+    .mobile-search-inner input {
+      flex: 1;
+      padding: 11px 16px;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-primary);
+      min-width: 0;
+    }
+
+    .mobile-search-inner input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .mobile-search-inner button {
+      padding: 11px 16px;
+      background: var(--terracotta);
+      border: none;
+      cursor: pointer;
+      color: white;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== MOBILE NAV ===== */
+    .mobile-menu-open .mobile-dropdown {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--cream-dark);
+    }
+
+    .mobile-dropdown {
+      display: none;
+    }
+
+    /* ===== BATIK DECORATIVE PATTERN ===== */
+    .batik-divider {
+      height: 8px;
+      background: repeating-linear-gradient(90deg,
+          var(--terracotta) 0, var(--terracotta) 20px,
+          var(--saffron) 20px, var(--saffron) 40px,
+          var(--brown-dark) 40px, var(--brown-dark) 60px,
+          var(--terracotta-light) 60px, var(--terracotta-light) 80px);
+      opacity: 0.7;
+    }
+
+    /* ===== HOME PAGE ===== */
+    /* Hero / Search Section */
+    .home-hero {
+      background: linear-gradient(135deg, var(--brown-dark) 0%, #3A2010 50%, #4A2810 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 60px 20px 80px;
+    }
+
+    .home-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(232, 165, 48, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(200, 87, 58, 0.12) 0%, transparent 40%);
+    }
+
+    .hero-pattern {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      opacity: 0.04;
+      background-image: repeating-linear-gradient(45deg, white 0, white 2px, transparent 2px, transparent 30px),
+        repeating-linear-gradient(-45deg, white 0, white 2px, transparent 2px, transparent 30px);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232, 165, 48, 0.2);
+      border: 1px solid rgba(232, 165, 48, 0.4);
+      color: var(--saffron-light);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .hero-title .highlight {
+      color: var(--saffron);
+    }
+
+    .hero-subtitle {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-style: italic;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.75);
+      font-size: clamp(15px, 2vw, 18px);
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    .search-form-big {
+      display: flex;
+      gap: 12px;
+      max-width: 640px;
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 8px 8px 8px 20px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .search-form-big input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .search-form-big input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-form-big button {
+      padding: 12px 28px;
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .search-form-big button:hover {
+      background: var(--terracotta-dark);
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .hero-tag {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .hero-tag:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Subdistricts Section */
+    .section {
+      padding: 60px 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .see-all-link {
+      color: var(--terracotta);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .subdistrict-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .subdistrict-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      text-align: center;
+      border: 1.5px solid var(--cream-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subdistrict-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--terracotta);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    .subdistrict-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--terracotta);
+    }
+
+    .subdistrict-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .subdistrict-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 12px;
+    }
+
+    .subdistrict-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .subdistrict-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Top Products & Merchants */
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .top-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .top-card-scroll {
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .top-card-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .top-card-scroll::-webkit-scrollbar-track {
+      background: var(--cream-dark);
+      border-radius: 2px;
+    }
+
+    .top-card-scroll::-webkit-scrollbar-thumb {
+      background: var(--terracotta);
+      border-radius: 2px;
+    }
+
+    .top-card-list {
+      display: flex;
+      gap: 12px;
+      min-width: min-content;
+    }
+
+    .product-card-mini {
+      width: 160px;
+      flex-shrink: 0;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .product-card-mini:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: rgba(200, 87, 58, 0.3);
+    }
+
+    .product-card-mini-img {
+      height: 120px;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card-mini-body {
+      padding: 12px;
+    }
+
+    .product-card-mini-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .product-card-mini-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    .product-card-mini-shop {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .merchant-card-mini {
+      width: 240px;
+      flex-shrink: 0;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .merchant-card-mini:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: rgba(200, 87, 58, 0.3);
+    }
+
+    .merchant-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .merchant-mini-info .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .merchant-mini-info .area {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .merchant-mini-info .rating {
+      font-size: 12px;
+      color: var(--saffron);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Category Section */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 20px 12px;
+      text-align: center;
+      border: 1.5px solid var(--cream-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-card:hover {
+      border-color: var(--terracotta);
+      background: rgba(200, 87, 58, 0.04);
+      transform: translateY(-2px);
+    }
+
+    .category-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 10px;
+    }
+
+    .category-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .category-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Tips Section */
+    .blog-bg {
+      background: var(--brown-dark);
+      padding: 60px 0;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .blog-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .blog-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .blog-img {
+      height: 160px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .blog-body {
+      padding: 20px;
+    }
+
+    .blog-cat {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--saffron);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .blog-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .blog-excerpt {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.6;
+    }
+
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--text-primary);
+      padding: 60px 0 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 40px;
+    }
+
+    .footer-brand .logo {
+      color: var(--saffron);
+      font-size: 24px;
+    }
+
+    .footer-brand p {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-top: 12px;
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .footer-col a {
+      display: block;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .footer-col a:hover {
+      color: var(--saffron);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    /* ===== SEARCH / EXPLORE PAGE ===== */
+    .explore-header {
+      background: linear-gradient(135deg, var(--terracotta-dark) 0%, var(--terracotta) 100%);
+      padding: 40px 20px;
+    }
+
+    .explore-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .explore-title {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 4px;
+    }
+
+    .explore-keyword {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 800;
+      color: white;
+      margin-bottom: 24px;
+    }
+
+    .explore-search-bar {
+      display: flex;
+      gap: 12px;
+      max-width: 600px;
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 6px 6px 6px 20px;
+    }
+
+    .explore-search-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+    }
+
+    .explore-search-bar button {
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .explore-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+    }
+
+    .explore-stat {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+    }
+
+    .explore-stat strong {
+      color: white;
+    }
+
+    .explore-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .explore-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 900px) {
+      .explore-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Filter Sidebar */
+    .filter-sidebar {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+    }
+
+    .filter-panel {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+    }
+
+    .filter-header {
+      padding: 16px 20px;
+      background: var(--cream-dark);
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .filter-section {
+      padding: 20px;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .filter-section:last-child {
+      border-bottom: none;
+    }
+
+    .filter-section h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .filter-option input[type="checkbox"] {
+      accent-color: var(--terracotta);
+      width: 15px;
+      height: 15px;
+    }
+
+    .filter-option label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .filter-option .count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--cream-dark);
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .price-range {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .price-input {
+      flex: 1;
+      min-width: 0;
+      padding: 8px 12px;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    .price-input:focus {
+      border-color: var(--terracotta);
+    }
+
+    .filter-apply {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    /* Explore Results */
+    .explore-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--cream-dark);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .explore-tab {
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+    }
+
+    .explore-tab:hover {
+      color: var(--terracotta);
+    }
+
+    .explore-tab.active {
+      color: var(--terracotta);
+      border-bottom-color: var(--terracotta);
+    }
+
+    .sort-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .sort-bar label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .sort-select {
+      padding: 8px 12px;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+
+    .sort-select:focus {
+      border-color: var(--terracotta);
+    }
+
+    .result-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .product-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: rgba(200, 87, 58, 0.3);
+    }
+
+    .product-img {
+      height: 180px;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      position: relative;
+    }
+
+    .product-badge-overlay {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+    }
+
+    .product-body {
+      padding: 14px;
+    }
+
+    .product-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .product-shop {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .product-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    .product-price-old {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      margin-left: 4px;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .stars {
+      color: var(--saffron);
+      font-size: 12px;
+    }
+
+    .rating-count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .wa-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Merchant Results */
+    .merchant-grid-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .merchant-list-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      padding: 20px;
+      display: flex;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .merchant-list-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(200, 87, 58, 0.3);
+    }
+
+    .merchant-list-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .merchant-list-info {
+      flex: 1;
+    }
+
+    .merchant-list-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .merchant-list-info .area {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .merchant-list-info .desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .merchant-list-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .merchant-meta-item {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .merchant-list-action {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    /* Article Results */
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .article-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .article-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .article-img {
+      height: 140px;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .article-body {
+      padding: 16px;
+    }
+
+    .article-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--terracotta);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .article-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .article-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ===== MERCHANTS PAGE ===== */
+    .merchants-hero {
+      background: var(--cream-dark);
+      padding: 48px 20px;
+      border-bottom: 2px solid rgba(200, 87, 58, 0.15);
+    }
+
+    .merchants-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .merchants-hero h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .merchants-hero p {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 16px;
+    }
+
+    .merchants-hero-filters {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-chip {
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1.5px solid var(--cream-dark);
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-secondary);
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      border-color: var(--terracotta);
+      background: rgba(200, 87, 58, 0.08);
+      color: var(--terracotta);
+    }
+
+    .merchants-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .merchants-sort {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .merchants-count {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .merchant-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--cream-dark);
+      overflow: hidden;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .merchant-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+      border-color: rgba(200, 87, 58, 0.3);
+    }
+
+    .merchant-card-cover {
+      height: 120px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .merchant-card-body {
+      padding: 20px;
+    }
+
+    .merchant-avatar-overlap {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      border: 3px solid white;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-top: -40px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .merchant-card-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .merchant-card-area {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .merchant-card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .merchant-stats {
+      display: flex;
+      gap: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--cream-dark);
+    }
+
+    .merchant-stat {
+      text-align: center;
+      flex: 1;
+    }
+
+    .merchant-stat .value {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .merchant-stat .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .merchant-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ===== MERCHANT DETAIL PAGE ===== */
+    .merchant-detail-hero {
+      background: white;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .merchant-detail-cover {
+      height: 200px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+    }
+
+    .merchant-detail-info {
+      padding: 0 20px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .merchant-detail-header {
+      display: flex;
+      gap: 20px;
+      align-items: flex-end;
+      margin-top: -40px;
+      margin-bottom: 20px;
+    }
+
+    .merchant-detail-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      border: 4px solid white;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .merchant-detail-meta h1 {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .merchant-detail-meta .meta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .meta-item {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .meta-item strong {
+      color: var(--text-secondary);
+    }
+
+    .merchant-detail-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .merchant-detail-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 900px) {
+      .merchant-detail-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .merchant-info-panel {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .info-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .info-row .icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ===== PRODUCTS PAGE ===== */
+    .products-hero {
+      background: linear-gradient(135deg, var(--saffron) 0%, var(--terracotta-light) 100%);
+      padding: 48px 20px;
+    }
+
+    .products-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .products-hero h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      color: white;
+    }
+
+    .products-hero p {
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-style: italic;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+
+    .products-tabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .products-tab {
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .products-tab:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .products-tab.active {
+      background: white;
+      color: var(--terracotta);
+      border-color: white;
+    }
+
+    .products-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .products-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: white;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      margin-bottom: 24px;
+    }
+
+    .products-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-chip {
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1.5px solid var(--cream-dark);
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--text-secondary);
+    }
+
+    .toolbar-chip.active,
+    .toolbar-chip:hover {
+      border-color: var(--terracotta);
+      color: var(--terracotta);
+      background: rgba(200, 87, 58, 0.06);
+    }
+
+    .view-toggle {
+      display: flex;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .view-btn {
+      padding: 7px 10px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+
+    .view-btn.active {
+      background: var(--terracotta);
+      color: white;
+    }
+
+    .product-card-lg {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .product-card-lg:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: rgba(200, 87, 58, 0.3);
+    }
+
+    .product-img-lg {
+      height: 220px;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      position: relative;
+    }
+
+    .product-img-lg .promo-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--terracotta);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .product-body-lg {
+      padding: 14px 16px 0;
+    }
+
+    .product-name-lg {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .product-shop-lg {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .product-price-lg {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    .product-price-old-lg {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      margin-left: 4px;
+    }
+
+    .product-sold-lg {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .product-actions-lg {
+      padding: 10px 16px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .product-actions-lg .price-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-actions-lg .price-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .product-actions-lg .price-main {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    .product-actions-lg .price-old {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .product-actions-lg .sold-row {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-wa-compact {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #25D366;
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(37, 211, 102, 0.35);
+    }
+
+    .btn-wa-compact:hover {
+      background: #1da851;
+      transform: scale(1.1);
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.5);
+    }
+
+    .product-grid-lg {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .product-grid-lg.list-view {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .product-grid-lg.list-view .product-card-lg {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .product-grid-lg.list-view .product-card-lg .product-img-lg {
+      width: 180px;
+      min-width: 180px;
+      height: 160px;
+    }
+
+    .product-grid-lg.list-view .product-card-lg .product-body-lg {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .product-grid-lg.list-view .product-card-lg .product-actions-lg {
+      flex-shrink: 0;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 14px 20px;
+      min-width: 160px;
+    }
+
+    @media (max-width: 600px) {
+      .product-grid-lg.list-view .product-card-lg {
+        flex-direction: column;
+      }
+
+      .product-grid-lg.list-view .product-card-lg .product-img-lg {
+        width: 100%;
+        min-width: unset;
+        height: 180px;
+      }
+
+      .product-grid-lg.list-view .product-card-lg .product-actions-lg {
+        flex-direction: row;
+        min-width: unset;
+        padding: 10px 16px 14px;
+      }
+    }
+
+    /* ===== PRODUCT DETAIL PAGE ===== */
+    .product-detail-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 120px;
+    }
+
+    @media (max-width: 768px) {
+      .product-detail-body {
+        padding-bottom: 100px;
+      }
+    }
+
+    .detail-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .detail-breadcrumb span {
+      cursor: pointer;
+    }
+
+    .detail-breadcrumb span:hover {
+      color: var(--terracotta);
+    }
+
+    .detail-breadcrumb .sep {
+      color: var(--cream-dark);
+    }
+
+    .detail-breadcrumb .current {
+      color: var(--text-secondary);
+    }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    @media (max-width: 900px) {
+      .detail-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    .detail-gallery {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+    }
+
+    @media (max-width: 900px) {
+      .detail-gallery {
+        position: static;
+        height: auto;
+      }
+    }
+
+    .gallery-main {
+      height: 400px;
+      background: var(--cream-dark);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .gallery-main {
+        height: 280px;
+        font-size: 80px;
+      }
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .gallery-thumb {
+      width: 72px;
+      height: 72px;
+      background: var(--cream-dark);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .gallery-thumb.active {
+      border-color: var(--terracotta);
+    }
+
+    .gallery-thumb:hover {
+      border-color: var(--terracotta-light);
+    }
+
+    .detail-info h1 {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .detail-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .detail-stars {
+      color: var(--saffron);
+      font-size: 16px;
+    }
+
+    .detail-rating-count {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .detail-sold {
+      font-size: 14px;
+      color: var(--text-muted);
+      padding-left: 12px;
+      border-left: 1px solid var(--cream-dark);
+    }
+
+    .detail-price-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .detail-price {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    .detail-price-old {
+      font-size: 18px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .detail-discount {
+      background: var(--terracotta);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .detail-merchant-card {
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .detail-merchant-card:hover {
+      background: rgba(200, 87, 58, 0.08);
+    }
+
+    .detail-merchant-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .detail-merchant-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .detail-merchant-info span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .detail-merchant-info .location {
+      font-size: 12px;
+      color: var(--terracotta);
+      margin-top: 2px;
+    }
+
+    .detail-section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .variant-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .variant-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--cream-dark);
+      background: white;
+      transition: all 0.15s;
+      color: var(--text-secondary);
+    }
+
+    .variant-btn.active {
+      border-color: var(--terracotta);
+      background: rgba(200, 87, 58, 0.08);
+      color: var(--terracotta);
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .qty-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: var(--cream-dark);
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .qty-btn:hover {
+      background: rgba(200, 87, 58, 0.15);
+    }
+
+    .qty-input {
+      width: 60px;
+      height: 40px;
+      border: none;
+      border-left: 1.5px solid var(--cream-dark);
+      border-right: 1.5px solid var(--cream-dark);
+      text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .detail-desc {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .detail-specs {
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .spec-row {
+      display: flex;
+      gap: 16px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(200, 87, 58, 0.1);
+      font-size: 14px;
+    }
+
+    .spec-row:last-child {
+      border-bottom: none;
+    }
+
+    .spec-label {
+      color: var(--text-muted);
+      width: 120px;
+      flex-shrink: 0;
+    }
+
+    .spec-value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Sticky CTA */
+    .sticky-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: white;
+      padding: 12px 20px;
+      border-top: 1px solid var(--cream-dark);
+      box-shadow: 0 -4px 20px rgba(44, 24, 16, 0.1);
+    }
+
+    .sticky-cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sticky-product-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sticky-product-img {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .sticky-product-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .sticky-product-price {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    @media (max-width: 480px) {
+      .sticky-product-info {
+        display: none;
+      }
+    }
+
+    /* Reviews Section */
+    .reviews-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+
+    .review-summary {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      padding: 24px;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      margin-bottom: 24px;
+    }
+
+    .review-score {
+      text-align: center;
+    }
+
+    .review-score .score {
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .review-score .stars {
+      font-size: 20px;
+      color: var(--saffron);
+      margin: 4px 0;
+    }
+
+    .review-score .count {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .review-bars {
+      flex: 1;
+    }
+
+    .review-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .review-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: var(--cream-dark);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .review-bar-fill {
+      height: 100%;
+      background: var(--saffron);
+      border-radius: 3px;
+    }
+
+    .review-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--cream-dark);
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .review-header {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .reviewer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .reviewer-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .reviewer-info .date {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .review-stars {
+      color: var(--saffron);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .review-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Similar Products */
+    .similar-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    .similar-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .similar-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .similar-scroll::-webkit-scrollbar-thumb {
+      background: var(--terracotta);
+      border-radius: 2px;
+    }
+
+    .similar-card {
+      width: 180px;
+      flex-shrink: 0;
+    }
+
+    .similar-img {
+      height: 160px;
+      background: var(--cream-dark);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .similar-img:hover {
+      opacity: 0.85;
+    }
+
+    .similar-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    .similar-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--terracotta);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-mobile-menu {
+        display: flex;
+      }
+
+      .nav-search {
+        display: none;
+      }
+
+      .nav-search-icon-btn {
+        display: flex;
+      }
+
+      .nav-spacer {
+        display: flex;
+      }
+
+      .search-form-big {
+        flex-direction: column;
+        padding: 12px;
+      }
+
+      .search-form-big button {
+        width: 100%;
+      }
+
+      .nav-inner {
+        gap: 4px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .subdistrict-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .category-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    @keyframes shimmer {
+      from {
+        background-position: -200% center;
+      }
+
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    /* WhatsApp SVG icon */
+    .svg-wa {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+    }
+
+    /* ===== HERO 2-COLUMN LAYOUT ===== */
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 40px;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-layout {
+        grid-template-columns: 1fr 380px;
+        gap: 28px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== PROMO CAROUSEL ===== */
+    .promo-carousel {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.35);
+      aspect-ratio: 4/3;
+      background: rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .promo-carousel {
+        display: none;
+      }
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    .carousel-slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);
+      z-index: 1;
+    }
+
+    .carousel-slide-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      transition: transform 6s ease;
+    }
+
+    .carousel-slide:hover .carousel-slide-bg {
+      transform: scale(1.05);
+    }
+
+    .carousel-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .carousel-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--terracotta);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .carousel-title {
+      font-size: clamp(16px, 2.2vw, 22px);
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .carousel-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      margin-bottom: 14px;
+    }
+
+    .carousel-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      color: var(--terracotta);
+      padding: 9px 18px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .carousel-cta:hover {
+      background: var(--saffron);
+      color: var(--brown-dark);
+    }
+
+    /* Carousel Controls */
+    .carousel-dots {
+      position: absolute;
+      bottom: 14px;
+      right: 16px;
+      display: flex;
+      gap: 6px;
+      z-index: 3;
+    }
+
+    .carousel-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .carousel-dot.active {
+      background: white;
+      width: 22px;
+      border-radius: 4px;
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .carousel-arrow:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .carousel-arrow.prev {
+      left: 12px;
+    }
+
+    .carousel-arrow.next {
+      right: 12px;
+    }
+
+    /* Blog bg — remove Lora references */
+    .blog-card .blog-excerpt {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.6;
+    }
+
+    .footer-brand p {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-top: 12px;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="mainNav">
+    <div class="nav-inner">
+      <a class="logo" onclick="showPage('home')">
+        <div class="logo-icon">🏪</div>
+        <div class="logo-text">Sleman<span>Mart</span></div>
+      </a>
+      <div class="nav-search">
+        <input type="text" id="navSearchInput" placeholder="Cari produk, toko, artikel..." />
+        <button onclick="doSearch()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+        </button>
+      </div>
+      <div class="nav-links">
+        <button class="nav-link active" onclick="showPage('home')">Beranda</button>
+        <button class="nav-link" onclick="showPage('merchants')">Toko Lokal</button>
+        <button class="nav-link" onclick="showPage('products')">Produk</button>
+        <button class="nav-link" onclick="showPage('explore')">Jelajahi</button>
+      </div>
+      <!-- Mobile icons: spacer pushes both to right -->
+      <div class="nav-spacer"></div>
+      <button class="nav-search-icon-btn" onclick="toggleMobileSearch()" aria-label="Cari">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+      </button>
+      <button class="nav-mobile-menu" onclick="openDrawer()" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </div>
+    <!-- Mobile search slide-down -->
+    <div class="mobile-search-bar" id="mobileSearchBar">
+      <div class="mobile-search-inner">
+        <input type="text" id="mobileSearchInput" placeholder="Cari produk, toko, artikel..." />
+        <button onclick="doMobileSearch()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="drawer-logo">Sleman<span>Mart</span></div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <nav class="drawer-nav">
+      <button class="drawer-nav-item active" onclick="showPage('home');closeDrawer()">
+        <div class="drawer-nav-icon" style="background:#D4EFDF;">🏠</div>
+        <span>Beranda</span>
+      </button>
+      <button class="drawer-nav-item" onclick="showPage('merchants');closeDrawer()">
+        <div class="drawer-nav-icon" style="background:#FEF3D0;">🏪</div>
+        <span>Toko Lokal</span>
+      </button>
+      <button class="drawer-nav-item" onclick="showPage('products');closeDrawer()">
+        <div class="drawer-nav-icon" style="background:#FDE8D8;">🛍️</div>
+        <span>Produk</span>
+      </button>
+      <button class="drawer-nav-item" onclick="showPage('explore');closeDrawer()">
+        <div class="drawer-nav-icon" style="background:#E8EAF6;">🔍</div>
+        <span>Jelajahi</span>
+      </button>
+      <div class="drawer-divider"></div>
+      <button class="drawer-nav-item" onclick="closeDrawer()">
+        <div class="drawer-nav-icon" style="background:#E0F2F1;">📝</div>
+        <span>Tips & Artikel</span>
+      </button>
+      <button class="drawer-nav-item" onclick="closeDrawer()">
+        <div class="drawer-nav-icon" style="background:#FFF3E0;">📞</div>
+        <span>Hubungi Kami</span>
+      </button>
+    </nav>
+    <div class="drawer-footer">
+      <p>© 2025 Sleman Mart · Kabupaten Sleman, DIY</p>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- PAGE: HOME -->
+  <!-- ===================================================== -->
+  <div class="page active" id="page-home">
+    <!-- Hero + Search -->
+    <section class="home-hero">
+      <div class="hero-pattern"></div>
+      <div class="hero-layout">
+        <!-- Left: Text + Search -->
+        <div class="hero-left">
+          <div class="hero-eyebrow">
+            <span>📍</span> Sleman, Daerah Istimewa Yogyakarta
+          </div>
+          <h1 class="hero-title">Temukan Produk<br>Lokal <span class="highlight">Terbaik</span><br>di Sleman</h1>
+          <p class="hero-subtitle">Dari warung ke jari — mendukung UMKM lokal Sleman untuk tumbuh bersama komunitas.</p>
+          <form class="search-form-big" onsubmit="return false;">
+            <input type="text" id="heroSearchInput" placeholder="Cari produk, toko, makanan, kerajinan..." />
+            <button type="button" onclick="doSearch()">Cari Sekarang</button>
+          </form>
+          <div class="hero-tags">
+            <span class="hero-tag" onclick="searchKeyword('Tempe Mlati')">🌿 Tempe Mlati</span>
+            <span class="hero-tag" onclick="searchKeyword('Batik Prambanan')">🎨 Batik Prambanan</span>
+            <span class="hero-tag" onclick="searchKeyword('Bakpia')">🥮 Bakpia</span>
+            <span class="hero-tag" onclick="searchKeyword('Kerajinan Bambu')">🎋 Kerajinan Bambu</span>
+            <span class="hero-tag" onclick="searchKeyword('Gudeg')">🍲 Gudeg</span>
+          </div>
+        </div>
+
+        <!-- Right: Promo Carousel -->
+        <div class="promo-carousel" id="promoCarousel">
+          <div class="carousel-track" id="carouselTrack">
+
+            <!-- Slide 1 -->
+            <div class="carousel-slide">
+              <div class="carousel-slide-bg" style="background:#1B4332;">
+                <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=900&h=600&fit=crop" alt="Batik"
+                  style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+              </div>
+              <div class="carousel-content">
+                <div class="carousel-eyebrow">🔥 Promo Minggu Ini</div>
+                <div class="carousel-title">Batik Tulis Prambanan<br>Diskon hingga 30%!</div>
+                <div class="carousel-sub">Koleksi eksklusif motif candi. Stok terbatas!</div>
+                <button class="carousel-cta" onclick="searchKeyword('Batik Prambanan')">Lihat Koleksi →</button>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-slide">
+              <div class="carousel-slide-bg" style="background:#7B2D00;">
+                <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=900&h=600&fit=crop" alt="Kuliner"
+                  style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+              </div>
+              <div class="carousel-content">
+                <div class="carousel-eyebrow">⭐ Produk Unggulan</div>
+                <div class="carousel-title">Kuliner Autentik Sleman<br>Langsung dari Dapur Lokal</div>
+                <div class="carousel-sub">Tempe bacem, gudeg, bakpia & lebih banyak lagi.</div>
+                <button class="carousel-cta" onclick="searchKeyword('Kuliner')">Jelajahi Kuliner →</button>
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-slide">
+              <div class="carousel-slide-bg" style="background:#1A3A5C;">
+                <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=900&h=600&fit=crop" alt="Kopi"
+                  style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+              </div>
+              <div class="carousel-content">
+                <div class="carousel-eyebrow">🌋 Kopi Lereng Merapi</div>
+                <div class="carousel-title">Arabika Single Origin<br>Ketinggian 1000 mdpl</div>
+                <div class="carousel-sub">Dipetik langsung oleh petani lokal Pakem, Sleman.</div>
+                <button class="carousel-cta" onclick="searchKeyword('Kopi Merapi')">Pesan Sekarang →</button>
+              </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="carousel-slide">
+              <div class="carousel-slide-bg" style="background:#3D2B1F;">
+                <img src="https://images.unsplash.com/photo-1498049860654-af1a5fed0d78?w=900&h=600&fit=crop"
+                  alt="Kerajinan" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+              </div>
+              <div class="carousel-content">
+                <div class="carousel-eyebrow">🎪 Festival UMKM 2025</div>
+                <div class="carousel-title">200+ UMKM Sleman<br>dalam Satu Platform</div>
+                <div class="carousel-sub">Kerajinan anyaman, batik, kuliner & produk lokal terbaik.</div>
+                <button class="carousel-cta" onclick="showPage('merchants')">Lihat Semua Toko →</button>
+              </div>
+            </div>
+
+          </div><!-- /carousel-track -->
+
+          <!-- Arrows -->
+          <button class="carousel-arrow prev" onclick="carouselPrev()">&#8249;</button>
+          <button class="carousel-arrow next" onclick="carouselNext()">&#8250;</button>
+
+          <!-- Dots -->
+          <div class="carousel-dots" id="carouselDots"></div>
+        </div><!-- /promo-carousel -->
+      </div><!-- /hero-layout -->
+    </section>
+    <div class="batik-divider"></div>
+
+    <!-- Subdistricts -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Jelajahi per <span>Kecamatan</span></h2>
+            <p class="section-subtitle">17 kecamatan, ratusan UMKM siap melayani</p>
+          </div>
+          <a class="see-all-link" onclick="showPage('merchants')">Lihat Semua →</a>
+        </div>
+        <div class="subdistrict-grid">
+          <!-- JS rendered below -->
+          <div id="subdistrictGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Products -->
+    <section class="section" style="background: white; padding-top: 48px; padding-bottom: 48px;">
+      <div class="container">
+        <div class="section-header" style="margin-bottom: 20px;">
+          <div>
+            <h2 class="section-title">Produk <span>Unggulan</span></h2>
+            <p class="section-subtitle">Paling banyak dipesan minggu ini</p>
+          </div>
+          <a class="see-all-link" onclick="showPage('products')">Semua →</a>
+        </div>
+        <div class="top-card-scroll">
+          <div class="top-card-list" id="topProductsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Merchants -->
+    <section class="section" style="padding-top: 48px; padding-bottom: 48px;">
+      <div class="container">
+        <div class="section-header" style="margin-bottom: 20px;">
+          <div>
+            <h2 class="section-title">Toko <span>Pilihan</span></h2>
+            <p class="section-subtitle">UMKM terpercaya dan aktif</p>
+          </div>
+          <a class="see-all-link" onclick="showPage('merchants')">Semua →</a>
+        </div>
+        <div class="top-card-scroll">
+          <div class="top-card-list" id="topMerchantsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Kategori <span>Produk</span></h2>
+            <p class="section-subtitle">Apa yang kamu cari hari ini?</p>
+          </div>
+        </div>
+        <div class="category-grid" id="categoryGrid"></div>
+      </div>
+    </section>
+
+    <!-- Tips & Blog -->
+    <section class="blog-bg">
+      <div class="container">
+        <div class="section-header" style="margin-bottom: 28px;">
+          <div>
+            <h2 class="section-title" style="color: white;">Tips & <span>Artikel</span></h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.5);">Inspirasi belanja dan cerita UMKM lokal
+            </p>
+          </div>
+          <a class="see-all-link" style="color: var(--saffron);">Semua Artikel →</a>
+        </div>
+        <div class="blog-grid" id="blogGrid"></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="logo"
+              style="color: var(--saffron); font-size: 22px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <div
+                style="width:32px;height:32px;background:var(--saffron);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">
+                🏪</div>
+              <span style="color: white; font-weight: 800;">Sleman<span
+                  style="color: var(--saffron);">Mart</span></span>
+            </div>
+            <p>Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM tumbuh dan berkembang bersama komunitas.
+            </p>
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+              <div
+                style="width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">
+                📘</div>
+              <div
+                style="width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">
+                📸</div>
+              <div
+                style="width:36px;height:36px;border-radius:8px;background:#25D366;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">
+                💬</div>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4>Jelajahi</h4>
+            <a onclick="showPage('home')">Beranda</a>
+            <a onclick="showPage('products')">Semua Produk</a>
+            <a onclick="showPage('merchants')">Toko Lokal</a>
+            <a onclick="showPage('explore')">Explore</a>
+          </div>
+          <div class="footer-col">
+            <h4>Kategori</h4>
+            <a>Fashion & Wastra</a>
+            <a>Kuliner & Makanan</a>
+            <a>Kerajinan Tangan</a>
+            <a>Peralatan Rumah</a>
+          </div>
+          <div class="footer-col">
+            <h4>Informasi</h4>
+            <a>Tentang Kami</a>
+            <a>Daftarkan Toko</a>
+            <a>Kebijakan Privasi</a>
+            <a>Hubungi Kami</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman.</span>
+          <span>Kabupaten Sleman, D.I. Yogyakarta</span>
+        </div>
+      </div>
+    </footer>
+  </div><!-- /page-home -->
+
+  <!-- ===================================================== -->
+  <!-- PAGE: EXPLORE / SEARCH RESULT -->
+  <!-- ===================================================== -->
+  <div class="page" id="page-explore">
+    <div class="explore-header">
+      <div class="explore-header-inner">
+        <p class="explore-title">Hasil pencarian untuk:</p>
+        <h1 class="explore-keyword" id="exploreKeyword">"Tempe Mlati"</h1>
+        <div class="explore-search-bar">
+          <input type="text" id="exploreSearchInput" placeholder="Cari lagi..." />
+          <button onclick="doSearch()">Cari</button>
+        </div>
+        <div class="explore-stats">
+          <span class="explore-stat"><strong>28</strong> Produk</span>
+          <span class="explore-stat"><strong>12</strong> Toko</span>
+          <span class="explore-stat"><strong>5</strong> Artikel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="explore-body">
+      <div class="explore-layout">
+        <!-- Filter Sidebar -->
+        <aside>
+          <div class="filter-sidebar">
+            <div class="filter-panel">
+              <div class="filter-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                </svg>
+                Filter & Urutkan
+              </div>
+              <div class="filter-section">
+                <h4>Kecamatan</h4>
+                <div id="filterSubdistricts"></div>
+              </div>
+              <div class="filter-section">
+                <h4>Kategori</h4>
+                <label class="filter-option"><input type="checkbox" checked> <label>Makanan & Minuman</label><span
+                    class="count">15</span></label>
+                <label class="filter-option"><input type="checkbox"> <label>Fashion</label><span
+                    class="count">8</span></label>
+                <label class="filter-option"><input type="checkbox"> <label>Kerajinan</label><span
+                    class="count">5</span></label>
+              </div>
+              <div class="filter-section">
+                <h4>Harga</h4>
+                <div class="price-range">
+                  <input class="price-input" type="text" placeholder="Min" value="0">
+                  <input class="price-input" type="text" placeholder="Max" value="500000">
+                </div>
+                <button class="btn btn-primary btn-sm filter-apply">Terapkan Filter</button>
+              </div>
+              <div class="filter-section">
+                <h4>Rating</h4>
+                <label class="filter-option"><input type="checkbox"> <label>★★★★★ 5.0</label><span
+                    class="count">8</span></label>
+                <label class="filter-option"><input type="checkbox" checked> <label>★★★★☆ 4.0+</label><span
+                    class="count">18</span></label>
+                <label class="filter-option"><input type="checkbox"> <label>★★★☆☆ 3.0+</label><span
+                    class="count">28</span></label>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Results -->
+        <div>
+          <div class="explore-tabs">
+            <button class="explore-tab active" onclick="switchExploreTab(this, 'products')">Produk (28)</button>
+            <button class="explore-tab" onclick="switchExploreTab(this, 'merchants')">Toko (12)</button>
+            <button class="explore-tab" onclick="switchExploreTab(this, 'articles')">Artikel (5)</button>
+          </div>
+          <div class="sort-bar">
+            <label>Urutkan:</label>
+            <select class="sort-select">
+              <option>Paling Relevan</option>
+              <option>Harga Terendah</option>
+              <option>Harga Tertinggi</option>
+              <option>Rating Tertinggi</option>
+              <option>Terbaru</option>
+              <option>Terlaris</option>
+            </select>
+            <span class="result-count">28 hasil ditemukan</span>
+          </div>
+
+          <!-- Tab Content -->
+          <div id="exploreTabProducts">
+            <div class="product-grid" id="exploreProductsGrid"></div>
+          </div>
+          <div id="exploreTabMerchants" style="display:none;">
+            <div class="merchant-grid-list" id="exploreMerchantsGrid"></div>
+          </div>
+          <div id="exploreTabArticles" style="display:none;">
+            <div class="article-grid" id="exploreArticlesGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer same pattern -->
+    <div
+      style="background:var(--brown-dark);padding:24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.4);">©
+      2025 Sleman Mart. Kabupaten Sleman, D.I. Yogyakarta</div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- PAGE: MERCHANTS LIST -->
+  <!-- ===================================================== -->
+  <div class="page" id="page-merchants">
+    <div class="merchants-hero">
+      <div class="merchants-hero-inner">
+        <h1>🏪 Toko Lokal <span style="color:var(--terracotta)">Sleman</span></h1>
+        <p>Ratusan UMKM terpercaya siap melayani kebutuhanmu</p>
+        <div class="merchants-hero-filters">
+          <span style="font-size:13px;font-weight:600;color:var(--text-muted);">Filter Kecamatan:</span>
+          <button class="filter-chip active" onclick="filterMerchantsByArea(this,'all')">Semua</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Mlati')">Mlati</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Depok')">Depok</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Prambanan')">Prambanan</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Gamping')">Gamping</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Seyegan')">Seyegan</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Ngaglik')">Ngaglik</button>
+          <button class="filter-chip" onclick="filterMerchantsByArea(this,'Berbah')">Berbah</button>
+        </div>
+      </div>
+    </div>
+    <div class="merchants-body">
+      <div class="merchants-sort">
+        <span class="merchants-count" id="merchantCount">Menampilkan 12 toko</span>
+        <div style="margin-left:auto;display:flex;gap:10px;align-items:center;">
+          <label style="font-size:13px;color:var(--text-muted)">Urutkan:</label>
+          <select class="sort-select">
+            <option>Rating Tertinggi</option>
+            <option>Produk Terbanyak</option>
+            <option>Nama A-Z</option>
+            <option>Terbaru</option>
+          </select>
+        </div>
+      </div>
+      <div class="merchant-grid-layout" id="merchantsGrid"></div>
+    </div>
+    <div
+      style="background:var(--brown-dark);padding:24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.4);">©
+      2025 Sleman Mart. Kabupaten Sleman, D.I. Yogyakarta</div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- PAGE: MERCHANT DETAIL -->
+  <!-- ===================================================== -->
+  <div class="page" id="page-merchant-detail">
+    <div class="merchant-detail-hero">
+      <div class="merchant-detail-cover" id="mdCover"></div>
+      <div class="merchant-detail-info">
+        <div class="merchant-detail-header">
+          <div class="merchant-detail-avatar" id="mdAvatar"></div>
+          <div class="merchant-detail-meta">
+            <h1 id="mdName"></h1>
+            <div class="meta-row">
+              <span class="meta-item">📍 <strong id="mdArea"></strong></span>
+              <span class="meta-item">⭐ <strong id="mdRating"></strong></span>
+              <span class="meta-item">📦 <strong id="mdProducts"></strong> produk</span>
+              <span class="meta-item">👥 <strong id="mdFollowers"></strong> mengikuti</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <button class="btn btn-whatsapp" onclick="openWA()"><span style="font-size:18px;">💬</span> Chat via
+            WhatsApp</button>
+          <button class="btn btn-outline" onclick="showPage('merchants')">← Kembali</button>
+        </div>
+      </div>
+    </div>
+    <div class="merchant-detail-body">
+      <div class="merchant-detail-layout">
+        <aside class="merchant-info-panel">
+          <div class="info-card">
+            <h3>Informasi Toko</h3>
+            <div class="info-row"><span class="icon">📍</span><span id="mdAddress"></span></div>
+            <div class="info-row"><span class="icon">⏰</span><span id="mdHours"></span></div>
+            <div class="info-row"><span class="icon">📞</span><span id="mdPhone"></span></div>
+            <div class="info-row"><span class="icon">🗓️</span><span id="mdSince"></span></div>
+          </div>
+          <div class="info-card">
+            <h3>Spesialisasi</h3>
+            <div id="mdSpecialities" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+          </div>
+          <div class="info-card">
+            <h3>Metode Pemesanan</h3>
+            <div class="info-row"><span class="icon">💬</span><span>WhatsApp Order</span></div>
+            <div class="info-row"><span class="icon">🏠</span><span>Bisa COD Area Lokal</span></div>
+            <div class="info-row"><span class="icon">🛵</span><span>Kirim via Ojek Online</span></div>
+          </div>
+        </aside>
+        <div>
+          <p id="mdDesc"
+            style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--text-secondary);line-height:1.8;margin-bottom:28px;">
+          </p>
+          <div style="margin-bottom:20px;">
+            <h2 class="section-title" style="font-size:20px;margin-bottom:16px;">Produk Toko</h2>
+            <div class="product-grid-lg" id="mdProductsGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="background:var(--brown-dark);padding:24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.4);">©
+      2025 Sleman Mart</div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- PAGE: PRODUCTS LIST -->
+  <!-- ===================================================== -->
+  <div class="page" id="page-products">
+    <div class="products-hero">
+      <div class="products-hero-inner">
+        <h1>🛍️ Katalog <span style="color: rgba(255,255,255,0.85)">Produk</span></h1>
+        <p>Temukan ribuan produk asli buatan UMKM Sleman</p>
+        <div class="products-tabs">
+          <button class="products-tab active" onclick="switchProductTab(this,'popular')">🔥 Terpopuler</button>
+          <button class="products-tab" onclick="switchProductTab(this,'mostbought')">🛒 Terlaris</button>
+          <button class="products-tab" onclick="switchProductTab(this,'toprated')">⭐ Rating Terbaik</button>
+          <button class="products-tab" onclick="switchProductTab(this,'newest')">✨ Terbaru</button>
+          <button class="products-tab" onclick="switchProductTab(this,'promo')">🏷️ Promo</button>
+        </div>
+      </div>
+    </div>
+    <div class="products-body">
+      <div class="products-toolbar">
+        <div class="products-toolbar-left">
+          <span style="font-size:13px;color:var(--text-muted);font-weight:600;">Kategori:</span>
+          <button class="toolbar-chip active">Semua</button>
+          <button class="toolbar-chip">Kuliner</button>
+          <button class="toolbar-chip">Fashion</button>
+          <button class="toolbar-chip">Kerajinan</button>
+          <button class="toolbar-chip">Pertanian</button>
+          <button class="toolbar-chip">Kecantikan</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <select class="sort-select" style="font-size:13px;">
+            <option>Terpopuler</option>
+            <option>Harga ↑</option>
+            <option>Harga ↓</option>
+            <option>Rating</option>
+          </select>
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setProductView('grid', this)">⊞</button>
+            <button class="view-btn" onclick="setProductView('list', this)">☰</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-grid-lg" id="productsGrid"></div>
+    </div>
+    <div
+      style="background:var(--brown-dark);padding:24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.4);">©
+      2025 Sleman Mart</div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- PAGE: PRODUCT DETAIL -->
+  <!-- ===================================================== -->
+  <div class="page" id="page-product-detail">
+    <div class="product-detail-body">
+      <div class="detail-breadcrumb">
+        <span onclick="showPage('home')">Beranda</span>
+        <span class="sep">›</span>
+        <span onclick="showPage('products')">Produk</span>
+        <span class="sep">›</span>
+        <span>Kuliner</span>
+        <span class="sep">›</span>
+        <span class="current" id="detailBreadcrumb">Tempe Bacem Mlati</span>
+      </div>
+      <div class="detail-layout">
+        <!-- Gallery -->
+        <div class="detail-gallery">
+          <div class="gallery-main" id="galleryMain"><img
+              src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop"
+              style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);"></div>
+          <div class="gallery-thumbs">
+            <div class="gallery-thumb active" style="overflow:hidden;padding:0;"><img
+                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&h=120&fit=crop"
+                style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-sm)-2px);"></div>
+            <div class="gallery-thumb" style="overflow:hidden;padding:0;"><img
+                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=120&h=120&fit=crop"
+                style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-sm)-2px);"></div>
+            <div class="gallery-thumb" style="overflow:hidden;padding:0;"><img
+                src="https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=120&h=120&fit=crop"
+                style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-sm)-2px);"></div>
+            <div class="gallery-thumb" style="overflow:hidden;padding:0;"><img
+                src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=120&h=120&fit=crop"
+                style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-sm)-2px);"></div>
+          </div>
+        </div>
+        <!-- Info -->
+        <div class="detail-info">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+            <span class="badge badge-terracotta">🔥 Terlaris</span>
+            <span class="badge badge-forest">✓ Stok Tersedia</span>
+            <span class="badge badge-saffron">🏅 Produk Unggulan</span>
+          </div>
+          <h1 id="detailName">Tempe Bacem Mlati Original</h1>
+          <div class="detail-rating-row">
+            <span class="detail-stars">★★★★★</span>
+            <span style="font-size:15px;font-weight:800;color:var(--text-primary);" id="detailRatingScore">4.9</span>
+            <span class="detail-rating-count">(187 ulasan)</span>
+            <span class="detail-sold">1.2k+ terjual</span>
+          </div>
+          <div class="detail-price-row">
+            <span class="detail-price" id="detailPrice">Rp 18.000</span>
+            <span class="detail-price-old" id="detailPriceOld">Rp 25.000</span>
+            <span class="detail-discount">-28%</span>
+          </div>
+
+          <!-- Merchant Card -->
+          <div class="detail-merchant-card" onclick="showMerchantDetail(0)">
+            <div class="detail-merchant-icon" style="background:#D4EFDF;overflow:hidden;padding:0;"><img
+                src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=80&h=80&fit=crop"
+                style="width:100%;height:100%;object-fit:cover;border-radius:12px;"></div>
+            <div class="detail-merchant-info">
+              <h4 id="detailMerchantName">Dapur Ibu Sari</h4>
+              <span id="detailMerchantBadge" style="font-size:11px;">⭐ 4.9 · 89 produk</span>
+              <div class="location">📍 Mlati, Sleman</div>
+            </div>
+            <div style="margin-left:auto;color:var(--terracotta);font-size:12px;font-weight:700;">Lihat Toko →</div>
+          </div>
+
+          <div class="detail-section-label">Varian</div>
+          <div class="variant-options">
+            <button class="variant-btn active">Original (5 pcs)</button>
+            <button class="variant-btn">Pedas (5 pcs)</button>
+            <button class="variant-btn">Manis (5 pcs)</button>
+            <button class="variant-btn">Mix (10 pcs)</button>
+          </div>
+
+          <div class="detail-section-label">Jumlah</div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input class="qty-input" type="number" id="qtyInput" value="1" min="1">
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+
+          <p class="detail-desc" id="detailDesc">
+            Tempe bacem autentik dari Mlati, dibuat dengan resep turun-temurun menggunakan tempe segar pilihan dan bumbu
+            rempah asli. Proses memasak tradisional menghasilkan cita rasa manis-gurih yang khas dan tekstur yang
+            sempurna.
+          </p>
+
+          <div class="detail-specs">
+            <div class="spec-row"><span class="spec-label">Berat</span><span class="spec-value">250 gram / pack</span>
+            </div>
+            <div class="spec-row"><span class="spec-label">Isi</span><span class="spec-value">5 pcs tempe bacem</span>
+            </div>
+            <div class="spec-row"><span class="spec-label">Masa simpan</span><span class="spec-value">3 hari (suhu
+                ruang)</span></div>
+            <div class="spec-row"><span class="spec-label">Halal</span><span class="spec-value">✓ Bersertifikat
+                MUI</span></div>
+            <div class="spec-row"><span class="spec-label">Pengiriman</span><span class="spec-value">Sleman &
+                sekitarnya</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="reviews-section">
+      <div style="margin-bottom:16px;">
+        <h2 class="section-title" style="font-size:22px;">Ulasan <span>Pembeli</span></h2>
+      </div>
+      <div class="review-summary">
+        <div class="review-score">
+          <div class="score">4.9</div>
+          <div class="stars">★★★★★</div>
+          <div class="count">187 ulasan</div>
+        </div>
+        <div class="review-bars">
+          <div class="review-bar-row"><span>5★</span>
+            <div class="review-bar-bg">
+              <div class="review-bar-fill" style="width:85%"></div>
+            </div><span>158</span>
+          </div>
+          <div class="review-bar-row"><span>4★</span>
+            <div class="review-bar-bg">
+              <div class="review-bar-fill" style="width:12%;background:var(--terracotta-light)"></div>
+            </div><span>22</span>
+          </div>
+          <div class="review-bar-row"><span>3★</span>
+            <div class="review-bar-bg">
+              <div class="review-bar-fill" style="width:3%;background:#ccc"></div>
+            </div><span>5</span>
+          </div>
+          <div class="review-bar-row"><span>2★</span>
+            <div class="review-bar-bg">
+              <div class="review-bar-fill" style="width:1%;background:#ccc"></div>
+            </div><span>2</span>
+          </div>
+          <div class="review-bar-row"><span>1★</span>
+            <div class="review-bar-bg">
+              <div class="review-bar-fill" style="width:0%"></div>
+            </div><span>0</span>
+          </div>
+        </div>
+      </div>
+      <div id="reviewsList"></div>
+    </div>
+
+    <!-- Similar Products -->
+    <div class="similar-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h2 class="section-title" style="font-size:22px;">Produk <span>Serupa</span></h2>
+        <a class="see-all-link" onclick="showPage('products')">Lihat Semua →</a>
+      </div>
+      <div class="similar-scroll" id="similarProducts"></div>
+    </div>
+
+    <div
+      style="background:var(--brown-dark);padding:24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.4);">©
+      2025 Sleman Mart</div>
+  </div>
+
+  <!-- STICKY CTA (only shown on product detail) -->
+  <div class="sticky-cta" id="stickyCTA" style="display:none;">
+    <div class="sticky-cta-inner">
+      <div class="sticky-product-info">
+        <div class="sticky-product-img" id="stickyImg"><img
+            src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=96&h=96&fit=crop"
+            style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm);"></div>
+        <div>
+          <div class="sticky-product-name" id="stickyName">Tempe Bacem Mlati Original</div>
+          <div class="sticky-product-price" id="stickyPrice">Rp 18.000</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-lg" style="display:none;" onclick="addToWishlist()">🤍 Simpan</button>
+      <button class="btn btn-whatsapp btn-lg" onclick="orderViaWA()">
+        <svg class="svg-wa" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+        Pesan via WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ===== DATA =====
+    const subdistricts = [
+      { name: 'Mlati', icon: '🌿', bg: '#E2F0D4', count: 45 },
+      { name: 'Depok', icon: '🏙️', bg: '#E8F0FE', count: 62 },
+      { name: 'Prambanan', icon: '🛕', bg: '#FEF3D0', count: 38 },
+      { name: 'Gamping', icon: '🏡', bg: '#FDE8E2', count: 51 },
+      { name: 'Seyegan', icon: '🌾', bg: '#EDE7F6', count: 29 },
+      { name: 'Ngaglik', icon: '🧺', bg: '#FFF3E0', count: 33 },
+      { name: 'Berbah', icon: '🪔', bg: '#E0F7FA', count: 21 },
+      { name: 'Kalasan', icon: '🎨', bg: '#FCE4EC', count: 27 },
+      { name: 'Turi', icon: '🌳', bg: '#F1F8E9', count: 18 },
+      { name: 'Pakem', icon: '🏔️', bg: '#E8EAF6', count: 15 },
+      { name: 'Cangkringan', icon: '🌋', bg: '#FFF8E1', count: 12 },
+      { name: 'Godean', icon: '🐟', bg: '#E0F2F1', count: 24 },
+    ];
+
+    const products = [
+      { id: 0, name: 'Tempe Bacem Mlati Original', price: 'Rp 18.000', priceOld: 'Rp 25.000', promo: '-28%', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop', shop: 'Dapur Ibu Sari', area: 'Mlati', rating: 4.9, sold: '1.2k+', cat: 'Kuliner', badge: 'Terlaris' },
+      { id: 1, name: 'Batik Tulis Prambanan Motif Candi', price: 'Rp 285.000', priceOld: 'Rp 350.000', promo: '-18%', img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=400&fit=crop', shop: 'Batik Prambanan Asri', area: 'Prambanan', rating: 4.8, sold: '340', cat: 'Fashion', badge: 'Unggulan' },
+      { id: 2, name: 'Bakpia Isi Keju Premium', price: 'Rp 45.000', img: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=400&h=400&fit=crop', shop: 'Bakpia Sleman Jaya', area: 'Gamping', rating: 4.7, sold: '890', cat: 'Kuliner', badge: '' },
+      { id: 3, name: 'Gudeg Manggar Komplit', price: 'Rp 35.000', img: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=400&h=400&fit=crop', shop: 'Warung Gudeg Bu Tini', area: 'Depok', rating: 4.9, sold: '2.1k+', cat: 'Kuliner', badge: 'Terlaris' },
+      { id: 4, name: 'Kerajinan Bambu Tas Anyam', price: 'Rp 120.000', img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=400&fit=crop', shop: 'Anyaman Ngaglik', area: 'Ngaglik', rating: 4.6, sold: '210', cat: 'Kerajinan', badge: '' },
+      { id: 5, name: 'Emping Melinjo Renyah 250gr', price: 'Rp 22.000', img: 'https://images.unsplash.com/photo-1634078043057-e099d95e2ace?w=400&h=400&fit=crop', shop: 'UD Melinjo Seyegan', area: 'Seyegan', rating: 4.8, sold: '670', cat: 'Kuliner', badge: '' },
+      { id: 6, name: 'Kopi Lereng Merapi Arabika', price: 'Rp 85.000', img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop', shop: 'Kopi Pakem Asri', area: 'Pakem', rating: 4.9, sold: '520', cat: 'Minuman', badge: 'Unggulan' },
+      { id: 7, name: 'Batik Cap Sogan Klasik', price: 'Rp 195.000', img: 'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400&h=400&fit=crop', shop: 'Batik Kalasan Indah', area: 'Kalasan', rating: 4.7, sold: '178', cat: 'Fashion', badge: '' },
+      { id: 8, name: 'Peyek Kacang Renyah 200gr', price: 'Rp 18.500', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=400&fit=crop', shop: 'Dapur Bu Rahma', area: 'Gamping', rating: 4.6, sold: '430', cat: 'Kuliner', badge: '' },
+      { id: 9, name: 'Minyak Kelapa VCO Organik', price: 'Rp 65.000', img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=400&fit=crop', shop: 'CV Alam Seyegan', area: 'Seyegan', rating: 4.8, sold: '295', cat: 'Kesehatan', badge: '' },
+      { id: 10, name: 'Keripik Singkong Balado', price: 'Rp 15.000', img: 'https://images.unsplash.com/photo-1613919113640-25732ec5e61f?w=400&h=400&fit=crop', shop: 'Snack Berbah Raya', area: 'Berbah', rating: 4.5, sold: '785', cat: 'Kuliner', badge: '' },
+      { id: 11, name: 'Pot Tanah Liat Ukir Motif', price: 'Rp 95.000', img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&h=400&fit=crop', shop: 'Gerabah Turi Asri', area: 'Turi', rating: 4.7, sold: '143', cat: 'Kerajinan', badge: '' },
+    ];
+
+    const merchants = [
+      { id: 0, name: 'Dapur Ibu Sari', logo: 'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=120&h=120&fit=crop', bg: '#E2F0D4', area: 'Mlati', rating: 4.9, products: 89, followers: '1.2k', desc: 'Spesialis masakan tradisional Jawa, tempe bacem, dan lauk pauk homemade sejak 2018.', address: 'Jl. Magelang Km.7, Mlati, Sleman', hours: '06:00 - 20:00', phone: '+62 812-3456-7890', since: 'Berdiri sejak 2018', specialities: ['Tempe Bacem', 'Lauk Pauk', 'Masakan Jawa', 'Sayur Lodeh'], coverImg: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=300&fit=crop' },
+      { id: 1, name: 'Batik Prambanan Asri', logo: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=120&h=120&fit=crop', bg: '#FEF3D0', area: 'Prambanan', rating: 4.8, products: 134, followers: '2.3k', desc: 'Pengrajin batik tulis dan batik cap dengan motif khas Prambanan. Tersedia kain dan pakaian jadi.', address: 'Jl. Solo Km.16, Prambanan, Sleman', hours: '08:00 - 17:00', phone: '+62 878-9012-3456', since: 'Berdiri sejak 2010', specialities: ['Batik Tulis', 'Batik Cap', 'Kain Mori', 'Hem Batik'], coverImg: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&h=300&fit=crop' },
+      { id: 2, name: 'Bakpia Sleman Jaya', logo: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=120&h=120&fit=crop', bg: '#FDE8E2', area: 'Gamping', rating: 4.7, products: 23, followers: '890', desc: 'Bakpia premium dengan berbagai varian isi: keju, coklat, kacang hijau, dan original.', address: 'Jl. Wates Km.4, Gamping, Sleman', hours: '07:00 - 21:00', phone: '+62 856-7890-1234', since: 'Berdiri sejak 2015', specialities: ['Bakpia', 'Camilan', 'Oleh-oleh'], coverImg: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=300&fit=crop' },
+      { id: 3, name: 'Warung Gudeg Bu Tini', logo: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=120&h=120&fit=crop', bg: '#EDE7F6', area: 'Depok', rating: 4.9, products: 15, followers: '3.1k', desc: 'Gudeg manggar legendaris dengan resep asli Jogja. Buka sejak subuh, melayani makan di tempat dan bungkus.', address: 'Jl. Kaliurang Km.6, Depok, Sleman', hours: '05:30 - 11:00', phone: '+62 821-0987-6543', since: 'Berdiri sejak 2005', specialities: ['Gudeg', 'Masakan Jogja', 'Sarapan'], coverImg: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=800&h=300&fit=crop' },
+      { id: 4, name: 'Anyaman Ngaglik', logo: 'https://images.unsplash.com/photo-1519340333755-56e9c1d04579?w=120&h=120&fit=crop', bg: '#E0F2F1', area: 'Ngaglik', rating: 4.6, products: 56, followers: '645', desc: 'Kerajinan anyaman bambu dan rotan berkualitas: tas, tempat penyimpanan, dekorasi rumah.', address: 'Jl. Kaliurang Km.10, Ngaglik, Sleman', hours: '08:00 - 16:00', phone: '+62 814-5678-9012', since: 'Berdiri sejak 2012', specialities: ['Anyaman Bambu', 'Rotan', 'Kerajinan Tangan', 'Dekorasi'], coverImg: 'https://images.unsplash.com/photo-1498049860654-af1a5fed0d78?w=800&h=300&fit=crop' },
+      { id: 5, name: 'Kopi Pakem Asri', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=120&h=120&fit=crop', bg: '#FFF3E0', area: 'Pakem', rating: 4.9, products: 18, followers: '1.8k', desc: 'Kopi single origin lereng Merapi, diproses dengan metode natural dan honey. Tersedia biji dan bubuk.', address: 'Jl. Kaliurang Km.20, Pakem, Sleman', hours: '07:00 - 18:00', phone: '+62 895-6789-0123', since: 'Berdiri sejak 2019', specialities: ['Kopi Arabika', 'Cold Brew', 'Biji Kopi'], coverImg: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&h=300&fit=crop' },
+      { id: 6, name: 'UD Melinjo Seyegan', logo: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=120&h=120&fit=crop', bg: '#F1F8E9', area: 'Seyegan', rating: 4.8, products: 12, followers: '420', desc: 'Produsen emping melinjo tradisional dengan teknik pengolahan alami tanpa bahan pengawet.', address: 'Jl. Godean Km.12, Seyegan, Sleman', hours: '07:00 - 16:00', phone: '+62 857-2345-6789', since: 'Berdiri sejak 2008', specialities: ['Emping Melinjo', 'Keripik', 'Camilan Tradisional'], coverImg: 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=800&h=300&fit=crop' },
+      { id: 7, name: 'Gerabah Turi Asri', logo: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=120&h=120&fit=crop', bg: '#E8EAF6', area: 'Turi', rating: 4.7, products: 67, followers: '730', desc: 'Pengrajin gerabah dan keramik tradisional dengan sentuhan modern. Menerima pesanan custom.', address: 'Jl. Turi Km.15, Turi, Sleman', hours: '08:00 - 17:00', phone: '+62 819-3456-7890', since: 'Berdiri sejak 2003', specialities: ['Gerabah', 'Keramik', 'Pot Tanaman', 'Souvenir'], coverImg: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&h=300&fit=crop' },
+    ];
+
+    const categories = [
+      { name: 'Kuliner', icon: '🍽️', bg: '#FDE8E2', count: 342 },
+      { name: 'Fashion', icon: '👗', bg: '#FEF3D0', count: 218 },
+      { name: 'Kerajinan', icon: '🧺', bg: '#E0F2F1', count: 165 },
+      { name: 'Pertanian', icon: '🌿', bg: '#E2F0D4', count: 89 },
+      { name: 'Minuman', icon: '☕', bg: '#FFF3E0', count: 73 },
+      { name: 'Kecantikan', icon: '💄', bg: '#FCE4EC', count: 56 },
+      { name: 'Kesehatan', icon: '🌿', bg: '#E8F5E9', count: 45 },
+      { name: 'Souvenir', icon: '🎁', bg: '#EDE7F6', count: 124 },
+      { name: 'Peralatan', icon: '🔧', bg: '#E3F2FD', count: 38 },
+      { name: 'Elektronik', icon: '📱', bg: '#F3E5F5', count: 27 },
+      { name: 'Oleh-oleh', icon: '🥮', bg: '#FFF9C4', count: 98 },
+      { name: 'Furniture', icon: '🪑', bg: '#EFEBE9', count: 31 },
+    ];
+
+    const blogs = [
+      { cat: 'Tips Belanja', title: '5 Tips Memilih Batik Sleman yang Berkualitas', excerpt: 'Batik Sleman punya keunikan tersendiri. Pelajari cara membedakan batik tulis, cap, dan printing agar tidak salah beli.', img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&h=320&fit=crop', date: '20 Jan 2025' },
+      { cat: 'Kisah UMKM', title: 'Dari Dapur Kecil ke 500 Pelanggan — Kisah Ibu Sari', excerpt: 'Perjalanan Ibu Sari membangun usaha tempe bacem yang kini dikenal seantero Sleman dengan modal Rp 500 ribu.', img: 'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=600&h=320&fit=crop', date: '15 Jan 2025' },
+      { cat: 'Kuliner Lokal', title: 'Rute Wisata Kuliner Sleman Sehari Penuh', excerpt: 'Dari gudeg manggar di pagi hari hingga wedang ronde malam, inilah rute kuliner terbaik di Sleman.', img: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&h=320&fit=crop', date: '10 Jan 2025' },
+      { cat: 'Tips Usaha', title: 'Cara Mendaftarkan Produk UMKM ke Sleman Mart', excerpt: 'Panduan lengkap cara mendaftarkan produk dan toko UMKM kamu agar mudah ditemukan pembeli lokal.', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=320&fit=crop', date: '5 Jan 2025' },
+      { cat: 'Produk Unggulan', title: 'Kopi Lereng Merapi: Kenikmatan di Ketinggian 1000 mdpl', excerpt: 'Perkenalan dengan Kopi Pakem Asri, petani kopi yang konsisten menjaga kualitas arabika lereng Merapi.', img: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&h=320&fit=crop', date: '1 Jan 2025' },
+      { cat: 'Event', title: 'Festival UMKM Sleman 2025 — Catat Tanggalnya!', excerpt: 'Lebih dari 200 UMKM akan hadir di Festival Produk Lokal Sleman. Gratis masuk, banyak promo!', img: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600&h=320&fit=crop', date: '28 Des 2024' },
+    ];
+
+    const reviews = [
+      { name: 'Budi Santoso', rating: 5, date: '20 Jan 2025', text: 'Tempe bacemnya enak banget, bumbunya meresap sempurna. Sudah pesan 3x dan selalu konsisten kualitasnya. Pengirimannya juga cepat pakai ojek online.', emoji: '😊' },
+      { name: 'Siti Rahayu', rating: 5, date: '18 Jan 2025', text: 'Beli untuk oleh-oleh keluarga di luar kota, semua suka! Packagingnya rapi dan ada label halal. Harga terjangkau untuk kualitas segini.', emoji: '👩' },
+      { name: 'Ahmad Fauzi', rating: 4, date: '15 Jan 2025', text: 'Rasanya otentik sekali, beda dengan tempe bacem di supermarket. Kalau beli langsung via WhatsApp responnya cepat dan ramah.', emoji: '👨' },
+    ];
+
+    // ===== RENDER FUNCTIONS =====
+    function renderSubdistricts() {
+      const grid = document.getElementById('subdistrictGrid');
+      if (!grid) return;
+      // Inject into parent
+      const parent = grid.parentElement;
+      parent.innerHTML = '';
+      subdistricts.forEach(s => {
+        parent.innerHTML += `
+      <div class="subdistrict-card" onclick="filterMerchants('${s.name}')">
+        <div class="subdistrict-icon" style="background:${s.bg}">${s.icon}</div>
+        <div class="subdistrict-name">${s.name}</div>
+        <div class="subdistrict-count">${s.count} toko</div>
+      </div>`;
+      });
+    }
+
+    function renderTopProducts() {
+      const el = document.getElementById('topProductsList');
+      if (!el) return;
+      products.slice(0, 6).forEach(p => {
+        el.innerHTML += `
+      <div class="product-card-mini" onclick="showProductDetail(${p.id})">
+        <div class="product-card-mini-img" style="background:none;">
+          <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">
+          ${p.badge ? `<div style="position:absolute;top:6px;left:6px;background:var(--terracotta);color:white;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;">${p.badge}</div>` : ''}
+        </div>
+        <div class="product-card-mini-body">
+          <div class="product-card-mini-name">${p.name}</div>
+          <div class="product-card-mini-price">${p.price}</div>
+          <div class="product-card-mini-shop">🏪 ${p.shop}</div>
+        </div>
+      </div>`;
+      });
+    }
+
+    function renderTopMerchants() {
+      const el = document.getElementById('topMerchantsList');
+      if (!el) return;
+      merchants.slice(0, 5).forEach((m, i) => {
+        el.innerHTML += `
+      <div class="merchant-card-mini" onclick="showMerchantDetail(${m.id})">
+        <div class="merchant-avatar" style="background:${m.bg};overflow:hidden;padding:0;">
+          <img src="${m.logo}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+        </div>
+        <div class="merchant-mini-info">
+          <div class="name">${m.name}</div>
+          <div class="area">📍 ${m.area}</div>
+          <div class="rating">★ ${m.rating}</div>
+        </div>
+      </div>`;
+      });
+    }
+
+    function renderCategories() {
+      const el = document.getElementById('categoryGrid');
+      if (!el) return;
+      el.innerHTML = '';
+      categories.forEach(c => {
+        el.innerHTML += `
+      <div class="category-card" onclick="searchKeyword(c.name)">
+        <div class="category-icon-wrap" style="background:${c.bg}">${c.icon}</div>
+        <div class="category-name">${c.name}</div>
+        <div class="category-count">${c.count} produk</div>
+      </div>`;
+      });
+    }
+
+    function renderBlog() {
+      const el = document.getElementById('blogGrid');
+      if (!el) return;
+      blogs.forEach(b => {
+        el.innerHTML += `
+      <div class="blog-card">
+        <div class="blog-img" style="padding:0;overflow:hidden;">
+          <img src="${b.img}" alt="${b.title}" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="blog-body">
+          <div class="blog-cat">${b.cat}</div>
+          <div class="blog-title">${b.title}</div>
+          <div class="blog-excerpt">${b.excerpt}</div>
+          <div class="blog-meta">📅 ${b.date}</div>
+        </div>
+      </div>`;
+      });
+    }
+
+    function renderMerchantsPage(filter = 'all') {
+      const el = document.getElementById('merchantsGrid');
+      if (!el) return;
+      el.innerHTML = '';
+      const filtered = filter === 'all' ? merchants : merchants.filter(m => m.area === filter);
+      document.getElementById('merchantCount').textContent = `Menampilkan ${filtered.length} toko`;
+      filtered.forEach(m => {
+        el.innerHTML += `
+      <div class="merchant-card" onclick="showMerchantDetail(${m.id})">
+        <div class="merchant-card-cover" style="background:#eee;padding:0;overflow:hidden;">
+          <img src="${m.coverImg}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;opacity:0.85;">
+        </div>
+        <div class="merchant-card-body">
+          <div class="merchant-avatar-overlap" style="background:${m.bg};overflow:hidden;padding:0;">
+            <img src="${m.logo}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-md) - 3px);">
+          </div>
+          <div class="merchant-card-name">${m.name}</div>
+          <div class="merchant-card-area">📍 ${m.area}, Sleman</div>
+          <div class="merchant-card-desc">${m.desc}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+            ${m.specialities.slice(0, 3).map(s => `<span class="badge badge-forest" style="font-size:11px;">${s}</span>`).join('')}
+          </div>
+          <div class="merchant-stats">
+            <div class="merchant-stat"><div class="value">⭐ ${m.rating}</div><div class="label">Rating</div></div>
+            <div class="merchant-stat"><div class="value">${m.products}</div><div class="label">Produk</div></div>
+            <div class="merchant-stat"><div class="value">${m.followers}</div><div class="label">Followers</div></div>
+          </div>
+        </div>
+      </div>`;
+      });
+    }
+
+    function renderExploreProducts() {
+      const el = document.getElementById('exploreProductsGrid');
+      if (!el) return;
+      el.innerHTML = '';
+      products.forEach(p => {
+        el.innerHTML += renderProductCard(p);
+      });
+    }
+
+    function renderExploreArticles() {
+      const el = document.getElementById('exploreArticlesGrid');
+      if (!el) return;
+      blogs.slice(0, 5).forEach(b => {
+        el.innerHTML += `
+      <div class="article-card">
+        <div class="article-img" style="padding:0;overflow:hidden;">
+          <img src="${b.img}" alt="${b.title}" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="article-body">
+          <div class="article-category">${b.cat}</div>
+          <div class="article-title">${b.title}</div>
+          <div class="article-meta">📅 ${b.date}</div>
+        </div>
+      </div>`;
+      });
+    }
+
+    function renderExploreMerchants() {
+      const el = document.getElementById('exploreMerchantsGrid');
+      if (!el) return;
+      merchants.forEach(m => {
+        el.innerHTML += `
+      <div class="merchant-list-card" onclick="showMerchantDetail(${m.id})">
+        <div class="merchant-list-avatar" style="background:${m.bg};overflow:hidden;padding:0;">
+          <img src="${m.logo}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md);">
+        </div>
+        <div class="merchant-list-info">
+          <h3>${m.name}</h3>
+          <div class="area">📍 ${m.area}, Sleman</div>
+          <div class="desc">${m.desc}</div>
+          <div class="merchant-list-meta">
+            <span class="merchant-meta-item">⭐ ${m.rating}</span>
+            <span class="merchant-meta-item">📦 ${m.products} produk</span>
+            <span class="merchant-meta-item">👥 ${m.followers}</span>
+          </div>
+        </div>
+        <div class="merchant-list-action">
+          <span class="badge badge-forest">Terverifikasi</span>
+          <button class="btn btn-whatsapp btn-sm" onclick="event.stopPropagation();openWA()">💬 Chat</button>
+        </div>
+      </div>`;
+      });
+    }
+
+    let currentProductView = 'grid';
+
+    function setProductView(view, btn) {
+      currentProductView = view;
+      const toggle = btn.parentElement;
+      toggle.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const grid = document.getElementById('productsGrid');
+      if (!grid) return;
+      if (view === 'list') {
+        grid.classList.add('list-view');
+      } else {
+        grid.classList.remove('list-view');
+      }
+    }
+
+    function renderProductsPage() {
+      const el = document.getElementById('productsGrid');
+      if (!el) return;
+      el.innerHTML = '';
+      products.forEach(p => {
+        el.innerHTML += `
+      <div class="product-card-lg" onclick="showProductDetail(${p.id})">
+        <div class="product-img-lg" style="padding:0;overflow:hidden;">
+          <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">
+          ${p.promo ? `<span class="promo-tag">${p.promo}</span>` : ''}
+        </div>
+        <div class="product-body-lg">
+          <div class="product-name-lg">${p.name}</div>
+          <div class="product-shop-lg">🏪 ${p.shop} · 📍 ${p.area}</div>
+        </div>
+        <div class="product-actions-lg">
+          <div class="price-col">
+            <div class="price-row">
+              <span class="price-main">${p.price}</span>
+              ${p.priceOld ? `<span class="price-old">${p.priceOld}</span>` : ''}
+            </div>
+            <div class="sold-row">★ ${p.rating} · ${p.sold} terjual</div>
+          </div>
+          <button class="btn-wa-compact" onclick="event.stopPropagation();orderViaWA('${p.name}')" title="Pesan via WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </button>
+        </div>
+      </div>`;
+      });
+    }
+
+    function renderProductCard(p) {
+      return `
+    <div class="product-card" onclick="showProductDetail(${p.id})">
+      <div class="product-img" style="padding:0;overflow:hidden;">
+        <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">
+        ${p.badge ? `<div class="product-badge-overlay"><span class="badge badge-terracotta">${p.badge}</span></div>` : ''}
+      </div>
+      <div class="product-body">
+        <div class="product-name">${p.name}</div>
+        <div class="product-shop">🏪 ${p.shop}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;">
+          <div>
+            <span class="product-price">${p.price}</span>
+            ${p.priceOld ? `<span class="product-price-old">${p.priceOld}</span>` : ''}
+            <div class="product-rating" style="margin-top:3px;">
+              <span class="stars">★</span>
+              <span style="font-size:12px;font-weight:600;">${p.rating}</span>
+              <span class="rating-count">(${p.sold})</span>
+            </div>
+          </div>
+          <button class="btn-wa-compact" onclick="event.stopPropagation();orderViaWA('${p.name}')" title="Pesan via WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+    }
+
+    function renderReviews() {
+      const el = document.getElementById('reviewsList');
+      if (!el) return;
+      el.innerHTML = '';
+      reviews.forEach(r => {
+        el.innerHTML += `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="reviewer-avatar">${r.emoji}</div>
+          <div class="reviewer-info">
+            <h4>${r.name}</h4>
+            <div class="review-stars">${'★'.repeat(r.rating)}</div>
+            <div class="date">📅 ${r.date}</div>
+          </div>
+          <div style="margin-left:auto;"><span class="badge badge-forest">Verified</span></div>
+        </div>
+        <p class="review-text">${r.text}</p>
+      </div>`;
+      });
+    }
+
+    function renderSimilarProducts() {
+      const el = document.getElementById('similarProducts');
+      if (!el) return;
+      el.innerHTML = '';
+      [...products].sort(() => Math.random() - 0.5).slice(0, 8).forEach(p => {
+        el.innerHTML += `
+      <div class="similar-card">
+        <div class="similar-img" onclick="showProductDetail(${p.id})" style="padding:0;overflow:hidden;">
+          <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md);">
+        </div>
+        <div class="similar-name" onclick="showProductDetail(${p.id})">${p.name}</div>
+        <div class="similar-price">${p.price}</div>
+      </div>`;
+      });
+    }
+
+    function renderFilterSubdistricts() {
+      const el = document.getElementById('filterSubdistricts');
+      if (!el) return;
+      subdistricts.slice(0, 6).forEach(s => {
+        el.innerHTML += `<label class="filter-option"><input type="checkbox"> <label>${s.name}</label><span class="count">${s.count}</span></label>`;
+      });
+    }
+
+    // ===== NAVIGATION =====
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => {
+        if (l.textContent.toLowerCase().includes(pageId.substring(0, 4).toLowerCase())) l.classList.add('active');
+      });
+      const stickyCTA = document.getElementById('stickyCTA');
+      stickyCTA.style.display = (pageId === 'product-detail') ? 'block' : 'none';
+      window.scrollTo(0, 0);
+    }
+
+    function showMerchantDetail(id) {
+      const m = merchants[id];
+      document.getElementById('mdName').textContent = m.name;
+      document.getElementById('mdArea').textContent = m.area + ', Sleman';
+      document.getElementById('mdRating').textContent = m.rating;
+      document.getElementById('mdProducts').textContent = m.products;
+      document.getElementById('mdFollowers').textContent = m.followers;
+      document.getElementById('mdAddress').textContent = m.address;
+      document.getElementById('mdHours').textContent = m.hours;
+      document.getElementById('mdPhone').textContent = m.phone;
+      document.getElementById('mdSince').textContent = m.since;
+      document.getElementById('mdDesc').textContent = m.desc;
+      const cover = document.getElementById('mdCover');
+      cover.style.background = '#ddd';
+      cover.style.padding = '0';
+      cover.style.overflow = 'hidden';
+      cover.innerHTML = `<img src="${m.coverImg}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;opacity:0.85;">`;
+      const avatarEl = document.getElementById('mdAvatar');
+      avatarEl.style.background = m.bg;
+      avatarEl.style.overflow = 'hidden';
+      avatarEl.style.padding = '0';
+      avatarEl.innerHTML = `<img src="${m.logo}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-md) - 4px);">`;
+      const specials = document.getElementById('mdSpecialities');
+      specials.innerHTML = '';
+      m.specialities.forEach(s => { specials.innerHTML += `<span class="badge badge-terracotta">${s}</span>`; });
+      const prods = document.getElementById('mdProductsGrid');
+      prods.innerHTML = '';
+      products.filter(p => p.area === m.area).forEach(p => {
+        prods.innerHTML += `
+      <div class="product-card-lg" onclick="showProductDetail(${p.id})">
+        <div class="product-img-lg" style="padding:0;overflow:hidden;">
+          <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="product-body-lg">
+          <div class="product-name-lg">${p.name}</div>
+          <div class="product-shop-lg">📍 ${p.area}</div>
+          <div><span class="product-price-lg">${p.price}</span></div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">★ ${p.rating} · ${p.sold} terjual</div>
+        </div>
+        <div class="product-actions-lg">
+          <button class="btn btn-whatsapp btn-wa btn-sm" onclick="event.stopPropagation();orderViaWA('${p.name}')">
+            <svg class="svg-wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Pesan
+          </button>
+        </div>
+      </div>`;
+      });
+      showPage('merchant-detail');
+    }
+
+    function showProductDetail(id) {
+      const p = products[id] || products[0];
+      const merchant = merchants.find(m => m.name === p.shop) || merchants[0];
+      document.getElementById('detailName').textContent = p.name;
+      document.getElementById('detailBreadcrumb').textContent = p.name;
+      document.getElementById('detailPrice').textContent = p.price;
+      document.getElementById('detailPriceOld').textContent = p.priceOld || '';
+      document.getElementById('detailMerchantName').textContent = p.shop;
+      document.getElementById('detailMerchantBadge').textContent = `⭐ ${p.rating} · ${p.sold} terjual`;
+      // Gallery
+      const galleryMain = document.getElementById('galleryMain');
+      galleryMain.innerHTML = `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);">`;
+      // Gallery thumbs
+      const thumbs = document.querySelectorAll('.gallery-thumb');
+      thumbs.forEach((t, i) => {
+        t.innerHTML = `<img src="${p.img}?v=${i}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:calc(var(--radius-sm) - 2px);">`;
+      });
+      // Merchant icon in detail card
+      const merchantIcon = document.querySelector('.detail-merchant-icon');
+      if (merchantIcon && merchant) {
+        merchantIcon.style.overflow = 'hidden';
+        merchantIcon.style.padding = '0';
+        merchantIcon.innerHTML = `<img src="${merchant.logo}" alt="${merchant.name}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+      }
+      // Sticky bar
+      document.getElementById('stickyName').textContent = p.name;
+      document.getElementById('stickyPrice').textContent = p.price;
+      const stickyImg = document.getElementById('stickyImg');
+      stickyImg.innerHTML = `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm);">`;
+      renderSimilarProducts();
+      renderReviews();
+      showPage('product-detail');
+    }
+
+    function filterMerchants(area) {
+      showPage('merchants');
+      setTimeout(() => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        const chips = document.querySelectorAll('.filter-chip');
+        chips.forEach(c => { if (c.textContent === area) c.classList.add('active'); });
+        renderMerchantsPage(area);
+      }, 50);
+    }
+
+    function filterMerchantsByArea(btn, area) {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderMerchantsPage(area);
+    }
+
+    // ===== SEARCH =====
+    function doSearch() {
+      const input = document.getElementById('navSearchInput') || document.getElementById('heroSearchInput');
+      const keyword = document.getElementById('heroSearchInput')?.value || document.getElementById('navSearchInput')?.value || 'Produk Sleman';
+      document.getElementById('exploreKeyword').textContent = `"${keyword}"`;
+      document.getElementById('exploreSearchInput').value = keyword;
+      renderExploreProducts();
+      renderExploreMerchants();
+      renderExploreArticles();
+      renderFilterSubdistricts();
+      showPage('explore');
+    }
+
+    function searchKeyword(keyword) {
+      document.getElementById('heroSearchInput').value = keyword;
+      document.getElementById('navSearchInput').value = keyword;
+      doSearch();
+    }
+
+    // ===== TABS =====
+    function switchExploreTab(btn, tab) {
+      document.querySelectorAll('.explore-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      ['products', 'merchants', 'articles'].forEach(t => {
+        const el = document.getElementById('exploreTab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (el) el.style.display = t === tab ? '' : 'none';
+      });
+    }
+
+    function switchProductTab(btn, tab) {
+      document.querySelectorAll('.products-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ===== MISC =====
+    function changeQty(delta) {
+      const input = document.getElementById('qtyInput');
+      let val = parseInt(input.value) + delta;
+      if (val < 1) val = 1;
+      input.value = val;
+    }
+
+    function openWA() {
+      window.open('https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20bertanya%20tentang%20produk%20Anda', '_blank');
+    }
+
+    function orderViaWA(productName) {
+      const name = productName || document.getElementById('detailName')?.textContent || 'produk';
+      const qty = document.getElementById('qtyInput')?.value || 1;
+      const msg = encodeURIComponent(`Halo, saya ingin memesan ${name} sebanyak ${qty} pcs. Apakah masih tersedia? Terima kasih.`);
+      window.open(`https://wa.me/6281234567890?text=${msg}`, '_blank');
+    }
+
+    function addToWishlist() { alert('Produk disimpan ke daftar keinginan!'); }
+
+    function openDrawer() {
+      const overlay = document.getElementById('drawerOverlay');
+      const drawer = document.getElementById('mobileDrawer');
+      closeMobileSearch();
+      overlay.classList.add('open');
+      requestAnimationFrame(() => {
+        overlay.classList.add('visible');
+        drawer.classList.add('open');
+      });
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      const overlay = document.getElementById('drawerOverlay');
+      const drawer = document.getElementById('mobileDrawer');
+      overlay.classList.remove('visible');
+      drawer.classList.remove('open');
+      setTimeout(() => overlay.classList.remove('open'), 350);
+      document.body.style.overflow = '';
+    }
+
+    function toggleMobileMenu() { openDrawer(); }
+    function closeMobileMenu() { closeDrawer(); }
+
+    function toggleMobileSearch() {
+      const bar = document.getElementById('mobileSearchBar');
+      const isOpen = bar.classList.toggle('open');
+      if (isOpen) {
+        // close hamburger menu if open
+        closeMobileMenu();
+        setTimeout(() => document.getElementById('mobileSearchInput').focus(), 50);
+      }
+    }
+
+    function closeMobileSearch() {
+      document.getElementById('mobileSearchBar').classList.remove('open');
+    }
+
+    function doMobileSearch() {
+      const keyword = document.getElementById('mobileSearchInput').value;
+      if (keyword) {
+        document.getElementById('navSearchInput').value = keyword;
+        document.getElementById('heroSearchInput').value = keyword;
+        closeMobileSearch();
+        doSearch();
+      }
+    }
+
+    // Gallery thumb click
+    document.querySelectorAll('.gallery-thumb').forEach(t => {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('.gallery-thumb').forEach(tt => tt.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('galleryMain').innerHTML = `<span style="font-size:100px">${this.textContent}</span>`;
+      });
+    });
+
+    // Variant buttons
+    document.querySelectorAll('.variant-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Toolbar chips
+    document.querySelectorAll('.toolbar-chip').forEach(chip => {
+      chip.addEventListener('click', function () {
+        this.closest('.products-toolbar-left').querySelectorAll('.toolbar-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Enter search
+    document.getElementById('navSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    document.getElementById('heroSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    document.getElementById('mobileSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doMobileSearch(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeMobileSearch(); } });
+
+    // ===== CAROUSEL =====
+    let carouselIndex = 0;
+    const CAROUSEL_TOTAL = 4;
+    let carouselTimer = null;
+
+    function initCarousel() {
+      const dotsEl = document.getElementById('carouselDots');
+      if (!dotsEl) return;
+      dotsEl.innerHTML = '';
+      for (let i = 0; i < CAROUSEL_TOTAL; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dot.onclick = () => carouselGoTo(i);
+        dotsEl.appendChild(dot);
+      }
+      startCarouselTimer();
+    }
+
+    function carouselGoTo(idx) {
+      carouselIndex = (idx + CAROUSEL_TOTAL) % CAROUSEL_TOTAL;
+      const track = document.getElementById('carouselTrack');
+      if (track) track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === carouselIndex);
+      });
+      resetCarouselTimer();
+    }
+
+    function carouselNext() { carouselGoTo(carouselIndex + 1); }
+    function carouselPrev() { carouselGoTo(carouselIndex - 1); }
+
+    function startCarouselTimer() {
+      carouselTimer = setInterval(() => carouselGoTo(carouselIndex + 1), 4500);
+    }
+    function resetCarouselTimer() {
+      clearInterval(carouselTimer);
+      startCarouselTimer();
+    }
+
+    // Swipe support for carousel
+    (function () {
+      let startX = 0;
+      const carousel = document.getElementById('promoCarousel');
+      if (!carousel) return;
+      carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      carousel.addEventListener('touchend', e => {
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) diff > 0 ? carouselNext() : carouselPrev();
+      });
+    })();
+
+    // ===== INIT =====
+    renderSubdistricts();
+    renderTopProducts();
+    renderTopMerchants();
+    renderCategories();
+    renderBlog();
+    renderMerchantsPage();
+    renderProductsPage();
+    initCarousel();
+  </script>
+</body>
+
+</html>

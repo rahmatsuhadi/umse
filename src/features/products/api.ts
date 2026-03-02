@@ -14,15 +14,15 @@ type ProductQueryParams = {
  * Mengambil daftar produk dengan paginasi dan filter.
  */
 export const getProducts = (params: ProductQueryParams): Promise<PaginatedApiResponse<Product>> => {
-  params  ={
+  params = {
     ...params,
   }
 
 
-   /**
-   * Fungsi helper untuk mengubah objek params menjadi query string
-   * dengan format yang benar untuk filter bersarang.
-   */
+  /**
+  * Fungsi helper untuk mengubah objek params menjadi query string
+  * dengan format yang benar untuk filter bersarang.
+  */
   const buildQueryString = (p: ProductQueryParams): string => {
     const parts: string[] = [];
 
@@ -34,25 +34,27 @@ export const getProducts = (params: ProductQueryParams): Promise<PaginatedApiRes
       // Perlakuan khusus jika key adalah 'filter' dan nilainya adalah objek
       if (key === 'filter' && typeof value === 'object' && value !== null) {
         const filterObject = value as { [s: string]: string | number };
-        
+
         // Loop melalui setiap key di dalam objek filter (misal: 'category__slug')
         for (const filterKey in filterObject) {
           if (Object.prototype.hasOwnProperty.call(filterObject, filterKey)) {
             const filterValue = filterObject[filterKey];
-            // Format menjadi: filter[category__slug]=nilai
-            parts.push(`filter[${encodeURIComponent(filterKey)}]=${encodeURIComponent(filterValue)}`);
+            // Only add to parts if value is not undefined/null/empty string
+            if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
+              parts.push(`filter[${encodeURIComponent(filterKey)}]=${encodeURIComponent(filterValue)}`);
+            }
           }
         }
-      } else if (value !== undefined && value !== null) {
-        // Untuk key lain (seperti 'page', 'per_page'), perlakukan seperti biasa
+      } else if (value !== undefined && value !== null && value !== "") {
+        // For other keys (like 'page', 'per_page'), perlakukan seperti biasa
         parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
       }
     }
     return parts.join('&');
   };
-  
+
   // Membuat query string dari objek params
-   const query = buildQueryString(params);
+  const query = buildQueryString(params);
   return apiClient<PaginatedApiResponse<Product>>(`/products?${query}`);
 };
 
@@ -61,16 +63,16 @@ export const getProducts = (params: ProductQueryParams): Promise<PaginatedApiRes
 /**
  * Mengambil daftar produk dengan paginasi dan filter.
  */
-export const getProductsByStore = (id:string,params: ProductQueryParams): Promise<PaginatedApiResponse<Product>> => {
-  params  ={
+export const getProductsByStore = (id: string, params: ProductQueryParams): Promise<PaginatedApiResponse<Product>> => {
+  params = {
     ...params,
   }
 
 
-   /**
-   * Fungsi helper untuk mengubah objek params menjadi query string
-   * dengan format yang benar untuk filter bersarang.
-   */
+  /**
+  * Fungsi helper untuk mengubah objek params menjadi query string
+  * dengan format yang benar untuk filter bersarang.
+  */
   const buildQueryString = (p: ProductQueryParams): string => {
     const parts: string[] = [];
 
@@ -82,25 +84,27 @@ export const getProductsByStore = (id:string,params: ProductQueryParams): Promis
       // Perlakuan khusus jika key adalah 'filter' dan nilainya adalah objek
       if (key === 'filter' && typeof value === 'object' && value !== null) {
         const filterObject = value as { [s: string]: string | number };
-        
+
         // Loop melalui setiap key di dalam objek filter (misal: 'category__slug')
         for (const filterKey in filterObject) {
           if (Object.prototype.hasOwnProperty.call(filterObject, filterKey)) {
             const filterValue = filterObject[filterKey];
-            // Format menjadi: filter[category__slug]=nilai
-            parts.push(`filter[${encodeURIComponent(filterKey)}]=${encodeURIComponent(filterValue)}`);
+            // Only add to parts if value is not undefined/null/empty string
+            if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
+              parts.push(`filter[${encodeURIComponent(filterKey)}]=${encodeURIComponent(filterValue)}`);
+            }
           }
         }
-      } else if (value !== undefined && value !== null) {
-        // Untuk key lain (seperti 'page', 'per_page'), perlakukan seperti biasa
+      } else if (value !== undefined && value !== null && value !== "") {
+        // For other keys (like 'page', 'per_page'), perlakukan seperti biasa
         parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
       }
     }
     return parts.join('&');
   };
-  
+
   // Membuat query string dari objek params
-   const query = buildQueryString(params);
+  const query = buildQueryString(params);
   return apiClient<PaginatedApiResponse<Product>>(`/stores/${id}/products?${query}`);
 };
 
@@ -115,6 +119,6 @@ export const getProductBySlug = (slug: string): Promise<Product> => {
 /**
  * Mengambil satu produk berdasarkan id-nya.
  */
-export const getProductById = (id: string): Promise<{data:Product}> => {
-  return apiClient<{data:Product}>(`/products/${id}`);
+export const getProductById = (id: string): Promise<{ data: Product }> => {
+  return apiClient<{ data: Product }>(`/products/${id}`);
 };

@@ -85,10 +85,11 @@ export function generateUUID(): string {
   ].join("-");
 }
 
-export default {
+const uuidCheck = {
   isUUID,
   isUUIDv4,
   normalizeUUID,
   assertUUID,
   generateUUID,
 };
+export default uuidCheck;

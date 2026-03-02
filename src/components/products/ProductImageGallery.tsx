@@ -8,42 +8,46 @@ type Props = {
 };
 
 export default function ProductImageGallery({ images }: Props) {
-  const [selectedIndex, setSelectedIndex] = useState(0); // simpan index
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const fallback = "/assets/no-image.jpg";
+  const displayImages = images.length > 0 ? images : [fallback];
+  const mainImg = displayImages[selectedIndex] || fallback;
 
   return (
-    <div className="flex flex-col gap-4">
-
+    <div className="detail-gallery">
       {/* Gambar Utama */}
-      <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center p-2">
+      <div className="gallery-main">
         <Image
-          width={500}
-          height={500} 
-          src={images[selectedIndex]} 
-          alt={`Gambar Utama ${selectedIndex + 1}`} 
-          className="w-full h-full object-contain"
+          width={600}
+          height={600}
+          src={mainImg}
+          alt={`Gambar Utama ${selectedIndex + 1}`}
+          className="w-full h-full object-cover"
+          style={{ borderRadius: 'var(--radius-lg)' }}
         />
       </div>
 
-      {/* Grid thumbnail */}
-      <div className="grid grid-cols-4 gap-4">
-        {images.slice(0, 4).map((url, index) => (
-          <div 
-            key={index} 
-            className={`w-full h-20 md:h-24 bg-gray-200 rounded-lg flex items-center justify-center p-1 cursor-pointer transition-all duration-200 ease-in-out 
-              ${selectedIndex === index ? 'border-4 border-primary' : 'border-0'}`}
-            onClick={() => setSelectedIndex(index)} // set index yang dipilih
+      {/* Thumbnails */}
+      <div className="gallery-thumbs">
+        {displayImages.slice(0, 4).map((url, index) => (
+          <div
+            key={index}
+            className={`gallery-thumb${selectedIndex === index ? ' active' : ''}`}
+            style={{ overflow: 'hidden', padding: 0 }}
+            onClick={() => setSelectedIndex(index)}
           >
             <Image
-              width={500}
-              height={500} 
-              src={url} 
-              alt={`Thumbnail ${index + 1}`} 
-              className="w-full h-full object-contain rounded"
+              width={120}
+              height={120}
+              src={url}
+              alt={`Thumbnail ${index + 1}`}
+              className="w-full h-full object-cover"
+              style={{ borderRadius: 'calc(var(--radius-sm) - 2px)' }}
             />
           </div>
         ))}
       </div>
-
     </div>
   );
 }

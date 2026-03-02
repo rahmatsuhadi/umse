@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: Request) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function middleware(_req: NextRequest) {
   // Generate nonce
   const array = new Uint8Array(16);
   crypto.getRandomValues(array);
@@ -15,13 +16,12 @@ export function middleware(req: Request) {
 
   const csp = [
     `default-src 'self'`,
-    `script-src 'self' ${
-      isDev ? "'unsafe-eval'" : ""
+    `script-src 'self' ${isDev ? "'unsafe-eval'" : ""
     } 'nonce-${nonce}' https://cdn.ckeditor.com https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
     `style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.ckeditor.com`,
-    `img-src 'self' data: https: https://www.google.com https://www.gstatic.com https://www.recaptcha.net blob:`,
+    `img-src 'self' data: https: ${isDev ? "http:" : ""} https://www.google.com https://www.gstatic.com https://www.recaptcha.net blob:`,
     `font-src 'self' data: https://cdnjs.cloudflare.com`,
-    `connect-src 'self' https: https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
+    `connect-src 'self' https: ${isDev ? "http: ws: wss:" : ""} https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
     `frame-src https://www.google.com https://www.gstatic.com https://www.recaptcha.net`,
     `object-src 'none'`,
     `base-uri 'self'`,
@@ -56,3 +56,4 @@ export function middleware(req: Request) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
+

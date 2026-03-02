@@ -26,7 +26,11 @@ export async function apiClient<T>(
     headers["Content-Type"] = "application/json";
   }
 
-  const url = `${API_URL}${endpoint}`;
+  // Di browser (client), gunakan proxy Next.js (/backend-api) untuk menghindari CORS.
+  // Di server (SSR), hit langsung ke backend URL.
+  const isServer = typeof window === "undefined";
+  const baseUrl = isServer ? API_URL : "/backend-api";
+  const url = `${baseUrl}${endpoint}`;
   const config: RequestInit = {
     ...options,
     headers: {
@@ -35,14 +39,14 @@ export async function apiClient<T>(
     },
   };
 
-  // 🔥 Tambah debug log
-  // console.log("[apiClient:request]", {
-  //   url,
-  //   method: config.method || "GET",
-  //   headers: config.headers,
-  //   body: isFormData ? "[FormData]" : config.body,
-  //   runtime: typeof window === "undefined" ? "server" : "client",
-  // });
+  // Debug log
+  console.log("[apiClient:request]", {
+    url,
+    method: config.method || "GET",
+    headers: config.headers,
+    body: isFormData ? "[FormData]" : config.body,
+    runtime: isServer ? "server" : "client",
+  });
 
   try {
     const response = await fetch(url, config);
@@ -51,7 +55,7 @@ export async function apiClient<T>(
       if (typeof window !== "undefined") {
         // Client-side: redirect langsung
         window.location.href = "/pemeliharaan";
-        return new Promise(() => {}); // never resolve
+        return new Promise(() => { }); // never resolve
       } else {
         // Server-side: lempar error spesifik
         const err = new Error("MAINTENANCE_MODE");
@@ -59,30 +63,38 @@ export async function apiClient<T>(
       }
     }
 
-    // console.log("[apiClient:response]", {
-    //   url,
-    //   status: response.status,
-    //   statusText: response.statusText,
-    // });
+    console.log("[apiClient:response]", {
+      url,
+      status: response.status,
+      statusText: response.statusText,
+    });
 
     const text = await response.text();
     const data = text ? JSON.parse(text) : {};
 
     if (!response.ok) {
-      // console.error("[apiClient:errorResponse]", data);
+      const expectedErrors = [401, 403, 422];
+      if (!expectedErrors.includes(response.status)) {
+        console.error("[apiClient:errorResponse]", {
+          url,
+          status: response.status,
+          statusText: response.statusText,
+          data,
+        });
+      }
       throw new Error(data.message || `Request gagal: ${response.status}`);
     }
 
     return data;
   } catch (error) {
     if (error instanceof Error) {
+      console.error("[apiClient:fetchError]", {
+        url,
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
       throw new Error(error.message || "Gagal terhubung ke server.");
-      // console.error("[apiClient:fetchError]", {
-      //   url,
-      //   message: error.message,
-      //   stack: error.stack,
-      //   name: error.name,
-      // });
     }
     throw new Error("Gagal terhubung ke server.");
   }

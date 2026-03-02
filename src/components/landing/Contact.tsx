@@ -1,78 +1,91 @@
 "use client";
-import { MapPin } from "lucide-react";
-import { FaGlobe, FaInstagram, FaWhatsapp } from "react-icons/fa";
-import "leaflet/dist/leaflet.css";
-import dynamic from "next/dynamic";
-import { useMemo } from "react";
+
 import Link from "next/link";
 
-export default function ContactSection() {
-  const MapWithNoSSR = useMemo(
-    () => dynamic(() => import("@/components/shared/Map"), { ssr: false }),
-    []
-  );
+const SOCIAL_LINKS = [
+  { icon: "📘", href: "https://www.facebook.com/dinkopukmsleman", label: "Facebook", bg: "rgba(255,255,255,0.08)" },
+  { icon: "📸", href: "https://www.instagram.com/dinkopukmsleman/", label: "Instagram", bg: "rgba(255,255,255,0.08)" },
+  { icon: "💬", href: "https://wa.me/6282322798318?text=Salam%20SlemanMart", label: "WhatsApp", bg: "#25D366" },
+];
 
+const FOOTER_LINKS = {
+  Jelajahi: [
+    { label: "Beranda", href: "/" },
+    { label: "Semua Produk", href: "/produk" },
+    { label: "Toko Lokal", href: "/umkm" },
+    { label: "Explore", href: "/explore" },
+  ],
+  Kategori: [
+    { label: "Fashion & Wastra", href: "/produk?q=batik" },
+    { label: "Kuliner & Makanan", href: "/produk?q=kuliner" },
+    { label: "Kerajinan Tangan", href: "/produk?q=kerajinan" },
+    { label: "Peralatan Rumah", href: "/produk?q=peralatan" },
+  ],
+  Informasi: [
+    { label: "Sering Ditanyakan (FAQ)", href: "/faq" },
+    { label: "Tentang Kami", href: "/" },
+    { label: "Daftarkan Toko", href: "/daftar" },
+    { label: "Kebijakan Privasi", href: "/" },
+    { label: "Hubungi Kami", href: "/" },
+  ],
+};
+
+export default function ContactSection() {
   return (
-    <footer className="py-12 md:py-20 bg-[#1f2937]">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center md:px-32">
-          {/* Info Kontak */}
-          <div className="">
-            <p className="text-2xl font-bold text-white">Sleman Mart</p>
-            <p className="mt-2 text-white">
-              Dinas Koperasi, Usaha Kecil dan Menengah Kabupaten Sleman
-            </p>
-            <div className="mt-6 space-y-4">
-              <div className="flex items-start">
-                <MapPin className="w-5 h-5 text-[#D22F27] mt-1 flex-shrink-0" />
-                <p className="ml-4 text-white/60 hover:underline">
-                  {" "}
-                  Jl. Parasamya No.6, Beran, Tridadi, Sleman
-                </p>
+    <footer>
+      <div className="container">
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <div className="logo" style={{ color: "var(--saffron)", fontSize: 22, display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+              <div style={{ width: 32, height: 32, background: "var(--saffron)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
+                🏪
               </div>
-              <div className="flex items-center">
-                <FaWhatsapp className="w-5 h-5 text-[#35BC35]" />
+              <span style={{ color: "white", fontWeight: 800 }}>
+                Sleman<span style={{ color: "var(--saffron)" }}>Mart</span>
+              </span>
+            </div>
+            <p>Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM tumbuh dan berkembang bersama komunitas.</p>
+            <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+              {SOCIAL_LINKS.map((s) => (
                 <Link
-                  className="hover:underline"
+                  key={s.label}
+                  href={s.href}
                   target="_blank"
-                  href={"https://wa.me/6282322798318?text=Salam%20SlemanMart"}
+                  title={s.label}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    background: s.bg,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    fontSize: 16,
+                    textDecoration: "none",
+                  }}
                 >
-                  <p className="ml-4 text-white/60 hover:underline">
-                    +62 823 2279 8318
-                  </p>
+                  {s.icon}
                 </Link>
-              </div>
-              <div className="flex items-center">
-                <FaInstagram className="w-5 h-5 text-[#FA4D4D]" />
-                <Link
-                  className="hover:underline"
-                  href={"https://www.instagram.com/dinkopukmsleman/"}
-                  target="_blank"
-                >
-                  <p className="ml-4 text-white/60 hover:underline">
-                    {" "}
-                    @dinkopukmsleman
-                  </p>
-                </Link>
-              </div>
-              <div className="flex items-center">
-                <FaGlobe className="w-5 h-5 text-[#0D6EFD]" />
-                <Link
-                  className="hover:underline"
-                  href={"https://dinkopukm.slemankab.go.id/"}
-                  target="_blank"
-                >
-                  <p className="ml-4 text-white/60 hover:underline">
-                    dinkopukm.slemankab.go.id
-                  </p>
-                </Link>
-              </div>
+              ))}
             </div>
           </div>
-          {/* Peta */}
-          <div className="w-full h-80 rounded-lg relative">
-            <MapWithNoSSR />
-          </div>
+
+          {(Object.entries(FOOTER_LINKS) as [string, { label: string; href: string }[]][]).map(([title, links]) => (
+            <div className="footer-col" key={title}>
+              <h4>{title}</h4>
+              {links.map((link) => (
+                <Link key={link.label} href={link.href} style={{ textDecoration: "none", cursor: "pointer" }}>
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="footer-bottom">
+          <span>© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman.</span>
+          <span>Kabupaten Sleman, D.I. Yogyakarta</span>
         </div>
       </div>
     </footer>

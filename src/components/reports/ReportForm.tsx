@@ -22,7 +22,6 @@ export default function ReportForm() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<ReportFormData>({
     resolver: zodResolver(reportSchema),
@@ -176,9 +175,8 @@ export default function ReportForm() {
               </button>
               <button
                 type="submit"
-                className={`flex-1 bg-primary ${
-                  isPending ? "bg-primary/50" : ""
-                } flex justify-center items-center hover:cursor-pointer text-white py-3 px-6 rounded-lg hover:bg-primary-dark transition duration-300 font-semibold`}
+                className={`flex-1 bg-primary ${isPending ? "bg-primary/50" : ""
+                  } flex justify-center items-center hover:cursor-pointer text-white py-3 px-6 rounded-lg hover:bg-primary-dark transition duration-300 font-semibold`}
               >
                 {isPending ? (
                   <>

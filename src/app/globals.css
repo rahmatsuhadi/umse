@@ -13,7 +13,7 @@
 
 
 @theme inline {
-  
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-jakarta: var(--font-jakarta);
@@ -50,6 +50,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-whatsapp: var(--whatsapp);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -58,84 +59,79 @@
 
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
+  --radius: 1rem;
+  /* 16px */
+  --background: #F9FAFB;
+  --foreground: #1F2937;
+  --card: #FFFFFF;
+  --card-foreground: #1F2937;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F2937;
 
-  /* Primary Colors - Warna Utama Anda */
-  --primary: oklch(69.77% 0.150 51.81);
-  --primary-dark: oklch(62.28% 0.141 50.68);
-  --primary-light: oklch(76.73% 0.129 55.22);
-  /* #B70A8A */
-  --primary-foreground: oklch(0.98 0 0);
-  /* Putih untuk kontras */
+  /* Primary Colors - Sleman Mart */
+  --primary: #F97316;
+  --primary-dark: #EA580C;
+  --primary-light: #FB923C;
+  --primary-foreground: #FFFFFF;
 
-  /* Secondary Colors */
-  --secondary: oklch(0.96 0.02 325);
-  /* Turunan pink yang lebih pudar */
-  --secondary-foreground: oklch(47.327% 0.11781 50.615);
+  /* Secondary / Accent Colors */
+  --secondary: #FDBA74;
+  --secondary-foreground: #1F2937;
 
   /* Muted Colors */
-  --muted: oklch(0.96 0.02 325);
-  --muted-foreground: oklch(0.554 0.046 257.417);
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
 
-  /* Accent Colors - Warna Aksen (lebih terang) */
-  --accent: oklch(90.06% 0.0001 271.152);
-     /* --accent: oklch(0.97 0 0); */
-  /* #EAB6DC sedikit lebih gelap untuk kontras */
-  --accent-foreground: oklch(69.77% 0.150 51.81);
+  /* Accent Colors */
+  --accent: #FFEDD5;
+  --accent-foreground: #EA580C;
 
   /* Destructive Colors */
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
 
   /* Border & Input */
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
+  --border: #E5E7EB;
+  --input: #E5E7EB;
 
-  /* Ring Color - Warna focus ring */
-  --ring: oklch(69.77% 0.150 51.81);
-  /* Turunan dari warna utama */
+  /* Ring Color */
+  --ring: #F97316;
+
+  /* WhatsApp Base */
+  --whatsapp: #25D366;
 }
 
 .dark {
-  --background: oklch(0.11 0.03 325);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.11 0.03 325);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.11 0.03 325);
-  --popover-foreground: oklch(0.98 0 0);
+  --background: #111827;
+  --foreground: #F9FAFB;
+  --card: #1F2937;
+  --card-foreground: #F9FAFB;
+  --popover: #1F2937;
+  --popover-foreground: #F9FAFB;
 
-  /* Primary Colors - Warna dibalik untuk mode gelap */
-  --primary: oklch(47.327% 0.11781 50.615);
-  /* #EAB6DC */
-  --primary-foreground: oklch(69.77% 0.150 51.81);
-  /* #B70A8A */
+  --primary: #EA580C;
+  --primary-dark: #C2410C;
+  --primary-light: #F97316;
+  --primary-foreground: #FFFFFF;
 
-  /* Secondary Colors */
-  --secondary: oklch(0.2 0.05 325);
-  --secondary-foreground: oklch(0.98 0 0);
+  --secondary: #9A3412;
+  --secondary-foreground: #F9FAFB;
 
-  /* Muted Colors */
-  --muted: oklch(0.2 0.05 325);
-  --muted-foreground: oklch(0.704 0.04 256.788);
+  --muted: #374151;
+  --muted-foreground: #9CA3AF;
 
-  /* Accent Colors */
-  --accent: oklch(0.2 0.05 325);
-  --accent-foreground: oklch(0.98 0 0);
+  --accent: #374151;
+  --accent-foreground: #F9FAFB;
 
-  /* Destructive Colors */
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: #7F1D1D;
+  --destructive-foreground: #FFFFFF;
 
-  /* Border & Input */
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --border: #374151;
+  --input: #374151;
 
-  /* Ring Color */
-  --ring: oklch(0.81 0.103 325.27);
+  --ring: #EA580C;
+
+  --whatsapp: #25D366;
 }
 
 @layer base {
@@ -175,4 +171,463 @@
 
 .embla-fade .embla__slide.is-selected {
   opacity: 1;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  background: #1A1008;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 101;
+}
+
+.top-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.top-bar-link {
+  color: white;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.top-bar-link:hover {
+  opacity: 1;
+}
+
+/* ===== GUIDE PAGES ===== */
+.guide-hero {
+  background: var(--cream-dark, #F3F4F6);
+  padding: 60px 0;
+  border-bottom: 1px solid var(--cream-dark, #E5E7EB);
+}
+
+.guide-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.guide-hero h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary, #1F2937);
+  margin-bottom: 12px;
+}
+
+.guide-hero p {
+  color: var(--text-muted, #6B7280);
+  font-size: 16px;
+  max-width: 600px;
+}
+
+.guide-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+.guide-section {
+  margin-bottom: 48px;
+}
+
+.guide-section h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary, #1F2937);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.guide-section h2 .num {
+  width: 32px;
+  height: 32px;
+  background: var(--terracotta, #EA580C);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.guide-card {
+  background: white;
+  border: 1.5px solid var(--cream-dark, #E5E7EB);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  transition: all 0.2s;
+}
+
+.guide-card:hover {
+  border-color: var(--terracotta-light, #FB923C);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.guide-card-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.guide-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #1F2937);
+  margin-bottom: 12px;
+}
+
+.guide-card p {
+  font-size: 14px;
+  color: var(--text-secondary, #4B5563);
+  line-height: 1.6;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  background: white;
+  border: 1.5px solid var(--cream-dark, #E5E7EB);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.faq-q {
+  padding: 16px 20px;
+  font-weight: 700;
+  color: var(--text-primary, #1F2937);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-a {
+  padding: 0 20px 20px;
+  font-size: 14px;
+  color: var(--text-secondary, #4B5563);
+  line-height: 1.6;
+  display: none;
+}
+
+.faq-item.active .faq-a {
+  display: block;
+}
+
+.faq-item.active .faq-q span {
+  transform: rotate(45deg);
+  color: var(--terracotta, #EA580C);
+}
+
+.faq-q span {
+  transition: transform 0.2s;
+}
+
+/* ===== KATALOG CARD & OVERLAYS FROM INDEX.HTML ===== */
+.product-badge-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hot-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #ff6f00, #e65100);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 20px;
+  z-index: 2;
+}
+
+.star-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #f9a825, #ef8c00);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 20px;
+  z-index: 2;
+}
+
+.new-ribbon {
+  position: absolute;
+  top: 12px;
+  left: -2px;
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 4px 10px 4px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.new-ribbon::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 4px 0;
+  border-color: transparent #1565c0 transparent transparent;
+  z-index: -1;
+}
+
+.promo-ribbon {
+  position: absolute;
+  top: 0;
+  left: 16px;
+  background: #e65100;
+  color: white;
+  padding: 6px 8px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+  z-index: 3;
+}
+
+.openhour-pill {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
+
+.openhour-pill.open {
+  background: rgba(25, 180, 90, 0.88);
+  color: white;
+}
+
+.openhour-pill.closing-soon {
+  background: rgba(255, 152, 0, 0.92);
+  color: white;
+}
+
+.openhour-pill.closed-pill {
+  background: rgba(0, 0, 0, 0.68);
+  color: #ccc;
+}
+
+/* Closed store overlay — must be absolute to sit over the image */
+.closed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  z-index: 4;
+  border-radius: inherit;
+}
+
+.closed-badge {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.closed-time {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cat-card {
+  width: 220px;
+  flex-shrink: 0;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--cream-dark, #E5E7EB);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-card:hover {
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+  transform: translateY(-5px);
+  border-color: var(--terracotta-light, #f97316);
+}
+
+.cat-card.is-closed:hover {
+  border-color: #ccc;
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  transform: translateY(-1px);
+}
+
+.cat-card-img {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cat-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s;
+}
+
+.cat-card-body {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary, #1F2937);
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.8em;
+}
+
+.cat-card-shop {
+  font-size: 12px;
+  color: var(--text-muted, #6B7280);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cat-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cream-dark, #E5E7EB);
+}
+
+.cat-card-price-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-card-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--terracotta, #ea580c);
+}
+
+.cat-card-price-old {
+  font-size: 11px;
+  color: var(--text-muted, #6B7280);
+  text-decoration: line-through;
+}
+
+.cat-card-rating {
+  font-size: 11px;
+  color: var(--text-muted, #6B7280);
+  margin-top: 2px;
+}
+
+.cat-card-wa {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #25D366;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.cat-card-wa:hover {
+  background: #1da851;
+  transform: scale(1.1);
+}
+
+.cat-card-wa.disabled {
+  background: #bbb;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.cat-card-wa.disabled:hover {
+  transform: none;
+  background: #bbb;
 }

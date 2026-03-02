@@ -82,7 +82,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
     }
 
     return (
-      <div className="">
+      <div style={{ background: 'var(--cream)' }}>
         <Navbar />
         <Breadcrumb
           breadcrumbs={[
