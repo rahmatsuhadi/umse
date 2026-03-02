@@ -68,6 +68,7 @@ export default async function HomePage({ }: HomePage) {
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-600">
                             Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
+                            {/* test commit */}
                         </p>
                     </div>
 
