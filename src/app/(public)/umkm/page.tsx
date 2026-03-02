@@ -53,7 +53,7 @@ export default async function UmkmPage({ }: UmkmPageProps) {
                             Layanan Kami
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-600">
-                            Jelajahi berbagai layanan dan fasilitas yang tersedia di Sleman Mart
+                            Jelajahi berbagai layanan dan fasilitas yang tersedia di #SlemanMart
                         </p>
                     </div>
 
