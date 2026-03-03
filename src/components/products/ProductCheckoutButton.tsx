@@ -9,11 +9,11 @@ import Link from "next/link";
 import Image from "next/image";
 
 const buildSlug = (name: string, id: string | number) =>
-    String(name || "")
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "") + `~${id}`;
+  String(name || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") + `~${id}`;
 
 interface CheckoutButtonProps {
   product: Product;
@@ -225,7 +225,8 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
           onClick={() => {
             if (!isClosed) {
               const msg = `Halo, saya tertarik dengan produk ${product.name}`;
-              window.open(`https://wa.me/${product.store.user?.phone_number}?text=${encodeURIComponent(msg)}`, "_blank");
+              const phone = product.store?.user?.phone_number || product.store?.phone || '';
+              window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
             }
           }}
         >

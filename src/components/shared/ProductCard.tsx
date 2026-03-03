@@ -83,6 +83,7 @@ export function ProductCard({ product, isNew: isNewProp }: ProductCardProps) {
             openHour={openHour}
             closeHour={closeHour}
             hourPill={hourPill}
+            phone={p.store?.user?.phone_number || p.store?.phone || ""}
         />
     );
 }

@@ -203,7 +203,7 @@ export default async function ProductDetailPage({
           <ProductStickyWA
             productId={product.id}
             productName={product.name}
-            phone={product.store?.user?.phone_number || ''}
+            phone={product.store?.user?.phone_number || product.store?.phone || ''}
             isClosed={!product.store?.is_open}
           />
         </div>

@@ -22,8 +22,7 @@ export const ProductCard = ({ product }: CardProductProps) => {
     e.stopPropagation();
 
     logVisitor({ product_id: product.id });
-
-    // @ts-expect-error Type not matched - store.user may not be in type but present in runtime
+    
     const phone = product.store?.user?.phone_number || product.store?.phone || '';
     const message = `Halo, saya tertarik dengan produk ${product.name}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");

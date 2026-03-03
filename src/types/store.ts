@@ -28,6 +28,7 @@ export interface Store {
 
   products_count: number;
   is_open: boolean;
+  phone?: string;
   emergency_close_reason?: string | null;
   reopen_at?: string | null;
   created_at: string;
