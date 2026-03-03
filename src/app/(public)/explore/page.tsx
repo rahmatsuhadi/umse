@@ -385,8 +385,9 @@ function ExplorePageContent() {
                                         <button className="btn btn-primary btn-sm filter-apply" onClick={() => { fetchNextProducts() }}>Terapkan Filter</button>
                                     </div>
 
+
                                     {/* Rating */}
-                                    {ratingOptions.some(r => (ratingCounts[r.key] || 0) > 0) && (
+                                    {/* {ratingOptions.some(r => (ratingCounts[r.key] || 0) > 0) && (
                                         <div className="filter-section">
                                             <h4>Rating</h4>
                                             {ratingOptions.map((r, i) => {
@@ -409,7 +410,8 @@ function ExplorePageContent() {
                                                 );
                                             })}
                                         </div>
-                                    )}
+                                    )} */}
+
 
                                     {/* Reset */}
                                     <div style={{ padding: "16px" }}>
