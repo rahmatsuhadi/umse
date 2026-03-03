@@ -500,7 +500,7 @@
 }
 
 .cat-card {
-  width: 220px;
+  /* width: 220px; */
   flex-shrink: 0;
   background: white;
   border-radius: var(--radius-md);
