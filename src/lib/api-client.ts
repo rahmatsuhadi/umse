@@ -26,10 +26,10 @@ export async function apiClient<T>(
     headers["Content-Type"] = "application/json";
   }
 
-  // Di browser (client), gunakan proxy Next.js (/backend-api) untuk menghindari CORS.
+  // Di browser (client), gunakan proxy Next.js (/api) untuk menghindari CORS.
   // Di server (SSR), hit langsung ke backend URL.
   const isServer = typeof window === "undefined";
-  const baseUrl = isServer ? API_URL : "/backend-api";
+  const baseUrl = isServer ? API_URL : "/api";
   const url = `${baseUrl}${endpoint}`;
   const config: RequestInit = {
     ...options,
