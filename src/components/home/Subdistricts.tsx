@@ -90,11 +90,11 @@ export function Subdistricts() {
             <div className="container">
                 <div className="section-header">
                     <div>
-                        <h2 className="section-title">Jelajahi per <span>Kecamatan</span></h2>
+                        <h2 className="section-title">Jelajahi per <span>Kapanewon</span></h2>
                         {isLoading ? (
                             <div style={{ height: 20, width: 200, background: "#F5E9E2", borderRadius: 4, marginTop: 6, animation: "pulse 1.5s infinite" }} />
                         ) : (
-                            <p className="section-subtitle">{subdistricts.length} kecamatan, ratusan UMKM siap melayani</p>
+                            <p className="section-subtitle">{subdistricts.length} kapanewon (kecamatan) , ribuan UMKM siap melayani</p>
                         )}
                     </div>
                     <Link href="/umkm" className="see-all-link">Lihat Semua →</Link>

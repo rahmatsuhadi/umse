@@ -28,8 +28,8 @@ export function TopStores() {
             <div className="container">
                 <div className="section-header" style={{ marginBottom: 20 }}>
                     <div>
-                        <h2 className="section-title">Toko <span>Pilihan</span></h2>
-                        <p className="section-subtitle">UMKM terpercaya dan aktif</p>
+                        <h2 className="section-title">Merchant <span>Pilihan</span></h2>
+                        <p className="section-subtitle">Merchant yang produknya banyak dilihat</p>
                     </div>
                     <Link href="/umkm" className="see-all-link">Semua →</Link>
                 </div>

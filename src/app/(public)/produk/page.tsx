@@ -68,8 +68,6 @@ export default function ProductsPage() {
                     <p>Temukan ribuan produk asli buatan UMKM Sleman</p>
                     <div className="products-tabs">
                         <button className={`products-tab ${activeTab === 'popular' ? 'active' : ''}`} onClick={() => setActiveTab('popular')}>🔥 Terpopuler</button>
-                        <button className={`products-tab ${activeTab === 'mostbought' ? 'active' : ''}`} onClick={() => setActiveTab('mostbought')}>🛒 Terlaris</button>
-                        <button className={`products-tab ${activeTab === 'toprated' ? 'active' : ''}`} onClick={() => setActiveTab('toprated')}>⭐ Rating Terbaik</button>
                         <button className={`products-tab ${activeTab === 'newest' ? 'active' : ''}`} onClick={() => setActiveTab('newest')}>✨ Terbaru</button>
                         <button className={`products-tab ${activeTab === 'promo' ? 'active' : ''}`} onClick={() => setActiveTab('promo')}>🏷️ Promo</button>
                     </div>

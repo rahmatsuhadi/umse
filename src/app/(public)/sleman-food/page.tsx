@@ -183,14 +183,14 @@ export default function SlemanFoodPage() {
 
                                     {/* Kecamatan */}
                                     <div className="filter-section" style={{ padding: "12px 16px", borderBottom: "1.5px solid var(--cream-dark)" }}>
-                                        <h4 style={{ fontSize: "13px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>Kecamatan</h4>
+                                        <h4 style={{ fontSize: "13px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>Kapanewon</h4>
                                         <select
                                             className="sort-select"
                                             style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1.5px solid var(--cream-dark)", fontSize: "13px" }}
                                             value={activeDistrict}
                                             onChange={(e) => setActiveDistrict(e.target.value)}
                                         >
-                                            <option value="all">Semua Kecamatan</option>
+                                            <option value="all">Semua Kapanewon</option>
                                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                             {subdistricts.map((sub: any) => (
                                                 <option key={sub.id} value={sub.id}>{sub.name}</option>

@@ -41,7 +41,7 @@ const addressSchema = z.object({
   fullAddress: z.string().min(1, "Alamat lengkap wajib diisi."),
   province_id: z.string().min(1, "Province wajib dipilih."),
   regency_id: z.string().min(1, "Kabupaten/Kota wajib dipilih."),
-  district_id: z.string().min(1, "Kecamatan wajib dipilih."),
+  district_id: z.string().min(1, "Kapanewon wajib dipilih."),
   village_id: z.string().min(1, "Kelurahan wajib dipilih."),
   postalCode: z
     .string()
@@ -267,7 +267,7 @@ export default function CheckoutForm({
                   <FormControl className="">
                     <Textarea
                       cols={10}
-                      placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan"
+                      placeholder="Jalan, nomor rumah, RT/RW, kelurahan, Kapanewon"
                       {...field}
                       className="w-full  border border-gray-300 rounded-lg px-3 py-5 focus:outline-none focus:border-primary"
                     />

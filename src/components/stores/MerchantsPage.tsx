@@ -63,10 +63,10 @@ export default function MerchantsPage() {
             <div className="merchants-hero">
                 <div className="merchants-hero-inner">
                     <h1>
-                        🏪 Toko Lokal{" "}
+                        🏪 Merchant{" "}
                         <span style={{ color: "var(--terracotta)" }}>Sleman</span>
                     </h1>
-                    <p>Ratusan UMKM terpercaya siap melayani kebutuhanmu</p>
+                    <p>Ribuan UMKM terpercaya siap melayani kebutuhanmu</p>
 
                     {/* District filter chips */}
                     <div className="merchants-hero-filters">
@@ -77,7 +77,7 @@ export default function MerchantsPage() {
                                 color: "var(--text-muted)",
                             }}
                         >
-                            Filter Kecamatan:
+                            Filter Kapanewon:
                         </span>
                         <button
                             className={`filter-chip${activeDistrict === "all" ? " active" : ""}`}

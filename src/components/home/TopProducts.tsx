@@ -38,8 +38,8 @@ export function TopProducts() {
         <div style={{ marginBottom: 32 }}>
             <div className="section-header" style={{ marginBottom: 20 }}>
                 <div>
-                    <h2 className="section-title">Produk <span>Unggulan</span></h2>
-                    <p className="section-subtitle">Paling banyak dipesan minggu ini</p>
+                    <h2 className="section-title">Produk <span>Viral</span></h2>
+                    <p className="section-subtitle">Paling banyak dilihat minggu ini</p>
                 </div>
                 <Link href="/produk" className="see-all-link">Semua →</Link>
             </div>

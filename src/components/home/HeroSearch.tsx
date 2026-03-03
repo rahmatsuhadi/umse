@@ -159,15 +159,23 @@ export function HeroSearch() {
                             <span>📍</span> Sleman, Daerah Istimewa Yogyakarta
                         </div>
                         <h1 className="hero-title">
-                            Temukan Produk<br />Lokal <span className="highlight">Terbaik</span><br />di Sleman
+                            Temukan Produk<br /> <span className="highlight">Unggulan</span><br /> Sleman
                         </h1>
                         <p className="hero-subtitle">
-                            Dari warung ke jari — mendukung UMKM lokal Sleman untuk tumbuh bersama komunitas.
+                            Yuk dukung UMKM Sleman untuk tumbuh bersama 
+                            <Image
+                                src="/slemanmartlogo.png"
+                                alt="Sleman Mart"
+                                width={120}
+                                height={32}
+                                className="inline-block align-middle ml-1"
+                                style={{ height: '1.2em', width: 'auto' }}
+                            />
                         </p>
                         <form className="search-form-big" onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
                             <input
                                 type="text"
-                                placeholder="Cari produk, toko, makanan, kerajinan..."
+                                placeholder="Cari apapun di sini..."
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 style={{ padding: "24px 28px", fontSize: "17px", width: "100%" }}
