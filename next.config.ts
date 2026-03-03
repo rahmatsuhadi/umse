@@ -20,7 +20,21 @@ const nextConfig: NextConfig = {
       {
         hostname: "devadminslemanmart.slemankab.go.id",
       },
+      {
+        hostname: "devadminslemanmart.slemankab.go.id/admin",
+      },
+      {
+        hostname: "localhost",
+      },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/backend-api/:path*",
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_API_URL || "http://localhost:8000/api"}/:path*`,
+      },
+    ];
   },
   async headers() {
     return [
