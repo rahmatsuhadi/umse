@@ -2,6 +2,7 @@
 
 import { usePaginationArticles } from "@/features/articles/hook";
 import Link from "next/link";
+import Image from "next/image";
 
 const ARTICLE_ICONS = ["📝", "🌿", "☕", "🎨", "🛍️", "📚"];
 
@@ -56,10 +57,11 @@ export function TopLiteracies() {
                             >
                                 <div className="blog-img" style={{ padding: 0, overflow: "hidden", background: "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>
                                     {article.thumbnail?.media_url ? (
-                                        <img
+                                        <Image
                                             src={article.thumbnail.media_url}
                                             alt={article.title}
-                                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                            fill
+                                            style={{ objectFit: "cover" }}
                                         />
                                     ) : (
                                         ARTICLE_ICONS[i % ARTICLE_ICONS.length]

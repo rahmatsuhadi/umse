@@ -114,7 +114,7 @@ function ExplorePageContent() {
         isLoading: isLoadingArticles
     } = useInfiniteArticles({ search: query });
 
-    const allProducts = productsData?.pages.flatMap(page => page.data) || [];
+    const allProducts = useMemo(() => productsData?.pages.flatMap(page => page.data) || [], [productsData]);
     const stores = storesData?.pages.flatMap(page => page.data) || [];
     const articles = articlesData?.pages.flatMap(page => page.data) || [];
 
@@ -131,7 +131,7 @@ function ExplorePageContent() {
             max_price: maxP,
         }
     });
-    const allProductsNoDist = productsForDistrictFacet?.pages.flatMap(p => p.data) || [];
+    const allProductsNoDist = useMemo(() => productsForDistrictFacet?.pages.flatMap(p => p.data) || [], [productsForDistrictFacet]);
 
     const { data: productsForCatFacet } = useInfiniteProducts({
         q: query,
@@ -141,7 +141,7 @@ function ExplorePageContent() {
             max_price: maxP,
         }
     });
-    const allProductsNoCat = productsForCatFacet?.pages.flatMap(p => p.data) || [];
+    const allProductsNoCat = useMemo(() => productsForCatFacet?.pages.flatMap(p => p.data) || [], [productsForCatFacet]);
 
     const districtCounts = useMemo(() => {
         const counts: Record<string, number> = {};

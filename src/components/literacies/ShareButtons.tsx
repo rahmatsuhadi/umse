@@ -7,10 +7,9 @@ import { toast } from "sonner";
 type Props = {
   id: string;
   path?: string;
-  title: string;
 };
 
-export function ShareButtons({ title, id, path = "/literasi" }: Props) {
+export function ShareButtons({ id, path = "/literasi" }: Props) {
   const [currentUrl, setCurrentUrl] = useState("");
 
   useEffect(() => {
@@ -18,7 +17,7 @@ export function ShareButtons({ title, id, path = "/literasi" }: Props) {
       const origin = window.location.origin;
       setCurrentUrl(`${origin}${path}/` + id);
     }
-  }, [path]);
+  }, [path, id]);
 
   const copyToClipboard = () => {
     if (!currentUrl) return;
@@ -64,11 +63,10 @@ export function ShareButtons({ title, id, path = "/literasi" }: Props) {
         <button
           onClick={copyToClipboard}
           disabled={!currentUrl}
-          className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-            currentUrl
+          className={`flex items-center px-4 py-2 rounded-lg transition-colors ${currentUrl
               ? "bg-slate-600 text-white hover:bg-slate-700 cursor-pointer"
               : "bg-slate-400 text-white cursor-not-allowed"
-          }`}
+            }`}
         >
           <Copy size={16} className="mr-2" /> Salin Link
         </button>

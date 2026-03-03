@@ -36,7 +36,6 @@ export default function EditProfilePage() {
   const user = data?.data;
 
   const { mutate: updateUser, isPending } = useUpdateProfile();
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof profileSchema>>({
@@ -54,13 +53,8 @@ export default function EditProfilePage() {
     if (user) {
       form.setValue("name", user?.name ?? "");
       form.setValue("email", user?.email ?? "");
-      form.setValue(
-        "phone_number",
-        user?.phone_number ? user.phone_number : ""
-      );
-      setPhotoPreview(user.profile_url || null);
     }
-  }, [user]);
+  }, [user, form]);
 
   function onSubmit(values: z.infer<typeof profileSchema>) {
     const dataToSubmit = {
@@ -142,11 +136,9 @@ export default function EditProfilePage() {
                                       `Ukuran file terlalu besar. Maksimal ${MAX_SIZE_UPLOAD} MB.`
                                     );
                                     field.onChange(null); // Reset file
-                                    setPhotoPreview(null); // Reset preview
                                   } else {
                                     setFileError(null); // Clear error
                                     field.onChange(e.target.files); // Update form value
-                                    setPhotoPreview(URL.createObjectURL(file)); // Update preview image
                                   }
                                 }
                               }}

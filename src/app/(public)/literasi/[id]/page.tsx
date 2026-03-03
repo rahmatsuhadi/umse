@@ -63,7 +63,7 @@ export async function generateMetadata({
         ],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: "Artikel Tidak Ditemukan" };
   }
 }
@@ -108,7 +108,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         </AnimatedWrapper>
       </div>
     );
-  } catch (error) {
+  } catch {
     return notFound();
   }
 }

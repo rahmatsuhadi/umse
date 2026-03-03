@@ -22,7 +22,7 @@ export const service_name = "jne";
 export default function ShippingCardEstimation({
   items,
   storeVillageId,
-  handleValidShipping = () => {},
+  handleValidShipping = () => { },
 }: ShippingCardEstimationProps) {
   const { watch } = useFormContext();
 
@@ -62,7 +62,7 @@ export default function ShippingCardEstimation({
     (acc, item) =>
       acc +
       item.quantity *
-        (item.variant ? item.variant.price.value : item.product.price.value),
+      (item.variant ? item.variant.price.value : item.product.price.value),
     0
   );
 
@@ -71,7 +71,7 @@ export default function ShippingCardEstimation({
     if (shipping) {
       handleValidShipping(shipping);
     }
-  }, [shipping]);
+  }, [shipping, handleValidShipping]);
 
   return (
     <div className="border-t border-gray-200 pt-4 mt-4">

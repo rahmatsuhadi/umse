@@ -54,7 +54,7 @@ export async function generateMetadata({
         images: [thumbnailUrl],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: "Pelatihan Tidak Ditemukan" };
   }
 }
@@ -105,7 +105,7 @@ export default async function PelatihanDetailPage({ params }: PageProps) {
         </AnimatedWrapper>
       </div>
     );
-  } catch (er) {
+  } catch {
     return notFound();
   }
 }

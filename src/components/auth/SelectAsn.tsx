@@ -16,7 +16,6 @@ interface SelectASNApiSearchProps {
 }
 
 export default function SelectASNApiSearch({
-  disabled = false,
   onChange,
 }: SelectASNApiSearchProps) {
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -27,7 +26,6 @@ export default function SelectASNApiSearch({
   const {
     data,
     isLoading: loading,
-    isFetched,
   } = useOrganizations(debouncedSearchTerm);
   const options = data || [];
 

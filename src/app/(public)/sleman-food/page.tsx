@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState } from "react";
 import Image from "next/image";
@@ -192,6 +191,7 @@ export default function SlemanFoodPage() {
                                             onChange={(e) => setActiveDistrict(e.target.value)}
                                         >
                                             <option value="all">Semua Kecamatan</option>
+                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                             {subdistricts.map((sub: any) => (
                                                 <option key={sub.id} value={sub.id}>{sub.name}</option>
                                             ))}

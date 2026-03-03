@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 const sectionCard: React.CSSProperties = {
     background: "white",
@@ -103,11 +104,11 @@ export const ProfileContent = () => {
                             &quot;Terwujudnya Masyarakat Kabupaten Sleman yang Maju, Adil, Makmur, Lestari dan Berkeadaban&quot;.
                         </p>
                     </div>
-                    <div style={imgCard}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                    <div style={{ ...imgCard, position: "relative" }}>
+                        <Image
                             src="https://images.unsplash.com/photo-1519683109079-d5f539e154b4?w=1000&h=600&fit=crop"
                             alt="Kegiatan pemberdayaan UMKM Sleman"
+                            fill
                             style={imgStyle}
                         />
                     </div>
@@ -138,12 +139,11 @@ export const ProfileContent = () => {
                             Membantu Bupati melaksanakan urusan pemerintahan dan tugas pembantuan di bidang koperasi, usaha kecil dan menengah.
                         </p>
                     </div>
-                    <div style={imgCard}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                    <div style={{ ...imgCard, position: "relative" }}>
+                        <Image
                             src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1000&h=600&fit=crop"
                             alt="Pelatihan dan pendampingan UMKM"
+                            fill
                             style={imgStyle}
                         />
                     </div>
@@ -219,12 +219,11 @@ export const ProfileContent = () => {
                         Dinas yang menangani urusan perindustrian, perdagangan, dan koperasi di Sleman mengalami beberapa perubahan sejak era otonomi daerah. Pada 2016, struktur kelembagaan diubah menjadi dua dinas terpisah: Dinas Perindustrian dan Perdagangan, serta Dinas Koperasi, Usaha Kecil dan Menengah.
                     </p>
                 </div>
-                <div style={{ ...imgCard, marginTop: 12 }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                <div style={{ ...imgCard, marginTop: 12, position: "relative", height: 220 }}>
+                    <Image
                         src="https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=1000&h=600&fit=crop"
                         alt="Kegiatan komunitas pelaku usaha Sleman"
+                        fill
                         style={imgStyle}
                     />
                 </div>

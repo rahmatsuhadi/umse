@@ -128,9 +128,6 @@ export default function KecamatanDetailPage() {
   // ─── SEMUA (all) TAB when category filter is applied OR for tab-based browsing ───
   const {
     data: allProductsData,
-    fetchNextPage: fetchNextAll,
-    hasNextPage: hasMoreAll,
-    isFetchingNextPage: isFetchingMoreAll,
     isLoading: isLoadingAll,
   } = useInfiniteProducts({
     filter: {
@@ -324,7 +321,7 @@ export default function KecamatanDetailPage() {
             <div className="kec-hero-row">
               <div className="kec-icon-big" style={{ background: "#E2F0D4", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: district?.logo ? 0 : undefined }}>
                 {district?.logo ? (
-                  <img src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <Image src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} fill style={{ objectFit: "cover" }} />
                 ) : (
                   "🌿"
                 )}

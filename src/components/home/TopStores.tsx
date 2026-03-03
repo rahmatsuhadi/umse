@@ -2,6 +2,7 @@
 
 import { usePaginationStores } from "@/features/store/hooks";
 import Link from "next/link";
+import Image from "next/image";
 
 const Skeleton = () => (
     <div className="merchant-card-mini" style={{ opacity: 0.7, pointerEvents: "none" }}>
@@ -49,7 +50,9 @@ export function TopStores() {
                                         style={{ background: STORE_COLORS[i % STORE_COLORS.length], overflow: "hidden", padding: 0 }}
                                     >
                                         {store.logo_url ? (
-                                            <img src={store.logo_url} alt={store.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 12 }} />
+                                            <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                                                <Image src={store.logo_url} alt={store.name ?? ""} fill style={{ objectFit: "cover", borderRadius: 12 }} />
+                                            </div>
                                         ) : (
                                             STORE_ICONS[i % STORE_ICONS.length]
                                         )}

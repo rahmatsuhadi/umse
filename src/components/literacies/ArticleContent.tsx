@@ -98,7 +98,7 @@ export default function ArticleContent({ article }: Props) {
                         />
 
                         {/* Tombol Bagikan (Client Component) */}
-                        <ShareButtons title={article.title} id={article.id} path={path} />
+                        <ShareButtons id={article.id} path={path} />
 
                     </div>
                     <div className="p-6"></div>

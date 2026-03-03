@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 
 import { MediaPreview } from '@/components/shared/MediaPreview'; // Gunakan modal preview yang sudah ada
 import { Plus, X } from 'lucide-react';
+import Image from "next/image";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -148,12 +149,7 @@ export function MediaUploader({
         setPreviewModalOpen(true);
     };
 
-    const handleClosePreview = () => {
-        if (currentPreviewMedia) {
-            URL.revokeObjectURL(currentPreviewMedia.url);
-        }
-        setPreviewModalOpen(false);
-    };
+
 
     useEffect(() => {
         return () => {
@@ -169,7 +165,7 @@ export function MediaUploader({
                 <div className="grid grid-cols-4 gap-2">
                     {files.map((file, index) => (
                         <div key={index} className="relative w-full aspect-square rounded-md overflow-hidden border group">
-                            <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} className="w-full h-full object-cover cursor-pointer" onClick={() => handleOpenPreview(file)} />
+                            <Image src={URL.createObjectURL(file)} alt={`Preview ${index}`} fill className="object-cover cursor-pointer" onClick={() => handleOpenPreview(file)} />
                             {!disabled && (
                                 <button type="button" onClick={() => handleRemoveFile(index)} className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity" aria-label={`Hapus file ${index + 1}`}>
                                     <X size={14} />

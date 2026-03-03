@@ -25,12 +25,12 @@ export default function OrderFilter() {
 
         // Clean up empty filter values to avoid unnecessary query params
         const query = Object.fromEntries(
-            Object.entries(newFilters).filter(([_, value]) => value)
+            Object.entries(newFilters).filter(([, value]) => value !== "" && value !== undefined && value !== null)
         );
 
         // Update the URL with the new query parameters
         const queryString = new URLSearchParams(query).toString();
-        router.push(`${pathname}?${queryString}`, {scroll:false});
+        router.push(`${pathname}?${queryString}`, { scroll: false });
     };
 
     // Synchronize state with URL search parameters whenever the URL changes

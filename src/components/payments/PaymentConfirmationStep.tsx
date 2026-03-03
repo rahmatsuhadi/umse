@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -203,12 +204,15 @@ export default function ConfirmationPage({
                           document.getElementById("paymentProof")?.click()
                         }
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src="/assets/qris-icon.png"
-                          alt="Upload Icon"
-                          className="text-4xl text-gray-400 mb-2"
-                        />
+                        <div style={{ position: "relative", width: "40px", height: "40px", margin: "0 auto 8px" }}>
+                          <Image
+                            src="/assets/qris-icon.png"
+                            alt="Upload Icon"
+                            fill
+                            style={{ objectFit: "contain" }}
+                            className="text-gray-400"
+                          />
+                        </div>
                         <p className="text-gray-600 mb-2">
                           Klik untuk upload bukti pembayaran
                         </p>
@@ -218,11 +222,15 @@ export default function ConfirmationPage({
                       </div>
                     ) : (
                       <div className="relative inline-block">
-                        <img
-                          src={previewUrl}
-                          alt="Preview"
-                          className="max-h-64 mx-auto rounded-lg border object-contain"
-                        />
+                        <div style={{ position: "relative", width: "100%", height: "256px" }}>
+                          <Image
+                            src={previewUrl}
+                            alt="Preview"
+                            fill
+                            style={{ objectFit: "contain" }}
+                            className="mx-auto rounded-lg border"
+                          />
+                        </div>
                         <button
                           type="button"
                           className="absolute top-2 right-2 bg-white text-red-500 rounded-full p-1 shadow"
@@ -371,6 +379,6 @@ export default function ConfirmationPage({
           </div>
         </div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence >
   );
 }

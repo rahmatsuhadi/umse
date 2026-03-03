@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useProducts } from "@/features/products/hooks";
 
 const SLIDES = [
@@ -151,8 +152,8 @@ export function HeroSearch() {
                         >
                             {SLIDES.map((s, i) => (
                                 <div className="carousel-slide" key={i}>
-                                    <div className="carousel-slide-bg" style={{ background: s.bg }}>
-                                        <img src={s.img} alt={s.eyebrow} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                                    <div className="carousel-slide-bg" style={{ position: "relative", background: s.bg, width: "100%", height: "100%" }}>
+                                        <Image src={s.img} alt={s.eyebrow} fill style={{ objectFit: 'cover' }} />
                                     </div>
                                     <div className="carousel-content">
                                         <div className="carousel-eyebrow">{s.eyebrow}</div>

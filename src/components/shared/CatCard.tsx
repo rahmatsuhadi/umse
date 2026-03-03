@@ -84,13 +84,15 @@ export function CatCard(p: CatCardProps) {
                         {initial}
                     </div>
                 ) : (
-                    <img
-                        src={p.img}
-                        alt={p.name}
-                        style={{ width: "100%", height: "100%", objectFit: "cover", ...grayStyle }}
-                        loading="lazy"
-                        onError={() => setImgError(true)}
-                    />
+                    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                        <Image
+                            src={p.img}
+                            alt={p.name}
+                            fill
+                            style={{ objectFit: "cover", ...grayStyle }}
+                            onError={() => setImgError(true)}
+                        />
+                    </div>
                 )}
                 <div className="product-badge-overlay">
                     {promoRibbon}{newRibbon}{topBadge}

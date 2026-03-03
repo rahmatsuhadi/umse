@@ -56,7 +56,7 @@ export async function generateMetadata({
         ],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: "Pameran Tidak Ditemukan" };
   }
 }
@@ -106,7 +106,7 @@ export default async function PelatihanDetailPage({ params }: PageProps) {
         </AnimatedWrapper>
       </div>
     );
-  } catch (error) {
+  } catch {
     return notFound();
   }
 }

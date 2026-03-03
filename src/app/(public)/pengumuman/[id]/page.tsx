@@ -54,7 +54,7 @@ export async function generateMetadata({
         images: [thumbnailUrl],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: "Pengumuman Tidak Ditemukan" };
   }
 }
@@ -102,8 +102,7 @@ export default async function PengumumanDetailPage({ params }: PageProps) {
         </AnimatedWrapper>
       </div>
     );
-  } catch (error) {
-    console.log(error);
+  } catch {
     return notFound();
   }
 }

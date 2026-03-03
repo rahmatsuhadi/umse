@@ -410,7 +410,7 @@ export default function DaftarPage() {
                             ref={withMask("999 9999 9999 999999", {
                               placeholder: "",
                               showMaskOnHover: false,
-                            })}
+                            }) as unknown as React.Ref<HTMLInputElement>}
                           />
                         </div>
                       </FormControl>

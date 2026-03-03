@@ -24,15 +24,6 @@ const formatPrice = (price: any): string => {
     return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(Number(price));
 };
 
-const getIsStoreOpen = (product: unknown): boolean | null => {
-    const p = product as Record<string, unknown>;
-    const s = (p?.store ?? null) as Record<string, unknown> | null;
-    if (!s) return null;
-    // API returns store.is_open as a direct boolean
-    if (typeof s["is_open"] === "boolean") return s["is_open"] as boolean;
-    if (typeof s["is_open"] === "number") return (s["is_open"] as number) === 1;
-    return null;
-};
 
 interface SpecialSectionProps {
     icon: string;

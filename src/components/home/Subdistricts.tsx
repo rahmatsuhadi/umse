@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useDistricts } from "@/features/locations/hooks";
 import { useProducts } from "@/features/products/hooks";
 
@@ -53,9 +54,9 @@ function SubdistrictCard({
             style={{ textDecoration: "none" }}
             className="subdistrict-card"
         >
-            <div className="subdistrict-icon" style={{ background: col.bg, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: logo ? 0 : undefined }}>
+            <div className="subdistrict-icon" style={{ position: "relative", background: col.bg, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: logo ? 0 : undefined }}>
                 {logo ? (
-                    <img src={logo} alt={`Logo ${name}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <Image src={logo} alt={`Logo ${name}`} fill style={{ objectFit: "cover" }} />
                 ) : (
                     getIcon(index)
                 )}
