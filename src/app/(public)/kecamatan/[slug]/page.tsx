@@ -230,7 +230,7 @@ export default function KecamatanDetailPage() {
               ← Kembali ke Beranda
             </button>
             <div className="kec-hero-row">
-              <div className="kec-icon-big" style={{ position: "relative", background: "#E2F0D4", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: district?.logo ? 0 : undefined }}>
+              <div className="kec-icon-big" style={{ position: "relative", background: "#ffffffff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: district?.logo ? 0 : undefined }}>
                 {district?.logo && (
                   <Image src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} width={100} height={100} className="w-full h-full object-cover" />
                 )}
