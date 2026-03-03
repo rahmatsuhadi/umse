@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Package, Store, User } from "lucide-react";
+import { Home, Compass, Package, Store } from "lucide-react";
 
 const bottomNavLinks = [
     { name: "Beranda", href: "/", icon: Home },
     { name: "Eksplor", href: "/explore", icon: Compass },
     { name: "Produk", href: "/produk", icon: Package },
     { name: "UMKM", href: "/umkm", icon: Store },
-    { name: "Profil", href: "/profile", icon: User },
 ];
 
 export function BottomNav() {
@@ -20,7 +19,7 @@ export function BottomNav() {
 
     return (
         <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white z-[60] h-[70px] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] rounded-t-xl pb-safe">
-            <div className="flex justify-around items-center h-full max-w-md mx-auto px-2">
+            <div className="grid grid-cols-4 w-full h-full max-w-md mx-auto px-2">
                 {bottomNavLinks.map((link) => {
                     const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
                     // Handle root path strictly

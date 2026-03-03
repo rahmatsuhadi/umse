@@ -10,7 +10,7 @@ import { useCart } from "@/features/cart/hooks";
 
 const navLinks = [
   { name: "Beranda", href: "/", icon: "🏠", iconBg: "#D4EFDF" },
-  { name: "Toko Lokal", href: "/umkm", icon: "🏪", iconBg: "#FEF3D0" },
+  { name: "Merchant", href: "/umkm", icon: "🏪", iconBg: "#FEF3D0" },
   { name: "Produk", href: "/produk", icon: "🛍️", iconBg: "#FDE8D8" },
   { name: "Sleman Food", href: "/sleman-food", icon: "🍱", iconBg: "#FFEDD5" },
   { name: "Jelajahi", href: "/explore", icon: "🔍", iconBg: "#E8EAF6" },
@@ -143,7 +143,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
       <div className={`drawer-overlay ${isDrawerOpen ? 'open visible' : ''}`} onClick={() => setIsDrawerOpen(false)}></div>
       <div className={`drawer ${isDrawerOpen ? 'open' : ''}`} id="mobileDrawer">
         <div className="drawer-header">
-          <div className="drawer-logo">Sleman<span>Mart</span></div>
+          <img src="/slemanmartlogo.png" alt="Sleman Mart" className="h-9 w-auto" />
           <button className="drawer-close" onClick={() => setIsDrawerOpen(false)}>✕</button>
         </div>
         <nav className="drawer-nav">
@@ -160,17 +160,17 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
             </Link>
           ))}
           <div className="drawer-divider"></div>
-          <Link href="/literasi" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
+          {/* <Link href="/literasi" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
             <div className="drawer-nav-icon" style={{ background: "#E0F2F1" }}>📝</div>
             <span>Tips & Artikel</span>
           </Link>
           <Link href="/kontak" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
             <div className="drawer-nav-icon" style={{ background: "#FFF3E0" }}>📞</div>
             <span>Hubungi Kami</span>
-          </Link>
+          </Link> */}
         </nav>
 
-        <div className="mobile-auth-drawer" style={{ padding: "0 20px 20px" }}>
+        {/* <div className="mobile-auth-drawer" style={{ padding: "0 20px 20px" }}>
           <div className="drawer-divider" style={{ margin: "0 -20px 16px" }}></div>
           {!isLoading && !isAuth && (
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -181,7 +181,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
           {!isLoading && isAuth && (
             <MobileAuthSection closeDrawer={() => setIsDrawerOpen(false)} />
           )}
-        </div>
+        </div> */}
 
         <div className="drawer-footer">
           <p>© 2025 Sleman Mart · Kabupaten Sleman, DIY</p>
