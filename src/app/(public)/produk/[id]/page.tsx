@@ -81,22 +81,22 @@ export default async function ProductDetailPage({
     images[0] || product.thumbnail?.media_url || "/assets/no-image.jpg";
 
   return (
-    <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
+    <div className="page-bg-cream">
 
       {/* ===== Product Detail Body ===== */}
       <div className="product-detail-body">
 
         {/* Breadcrumb */}
         <div className="detail-breadcrumb">
-          <Link href="/" style={{ textDecoration: 'none' }}>
+          <Link href="/" className="no-underline">
             <span>Beranda</span>
           </Link>
           <span className="sep">›</span>
-          <Link href="/produk" style={{ textDecoration: 'none' }}>
+          <Link href="/produk" className="no-underline">
             <span>Produk</span>
           </Link>
           <span className="sep">›</span>
-          <Link href={`/produk?category=${product.category.slug}`} style={{ textDecoration: 'none' }}>
+          <Link href={`/produk?category=${product.category.slug}`} className="no-underline">
             <span>{product.category.name}</span>
           </Link>
           <span className="sep">›</span>
@@ -118,15 +118,15 @@ export default async function ProductDetailPage({
       </div>
 
       {/* ===== Reviews Section ===== */}
-      <div style={{ background: 'var(--cream)', borderTop: '1px solid var(--cream-dark)' }}>
+      <div className="product-detail-footer">
         <ProductRatingReview product={product} />
       </div>
 
       {/* ===== Similar Products Section ===== */}
-      <div style={{ background: 'white', paddingTop: '40px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-            <h2 className="section-title" style={{ fontSize: '22px' }}>
+      <div className="bg-white pt-40">
+        <div className="container-1200">
+          <div className="flex-between mb-20">
+            <h2 className="section-title font-22">
               Produk <span>Serupa</span>
             </h2>
             <Link href="/produk" className="see-all-link">Lihat Semua →</Link>
@@ -151,7 +151,7 @@ export default async function ProductDetailPage({
                 alt={product.name}
                 width={48}
                 height={48}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                className="w-full h-full object-cover"
               />
             </div>
             <div>

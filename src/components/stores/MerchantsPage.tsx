@@ -150,7 +150,7 @@ export default function MerchantsPage() {
                     >
                         <div style={{ fontSize: 48, marginBottom: 16 }}>🏪</div>
                         <p style={{ fontSize: 16 }}>
-                            Belum ada toko di kecamatan ini.
+                            Belum ada toko di kapanewon ini.
                         </p>
                     </div>
                 ) : (

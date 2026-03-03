@@ -136,17 +136,17 @@ export default function SlemanFoodPage() {
     const visibleProducts = products;
 
     return (
-        <div className="pb-20 md:pb-0 explore-page" style={{ background: "var(--cream)", minHeight: "100vh" }}>
+        <div className="pb-20 md:pb-0 explore-page" >
             <Navbar />
             <main className="page active" id="page-sleman-food">
                 {/* Header */}
-                <div className="explore-header" style={{ background: "linear-gradient(135deg, #FF9800 0%, #E65100 100%)", paddingTop: '80px', paddingBottom: '32px' }}>
+                <div className="explore-header" >
                     <div className="explore-header-inner">
-                        <p className="explore-title" style={{ color: "rgba(255,255,255,0.8)" }}>Kuliner Khas Sleman</p>
-                        <h1 className="explore-keyword" style={{ color: "white", border: "none", marginBottom: "10px" }}>Sleman Food</h1>
-                        <p className="explore-desc">Jelajahi berbagai hidangan siap saji, frozen food, dan kuliner UMKM terbaik dari seluruh penjuru Sleman.</p>
+                        <p className="explore-title" >Kuliner Khas Sleman</p>
+                        <h1 className="explore-keyword" >Sleman Food</h1>
+                        <p className="explore-desc" >Jelajahi berbagai hidangan siap saji, frozen food, dan kuliner UMKM terbaik dari seluruh penjuru Sleman.</p>
 
-                        <div className="explore-search-bar" style={{ marginTop: "24px" }}>
+                        <div className="explore-search-bar" >
                             <input
                                 type="text"
                                 placeholder="Cari produk kuliner..."
@@ -159,8 +159,8 @@ export default function SlemanFoodPage() {
                             <button onClick={() => setSearchKeyword(searchInput)}>Cari</button>
                         </div>
 
-                        <div className="explore-stats" style={{ marginTop: "24px" }}>
-                            <span className="explore-stat" style={{ background: "rgba(255,255,255,0.2)", color: "white", padding: "6px 14px", borderRadius: "20px" }}>
+                        <div className="explore-stats" >
+                            <span className="explore-stat" >
                                 <strong>{totalProducts}</strong> Produk Kuliner
                             </span>
                         </div>
@@ -174,7 +174,7 @@ export default function SlemanFoodPage() {
                         <aside>
                             <div className="filter-sidebar">
                                 <div className="filter-panel">
-                                    <div className="filter-header" style={{ background: "#E65100", color: "white", padding: "12px 16px", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <div className="filter-header" >
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
                                         </svg>
@@ -182,11 +182,10 @@ export default function SlemanFoodPage() {
                                     </div>
 
                                     {/* Kecamatan */}
-                                    <div className="filter-section" style={{ padding: "12px 16px", borderBottom: "1.5px solid var(--cream-dark)" }}>
-                                        <h4 style={{ fontSize: "13px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>Kapanewon</h4>
+                                    <div className="filter-section" >
+                                        <h4 className="filter-section-title">Kapanewon</h4>
                                         <select
-                                            className="sort-select"
-                                            style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1.5px solid var(--cream-dark)", fontSize: "13px" }}
+                                            className="sort-select sort-select-full"
                                             value={activeDistrict}
                                             onChange={(e) => setActiveDistrict(e.target.value)}
                                         >
@@ -199,93 +198,87 @@ export default function SlemanFoodPage() {
                                     </div>
 
                                     {/* Status Buka */}
-                                    <div className="filter-section" style={{ padding: "12px 16px", borderBottom: "1.5px solid var(--cream-dark)" }}>
-                                        <h4 style={{ fontSize: "13px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>Status Toko</h4>
-                                        <div className="filter-option" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                            <label className="explore-toggle-wrap" style={{ position: "relative", display: "inline-block", width: "34px", height: "18px", cursor: "pointer" }}>
+                                    <div className="filter-section" >
+                                        <h4 className="filter-section-title">Status Toko</h4>
+                                        <div className="filter-option" >
+                                            <label style={{ position: "relative", display: "inline-block", width: "34px", height: "20px", cursor: "pointer", flex: "none" }}>
                                                 <input
                                                     type="checkbox"
-                                                    style={{ opacity: 0, width: 0, height: 0, position: "absolute" }}
                                                     checked={openNow}
                                                     onChange={(e) => setOpenNow(e.target.checked)}
+                                                    style={{ opacity: 0, width: 0, height: 0, position: "absolute" }}
                                                 />
-                                                <span className="explore-toggle-slider" style={{
-                                                    position: "absolute", inset: 0, borderRadius: "20px", transition: "0.2s",
-                                                    background: openNow ? "var(--forest)" : "var(--cream-dark)"
-                                                }}>
-                                                    <span style={{
-                                                        content: '""', position: "absolute", width: "12px", height: "12px", borderRadius: "50%",
-                                                        background: "white", top: "3px", left: "3px", transition: "0.2s",
-                                                        transform: openNow ? "translateX(16px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.2)"
-                                                    }} />
-                                                </span>
+                                                <span style={{ position: "absolute", inset: 0, borderRadius: "20px", transition: "0.2s", background: openNow ? "var(--forest)" : "var(--cream-dark)" }}></span>
+                                                <span style={{ position: "absolute", width: "16px", height: "16px", borderRadius: "50%", background: "white", top: "2px", left: "2px", transition: "0.2s", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", transform: openNow ? "translateX(14px)" : "translateX(0)" }}></span>
                                             </label>
-                                            <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)" }}>Buka Sekarang</span>
+                                            <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                                                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: openNow ? '#27AE60' : '#ccc' }}></span> Buka Sekarang
+                                            </span>
                                         </div>
                                     </div>
 
                                     {/* Jenis Makanan */}
-                                    <div className="filter-section" style={{ padding: "12px 16px", borderBottom: "1.5px solid var(--cream-dark)" }}>
-                                        <h4 style={{ fontSize: "13px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>Jenis Makanan</h4>
-                                        <label className="filter-option" style={{ display: "flex", alignItems: "center", gap: "8px", margin: "6px 0", cursor: "pointer" }}>
+                                    <div className="filter-section" >
+                                        <h4 className="filter-section-title">Jenis Makanan</h4>
+                                        <label className="filter-option" >
                                             <input
                                                 type="checkbox"
                                                 checked={isFastFood}
                                                 onChange={(e) => setIsFastFood(e.target.checked)}
-                                                style={{ width: "16px", height: "16px", cursor: "pointer" }}
+                                                className="filter-checkbox"
                                             />
-                                            <span style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
+                                            <span className="filter-label-text">
                                                 🍔 Fast Food Lokal
                                             </span>
                                         </label>
-                                        <label className="filter-option" style={{ display: "flex", alignItems: "center", gap: "8px", margin: "6px 0", cursor: "pointer" }}>
+                                        <label className="filter-option" >
                                             <input
                                                 type="checkbox"
                                                 checked={isFrozenFood}
                                                 onChange={(e) => setIsFrozenFood(e.target.checked)}
-                                                style={{ width: "16px", height: "16px", cursor: "pointer" }}
+                                                className="filter-checkbox"
                                             />
-                                            <span style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
+                                            <span className="filter-label-text">
                                                 🧊 Frozen Food
                                             </span>
                                         </label>
-                                        <label className="filter-option" style={{ display: "flex", alignItems: "center", gap: "8px", margin: "6px 0", cursor: "pointer" }}>
+                                        <label className="filter-option" >
                                             <input
                                                 type="checkbox"
                                                 checked={isRegularFood}
                                                 onChange={(e) => setIsRegularFood(e.target.checked)}
-                                                style={{ width: "16px", height: "16px", cursor: "pointer" }}
+                                                className="filter-checkbox"
                                             />
-                                            <span style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
+                                            <span className="filter-label-text">
                                                 🍲 Kuliner Lainnya
                                             </span>
                                         </label>
                                     </div>
 
                                     {/* Harga */}
-                                    <div className="filter-section" style={{ padding: "12px 16px", borderBottom: "1.5px solid var(--cream-dark)" }}>
-                                        <h4 style={{ fontSize: "13px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>Harga</h4>
-                                        <div className="price-range" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                                            <div className="price-input-wrap" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                <span style={{ fontSize: "12px", color: "var(--text-muted)", width: "30px" }}>Min</span>
+                                    <div className="filter-section" >
+                                        <h4 className="filter-section-title">Harga</h4>
+                                        <div className="price-range" >
+                                            <div className="price-input-wrap" >
+                                                <span className="price-input-label">Min</span>
                                                 <input
                                                     className="price-input"
                                                     type="number"
                                                     placeholder="0"
                                                     value={priceMinInput}
                                                     onChange={(e) => setPriceMinInput(e.target.value)}
-                                                    style={{ flex: 1, padding: "6px 10px", border: "1.5px solid var(--cream-dark)", borderRadius: "6px", fontSize: "13px" }}
+
                                                 />
                                             </div>
-                                            <div className="price-input-wrap" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                <span style={{ fontSize: "12px", color: "var(--text-muted)", width: "30px" }}>Maks</span>
+                                            <div className="price-input-wrap" >
+                                                <span className="price-input-label">Maks</span>
                                                 <input
                                                     className="price-input"
                                                     type="number"
                                                     placeholder="Maks"
                                                     value={priceMaxInput}
                                                     onChange={(e) => setPriceMaxInput(e.target.value)}
-                                                    style={{ flex: 1, padding: "6px 10px", border: "1.5px solid var(--cream-dark)", borderRadius: "6px", fontSize: "13px" }}
+
                                                 />
                                             </div>
                                         </div>
@@ -295,9 +288,7 @@ export default function SlemanFoodPage() {
                                     <div style={{ padding: "16px" }}>
                                         <button
                                             onClick={handleReset}
-                                            style={{ width: "100%", padding: "8px", background: "white", border: "1.5px solid var(--terracotta)", color: "var(--terracotta)", borderRadius: "8px", fontWeight: 700, fontSize: "13px", cursor: "pointer" }}
-                                        >
-                                            ↺ Reset Filter
+                                            className="btn-reset-filter">Reset Filter
                                         </button>
                                     </div>
                                 </div>
@@ -305,12 +296,12 @@ export default function SlemanFoodPage() {
                         </aside>
 
                         {/* Main Grid */}
-                        <div style={{ minWidth: 0, flex: 1 }}>
-                            <div className="sort-bar" style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-                                <label style={{ fontSize: "13px", color: "var(--text-muted)" }}>Urutkan:</label>
+                        <div className="explore-main-content">
+                            <div className="sort-bar" >
+                                <label className="sort-label">Urutkan:</label>
                                 <select
                                     className="sort-select"
-                                    style={{ padding: "8px 12px", border: "1.5px solid var(--cream-dark)", borderRadius: "8px", fontSize: "13px", background: "white", outline: "none" }}
+
                                     value={sort}
                                     onChange={(e) => setSort(e.target.value)}
                                 >
@@ -319,12 +310,12 @@ export default function SlemanFoodPage() {
                                     <option value="-price">Harga Tertinggi</option>
                                     <option value="-sold_count">Terlaris</option>
                                 </select>
-                                <span className="result-count" style={{ marginLeft: "auto", fontSize: "13px", color: "var(--text-muted)" }}>
+                                <span className="result-count" >
                                     {isLoading ? "Memuat..." : `${totalProducts} hasil ditemukan`}
                                 </span>
                             </div>
 
-                            <div className="product-grid-lg" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
+                            <div className="product-grid-lg" >
                                 {visibleProducts.length > 0 ? visibleProducts.map((product: ProductItem) => {
                                     const openState = getIsStoreOpen(product);
                                     const isClosed = openState === false;
@@ -334,49 +325,39 @@ export default function SlemanFoodPage() {
                                             key={product.id}
                                             href={`/produk/${product.id}`}
                                             className={`product-card-lg ${isClosed ? 'is-closed' : ''}`}
-                                            style={{
-                                                textDecoration: "none",
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                background: "white",
-                                                borderRadius: "16px",
-                                                border: "1.5px solid var(--cream-dark)",
-                                                overflow: "hidden",
-                                                height: "100%"
-                                            }}
                                         >
-                                            <div className="product-img-lg" style={{ position: 'relative', height: '200px', flexShrink: 0, background: 'var(--cream-dark)' }}>
+                                            <div className="product-img-lg" >
                                                 {product.thumbnail?.media_url ? (
                                                     <Image
                                                         src={product.thumbnail.media_url}
                                                         alt={product.name}
                                                         fill
-                                                        style={{ objectFit: 'cover', filter: isClosed ? 'grayscale(100%) brightness(0.72)' : 'none' }}
+                                                        className="product-img-main"
                                                     />
-                                                ) : <div style={{ fontSize: '40px', width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>🍽️</div>}
+                                                ) : <div className="product-img-placeholder">🍽️</div>}
 
-                                                {(product.discount ?? 0) > 0 && <div className="promo-tag" style={{ position: 'absolute', top: 0, left: 0, background: 'linear-gradient(135deg, #e53935, #c62828)', color: 'white', fontSize: '11px', fontWeight: 800, padding: '5px 14px 5px 9px', clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}>-{product.discount}%</div>}
+                                                {(product.discount ?? 0) > 0 && <div className="promo-tag" >-{product.discount}%</div>}
 
                                                 {isClosed && (
-                                                    <div className="closed-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.42)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <div className="closed-badge" style={{ background: 'rgba(0,0,0,0.78)', color: 'white', fontSize: '12px', fontWeight: 800, padding: '5px 14px', borderRadius: '20px', border: '1.5px solid rgba(255,255,255,0.25)' }}>🔒 Sedang Tutup</div>
+                                                    <div className="closed-overlay" >
+                                                        <div className="closed-badge" >🔒 Sedang Tutup</div>
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="product-body-lg" style={{ padding: "16px", display: "flex", flexDirection: "column", flex: 1 }}>
-                                                <div className="product-name-lg" style={{ fontSize: "15px", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.name}</div>
-                                                <div className="product-shop-lg" style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '12px' }}>
+                                            <div className="product-body-lg" >
+                                                <div className="product-name-lg" >{product.name}</div>
+                                                <div className="product-shop-lg" >
                                                     <span>🏪</span> {product.store?.name || 'Toko UMKM'}
                                                 </div>
 
-                                                <div style={{ marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid var(--cream-dark)", paddingTop: "12px" }}>
+                                                <div className="product-action-lg">
                                                     <div className="price-col">
-                                                        <div className="price-main" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--terracotta)' }}>
+                                                        <div className="price-main" >
                                                             {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
                                                         </div>
-                                                        <div className="sold-row" style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                                            <span style={{ color: "#F1C40F", fontSize: "12px" }}>★</span>
-                                                            <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>{product.rating_avg || 5.0}</span>
+                                                        <div className="sold-row" >
+                                                            <span className="star-icon">★</span>
+                                                            <span className="rating-text">{product.rating_avg || 5.0}</span>
                                                             <span>·</span>
                                                             <span>({product.sold_count || 0})</span>
                                                         </div>
@@ -384,7 +365,7 @@ export default function SlemanFoodPage() {
                                                     <button
                                                         title="Pesan via WhatsApp"
                                                         className={`btn-wa-compact ${isClosed ? 'disabled' : ''}`}
-                                                        style={isClosed ? { background: '#bbb', boxShadow: 'none', cursor: 'not-allowed', width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: "none", color: "white" } : { background: '#25D366', boxShadow: '0 2px 8px rgba(37,211,102,0.3)', cursor: 'pointer', width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: "none", color: "white" }}
+
                                                         disabled={isClosed}
                                                         onClick={(e) => {
                                                             e.preventDefault();
@@ -414,7 +395,7 @@ export default function SlemanFoodPage() {
                                     <button
                                         onClick={() => fetchNextPage()}
                                         disabled={isLoading}
-                                        style={{ padding: '12px 32px', fontWeight: 700, background: 'white', border: '1.5px solid var(--cream-dark)', borderRadius: '50px', cursor: 'pointer', color: 'var(--text-secondary)' }}
+                                        className="btn-load-more"
                                     >
                                         {isLoading ? 'Memuat...' : 'Lihat Lebih Banyak'}
                                     </button>

@@ -177,11 +177,10 @@ export default function KecamatanDetailPage() {
     return (
       <Link
         href={`/produk/${p.id}`}
-        style={{ textDecoration: "none", opacity: unavailable ? 0.65 : 1 }}
+        className={`no-underline ${unavailable ? "opacity-65" : ""}`}
       >
         <div
-          className="kec-prod-card"
-          style={{ filter: unavailable ? "grayscale(60%)" : "none" }}
+          className={`kec-prod-card ${unavailable ? "grayscale-60" : ""}`}
         >
           <div className="kec-prod-img">
             <Image
@@ -189,7 +188,7 @@ export default function KecamatanDetailPage() {
               alt={p.name}
               width={180}
               height={140}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              className="w-full h-full object-cover"
             />
             {unavailable && (
               <div style={{
@@ -227,14 +226,14 @@ export default function KecamatanDetailPage() {
   const SkeletonProdCards = ({ count = 5 }: { count?: number }) => (
     <>
       {Array(count).fill(null).map((_, i) => (
-        <div key={i} className="kec-prod-card" style={{ opacity: 0.5, pointerEvents: "none" }}>
-          <div className="kec-prod-img" style={{ background: "var(--cream-dark)" }} />
+        <div key={i} className="kec-prod-card skeleton-card">
+          <div className="kec-prod-img bg-cream-dark" />
           <div className="kec-prod-body">
-            <div className="kec-prod-name" style={{ height: 28, background: "var(--cream-dark)", borderRadius: 4 }} />
-            <div className="kec-prod-shop" style={{ height: 14, background: "var(--cream-dark)", borderRadius: 4, width: "60%" }} />
+            <div className="kec-prod-name skeleton-title" />
+            <div className="kec-prod-shop skeleton-text-60" />
             <div className="kec-prod-footer">
-              <div style={{ width: 60, height: 16, background: "var(--cream-dark)", borderRadius: 4 }} />
-              <div className="kec-prod-wa" style={{ background: "var(--cream-dark)" }} />
+              <div className="skeleton-badge" />
+              <div className="kec-prod-wa bg-cream-dark" />
             </div>
           </div>
         </div>
@@ -249,7 +248,7 @@ export default function KecamatanDetailPage() {
         <div className="kec-all-grid">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="kec-prod-card" style={{ opacity: 0.5, pointerEvents: "none" }}>
-              <div className="kec-prod-img" style={{ height: 140, background: "var(--cream-dark)" }} />
+              <div className="kec-prod-img skeleton-img" />
               <div className="kec-prod-body">
                 <div style={{ height: 28, background: "var(--cream-dark)", borderRadius: 4, marginBottom: 6 }} />
                 <div style={{ height: 14, background: "var(--cream-dark)", borderRadius: 4, width: "60%", marginBottom: 6 }} />
@@ -275,10 +274,10 @@ export default function KecamatanDetailPage() {
       return (
         <div className="kec-merchant-grid">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="merchant-card" style={{ pointerEvents: "none" }}>
-              <div className="merchant-card-cover" style={{ background: "var(--cream-dark)" }} />
+            <div key={i} className="merchant-card pointer-events-none">
+              <div className="merchant-card-cover bg-cream-dark" />
               <div className="merchant-card-body">
-                <div className="merchant-avatar-overlap" style={{ background: "var(--cream-dark)" }} />
+                <div className="merchant-avatar-overlap bg-cream-dark" />
                 <div style={{ height: 18, background: "var(--cream-dark)", borderRadius: 6, marginBottom: 8, width: "70%" }} />
                 <div style={{ height: 12, background: "var(--cream-dark)", borderRadius: 6, width: "50%" }} />
               </div>
@@ -308,7 +307,7 @@ export default function KecamatanDetailPage() {
     activeTab === "semua" || activeTab === "fast-food" || activeTab === "frozen-food";
 
   return (
-    <div style={{ background: "var(--cream)" }}>
+    <div className="bg-cream">
       <Navbar />
       <main>
 
@@ -321,7 +320,7 @@ export default function KecamatanDetailPage() {
             <div className="kec-hero-row">
               <div className="kec-icon-big" style={{ position: "relative", background: "#E2F0D4", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: district?.logo ? 0 : undefined }}>
                 {district?.logo && (
-                  <Image src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} width={100} height={100} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <Image src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} width={100} height={100} className="w-full h-full object-cover" />
                 )}
                 {!district?.logo && (district?.icon || district?.emoji || "🌿")}
               </div>
@@ -379,17 +378,16 @@ export default function KecamatanDetailPage() {
               🏪 Toko
             </button>
 
-            <div className="kec-toolbar-right" style={{ gap: 12 }}>
+            <div className="kec-toolbar-right gap-12">
               {showCategoryFilter && (
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>
+                <div className="flex-center gap-8">
+                  <span className="text-muted fw-600 font-12">
                     Kategori:
                   </span>
                   <select
-                    className="kec-sort-select"
+                    className="kec-sort-select min-w-120"
                     value={categoryFilter}
                     onChange={(e) => setCategoryFilter(e.target.value)}
-                    style={{ minWidth: 120 }}
                   >
                     <option value="all">Semua</option>
                     {categories.map((c: Category) => (
@@ -422,7 +420,7 @@ export default function KecamatanDetailPage() {
               {/* Fast Food Section */}
               <div className="kec-special-section">
                 <div className="kec-special-header">
-                  <div className="kec-special-icon" style={{ background: "#FFF3E0" }}>🍔</div>
+                  <div className="kec-special-icon bg-orange-light">🍔</div>
                   <div>
                     <div className="kec-special-title">Fast Food Lokal</div>
                     <div className="kec-special-sub">Makanan siap saji dari UMKM setempat</div>
@@ -435,7 +433,7 @@ export default function KecamatanDetailPage() {
                   {isLoadingFFPreview ? (
                     <SkeletonProdCards count={5} />
                   ) : fastFoodPreview.length === 0 ? (
-                    <div className="kec-empty" style={{ padding: "28px 20px", width: "100%" }}>
+                    <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🍔</div>
                       <div className="kec-empty-text">Belum ada fast food di kapanewon ini</div>
                     </div>
@@ -448,7 +446,7 @@ export default function KecamatanDetailPage() {
               {/* Frozen Food Section */}
               <div className="kec-special-section">
                 <div className="kec-special-header">
-                  <div className="kec-special-icon" style={{ background: "#E3F2FD" }}>🧊</div>
+                  <div className="kec-special-icon bg-blue-light">🧊</div>
                   <div>
                     <div className="kec-special-title">Frozen Food Homemade</div>
                     <div className="kec-special-sub">Produk beku siap masak dari dapur lokal</div>
@@ -461,7 +459,7 @@ export default function KecamatanDetailPage() {
                   {isLoadingFrozenPreview ? (
                     <SkeletonProdCards count={5} />
                   ) : frozenPreview.length === 0 ? (
-                    <div className="kec-empty" style={{ padding: "28px 20px", width: "100%" }}>
+                    <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🧊</div>
                       <div className="kec-empty-text">Belum ada frozen food di kapanewon ini</div>
                     </div>
@@ -474,12 +472,12 @@ export default function KecamatanDetailPage() {
               {/* Semua Produk — horizontal scroll (same behavior as Fast Food / Frozen Food) */}
               <div className="kec-special-section">
                 <div className="kec-special-header">
-                  <div className="kec-special-icon" style={{ background: "#E2F0D4" }}>🛍️</div>
+                  <div className="kec-special-icon bg-green-light">🛍️</div>
                   <div>
                     <div className="kec-special-title">
                       Semua Produk
                       {productsTotal ? (
-                        <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-muted)", marginLeft: 8 }}>
+                        <span className="text-muted fw-600 font-14 ml-8">
                           ({productsTotal} produk)
                         </span>
                       ) : null}
@@ -491,7 +489,7 @@ export default function KecamatanDetailPage() {
                   {isLoadingAll ? (
                     <SkeletonProdCards count={5} />
                   ) : allGridProducts.length === 0 ? (
-                    <div className="kec-empty" style={{ padding: "28px 20px", width: "100%" }}>
+                    <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🛍️</div>
                       <div className="kec-empty-text">Belum ada produk di kapanewon ini</div>
                     </div>
@@ -517,10 +515,10 @@ export default function KecamatanDetailPage() {
                 <>
                   <KecAllGrid products={fastFoodGridProducts} loading={false} />
                   {isFetchingMoreFastFood && (
-                    <div style={{ textAlign: "center", padding: "16px", color: "var(--text-muted)" }}>Memuat...</div>
+                    <div className="empty-state-msg">Memuat...</div>
                   )}
                   {hasMoreFastFood && !isFetchingMoreFastFood && (
-                    <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+                    <div className="flex-center mt-24">
                       <button className="kec-filter-chip" onClick={() => fetchNextFastFood()}>
                         Muat Lebih Banyak
                       </button>
@@ -545,10 +543,10 @@ export default function KecamatanDetailPage() {
                 <>
                   <KecAllGrid products={frozenGridProducts} loading={false} />
                   {isFetchingMoreFrozen && (
-                    <div style={{ textAlign: "center", padding: "16px", color: "var(--text-muted)" }}>Memuat...</div>
+                    <div className="empty-state-msg">Memuat...</div>
                   )}
                   {hasMoreFrozen && !isFetchingMoreFrozen && (
-                    <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+                    <div className="flex-center mt-24">
                       <button className="kec-filter-chip" onClick={() => fetchNextFrozen()}>
                         Muat Lebih Banyak
                       </button>
@@ -564,10 +562,10 @@ export default function KecamatanDetailPage() {
             <div>
               {renderStoresGrid()}
               {isFetchingMoreStores && (
-                <div style={{ textAlign: "center", padding: "16px", color: "var(--text-muted)" }}>Memuat...</div>
+                <div className="empty-state-msg">Memuat...</div>
               )}
               {hasMoreStores && !isFetchingMoreStores && (
-                <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+                <div className="flex-center mt-24">
                   <button className="kec-filter-chip" onClick={() => fetchNextStores()}>
                     Muat Lebih Banyak
                   </button>

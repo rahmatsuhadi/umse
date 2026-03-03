@@ -12,7 +12,7 @@ export default function PanduanPembeliPage() {
     return (
         <>
             <Navbar />
-            <div className="page active" id="page-guide" style={{ display: "block" }}>
+            <div className="page active" id="page-guide" >
                 <div className="guide-hero">
                     <div className="guide-hero-inner">
                         <h1>🛍️ Panduan Pembeli</h1>
@@ -27,7 +27,7 @@ export default function PanduanPembeliPage() {
                             <div className="guide-card">
                                 <div className="guide-card-icon">🔍</div>
                                 <h3>Cari Produk</h3>
-                                <p>Gunakan fitur pencarian atau jelajahi per kategori dan kecamatan untuk menemukan produk yang Anda inginkan.</p>
+                                <p>Gunakan fitur pencarian atau jelajahi per kategori dan kapanewon untuk menemukan produk yang Anda inginkan.</p>
                             </div>
                             <div className="guide-card">
                                 <div className="guide-card-icon">💬</div>

@@ -12,8 +12,8 @@ export default function PanduanMerchantPage() {
     return (
         <>
             <Navbar />
-            <div className="page active" id="page-about" style={{ display: "block" }}>
-                <div className="guide-hero" style={{ background: "#E2F0D4" }}>
+            <div className="page active" id="page-about" >
+                <div className="guide-hero bg-green-light">
                     <div className="guide-hero-inner">
                         <h1>🏪 Panduan Merchant</h1>
                         <p>Bergabunglah dengan ekosistem digital UMKM Sleman dan perluas jangkauan pasar produk lokal Anda.</p>

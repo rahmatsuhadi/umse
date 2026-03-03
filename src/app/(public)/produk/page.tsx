@@ -60,11 +60,11 @@ export default function ProductsPage() {
     }
 
     return (
-        <div style={{ background: "var(--cream)" }}>
+        <div className="bg-cream">
             {/* Hero */}
             <div className="products-hero">
                 <div className="products-hero-inner">
-                    <h1>🛍️ Katalog <span style={{ color: "rgba(255,255,255,0.85)" }}>Produk</span></h1>
+                    <h1>🛍️ Katalog <span className="text-white-85">Produk</span></h1>
                     <p>Temukan ribuan produk asli buatan UMKM Sleman</p>
                     <div className="products-tabs">
                         <button className={`products-tab ${activeTab === 'popular' ? 'active' : ''}`} onClick={() => setActiveTab('popular')}>🔥 Terpopuler</button>
@@ -83,9 +83,9 @@ export default function ProductsPage() {
                             <div className="catalog-count">{totalCount} produk ditemukan</div>
                         )}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                        <div className="products-toolbar-left" style={{ flexWrap: "wrap" }}>
-                            <span style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: 600 }}>Kategori:</span>
+                    <div className="flex-center-wrap gap-8">
+                        <div className="products-toolbar-left flex-wrap">
+                            <span className="text-muted fw-600 font-13">Kategori:</span>
                             <button
                                 className={`toolbar-chip ${activeCategory === 'Semua' ? 'active' : ''}`}
                                 onClick={() => setActiveCategory('Semua')}
@@ -102,10 +102,9 @@ export default function ProductsPage() {
                                 </button>
                             ))}
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div className="flex-center gap-8">
                             <select
-                                className="sort-select"
-                                style={{ fontSize: "13px" }}
+                                className="sort-select font-13"
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
                             >
@@ -127,32 +126,31 @@ export default function ProductsPage() {
                     {products.length > 0 ? products.map((product: any) => (
                         <div
                             key={product.id}
-                            className="product-card-lg"
+                            className="product-card-lg cursor-pointer"
                             onClick={() => window.location.href = `/produk/${product.id}`}
-                            style={{ cursor: 'pointer' }}
                         >
                             <div className="product-img-lg">
                                 {product.thumbnail?.media_url ? (
-                                    <Image src={product.thumbnail.media_url} alt={product.name} fill style={{ objectFit: 'cover' }} />
-                                ) : <div style={{ fontSize: '40px' }}>🎁</div>}
+                                    <Image src={product.thumbnail.media_url} alt={product.name} fill className="object-cover" />
+                                ) : <div className="font-40">🎁</div>}
                                 {product.discount && <div className="promo-tag">-{product.discount}%</div>}
                             </div>
                             <div className="product-body-lg">
                                 <div className="product-name-lg">{product.name}</div>
-                                <div className="product-shop-lg" style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px' }}>
+                                <div className="product-shop-lg product-shop-info">
                                     <span>🏪</span> {product.store?.name || 'Toko UMKM'}
                                 </div>
                             </div>
                             <div className="product-actions-lg">
                                 <div className="price-col">
                                     <div className="price-row">
-                                        <div className="price-main" style={{ fontSize: '16px', fontWeight: 800, color: 'var(--terracotta)' }}>
+                                        <div className="price-main price-main-lg">
                                             {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
                                         </div>
                                     </div>
-                                    <div className="sold-row" style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                        <span style={{ color: "#F1C40F", fontSize: "12px" }}>★</span>
-                                        <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>{product.rating_avg || '5.0'}</span>
+                                    <div className="sold-row sold-row-sm">
+                                        <span className="star-icon">★</span>
+                                        <span className="rating-text">{product.rating_avg || '5.0'}</span>
                                         <span>·</span>
                                         <span>({product.sold_count || 0})</span>
                                     </div>
@@ -167,17 +165,16 @@ export default function ProductsPage() {
                             </div>
                         </div>
                     )) : (
-                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
+                        <div className="empty-state-msg">
                             {isLoading ? 'Memuat produk...' : 'Tidak ada produk ditemukan'}
                         </div>
                     )}
                 </div>
 
                 {hasNextPage && (
-                    <div style={{ textAlign: "center", marginTop: "40px" }}>
+                    <div className="mt-40 text-center">
                         <button
-                            className="toolbar-chip"
-                            style={{ padding: '12px 32px', fontWeight: 700, background: 'white' }}
+                            className="toolbar-chip btn-load-more"
                             onClick={() => fetchNextPage()}
                             disabled={isLoading}
                         >
@@ -186,7 +183,7 @@ export default function ProductsPage() {
                     </div>
                 )}
 
-                <div style={{ paddingBottom: "60px" }}></div>
+                <div className="pb-60"></div>
 
                 {/* ── SPECIAL: SIAP SAJI & FROZEN FOOD ── */}
                 <SlemanFoodSections />

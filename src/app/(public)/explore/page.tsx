@@ -248,10 +248,10 @@ function ExplorePageContent() {
     const showMainProductsHeader = mainGridProducts.length > 0;
 
     return (
-        <div className="pb-20 md:pb-0 explore-page" style={{ background: "var(--cream)" }}>
+        <div className="pb-20 md:pb-0 explore-page bg-cream">
             <Navbar />
             <main className="page active" id="page-explore">
-                <div className="explore-header" style={{ paddingTop: '80px', paddingBottom: '32px' }}>
+                <div className="explore-header pt-80 pb-32">
                     <div className="explore-header-inner">
                         <p className="explore-title">Hasil pencarian untuk:</p>
                         <h1 className="explore-keyword" id="exploreKeyword">&quot;{query || "Semua Produk"}&quot;</h1>
@@ -282,7 +282,7 @@ function ExplorePageContent() {
                                     {/* Kecamatan */}
                                     {visibleDistricts.length > 0 && (
                                         <div className="filter-section">
-                                            <h4>Kecamatan</h4>
+                                            <h4>Kapanewon</h4>
                                             <div id="filterSubdistricts">
                                                 {visibleDistricts.map((dist: any) => {
                                                     const count = districtCounts[dist.id?.toString()] || 0;
@@ -333,32 +333,38 @@ function ExplorePageContent() {
                                     )}
 
                                     {/* 🍔 Fast Food & 🧊 Frozen Food — SPECIAL FILTERS */}
-                                    <div className="filter-section" style={{ borderTop: '2px solid var(--cream-dark)' }}>
-                                        <h4 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                            <span style={{ fontSize: '15px' }}>⚡</span> Siap Saji & Beku
+                                    <div className="filter-section border-t-cream">
+                                        <h4 className="flex-center gap-6">
+                                            <span className="font-15">⚡</span> Siap Saji & Beku
                                         </h4>
                                         <label className="filter-option filter-option-special" style={filterOptionLayoutStyle}>
                                             <input type="checkbox" checked={isFastFood} onChange={e => setIsFastFood(e.target.checked)} />
-                                            <span style={{ ...filterTextStyle, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span className="filter-text-flex">
                                                 <span style={{ fontSize: '15px' }}>🍔</span> Fast Food Lokal
                                             </span>
                                             <span className="count" style={filterCountRightStyle}>{specialCounts.fastFood}</span>
                                         </label>
                                         <label className="filter-option filter-option-special" style={filterOptionLayoutStyle}>
                                             <input type="checkbox" checked={isFrozen} onChange={e => setIsFrozen(e.target.checked)} />
-                                            <span style={{ ...filterTextStyle, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span className="filter-text-flex">
                                                 <span style={{ fontSize: '15px' }}>🧊</span> Frozen Food
                                             </span>
                                             <span className="count" style={filterCountRightStyle}>{specialCounts.frozen}</span>
                                         </label>
                                         {/* Open now toggle */}
-                                        <div className="filter-option" style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--cream-dark)' }}>
-                                            <label className="explore-toggle-wrap">
-                                                <input type="checkbox" checked={isOpenNow} onChange={e => setIsOpenNow(e.target.checked)} />
-                                                <span className="explore-toggle-slider"></span>
+                                        <div className="filter-option filter-divider">
+                                            <label style={{ position: "relative", display: "inline-block", width: "34px", height: "20px", cursor: "pointer", flex: "none" }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isOpenNow}
+                                                    onChange={e => setIsOpenNow(e.target.checked)}
+                                                    style={{ opacity: 0, width: 0, height: 0, position: "absolute" }}
+                                                />
+                                                <span style={{ position: "absolute", inset: 0, borderRadius: "20px", transition: "0.2s", background: isOpenNow ? "var(--forest)" : "var(--cream-dark)" }}></span>
+                                                <span style={{ position: "absolute", width: "16px", height: "16px", borderRadius: "50%", background: "white", top: "2px", left: "2px", transition: "0.2s", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", transform: isOpenNow ? "translateX(14px)" : "translateX(0)" }}></span>
                                             </label>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                <span className="time-dot" style={{ flexShrink: 0, background: isOpenNow ? '#27AE60' : '#ccc' }}></span> Buka Sekarang
+                                            <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                                                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: isOpenNow ? '#27AE60' : '#ccc' }}></span> Buka Sekarang
                                             </span>
                                         </div>
                                     </div>
@@ -368,7 +374,7 @@ function ExplorePageContent() {
                                         <h4>Harga</h4>
                                         <div className="price-range">
                                             <div className="price-input-wrap">
-                                                <span style={{ fontSize: '12px', color: 'var(--text-muted)', width: '30px' }}>Min</span>
+                                                <span className="price-input-label">Min</span>
                                                 <input className="price-input" type="text" placeholder="Min" value={minPrice} onChange={e => setMinPrice(formatInputRupiah(e.target.value))} />
                                             </div>
                                             <div className="price-input-wrap">
@@ -406,15 +412,18 @@ function ExplorePageContent() {
                                     )}
 
                                     {/* Reset */}
-                                    <div style={{ padding: '0 12px 12px' }}>
-                                        <button className="btn btn-outline btn-sm" style={{ width: '100%' }} onClick={resetFilters}>↺ Reset Filter</button>
+                                    <div style={{ padding: "16px" }}>
+                                        <button
+                                            onClick={resetFilters}
+                                            className="btn-reset-filter">Reset Filter
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </aside>
 
                         {/* ── Results ── */}
-                        <div style={{ minWidth: 0 }}>
+                        <div className="min-w-0">
                             <div className="explore-tabs">
                                 <button className={`explore-tab ${activeTab === 'products' ? 'active' : ''}`} onClick={() => setActiveTab('products')} id="tabBtnProducts">Produk ({totalProducts})</button>
                                 <button className={`explore-tab ${activeTab === 'merchants' ? 'active' : ''}`} onClick={() => setActiveTab('merchants')} id="tabBtnMerchants">Toko ({totalStores})</button>
@@ -441,38 +450,38 @@ function ExplorePageContent() {
                                 {/* Sleman Food Sections (Fast Food & Frozen) */}
                                 {/* Only show when no specific filters are applied for a cleaner default explore view */}
                                 {!query && selectedCategories.length === 0 && selectedDistricts.length === 0 && !minPrice && !maxPrice && !isFastFood && !isFrozen && !isOpenNow && !selectedRating && (
-                                    <div style={{ marginBottom: '32px' }}>
+                                    <div className="mb-32">
                                         <SlemanFoodSections />
                                     </div>
                                 )}
 
                                 {/* Fast Food section inside results */}
                                 {fastFoodProducts.length > 0 && (
-                                    <div id="exploreFFSection" className="catalog-special explore-special-section" style={{ display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
+                                    <div id="exploreFFSection" className="catalog-special explore-special-section flex-col mb-24">
                                         <div className="catalog-special-header">
-                                            <div className="catalog-special-icon-wrap" style={{ background: '#FFF3E0' }}>🍔</div>
+                                            <div className="catalog-special-icon-wrap bg-orange-light">🍔</div>
                                             <div>
-                                                <div className="catalog-special-label" style={{ color: '#e65100' }}>Fast Food Lokal</div>
-                                                <div className="catalog-special-title" style={{ fontSize: 18 }}>Siap Saji dari UMKM</div>
+                                                <div className="catalog-special-label text-orange-dark">Fast Food Lokal</div>
+                                                <div className="catalog-special-title font-18">Siap Saji dari UMKM</div>
                                             </div>
                                         </div>
-                                        <div className="catalog-hscroll" id="exploreFFRow" style={{ padding: '16px 0' }}>
+                                        <div className="catalog-hscroll py-16" id="exploreFFRow">
                                             {fastFoodProducts.map((product) => (
-                                                <div key={`ff-${product.id}`} className="product-card explore-special-card" onClick={() => window.location.href = `/produk/${product.id}`} style={{ cursor: 'pointer', flexShrink: 0, width: 200 }}>
-                                                    <div className="product-img" style={{ height: '180px', background: 'var(--cream-dark)', position: 'relative' }}>
+                                                <div key={`ff-${product.id}`} className="product-card explore-special-card w-200 cursor-pointer shrink-0" onClick={() => window.location.href = `/produk/${product.id}`}>
+                                                    <div className="product-img product-img-180">
                                                         {product.thumbnail?.media_url ? (
-                                                            <Image src={product.thumbnail.media_url} alt={product.name} fill style={{ objectFit: 'cover' }} />
-                                                        ) : <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>🎁</div>}
+                                                            <Image src={product.thumbnail.media_url} alt={product.name} fill className="object-cover" />
+                                                        ) : <div className="product-img-placeholder">🎁</div>}
                                                     </div>
-                                                    <div className="product-body" style={{ padding: '14px' }}>
-                                                        <div className="product-name" style={{ fontWeight: 700, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                                                    <div className="product-body p-14">
+                                                        <div className="product-name product-name-clamp">
                                                             {product.name}
                                                         </div>
-                                                        <div className="product-shop" style={{ fontSize: '11px', color: '#666', marginBottom: '8px' }}>
+                                                        <div className="product-shop product-shop-info">
                                                             🏪 {product.store?.name || 'Toko UMKM'}
                                                         </div>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                            <div style={{ color: 'var(--terracotta)', fontWeight: 800 }}>
+                                                        <div className="flex-between">
+                                                            <div className="price-main-lg">
                                                                 {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
                                                             </div>
                                                         </div>
@@ -485,11 +494,11 @@ function ExplorePageContent() {
 
                                 {/* Frozen Food section inside results */}
                                 {frozenProducts.length > 0 && (
-                                    <div id="exploreFrozenSection" className="catalog-special explore-special-section" style={{ display: 'flex', flexDirection: 'column', paddingTop: '16px', marginBottom: '32px' }}>
+                                    <div id="exploreFrozenSection" className="catalog-special explore-special-section flex-col pt-16 mb-32">
                                         <div className="catalog-special-header">
-                                            <div className="catalog-special-icon-wrap" style={{ background: '#E3F2FD' }}>🧊</div>
+                                            <div className="catalog-special-icon-wrap bg-blue-light">🧊</div>
                                             <div>
-                                                <div className="catalog-special-label" style={{ color: '#1565c0' }}>Frozen Food</div>
+                                                <div className="catalog-special-label text-blue-dark">Frozen Food</div>
                                                 <div className="catalog-special-title" style={{ fontSize: 18 }}>Homemade, Siap Masak</div>
                                             </div>
                                         </div>
@@ -522,10 +531,10 @@ function ExplorePageContent() {
 
                                 {showMainProductsHeader && (
                                     <div>
-                                        <div id="exploreMainProductsHeader" className="catalog-main-header explore-main-products-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
-                                            <div className="catalog-main-title" style={{ fontSize: '17px' }}>Produk Lainnya</div>
+                                        <div id="exploreMainProductsHeader" className="catalog-main-header explore-main-products-header flex-between gap-8 mb-10 flex-wrap">
+                                            <div className="catalog-main-title font-17">Produk Lainnya</div>
                                         </div>
-                                        <div style={{ height: '1px', background: 'var(--cream-dark)', marginBottom: '20px' }} />
+                                        <div className="divider-20" />
                                     </div>
                                 )}
 

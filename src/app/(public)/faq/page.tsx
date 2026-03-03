@@ -31,7 +31,7 @@ export default function FaqPage() {
 
                 <div className="guide-body">
                     {isLoading ? (
-                        <div style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>Memuat FAQ...</div>
+                        <div className="empty-state-msg">Memuat FAQ...</div>
                     ) : Object.keys(groupedFaqs).length > 0 ? (
                         (Object.entries(groupedFaqs) as [string, FAQ[]][]).map(([topic, topicFaqs]) => (
                             <div className="guide-section" key={topic}>
@@ -44,7 +44,7 @@ export default function FaqPage() {
                             </div>
                         ))
                     ) : (
-                        <div style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>Belum ada FAQ yang tersedia.</div>
+                        <div className="empty-state-msg">Belum ada FAQ yang tersedia.</div>
                     )}
                 </div>
             </div>
