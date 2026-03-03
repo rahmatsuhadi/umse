@@ -107,11 +107,11 @@ export default async function ProductDetailPage({
         <div className="detail-layout">
 
           {/* Gallery (Left / Sticky) */}
-          <ProductImageGallery images={images} />
+          <ProductImageGallery images={images} isClosed={!product.store?.is_open} />
 
           {/* Product Info (Right) */}
           <div className="detail-info">
-            <ProductCheckoutButton product={product} />
+            <ProductCheckoutButton product={product} isClosed={!product.store?.is_open} />
           </div>
 
         </div>
@@ -165,6 +165,7 @@ export default async function ProductDetailPage({
             productId={product.id}
             productName={product.name}
             phone={product.store?.user?.phone_number || ''}
+            isClosed={!product.store?.is_open}
           />
         </div>
       </div>

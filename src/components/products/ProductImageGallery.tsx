@@ -5,9 +5,10 @@ import { useState } from "react";
 
 type Props = {
   images: string[];
+  isClosed?: boolean;
 };
 
-export default function ProductImageGallery({ images }: Props) {
+export default function ProductImageGallery({ images, isClosed }: Props) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const fallback = "/assets/no-image.jpg";
@@ -17,14 +18,34 @@ export default function ProductImageGallery({ images }: Props) {
   return (
     <div className="detail-gallery">
       {/* Gambar Utama */}
-      <div className="gallery-main">
+      <div className="gallery-main" style={{ position: 'relative' }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: isClosed ? 'rgba(0,0,0,0.5)' : 'none',
+          borderRadius: 'var(--radius-lg)',
+          zIndex: 1, pointerEvents: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          {isClosed && (
+            <span style={{
+              background: 'rgba(0,0,0,0.7)', color: 'white',
+              padding: '8px 16px', borderRadius: '20px',
+              fontWeight: 700, fontSize: '14px', letterSpacing: '0.5px'
+            }}>
+              Tutup
+            </span>
+          )}
+        </div>
         <Image
           width={600}
           height={600}
           src={mainImg}
           alt={`Gambar Utama ${selectedIndex + 1}`}
           className="w-full h-full object-cover"
-          style={{ borderRadius: 'var(--radius-lg)' }}
+          style={{
+            borderRadius: 'var(--radius-lg)',
+            filter: isClosed ? 'grayscale(1)' : 'none'
+          }}
         />
       </div>
 
@@ -43,7 +64,10 @@ export default function ProductImageGallery({ images }: Props) {
               src={url}
               alt={`Thumbnail ${index + 1}`}
               className="w-full h-full object-cover"
-              style={{ borderRadius: 'calc(var(--radius-sm) - 2px)' }}
+              style={{
+                borderRadius: 'calc(var(--radius-sm) - 2px)',
+                filter: isClosed ? 'grayscale(1)' : 'none'
+              }}
             />
           </div>
         ))}

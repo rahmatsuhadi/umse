@@ -12,17 +12,18 @@ export interface Store {
   logo_url: string;
   description: string;
   address: string;
-qris_url:string
+  qris_url: string
   // Anda bisa menambahkan tipe lebih detail untuk regency, district, village jika perlu
   regency: { id: number; name: string };
-  regency_id:string,
+  regency_id: string,
   district: { id: number; name: string };
-  district_id:string,
+  district_id: string,
   village: { id: number; name: string };
-  village_id:number
-  user:User
+  village_id: number
+  user: User
 
   products_count: number;
+  is_open: boolean;
   created_at: string;
   updated_at: string;
 }

@@ -14,6 +14,8 @@ export interface District {
   regency_id: string;
   name: string;
   logo?: string | null;
+  icon?: string | null;
+  emoji?: string | null;
   stores_count?: number;
   products_count?: number;
 }

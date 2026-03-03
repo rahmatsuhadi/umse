@@ -34,7 +34,7 @@ export default function KecamatanDetailPage() {
 
   // ─── District info ───
   const { data: districtsData } = useDistricts("3404");
-  type DistrictLite = { id: string | number; name: string; products_count?: number; logo?: string | null; };
+  type DistrictLite = { id: string | number; name: string; products_count?: number; logo?: string | null; icon?: string | null; emoji?: string | null; };
   const district = useMemo(() => {
     const all = (districtsData?.data || []) as DistrictLite[];
     return all.find((d) => String(d.id) === String(id));
@@ -291,7 +291,7 @@ export default function KecamatanDetailPage() {
       return (
         <div className="kec-empty">
           <div className="kec-empty-icon">🏪</div>
-          <div className="kec-empty-text">Belum ada toko di kecamatan ini</div>
+          <div className="kec-empty-text">Belum ada toko di pakanewon ini</div>
         </div>
       );
     }
@@ -319,16 +319,15 @@ export default function KecamatanDetailPage() {
               ← Kembali ke Beranda
             </button>
             <div className="kec-hero-row">
-              <div className="kec-icon-big" style={{ background: "#E2F0D4", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: district?.logo ? 0 : undefined }}>
-                {district?.logo ? (
-                  <Image src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} fill style={{ objectFit: "cover" }} />
-                ) : (
-                  "🌿"
+              <div className="kec-icon-big" style={{ position: "relative", background: "#E2F0D4", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: district?.logo ? 0 : undefined }}>
+                {district?.logo && (
+                  <Image src={district.logo} alt={`Logo Kecamatan ${district?.name || nameFromSlug || id}`} width={100} height={100} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
+                {!district?.logo && (district?.icon || district?.emoji || "🌿")}
               </div>
               <div className="kec-hero-text">
-                <h1>Kecamatan {district?.name || nameFromSlug || id}</h1>
-                <p>Kecamatan di Kabupaten Sleman, D.I. Yogyakarta</p>
+                <h1>Kapanewon {district?.name || nameFromSlug || id}</h1>
+                <p>Kapanewon di Kabupaten Sleman, D.I. Yogyakarta</p>
               </div>
             </div>
             <div className="kec-stats-row">
@@ -438,7 +437,7 @@ export default function KecamatanDetailPage() {
                   ) : fastFoodPreview.length === 0 ? (
                     <div className="kec-empty" style={{ padding: "28px 20px", width: "100%" }}>
                       <div className="kec-empty-icon">🍔</div>
-                      <div className="kec-empty-text">Belum ada fast food di kecamatan ini</div>
+                      <div className="kec-empty-text">Belum ada fast food di kapanewon ini</div>
                     </div>
                   ) : (
                     fastFoodPreview.map((p: Product) => <KecProdCard key={p.id} p={p} />)
@@ -464,7 +463,7 @@ export default function KecamatanDetailPage() {
                   ) : frozenPreview.length === 0 ? (
                     <div className="kec-empty" style={{ padding: "28px 20px", width: "100%" }}>
                       <div className="kec-empty-icon">🧊</div>
-                      <div className="kec-empty-text">Belum ada frozen food di kecamatan ini</div>
+                      <div className="kec-empty-text">Belum ada frozen food di kapanewon ini</div>
                     </div>
                   ) : (
                     frozenPreview.map((p: Product) => <KecProdCard key={p.id} p={p} />)
@@ -485,7 +484,7 @@ export default function KecamatanDetailPage() {
                         </span>
                       ) : null}
                     </div>
-                    <div className="kec-special-sub">Semua kategori produk dari kecamatan ini</div>
+                    <div className="kec-special-sub">Semua kategori produk dari kapanewon ini</div>
                   </div>
                 </div>
                 <div className="kec-scroll-row">
@@ -494,7 +493,7 @@ export default function KecamatanDetailPage() {
                   ) : allGridProducts.length === 0 ? (
                     <div className="kec-empty" style={{ padding: "28px 20px", width: "100%" }}>
                       <div className="kec-empty-icon">🛍️</div>
-                      <div className="kec-empty-text">Belum ada produk di kecamatan ini</div>
+                      <div className="kec-empty-text">Belum ada produk di kapanewon ini</div>
                     </div>
                   ) : (
                     allGridProducts.map((p: Product) => <KecProdCard key={p.id} p={p} />)
@@ -512,7 +511,7 @@ export default function KecamatanDetailPage() {
               ) : fastFoodGridProducts.length === 0 ? (
                 <div className="kec-empty">
                   <div className="kec-empty-icon">🍔</div>
-                  <div className="kec-empty-text">Belum ada fast food di kecamatan ini</div>
+                  <div className="kec-empty-text">Belum ada fast food di kapanewon ini</div>
                 </div>
               ) : (
                 <>
@@ -540,7 +539,7 @@ export default function KecamatanDetailPage() {
               ) : frozenGridProducts.length === 0 ? (
                 <div className="kec-empty">
                   <div className="kec-empty-icon">🧊</div>
-                  <div className="kec-empty-text">Belum ada frozen food di kecamatan ini</div>
+                  <div className="kec-empty-text">Belum ada frozen food di kapanewon ini</div>
                 </div>
               ) : (
                 <>

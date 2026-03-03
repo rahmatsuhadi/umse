@@ -26,17 +26,18 @@ const buildSlug = (name: string, id: string | number) =>
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "") + `~${id}`;
 
-// ── Child component: fetches live product count per district ──
 function SubdistrictCard({
     districtId,
     name,
     index,
     logo,
+    icon,
 }: {
     districtId: string | number;
     name: string;
     index: number;
     logo?: string | null;
+    icon?: string | null;
 }) {
     const col = getColor(index);
     const slug = buildSlug(name, districtId);
@@ -55,11 +56,10 @@ function SubdistrictCard({
             className="subdistrict-card"
         >
             <div className="subdistrict-icon" style={{ position: "relative", background: col.bg, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: logo ? 0 : undefined }}>
-                {logo ? (
-                    <Image src={logo} alt={`Logo ${name}`} fill style={{ objectFit: "cover" }} />
-                ) : (
-                    getIcon(index)
+                {logo && (
+                    <Image src={logo} alt={`Logo ${name}`} width={100} height={100} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
+                {!logo && (icon || getIcon(index))}
             </div>
             <div className="subdistrict-name">{name}</div>
             <div className="subdistrict-count">
@@ -90,11 +90,11 @@ export function Subdistricts() {
             <div className="container">
                 <div className="section-header">
                     <div>
-                        <h2 className="section-title">Jelajahi per <span>Kapanewon</span></h2>
+                        <h2 className="section-title">Jelajahi per <span>Kecamatan</span></h2>
                         {isLoading ? (
                             <div style={{ height: 20, width: 200, background: "#F5E9E2", borderRadius: 4, marginTop: 6, animation: "pulse 1.5s infinite" }} />
                         ) : (
-                            <p className="section-subtitle">{subdistricts.length} kapanewon (kecamatan) , ribuan UMKM siap melayani</p>
+                            <p className="section-subtitle">{subdistricts.length} kecamatan, ratusan UMKM siap melayani</p>
                         )}
                     </div>
                     <Link href="/umkm" className="see-all-link">Lihat Semua →</Link>
@@ -104,7 +104,6 @@ export function Subdistricts() {
                     {isLoading
                         ? Array(8).fill(null).map((_, i) => <SubdistrictSkeleton key={i} />)
                         : subdistricts.slice(0, 17).map((item, index) => {
-                            console.log("Subdistrict item logo:", item.name, item.logo);
                             return (
                                 <SubdistrictCard
                                     key={item.id}
@@ -112,6 +111,7 @@ export function Subdistricts() {
                                     name={item.name}
                                     index={index}
                                     logo={item.logo}
+                                    icon={(item as { icon?: string | null, emoji?: string | null }).icon || (item as { icon?: string | null, emoji?: string | null }).emoji || undefined}
                                 />
                             );
                         })}

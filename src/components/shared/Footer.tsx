@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCategoriesFooter } from "@/features/categories/hooks";
 
 export function Footer() {
@@ -12,35 +13,14 @@ export function Footer() {
             <div className="container">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <div
-                            className="logo"
-                            style={{
-                                color: "var(--saffron)",
-                                fontSize: 22,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 8,
-                                marginBottom: 4,
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: 32,
-                                    height: 32,
-                                    background: "var(--saffron)",
-                                    borderRadius: 8,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontSize: 16,
-                                }}
-                            >
-                                🏪
-                            </div>
-                            <span style={{ color: "white", fontWeight: 800 }}>
-                                Sleman
-                                <span style={{ color: "var(--saffron)" }}>Mart</span>
-                            </span>
+                        <div className="logo" style={{ marginBottom: 4 }}>
+                            <Image
+                                src="/slemanmartlogo.png"
+                                alt="Sleman Mart"
+                                width={120}
+                                height={48}
+                                style={{ height: 48, width: "auto", objectFit: "contain" }}
+                            />
                         </div>
                         <p>
                             Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM
