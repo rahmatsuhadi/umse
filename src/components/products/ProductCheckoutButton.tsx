@@ -8,6 +8,13 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
+const buildSlug = (name: string, id: string | number) =>
+    String(name || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") + `~${id}`;
+
 interface CheckoutButtonProps {
   product: Product;
   isAuth?: boolean;
@@ -107,7 +114,13 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
         <div className="detail-merchant-info" style={{ flex: 1, minWidth: 0 }}>
           <h4>{product.store.name}</h4>
           <span>⭐ {Number(product.store.average_rating).toFixed(1)} · {product.store.products_count} produk</span>
-          <div className="location">📍 {product.store.district?.name || 'Sleman'}</div>
+          <Link
+            href={`/kecamatan/${buildSlug(product.store.district?.name, product.store.district?.id) || 'sleman'}`}
+            style={{ textDecoration: "none" }}
+            className="location hover:text-terracotta transition-colors"
+          >
+            📍 {product.store.district?.name || 'Sleman'}
+          </Link>
         </div>
         <div style={{ color: 'var(--terracotta)', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
           Lihat Toko →
@@ -160,7 +173,7 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
       </div>
 
       {/* Deskripsi */}
-      <p className="detail-desc">{product.description}</p>
+      <div className="detail-desc" dangerouslySetInnerHTML={{ __html: product.description }} />
 
       {/* Specs */}
       <div className="detail-specs">

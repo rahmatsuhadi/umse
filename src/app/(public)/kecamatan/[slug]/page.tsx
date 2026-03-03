@@ -8,9 +8,10 @@ import { useCategories } from "@/features/categories/hooks";
 import { useDistricts } from "@/features/locations/hooks";
 import { useInfiniteProducts, useProducts } from "@/features/products/hooks";
 import { useInfiniteStores } from "@/features/store/hooks";
-import Link from "next/link";
+
 import Image from "next/image";
 import { MerchantCard } from "@/components/stores/MerchantCard";
+import { ProductCard, SkeletonProductCard } from "@/components/shared/ProductCard";
 import type { Product, Store, Category } from "@/types";
 
 type TabKey = "semua" | "fast-food" | "frozen-food" | "toko";
@@ -159,102 +160,13 @@ export default function KecamatanDetailPage() {
   const { data: categoriesData } = useCategories();
   const categories = (categoriesData?.data || []) as Category[];
 
-  // ─── Helpers ───
-  const getMediaUrl = (p: Product) =>
-    p?.media?.[0]?.media_url || p?.thumbnail?.media_url || "/assets/no-image.jpg";
-
-  const getPrice = (p: Product) => {
-    const priceObj = p?.variants_exists ? p?.lowest_price : p?.price;
-    return priceObj?.formatted?.split(",")[0] || `Rp ${(priceObj?.value || 0).toLocaleString("id-ID")}`;
-  };
-
-  // A product is "unavailable" when stock is out (store open/close not in API, use stock_status)
-  const isUnavailable = (p: Product) => p?.stock_status === "out_of_stock";
-
-  // ─── Mini product card for horizontal scroll sections ───
-  const KecProdCard = ({ p }: { p: Product }) => {
-    const unavailable = isUnavailable(p);
-    return (
-      <Link
-        href={`/produk/${p.id}`}
-        className={`no-underline ${unavailable ? "opacity-65" : ""}`}
-      >
-        <div
-          className={`kec-prod-card ${unavailable ? "grayscale-60" : ""}`}
-        >
-          <div className="kec-prod-img">
-            <Image
-              src={getMediaUrl(p)}
-              alt={p.name}
-              width={180}
-              height={140}
-              className="w-full h-full object-cover"
-            />
-            {unavailable && (
-              <div style={{
-                position: "absolute", inset: 0,
-                background: "rgba(0,0,0,0.35)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{
-                  background: "rgba(0,0,0,0.75)", color: "white",
-                  fontSize: 11, fontWeight: 800, padding: "4px 10px",
-                  borderRadius: 20, border: "1.5px solid rgba(255,255,255,0.2)",
-                }}>Stok Habis</span>
-              </div>
-            )}
-          </div>
-          <div className="kec-prod-body">
-            <div className="kec-prod-name">{p.name}</div>
-            {p.store?.name && <div className="kec-prod-shop">🏪 {p.store.name}</div>}
-            <div className="kec-prod-footer">
-              <div className="kec-prod-price">{getPrice(p)}</div>
-              <div
-                className="kec-prod-wa"
-                style={unavailable ? { background: "#bbb", boxShadow: "none", cursor: "not-allowed" } : {}}
-              >
-                💬
-              </div>
-            </div>
-          </div>
-        </div>
-      </Link>
-    );
-  };
-
-  // ─── Skeleton placeholders for scroll rows ───
-  const SkeletonProdCards = ({ count = 5 }: { count?: number }) => (
-    <>
-      {Array(count).fill(null).map((_, i) => (
-        <div key={i} className="kec-prod-card skeleton-card">
-          <div className="kec-prod-img bg-cream-dark" />
-          <div className="kec-prod-body">
-            <div className="kec-prod-name skeleton-title" />
-            <div className="kec-prod-shop skeleton-text-60" />
-            <div className="kec-prod-footer">
-              <div className="skeleton-badge" />
-              <div className="kec-prod-wa bg-cream-dark" />
-            </div>
-          </div>
-        </div>
-      ))}
-    </>
-  );
-
   // ─── Full product grid (for Fast Food / Frozen Food tabs) ───
   const KecAllGrid = ({ products, loading }: { products: Product[]; loading: boolean }) => {
     if (loading) {
       return (
         <div className="kec-all-grid">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="kec-prod-card" style={{ opacity: 0.5, pointerEvents: "none" }}>
-              <div className="kec-prod-img skeleton-img" />
-              <div className="kec-prod-body">
-                <div style={{ height: 28, background: "var(--cream-dark)", borderRadius: 4, marginBottom: 6 }} />
-                <div style={{ height: 14, background: "var(--cream-dark)", borderRadius: 4, width: "60%", marginBottom: 6 }} />
-                <div style={{ height: 14, background: "var(--cream-dark)", borderRadius: 4, width: "40%" }} />
-              </div>
-            </div>
+            <SkeletonProductCard key={i} />
           ))}
         </div>
       );
@@ -262,7 +174,7 @@ export default function KecamatanDetailPage() {
     return (
       <div className="kec-all-grid">
         {products.map((p: Product) => (
-          <KecProdCard key={p.id} p={p} />
+          <ProductCard key={p.id} product={p} />
         ))}
       </div>
     );
@@ -431,14 +343,14 @@ export default function KecamatanDetailPage() {
                 </div>
                 <div className="kec-scroll-row">
                   {isLoadingFFPreview ? (
-                    <SkeletonProdCards count={5} />
+                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
                   ) : fastFoodPreview.length === 0 ? (
                     <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🍔</div>
                       <div className="kec-empty-text">Belum ada fast food di kapanewon ini</div>
                     </div>
                   ) : (
-                    fastFoodPreview.map((p: Product) => <KecProdCard key={p.id} p={p} />)
+                    fastFoodPreview.map((p: Product) => <ProductCard key={p.id} product={p} />)
                   )}
                 </div>
               </div>
@@ -457,14 +369,14 @@ export default function KecamatanDetailPage() {
                 </div>
                 <div className="kec-scroll-row">
                   {isLoadingFrozenPreview ? (
-                    <SkeletonProdCards count={5} />
+                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
                   ) : frozenPreview.length === 0 ? (
                     <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🧊</div>
                       <div className="kec-empty-text">Belum ada frozen food di kapanewon ini</div>
                     </div>
                   ) : (
-                    frozenPreview.map((p: Product) => <KecProdCard key={p.id} p={p} />)
+                    frozenPreview.map((p: Product) => <ProductCard key={p.id} product={p} />)
                   )}
                 </div>
               </div>
@@ -487,14 +399,14 @@ export default function KecamatanDetailPage() {
                 </div>
                 <div className="kec-scroll-row">
                   {isLoadingAll ? (
-                    <SkeletonProdCards count={5} />
+                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
                   ) : allGridProducts.length === 0 ? (
                     <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🛍️</div>
                       <div className="kec-empty-text">Belum ada produk di kapanewon ini</div>
                     </div>
                   ) : (
-                    allGridProducts.map((p: Product) => <KecProdCard key={p.id} p={p} />)
+                    allGridProducts.map((p: Product) => <ProductCard key={p.id} product={p} />)
                   )}
                 </div>
               </div>

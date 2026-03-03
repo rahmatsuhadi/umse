@@ -6,17 +6,10 @@ import { useDistricts } from "@/features/locations/hooks";
 import { useProducts } from "@/features/products/hooks";
 
 const ICONS = ["🏢", "🏛️", "🌳", "🛤️", "🗿", "⛰️", "🌿", "🌻", "🌾", "🏔️", "🌴", "🎋", "🏡", "🌺", "🎯", "🏞️", "🗺️"];
-const ICON_COLORS = [
-    { bg: "#FDE8D8", text: "#D45508" },
-    { bg: "#FEF3D0", text: "#9B6E00" },
-    { bg: "#D4EFDF", text: "#219653" },
-    { bg: "#E8F4FD", text: "#1A6FA0" },
-    { bg: "#F3E8FF", text: "#7C3AED" },
-    { bg: "#FFF0E8", text: "#D45508" },
-];
+
 
 const getIcon = (i: number) => ICONS[i % ICONS.length];
-const getColor = (i: number) => ICON_COLORS[i % ICON_COLORS.length];
+
 
 // Build a slug the same way the kecamatan detail page resolves it
 const buildSlug = (name: string, id: string | number) =>
@@ -39,7 +32,6 @@ function SubdistrictCard({
     logo?: string | null;
     icon?: string | null;
 }) {
-    const col = getColor(index);
     const slug = buildSlug(name, districtId);
 
     const { data, isLoading } = useProducts({

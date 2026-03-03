@@ -1,15 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+
 import ContactSection from "@/components/landing/Contact";
 import { Navbar } from "@/components/shared/Navbar";
 import { useInfiniteProducts } from "@/features/products/hooks";
 import { useDistricts } from "@/features/locations/hooks";
-import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
-
-const WA_SVG = "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z";
+import { ProductCard } from "@/components/shared/ProductCard";
 
 type StoreOpenShape = {
     is_open?: boolean | number | string;
@@ -109,29 +106,6 @@ export default function SlemanFoodPage() {
 
     const products = (productsData?.pages.flatMap(page => page.data) as unknown as ProductItem[]) || [];
     const totalProducts = productsData?.pages[0]?.meta?.total || products.length;
-
-    const { mutate: logVisitor } = useCreateVisitorLog();
-
-    const handleWhatsAppClick = (product: ProductItem) => {
-        logVisitor({ product_id: product.id as string });
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        const phone = (product.store as any)?.user?.phone_number || (product.store as StoreOpenShape | undefined)?.phone || '';
-        const message = `Halo, saya tertarik dengan produk ${product.name}`;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-    };
-
-    const getIsStoreOpen = (product: ProductItem): boolean | null => {
-        const s = (product?.store ?? {}) as StoreOpenShape;
-        const raw = s.is_open ?? s.is_open_now ?? s.open_now ?? s.open ?? s.status ?? null;
-        if (typeof raw === "boolean") return raw;
-        if (typeof raw === "number") return raw === 1;
-        if (typeof raw === "string") {
-            const v = raw.toLowerCase();
-            if (v === "1" || v === "true" || v === "open" || v === "buka") return true;
-            if (v === "0" || v === "false" || v === "closed" || v === "tutup") return false;
-        }
-        return null;
-    };
 
     const visibleProducts = products;
 
@@ -316,77 +290,12 @@ export default function SlemanFoodPage() {
                             </div>
 
                             <div className="product-grid-lg" >
-                                {visibleProducts.length > 0 ? visibleProducts.map((product: ProductItem) => {
-                                    const openState = getIsStoreOpen(product);
-                                    const isClosed = openState === false;
-
-                                    return (
-                                        <Link
-                                            key={product.id}
-                                            href={`/produk/${product.id}`}
-                                            className={`product-card-lg ${isClosed ? 'is-closed' : ''}`}
-                                        >
-                                            <div className="product-img-lg" >
-                                                {product.thumbnail?.media_url ? (
-                                                    <Image
-                                                        src={product.thumbnail.media_url}
-                                                        alt={product.name}
-                                                        fill
-                                                        className="product-img-main"
-                                                    />
-                                                ) : <div className="product-img-placeholder">🍽️</div>}
-
-                                                {(product.discount ?? 0) > 0 && <div className="promo-tag" >-{product.discount}%</div>}
-
-                                                {isClosed && (
-                                                    <div className="closed-overlay" >
-                                                        <div className="closed-badge" >🔒 Sedang Tutup</div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="product-body-lg" >
-                                                <div className="product-name-lg" >{product.name}</div>
-                                                <div className="product-shop-lg" >
-                                                    <span>🏪</span> {product.store?.name || 'Toko UMKM'}
-                                                </div>
-
-                                                <div className="product-action-lg">
-                                                    <div className="price-col">
-                                                        <div className="price-main" >
-                                                            {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
-                                                        </div>
-                                                        <div className="sold-row" >
-                                                            <span className="star-icon">★</span>
-                                                            <span className="rating-text">{product.rating_avg || 5.0}</span>
-                                                            <span>·</span>
-                                                            <span>({product.sold_count || 0})</span>
-                                                        </div>
-                                                    </div>
-                                                    <button
-                                                        title="Pesan via WhatsApp"
-                                                        className={`btn-wa-compact ${isClosed ? 'disabled' : ''}`}
-
-                                                        disabled={isClosed}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            e.stopPropagation();
-                                                            if (!isClosed) handleWhatsAppClick(product);
-                                                        }}
-                                                    >
-                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                                            <path d={WA_SVG} />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    );
-                                }) : (
-                                    !isLoading && (
-                                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
-                                            Tidak ada produk kuliner ditemukan.
-                                        </div>
-                                    )
+                                {visibleProducts.length > 0 ? visibleProducts.map((product: ProductItem) => (
+                                    <ProductCard key={product.id} product={product} />
+                                )) : (
+                                    <div className="col-span-full py-40 text-center" >
+                                        <p className="text-muted" >{isLoading ? 'Memuat produk...' : 'Tidak ada produk ditemukan'}</p>
+                                    </div>
                                 )}
                             </div>
 

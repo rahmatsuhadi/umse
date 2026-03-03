@@ -2,10 +2,10 @@
 import { useProducts } from "@/features/products/hooks";
 import { ProductCard, SkeletonProductCard } from "@/components/shared/ProductCard";
 
-export default function ProductSimilarProduct({ category_slug }: { category_slug: string }) {
+export default function ProductSimilarDistrict({ district_id }: { district_id: number }) {
     const { data, isLoading } = useProducts({
         per_page: 8,
-        filter: category_slug ? { category__slug: category_slug } : undefined,
+        filter: district_id ? { store__district__id: district_id } : undefined,
     });
 
     const products = data?.data || [];
@@ -19,7 +19,7 @@ export default function ProductSimilarProduct({ category_slug }: { category_slug
                     ))}
                 </div>
             ) : products.length === 0 ? (
-                <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Tidak ada produk serupa.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Tidak ada produk di Kapanewon yang sama.</p>
             ) : (
                 <div className="similar-scroll">
                     {products.map((product) => (

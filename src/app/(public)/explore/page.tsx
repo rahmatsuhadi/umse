@@ -14,8 +14,7 @@ import { useInfiniteStores } from "@/features/store/hooks";
 import { useInfiniteArticles } from "@/features/articles/hooks";
 import Image from "next/image";
 import { SlemanFoodSections } from "@/components/home/SlemanFoodSections";
-
-const WA_SVG = "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z";
+import { ProductCard } from "@/components/shared/ProductCard";
 
 function formatDate(dateStr: string) {
     if (!dateStr) return '';
@@ -182,12 +181,8 @@ function ExplorePageContent() {
         return { fastFood, frozen };
     }, [allProducts]);
 
-    const handleWhatsAppClick = (product: any) => {
-        logVisitor({ product_id: product.id });
-        const phone = product.store?.user?.phone_number || product.store?.phone || '';
-        const message = `Halo, saya tertarik dengan produk ${product.name}`;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-    };
+
+    // ── Grid Renderers
 
     const handleStoreWhatsApp = (store: any) => {
         logVisitor({ product_id: store.id });
@@ -467,26 +462,7 @@ function ExplorePageContent() {
                                         </div>
                                         <div className="catalog-hscroll py-16" id="exploreFFRow">
                                             {fastFoodProducts.map((product) => (
-                                                <div key={`ff-${product.id}`} className="product-card explore-special-card w-200 cursor-pointer shrink-0" onClick={() => window.location.href = `/produk/${product.id}`}>
-                                                    <div className="product-img product-img-180">
-                                                        {product.thumbnail?.media_url ? (
-                                                            <Image src={product.thumbnail.media_url} alt={product.name} fill className="object-cover" />
-                                                        ) : <div className="product-img-placeholder">🎁</div>}
-                                                    </div>
-                                                    <div className="product-body p-14">
-                                                        <div className="product-name product-name-clamp">
-                                                            {product.name}
-                                                        </div>
-                                                        <div className="product-shop product-shop-info">
-                                                            🏪 {product.store?.name || 'Toko UMKM'}
-                                                        </div>
-                                                        <div className="flex-between">
-                                                            <div className="price-main-lg">
-                                                                {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <ProductCard key={`ff-${product.id}`} product={product} />
                                             ))}
                                         </div>
                                     </div>
@@ -504,26 +480,7 @@ function ExplorePageContent() {
                                         </div>
                                         <div className="catalog-hscroll" id="exploreFrozenRow" style={{ padding: '16px 0' }}>
                                             {frozenProducts.map((product) => (
-                                                <div key={`fz-${product.id}`} className="product-card explore-special-card" onClick={() => window.location.href = `/produk/${product.id}`} style={{ cursor: 'pointer', flexShrink: 0, width: 200 }}>
-                                                    <div className="product-img" style={{ height: '180px', background: 'var(--cream-dark)', position: 'relative' }}>
-                                                        {product.thumbnail?.media_url ? (
-                                                            <Image src={product.thumbnail.media_url} alt={product.name} fill style={{ objectFit: 'cover' }} />
-                                                        ) : <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>🎁</div>}
-                                                    </div>
-                                                    <div className="product-body" style={{ padding: '14px' }}>
-                                                        <div className="product-name" style={{ fontWeight: 700, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                                                            {product.name}
-                                                        </div>
-                                                        <div className="product-shop" style={{ fontSize: '11px', color: '#666', marginBottom: '8px' }}>
-                                                            🏪 {product.store?.name || 'Toko UMKM'}
-                                                        </div>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                            <div style={{ color: 'var(--terracotta)', fontWeight: 800 }}>
-                                                                {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <ProductCard key={`fz-${product.id}`} product={product} />
                                             ))}
                                         </div>
                                     </div>
@@ -540,47 +497,7 @@ function ExplorePageContent() {
 
                                 <div className="product-grid explore-main-products-grid" id="exploreProductsGrid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
                                     {mainGridProducts.map((product: any) => (
-                                        <div
-                                            key={product.id}
-                                            className="product-card explore-main-card"
-                                            onClick={() => window.location.href = `/produk/${product.id}`}
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            <div className="product-img" style={{ position: 'relative', height: '180px' }}>
-                                                {product.thumbnail?.media_url ? (
-                                                    <Image src={product.thumbnail.media_url} alt={product.name} fill style={{ objectFit: 'cover' }} />
-                                                ) : <div style={{ fontSize: '40px' }}>🎁</div>}
-                                            </div>
-                                            <div className="product-body" style={{ padding: '14px' }}>
-                                                <div className="product-name" style={{ fontSize: '14px', fontWeight: 600, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                                                    {product.name}
-                                                </div>
-                                                <div className="product-shop" style={{ fontSize: '11px', color: '#666', marginBottom: '8px' }}>
-                                                    🏪 {product.store?.name || 'Toko UMKM'}
-                                                </div>
-                                            </div>
-                                            {/* Price + WA */}
-                                            <div style={{ padding: '10px 14px 14px', borderTop: '1px solid var(--cream-dark)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                                                <div style={{ flex: 1, minWidth: 0 }}>
-                                                    <div style={{ fontSize: '15px', fontWeight: 800, color: 'var(--terracotta)' }}>
-                                                        {product.price?.formatted?.split(",")[0] || `Rp ${(product.price?.amount || 0).toLocaleString('id-ID')}`}
-                                                    </div>
-                                                    <div style={{ fontSize: '11px', color: '#666', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                                        <span style={{ color: '#F1C40F', fontSize: '12px' }}>★</span>
-                                                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{product.rating_avg || '5.0'}</span>
-                                                        <span>·</span>
-                                                        <span>({product.sold_count || 0})</span>
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    title="Pesan via WhatsApp"
-                                                    style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#25D366', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, boxShadow: '0 2px 8px rgba(37,211,102,0.35)' }}
-                                                    onClick={e => { e.stopPropagation(); handleWhatsAppClick(product); }}
-                                                >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d={WA_SVG} /></svg>
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <ProductCard key={product.id} product={product} />
                                     ))}
                                     {allProducts.length === 0 && !isLoadingProducts && (
                                         <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>

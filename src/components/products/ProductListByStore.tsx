@@ -1,10 +1,11 @@
 "use client";
 import { motion } from 'framer-motion'; // 1. Impor motion dari framer-motion
 import { useInfiniteProductsByStoreId } from "@/features/products/hooks";
+import type { Store } from "@/types";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation';
 import LoadMoreButton from '../shared/LoadMoreButton';
-import { ProductCard } from './ProductCard';
+import { ProductCard } from '../shared/ProductCard';
 import { EmptyState } from '../shared/EmptyState';
 import ProductSkeletonCard from './ProductSkeletonCard';
 
@@ -26,7 +27,7 @@ const itemVariants = {
 };
 
 
-const ProductListByStore = ({ id }: { id: string }) => {
+const ProductListByStore = ({ id, store }: { id: string, store?: Store }) => {
     const searchParams = useSearchParams()
     const categoriesParams = searchParams.get('category') || ''
     const sortParams = searchParams.get('sort') || 'created_at:desc'
@@ -51,9 +52,11 @@ const ProductListByStore = ({ id }: { id: string }) => {
     const renderContent = () => {
         if (isLoading) {
             return (
-                <div className="product-grid-lg">
+                <div className="product-grid-lg" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', margin: 0, padding: 0, justifyItems: 'center' }}>
                     {Array.from({ length: 8 }).map((_, index) => (
-                        <ProductSkeletonCard key={index} />
+                        <div key={index} style={{ width: '100%', maxWidth: '220px', display: 'flex' }}>
+                            <ProductSkeletonCard />
+                        </div>
                     ))}
                 </div>
             );
@@ -74,16 +77,19 @@ const ProductListByStore = ({ id }: { id: string }) => {
                 initial="hidden"
                 animate="visible"
                 className="product-grid-lg"
+                style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', margin: 0, padding: 0, justifyItems: 'center' }}
             >
                 {products.map((product) => (
-                    <motion.div key={product.id} variants={itemVariants}>
-                        <Link href={`/produk/${product.id}`}>
-                            <ProductCard product={product} />
+                    <motion.div key={product.id} variants={itemVariants} style={{ width: '100%', maxWidth: '220px', display: 'flex' }}>
+                        <Link href={`/produk/${product.id}`} style={{ width: '100%', display: 'block', textDecoration: 'none' }}>
+                            <ProductCard product={store ? { ...product, store } : product} />
                         </Link>
                     </motion.div>
                 ))}
                 {isFetchingNextPage && Array.from({ length: 4 }).map((_, index) => (
-                    <ProductSkeletonCard key={`loading-${index}`} />
+                    <div key={`loading-${index}`} style={{ width: '100%', maxWidth: '220px', display: 'flex' }}>
+                        <ProductSkeletonCard />
+                    </div>
                 ))}
             </motion.div>
         );

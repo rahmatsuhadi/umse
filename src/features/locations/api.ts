@@ -32,3 +32,10 @@ export const getVillages = (
     `/villages?filter%5Bdistrict_id%5D=${districtId}`
   );
 };
+
+/** Mengambil detail kecamatan berdasarkan ID */
+export const getDistrictById = (
+  districtId: string | number
+): Promise<{ data: District }> => {
+  return apiClient<{ data: District }>(`/districts/${districtId}`);
+};

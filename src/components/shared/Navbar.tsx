@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, User2 } from "lucide-react";
 import { useLogout, useUser } from "@/features/auth/hooks";
@@ -62,8 +63,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
       <nav id="mainNav">
         <div className="nav-inner">
           <Link href="/" className="logo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/slemanmartlogo.png" alt="Sleman Mart" className="h-9 w-auto" />
+            <Image src="/slemanmartlogo.png" alt="Sleman Mart" width={100} height={36} className="h-9 w-auto" />
           </Link>
 
           <form className="nav-search" onSubmit={handleSearch}>
@@ -143,7 +143,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
       <div className={`drawer-overlay ${isDrawerOpen ? 'open visible' : ''}`} onClick={() => setIsDrawerOpen(false)}></div>
       <div className={`drawer ${isDrawerOpen ? 'open' : ''}`} id="mobileDrawer">
         <div className="drawer-header">
-          <img src="/slemanmartlogo.png" alt="Sleman Mart" className="h-9 w-auto" />
+          <Image src="/slemanmartlogo.png" alt="Sleman Mart" width={100} height={36} className="h-9 w-auto" />
           <button className="drawer-close" onClick={() => setIsDrawerOpen(false)}>✕</button>
         </div>
         <nav className="drawer-nav">
@@ -199,28 +199,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
   );
 }
 
-function MobileAuthSection({ closeDrawer }: { closeDrawer: () => void }) {
-  const { data: user } = useUser();
-  const { mutate: logout } = useLogout();
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-      <div style={{ padding: "0 4px 12px", marginBottom: "4px" }}>
-        <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>{user?.data?.name}</p>
-        <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>{user?.data?.email}</p>
-      </div>
-      <Link href="/pengguna" onClick={closeDrawer} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", textDecoration: "none", color: "var(--text-primary)", fontSize: 14, borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.03)" }}>
-        <span>👤</span> Profil Saya
-      </Link>
-      <Link href="/pesanan" onClick={closeDrawer} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", textDecoration: "none", color: "var(--text-primary)", fontSize: 14, borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.03)" }}>
-        <span>📦</span> Pesanan
-      </Link>
-      <button onClick={() => { logout(); closeDrawer(); }} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", color: "#E74C3C", fontSize: 14, fontWeight: 600, background: "rgba(231, 76, 60, 0.1)", border: "none", width: "100%", textAlign: "left", cursor: "pointer", borderRadius: "var(--radius-sm)", marginTop: "8px" }}>
-        <span>🚪</span> Keluar
-      </button>
-    </div>
-  );
-}
 
 
 

@@ -1,4 +1,5 @@
 import { getProductById } from "@/features/products/api";
+import { getDistrictById } from "@/features/locations/api";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,12 +7,22 @@ import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import ContactSection from "@/components/landing/Contact";
 import { trimDescription } from "@/lib/seoMetadataUtils";
 import ProductSimilarProduct from "@/components/products/ProductSimilarList";
+import ProductSimilarDistrict from "@/components/products/ProductSimilarDistrict";
 import { ProductRatingReview } from "@/components/products/ProductRatingReview";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import ProductCheckoutButton from "@/components/products/ProductCheckoutButton";
 import { APP_URL } from "@/lib/envConfig";
 import { generateManualDescription } from "@/lib/metadata";
 import ProductStickyWA from "@/components/products/ProductStickyWA";
+
+const buildSlug = (name: string | undefined, id: string | number | undefined) => {
+  if (!name || !id) return "sleman";
+  return String(name)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") + `~${id}`;
+};
 
 export async function generateMetadata({
   params,
@@ -67,6 +78,15 @@ export default async function ProductDetailPage({
   try {
     const response = await getProductById(id);
     product = response.data;
+
+    if (product.store?.district_id && !product.store.district) {
+      try {
+        const districtRes = await getDistrictById(product.store.district_id);
+        product.store.district = districtRes.data;
+      } catch (districtErr) {
+        console.error("Failed to fetch district:", districtErr);
+      }
+    }
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === "MAINTENANCE_MODE") {
@@ -111,6 +131,12 @@ export default async function ProductDetailPage({
 
           {/* Product Info (Right) */}
           <div className="detail-info">
+            {!product.store?.is_open && product.store?.emergency_close_reason && (
+              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-xl mb-4 text-sm font-medium">
+                <i className="fas fa-info-circle mr-2"></i>
+                Toko Sedang Tutup: {product.store.emergency_close_reason}
+              </div>
+            )}
             <ProductCheckoutButton product={product} isClosed={!product.store?.is_open} />
           </div>
 
@@ -133,6 +159,19 @@ export default async function ProductDetailPage({
           </div>
         </div>
         <ProductSimilarProduct category_slug={product.category.slug} />
+      </div>
+
+      {/* ===== District Products Section ===== */}
+      <div className="bg-white pt-40">
+        <div className="container-1200">
+          <div className="flex-between mb-20">
+            <h2 className="section-title font-22">
+              Produk Kapanewon <span>{product.store.district?.name || 'Sleman'}</span>
+            </h2>
+            <Link href={`/kecamatan/${buildSlug(product.store.district?.name, product.store.district?.id)}`} className="see-all-link">Lihat Semua →</Link>
+          </div>
+        </div>
+        <ProductSimilarDistrict district_id={product.store.district?.id} />
       </div>
 
       {/* ===== Footer / Contact ===== */}

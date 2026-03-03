@@ -85,14 +85,14 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
                     className="merchant-detail-cover"
                     id="mdCover"
                     style={{
-                        backgroundImage: `url(${store.logo_url || '/assets/no-image.jpg'})`,
+                        backgroundImage: `url(${store.cover_image || store.logo_url || '/assets/no-image.jpg'})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         filter: 'brightness(0.7)'
                     }}
                 ></div>
-                <div className="merchant-detail-info">
-                    <div className="merchant-detail-header">
+                <div className="merchant-detail-info" style={{ position: 'relative', marginTop: 0 }}>
+                    <div className="merchant-detail-header" style={{ marginTop: 0, paddingTop: '20px' }}>
                         <div
                             className="merchant-detail-avatar"
                             id="mdAvatar"
@@ -147,6 +147,43 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
                                 {store.description}
                             </div>
                         </div>
+                        {!store.is_open && store.emergency_close_reason && (
+                            <div className="mt-5 relative overflow-hidden bg-gradient-to-b from-rose-50 to-white border border-red-100 rounded-2xl p-6 shadow-sm mb-6 flex flex-col items-center text-center">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-rose-400 to-red-500"></div>
+                                <div className="w-14 h-14 bg-red-100/80 rounded-full flex items-center justify-center text-red-500 mb-4 shadow-sm">
+                                    <i className="fas fa-door-closed text-2xl"></i>
+                                </div>
+                                <h3 className="text-lg font-bold text-red-800 mb-2" style={{ margin: 0 }}>Toko Sedang Tutup</h3>
+                                <div className="text-sm text-red-700/90 leading-relaxed bg-red-50/50 px-4 py-2 rounded-lg mt-3 inline-block">
+                                    {store.emergency_close_reason}
+                                </div>
+                            </div>
+                        )}
+                        {(store.instagram || store.facebook || store.tiktok) && (
+                            <div className="info-card" style={{ marginTop: '20px' }}>
+                                <h3>Media Sosial</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '12px' }}>
+                                    {store.instagram && (
+                                        <a href={store.instagram} target="_blank" rel="noopener noreferrer" className="info-row" style={{ textDecoration: 'none' }}>
+                                            <div className="icon">📷</div>
+                                            <div className="text-slate-600 hover:text-terracotta transition-colors">Instagram</div>
+                                        </a>
+                                    )}
+                                    {store.facebook && (
+                                        <a href={store.facebook} target="_blank" rel="noopener noreferrer" className="info-row" style={{ textDecoration: 'none' }}>
+                                            <div className="icon">📘</div>
+                                            <div className="text-slate-600 hover:text-terracotta transition-colors">Facebook</div>
+                                        </a>
+                                    )}
+                                    {store.tiktok && (
+                                        <a href={store.tiktok} target="_blank" rel="noopener noreferrer" className="info-row" style={{ textDecoration: 'none' }}>
+                                            <div className="icon">🎵</div>
+                                            <div className="text-slate-600 hover:text-terracotta transition-colors">TikTok</div>
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </aside>
                     <main className="relative z-10 p-6 rounded-2xl  border-[var(--cream-dark)] bg-[var(--cream)]">
                         <div className="products-toolbar" style={{ marginTop: 0 }}>
@@ -155,7 +192,7 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
                             </div>
                         </div>
                         <div id="mdProductsGrid">
-                            <ProductListByStore id={id} />
+                            <ProductListByStore id={id} store={store} />
                         </div>
                     </main>
                 </div>
