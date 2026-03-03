@@ -52,11 +52,11 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
             <Link href="/panduan-merchant" className="top-bar-link">Panduan Merchant</Link>
           </div>
 
-          <div className="top-bar-right">
+          {/* <div className="top-bar-right">
             <Link href="/masuk" className="top-bar-link" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}>
               Masuk
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
       <nav id="mainNav">
