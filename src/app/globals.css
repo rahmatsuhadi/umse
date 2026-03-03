@@ -556,6 +556,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   height: 2.8em;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .cat-card-shop {
@@ -565,6 +567,10 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .cat-card-footer {

@@ -824,7 +824,7 @@
     }
 
     .product-card-mini {
-      width: 160px;
+      width: 200px;
       flex-shrink: 0;
       background: white;
       border-radius: var(--radius-md);
@@ -841,7 +841,7 @@
     }
 
     .product-card-mini-img {
-      height: 120px;
+      height: 200px;
       background: var(--cream-dark);
       display: flex;
       align-items: center;
@@ -1485,6 +1485,12 @@
 
     .catalog-hscroll>* {
       scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+
+    .top-card-list .cat-card,
+    .catalog-hscroll .cat-card {
+      width: 200px;
     }
 
     @media (max-width: 640px) {
