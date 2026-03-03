@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
         hostname: "devadminslemanmart.slemankab.go.id",
       },
       {
+        hostname: "devslemanmart.slemankab.go.id",
+      },
+      {
         hostname: "devadminslemanmart.slemankab.go.id/admin",
       },
       {
