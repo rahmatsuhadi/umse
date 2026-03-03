@@ -63,7 +63,7 @@ const imgStyle: React.CSSProperties = {
 
 const featureGrid: React.CSSProperties = {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))",
+    gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))",
     gap: 12,
     marginTop: 12
 };
