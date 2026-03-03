@@ -5,6 +5,17 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useProducts } from "@/features/products/hooks";
 
+type HeroSlide = {
+    bg: string;
+    img: string;
+    eyebrow: string;
+    title: string;
+    sub: string;
+    cta: string;
+    href?: string;
+    q?: string;
+};
+
 const SLIDES = [
     {
         bg: "#1B4332",
@@ -58,6 +69,7 @@ export function HeroSearch() {
     const [query, setQuery] = useState("");
     const [current, setCurrent] = useState(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [apiSlides, setApiSlides] = useState<HeroSlide[]>([]);
 
     // Fetch popular products to build dynamic tags
     const { data: popularData, isLoading: isLoadingPopular } = useProducts({ per_page: 10, sort: "-products_count" });
@@ -73,21 +85,63 @@ export function HeroSearch() {
 
     const tagsToDisplay = dynamicTags.length > 0 ? dynamicTags : HERO_TAGS;
 
+    const slidesData = apiSlides.length > 0 ? apiSlides : SLIDES;
+
     const goTo = useCallback((idx: number) => {
-        setCurrent((idx + SLIDES.length) % SLIDES.length);
-    }, []);
+        setCurrent((idx + slidesData.length) % slidesData.length);
+    }, [slidesData.length]);
 
     const startTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
         timerRef.current = setInterval(() => {
-            setCurrent((c) => (c + 1) % SLIDES.length);
+            setCurrent((c) => (c + 1) % slidesData.length);
         }, 4000);
-    }, []);
+    }, [slidesData.length]);
 
     useEffect(() => {
         startTimer();
         return () => { if (timerRef.current) clearInterval(timerRef.current); };
     }, [startTimer]);
+
+    useEffect(() => {
+        let alive = true;
+        const controller = new AbortController();
+        const pick = (obj: Record<string, unknown>, keys: string[]): unknown => {
+            for (const k of keys) {
+                const val = obj?.[k];
+                if (val !== undefined && val !== null && val !== "") return val;
+            }
+            return undefined;
+        };
+        const load = async () => {
+            try {
+                const res = await fetch("/api/banners", { signal: controller.signal });
+                if (!res.ok) return;
+                const json = await res.json();
+                const raw = (Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : []) as Record<string, unknown>[];
+                const mapped = raw
+                    .map((b) => {
+                        const bg = (pick(b, ["bg", "background", "background_color", "backgroundColor"]) as string) || "#1B4332";
+                        const img = pick(b, ["image", "image_url", "imageUrl", "banner", "banner_url"]) as string | undefined;
+                        const eyebrow = (pick(b, ["eyebrow", "label", "tagline"]) as string) || "";
+                        const title = (pick(b, ["title", "headline"]) as string) || "";
+                        const sub = (pick(b, ["subtitle", "sub", "description"]) as string) || "";
+                        const cta = (pick(b, ["cta", "cta_text", "ctaText"]) as string) || "Lihat Selengkapnya →";
+                        const href = pick(b, ["href", "link", "url"]) as string | undefined;
+                        const q = (pick(b, ["query", "search", "q"]) as string) || "";
+                        const slide: HeroSlide = { bg, img: img || "", eyebrow, title, sub, cta, href, q };
+                        return img && title ? slide : null;
+                    })
+                    .filter((s): s is HeroSlide => Boolean(s));
+                if (alive && mapped.length > 0) setApiSlides(mapped as HeroSlide[]);
+            } catch { }
+        };
+        load();
+        return () => {
+            alive = false;
+            controller.abort();
+        };
+    }, []);
 
     const handleSearch = (q?: string) => {
         const val = q ?? query;
@@ -150,13 +204,13 @@ export function HeroSearch() {
                                 transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
                             }}
                         >
-                            {SLIDES.map((s, i) => (
+                            {slidesData.map((s, i) => (
                                 <div className="carousel-slide" key={i}>
-                                    <div className="carousel-slide-bg" style={{ position: "relative", background: s.bg, width: "100%", height: "100%" }}>
-                                        <Image src={s.img} alt={s.eyebrow} fill style={{ objectFit: 'cover' }} />
+                                    <div className="carousel-slide-bg" style={{ background: s.bg }}>
+                                        <Image src={s.img} alt={s.eyebrow} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
                                     </div>
                                     <div className="carousel-content">
-                                        <div className="carousel-eyebrow">{s.eyebrow}</div>
+                                        {/* <div className="carousel-eyebrow">{s.eyebrow}</div> */}
                                         <div className="carousel-title" style={{ whiteSpace: "pre-line" }}>{s.title}</div>
                                         <div className="carousel-sub">{s.sub}</div>
                                         <button
@@ -176,22 +230,11 @@ export function HeroSearch() {
 
                         {/* Dots */}
                         <div className="carousel-dots">
-                            {SLIDES.map((_, i) => (
+                            {slidesData.map((_, i) => (
                                 <button
                                     key={i}
-                                    className={i === current ? "active" : ""}
+                                    className={`carousel-dot ${i === current ? "active" : ""}`}
                                     onClick={(e) => { e.stopPropagation(); goTo(i); }}
-                                    style={{
-                                        width: i === current ? 22 : 7,
-                                        height: 7,
-                                        borderRadius: i === current ? 4 : "50%",
-                                        background: i === current ? "white" : "rgba(255,255,255,0.4)",
-                                        border: "none",
-                                        padding: 0,
-                                        margin: "0 3px",
-                                        cursor: "pointer",
-                                        transition: "all 0.2s"
-                                    }}
                                 ></button>
                             ))}
                         </div>

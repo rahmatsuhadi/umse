@@ -1006,6 +1006,8 @@
       justify-content: center;
       font-size: 48px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
     }
 
     .blog-body {
