@@ -23,6 +23,7 @@ export interface CatCardProps {
     category?: string;
     hourPill?: { state: 'open' | 'closing-soon' | 'closed'; text: string; pillClass: string } | null;
     phone?: string;
+    className?: string;
 }
 
 const waIcon = (
@@ -65,7 +66,7 @@ export function CatCard(p: CatCardProps) {
     const initial = p.name.trim().charAt(0) || "?";
 
     return (
-        <Link href={`/produk/${p.id}`} className={`cat-card${isClosed ? ' is-closed' : ''}`} style={{ display: 'block', textDecoration: 'none' }}>
+        <Link href={`/produk/${p.id}`} className={`cat-card ${p.className || ""}${isClosed ? ' is-closed' : ''}`} style={{ textDecoration: 'none' }}>
             <div className="cat-card-img">
                 {imgError || !p.img ? (
                     <div style={{

@@ -63,10 +63,10 @@ const SpecialSection = ({ icon, iconBg, label, labelColor, title, sub, categoryF
 
                     <div className="catalog-hscroll">
                         {isLoading ? (
-                            Array(6).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
+                            Array(6).fill(null).map((_, i) => <SkeletonProductCard key={i} className="cat-card-scroll" />)
                         ) : products.length > 0 ? (
                             products.map((product) => (
-                                <ProductCard key={(product as any).id} product={product} />
+                                <ProductCard key={(product as any).id} product={product} className="cat-card-scroll" />
                             ))
                         ) : (
                             <div style={{ padding: "24px", color: "var(--text-muted)", fontSize: "14px", width: "100%", textAlign: "center" }}>

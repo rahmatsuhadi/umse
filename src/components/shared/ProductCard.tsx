@@ -12,8 +12,8 @@ const formatPrice = (price: any): string => {
     return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(Number(price));
 };
 
-export const SkeletonProductCard = () => (
-    <div className="product-card-mini" style={{ opacity: 0.7, pointerEvents: "none" }}>
+export const SkeletonProductCard = ({ className }: { className?: string }) => (
+    <div className={`product-card-mini ${className || ""}`} style={{ opacity: 0.7, pointerEvents: "none" }}>
         <div className="product-card-mini-img" style={{ background: "#F5E9E2", animation: "pulse 1.5s infinite" }} />
         <div className="product-card-mini-body">
             <div className="product-card-mini-name" style={{ height: 14, width: "80%", background: "#F5E9E2", marginBottom: 6, borderRadius: 4 }} />
@@ -26,9 +26,10 @@ export const SkeletonProductCard = () => (
 interface ProductCardProps {
     product: any;
     isNew?: boolean;
+    className?: string;
 }
 
-export function ProductCard({ product, isNew: isNewProp }: ProductCardProps) {
+export function ProductCard({ product, isNew: isNewProp, className }: ProductCardProps) {
     const p = product;
     // Use store.is_open directly from API (boolean)
     const isClosed = p.store?.is_open === false;
@@ -84,6 +85,7 @@ export function ProductCard({ product, isNew: isNewProp }: ProductCardProps) {
             closeHour={closeHour}
             hourPill={hourPill}
             phone={p.store?.user?.phone_number || p.store?.phone || ""}
+            className={className}
         />
     );
 }

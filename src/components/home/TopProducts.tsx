@@ -19,16 +19,14 @@ export function TopProducts() {
                 <Link href="/produk" className="see-all-link">Semua →</Link>
             </div>
 
-            <div className="top-card-scroll">
-                <div className="top-card-list">
-                    {isLoading ? (
-                        Array(6).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
-                    ) : (
-                        products.map((product) => (
-                            <ProductCard key={(product as any).id} product={product} />
-                        ))
-                    )}
-                </div>
+            <div className="catalog-hscroll" style={{ gap: '16px' }}>
+                {isLoading ? (
+                    Array(6).fill(null).map((_, i) => <SkeletonProductCard key={i} className="cat-card-scroll" />)
+                ) : (
+                    products.map((product) => (
+                        <ProductCard key={(product as any).id} product={product} className="cat-card-scroll" />
+                    ))
+                )}
             </div>
             <style>{`
             @keyframes pulse {

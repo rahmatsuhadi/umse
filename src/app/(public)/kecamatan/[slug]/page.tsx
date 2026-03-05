@@ -343,14 +343,14 @@ export default function KecamatanDetailPage() {
                 </div>
                 <div className="kec-scroll-row">
                   {isLoadingFFPreview ? (
-                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
+                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} className="cat-card-scroll" />)
                   ) : fastFoodPreview.length === 0 ? (
                     <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🍔</div>
                       <div className="kec-empty-text">Belum ada fast food di kapanewon ini</div>
                     </div>
                   ) : (
-                    fastFoodPreview.map((p: Product) => <ProductCard key={p.id} product={p} />)
+                    fastFoodPreview.map((p: Product) => <ProductCard key={p.id} product={p} className="cat-card-scroll" />)
                   )}
                 </div>
               </div>
@@ -369,14 +369,14 @@ export default function KecamatanDetailPage() {
                 </div>
                 <div className="kec-scroll-row">
                   {isLoadingFrozenPreview ? (
-                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
+                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} className="cat-card-scroll" />)
                   ) : frozenPreview.length === 0 ? (
                     <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🧊</div>
                       <div className="kec-empty-text">Belum ada frozen food di kapanewon ini</div>
                     </div>
                   ) : (
-                    frozenPreview.map((p: Product) => <ProductCard key={p.id} product={p} />)
+                    frozenPreview.map((p: Product) => <ProductCard key={p.id} product={p} className="cat-card-scroll" />)
                   )}
                 </div>
               </div>
@@ -399,14 +399,14 @@ export default function KecamatanDetailPage() {
                 </div>
                 <div className="kec-scroll-row">
                   {isLoadingAll ? (
-                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
+                    Array(5).fill(null).map((_, i) => <SkeletonProductCard key={i} className="cat-card-scroll" />)
                   ) : allGridProducts.length === 0 ? (
                     <div className="kec-empty kec-empty-box">
                       <div className="kec-empty-icon">🛍️</div>
                       <div className="kec-empty-text">Belum ada produk di kapanewon ini</div>
                     </div>
                   ) : (
-                    allGridProducts.map((p: Product) => <ProductCard key={p.id} product={p} />)
+                    allGridProducts.map((p: Product) => <ProductCard key={p.id} product={p} className="cat-card-scroll" />)
                   )}
                 </div>
               </div>
