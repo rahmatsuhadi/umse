@@ -57,6 +57,8 @@ export interface Product {
   is_ready_to_serve?: boolean | number;
   is_frozen?: boolean | number;
   sold_count?: number;
+  discount_percentage?: string | number;
+  discount_price?: string | number | Price;
   created_at: string;
   updated_at: string;
 }

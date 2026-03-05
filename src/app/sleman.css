@@ -3145,6 +3145,13 @@
       box-shadow: 0 -4px 20px rgba(44, 24, 16, 0.1);
     }
 
+    @media (max-width: 767px) {
+      .sticky-cta {
+        bottom: 70px;
+        /* above BottomNav (h-[70px]) */
+      }
+    }
+
     .sticky-cta-inner {
       max-width: 1200px;
       margin: 0 auto;
@@ -4055,6 +4062,13 @@
       padding: 12px 20px;
       border-top: 1px solid var(--cream-dark);
       box-shadow: 0 -4px 20px rgba(44, 24, 16, 0.1);
+    }
+
+    @media (max-width: 767px) {
+      .sticky-cta {
+        bottom: 70px;
+        /* above BottomNav (h-[70px]) */
+      }
     }
 
     .sticky-cta-inner {

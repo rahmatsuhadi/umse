@@ -2,6 +2,7 @@ import { Navbar } from "@/components/shared/Navbar";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { Subdistricts } from "@/components/home/Subdistricts";
 import { TopProductsHome } from "@/components/home/TopProductsHome";
+import { NewProducts } from "@/components/home/NewProducts";
 import { SlemanFoodSectionsHome } from "@/components/home/SlemanFoodSectionsHome";
 import { TopStores } from "@/components/home/TopStores";
 import { TopLiteracies } from "@/components/home/TopLiteracies";
@@ -53,7 +54,10 @@ export default async function HomePage({ }: HomePage) {
                 <HeroSearch />
                 <Subdistricts />
 
-                {/* Section 2A: Top Products */}
+                {/* Section 2A: New Products */}
+                <NewProducts />
+
+                {/* Section 2B: Top Products */}
                 <TopProductsHome />
 
                 {/* Section 2B: Sleman Food Categories (Siap Saji & Homemade) */}

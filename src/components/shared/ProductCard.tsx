@@ -59,12 +59,14 @@ export function ProductCard({ product, isNew: isNewProp }: ProductCardProps) {
         }
     }
 
-    const isNew = isNewProp ?? (() => {
+    const isNewCalculated = (() => {
         if (!p.created_at) return false;
         const created = new Date(p.created_at).getTime();
         const days = (Date.now() - created) / (1000 * 60 * 60 * 24);
-        return days <= 14;
+        return days <= 8;
     })();
+
+    const isNew = hasDiscount ? false : (isNewProp ?? isNewCalculated);
 
     return (
         <CatCard

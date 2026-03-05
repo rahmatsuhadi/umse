@@ -13,6 +13,22 @@ export const ProductCard = ({ product }: CardProductProps) => {
   const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
   const { mutate: logVisitor } = useCreateVisitorLog();
 
+  const discountPct = product.discount_percentage ? Number(product.discount_percentage) : 0;
+  const hasDiscount = discountPct > 0 && product.discount_price != null;
+  const discountStr = hasDiscount ? `-${Math.round(discountPct)}%` : null;
+
+  const isNewCalculated = (() => {
+    if (!product.created_at) return false;
+    const created = new Date(product.created_at).getTime();
+    const days = (Date.now() - created) / (1000 * 60 * 60 * 24);
+    return days <= 8;
+  })();
+
+  const isNew = hasDiscount ? false : isNewCalculated;
+
+  const promoRibbon = discountStr ? <div className="promo-ribbon">{discountStr}</div> : null;
+  const newRibbon = isNew ? <div className="new-ribbon">✨ Baru</div> : null;
+
   const price = product.variants_exists ? product.lowest_price : product.price;
 
   const priceDisplay = `Rp ${price.value.toLocaleString()}`;
@@ -22,7 +38,7 @@ export const ProductCard = ({ product }: CardProductProps) => {
     e.stopPropagation();
 
     logVisitor({ product_id: product.id });
-    
+
     const phone = product.store?.user?.phone_number || product.store?.phone || '';
     const message = `Halo, saya tertarik dengan produk ${product.name}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
@@ -42,6 +58,11 @@ export const ProductCard = ({ product }: CardProductProps) => {
             className="absolute inset-0 object-cover"
             loading="lazy"
           />
+        )}
+        {(promoRibbon || newRibbon) && (
+          <div className="product-badge-overlay">
+            {promoRibbon}{newRibbon}
+          </div>
         )}
       </div>
       <div className="product-body-lg flex flex-col flex-1">
