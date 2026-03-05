@@ -601,10 +601,6 @@ function ExplorePageContent() {
                         </div>
                     </div>
                 </div>
-
-                <div style={{ background: 'var(--brown-dark)', padding: '24px', textAlign: 'center', fontSize: '13px', color: 'rgba(255,255,255,0.4)' }}>
-                    © 2025 Sleman Mart. Kabupaten Sleman, D.I. Yogyakarta
-                </div>
             </main>
 
             <ContactSection />

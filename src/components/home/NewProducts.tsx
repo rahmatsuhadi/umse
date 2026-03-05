@@ -28,7 +28,7 @@ export function NewProducts() {
     if (!isLoading && products.length === 0) return null;
 
     return (
-        <section className="section" style={{ background: "#FFF9F4", paddingTop: 48, paddingBottom: 48 }}>
+        <section className="section" style={{ background: "white", paddingTop: 48, paddingBottom: 48 }}>
             <div className="container">
                 <div className="section-header" style={{ marginBottom: 20 }}>
                     <div>
@@ -38,16 +38,14 @@ export function NewProducts() {
                     <Link href="/produk?sort=-created_at" className="see-all-link">Semua →</Link>
                 </div>
 
-                <div className="top-card-scroll">
-                    <div className="top-card-list">
-                        {isLoading ? (
-                            Array(6).fill(null).map((_, i) => <SkeletonProductCard key={i} />)
-                        ) : (
-                            products.map((product) => (
-                                <ProductCard key={(product as any).id} product={product} isNew={true} />
-                            ))
-                        )}
-                    </div>
+                <div className="catalog-hscroll" style={{ gap: '16px' }}>
+                    {isLoading ? (
+                        Array(6).fill(null).map((_, i) => <SkeletonProductCard key={i} className="cat-card-scroll" />)
+                    ) : (
+                        products.map((product) => (
+                            <ProductCard key={(product as any).id} product={product} isNew={true} className="cat-card-scroll" />
+                        ))
+                    )}
                 </div>
             </div>
             <style>{`

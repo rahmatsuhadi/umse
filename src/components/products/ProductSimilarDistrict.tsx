@@ -11,9 +11,9 @@ export default function ProductSimilarDistrict({ district_id }: { district_id: n
     const products = data?.data || [];
 
     return (
-        <div className="similar-section" style={{ padding: '0 0 60px' }}>
+        <div className="similar-section">
             {isLoading ? (
-                <div className="similar-scroll">
+                <div className="product-grid">
                     {Array(6).fill(null).map((_, i) => (
                         <SkeletonProductCard key={i} />
                     ))}
@@ -21,7 +21,7 @@ export default function ProductSimilarDistrict({ district_id }: { district_id: n
             ) : products.length === 0 ? (
                 <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Tidak ada produk di Kapanewon yang sama.</p>
             ) : (
-                <div className="similar-scroll">
+                <div className="product-grid">
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
