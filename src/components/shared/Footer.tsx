@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useCategoriesFooter } from "@/features/categories/hooks";
 import { useWebSettings } from "@/features/settings/hooks";
 
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa6";
+
 export function Footer() {
     const { data: categoriesData } = useCategoriesFooter();
     const categories = categoriesData?.data || [];
@@ -42,10 +44,11 @@ export function Footer() {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             cursor: "pointer",
-                                            fontSize: 16,
+                                            fontSize: 18,
+                                            color: "white"
                                         }}
                                     >
-                                        📘
+                                        <FaFacebookF />
                                     </div>
                                 </a>
                             )}
@@ -61,10 +64,11 @@ export function Footer() {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             cursor: "pointer",
-                                            fontSize: 16,
+                                            fontSize: 18,
+                                            color: "white"
                                         }}
                                     >
-                                        📸
+                                        <FaInstagram />
                                     </div>
                                 </a>
                             )}
@@ -80,10 +84,11 @@ export function Footer() {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             cursor: "pointer",
-                                            fontSize: 16,
+                                            fontSize: 18,
+                                            color: "white"
                                         }}
                                     >
-                                        💬
+                                        <FaWhatsapp />
                                     </div>
                                 </a>
                             )}

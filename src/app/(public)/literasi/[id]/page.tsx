@@ -3,6 +3,7 @@ import ArticleContent from "@/components/literacies/ArticleContent";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
+import Link from "next/link";
 import { getArticleById } from "@/features/articles/api";
 import { APP_URL } from "@/lib/envConfig";
 import { isUUID } from "@/lib/uuid-check";
@@ -76,30 +77,18 @@ export default async function ArticleDetailPage({ params }: PageProps) {
   try {
     const { data: article } = await getArticleById(id);
 
-    const category: CategoryArticle = "literature";
-    if (!article || category != article.category) {
-      notFound();
-    }
-
     return (
-      <div style={{ background: 'var(--cream)' }}>
+      <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
         <Navbar />
-        <Breadcrumb
-          breadcrumbs={[
-            {
-              name: "Beranda",
-              link: "/",
-            },
-            {
-              name: "Literasi",
-              link: "/literasi",
-            },
-            {
-              name: article.title,
-              active: true,
-            },
-          ]}
-        />
+        <div className="article-container" style={{ paddingBottom: '0' }}>
+          <div className="article-breadcrumb">
+            <Link href="/" className="article-breadcrumb-item">Beranda</Link>
+            <span className="article-breadcrumb-separator">/</span>
+            <Link href="/literasi" className="article-breadcrumb-item">Literasi</Link>
+            <span className="article-breadcrumb-separator">/</span>
+            <span className="article-breadcrumb-item active">{article.title}</span>
+          </div>
+        </div>
 
         <ArticleContent article={article} />
 

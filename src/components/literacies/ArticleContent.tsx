@@ -51,58 +51,54 @@ const MetadataInfo = ({ content }: { content: Article & { date?: string } }) => 
 
 
 export default function ArticleContent({ article }: Props) {
-
-
     const path = article.category == "announcement" ? "/pengumuman" :
         article.category == "exhibition" ? "/pameran" :
             article.category == "training" ? "/pelatihan" :
                 "/literasi"
 
-
     return (
-        <section style={{ background: 'var(--cream)', padding: '60px 0' }}>
-            <div className="container">
-                <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-                    {/* Header Artikel */}
-                    <header className="p-8 sm:p-10 pb-0">
-                        <div className="flex items-center space-x-4 mb-6">
-                            <span className="badge badge-terracotta text-sm font-semibold">
-                                {article.category_label}
-                            </span>
-                        </div>
-                        <h1 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: 'var(--text-primary)' }}>
-                            {article.title}
-                        </h1>
-                        <div className="relative h-64 md:h-80 w-full rounded-lg overflow-hidden mb-6">
-                            <Image
-                                fill
-
-                                src={article.thumbnail?.media_url || "/assets/no-image.jpg"}
-                                alt={article.title}
-                                className="object-cover"
-                                priority // Prioritaskan gambar utama
-                            />
-                        </div>
-                    </header>
-
-                    {/* Konten Utama */}
-                    <div className="px-8 sm:px-10">
-                        <div style={{ background: 'var(--cream-dark)', borderRadius: 'var(--radius-sm)', padding: '16px', marginBottom: '32px' }}>
-                            <MetadataInfo content={article} />
-                        </div>
-
-                        {/* Render Konten HTML */}
-                        <div
-                            className="prose prose-lg max-w-none mb-10 ck-content"
-                            dangerouslySetInnerHTML={{ __html: article.content }}
-                        />
-
-                        {/* Tombol Bagikan (Client Component) */}
-                        <ShareButtons id={article.id} path={path} />
-
+        <section style={{ background: 'var(--cream)', padding: '0' }}>
+            <div className="article-container">
+                {/* Header Artikel */}
+                <header className="article-header">
+                    <h1 className="article-title-main">
+                        {article.title}
+                    </h1>
+                    <div className="article-meta-row">
+                        <span className="badge badge-terracotta">
+                            {article.category_label}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <Calendar size={14} />
+                            {formatDate(article.updated_at)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            ✍️ Tim Redaksi
+                        </span>
                     </div>
-                    <div className="p-6"></div>
-                </article>
+                </header>
+
+                <div className="article-cover-wrapper">
+                    <Image
+                        fill
+                        src={article.thumbnail?.media_url || "/assets/no-image.jpg"}
+                        alt={article.title}
+                        className="object-cover"
+                        priority
+                    />
+                </div>
+
+                {/* Konten Utama */}
+                <div className="article-content">
+                    {/* Render Konten HTML */}
+                    <div
+                        className="prose-slate max-w-none mb-10 ck-content"
+                        dangerouslySetInnerHTML={{ __html: article.content }}
+                    />
+
+                    {/* Tombol Bagikan (Client Component) */}
+                    <ShareButtons id={article.id} path={path} />
+                </div>
             </div>
         </section>
     );

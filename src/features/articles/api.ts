@@ -7,6 +7,7 @@ export type QueryParams = {
   per_page?: number;
   search?: string;
   category?: CategoryArticle;
+  sort?: string;
   filter?: {
     [key: string]: string | number;
   };

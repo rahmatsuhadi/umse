@@ -26,49 +26,29 @@ export function ShareButtons({ id, path = "/literasi" }: Props) {
   };
 
   return (
-    <div className="border-t border-slate-200 pt-6 mt-8">
-      <h3 className="text-lg font-bold text-slate-800 mb-4">Bagikan Ini</h3>
-      <div className="flex flex-wrap gap-3">
-        {/* Facebook */}
-        {/* <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-            currentUrl
-              ? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-              : "bg-blue-300 text-white cursor-not-allowed"
-          }`}
-        >
-          <FaFacebook size={16} className="mr-2" /> Facebook
-        </a> */}
-
-        {/* <FacebookShareButton url={"https://umse.vercel.app/produk/01991c6d-4cdc-70d6-a2f4-7eb88788caac"}/> */}
-
+    <div className="share-container">
+      <h3 className="share-title">Bagikan Artikel</h3>
+      <div className="share-btns">
         {/* WhatsApp */}
-        {/* <a
-          href={`https://api.whatsapp.com/send?text=${encodedText}`}
+        <a
+          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+            `Baca artikel menarik ini: ${currentUrl}`
+          )}`}
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-            currentUrl
-              ? "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
-              : "bg-green-300 text-white cursor-not-allowed"
-          }`}
+          className="share-btn share-btn-wa"
         >
-          <FaWhatsapp size={16} className="mr-2" /> WhatsApp
-        </a> */}
+          <span>WhatsApp</span>
+        </a>
 
         {/* Copy Link */}
         <button
           onClick={copyToClipboard}
           disabled={!currentUrl}
-          className={`flex items-center px-4 py-2 rounded-lg transition-colors ${currentUrl
-              ? "bg-slate-600 text-white hover:bg-slate-700 cursor-pointer"
-              : "bg-slate-400 text-white cursor-not-allowed"
-            }`}
+          className="share-btn share-btn-copy"
         >
-          <Copy size={16} className="mr-2" /> Salin Link
+          <Copy size={16} />
+          <span>Salin Link</span>
         </button>
       </div>
     </div>

@@ -85,7 +85,7 @@ function ExplorePageContent() {
             max_price: maxP,
             category__is_ready_to_serve: isFastFood ? 1 : undefined,
             category__is_frozen: isFrozen ? 1 : undefined,
-            is_open: isOpenNow ? 1 : undefined,
+            is_open_store: isOpenNow ? 1 : undefined,
             min_rating: selectedRating ? parseInt(selectedRating) : undefined
         },
         sort: sortMap[sortBy]
@@ -101,7 +101,7 @@ function ExplorePageContent() {
         search: query,
         filter: {
             district_id: selectedDistricts.length ? selectedDistricts.join(',') : undefined,
-            is_open: isOpenNow ? 1 : undefined,
+            is_open_store: isOpenNow ? 1 : undefined,
         }
     });
 

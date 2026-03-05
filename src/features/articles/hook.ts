@@ -2,6 +2,7 @@ import {
   keepPreviousData,
   useInfiniteQuery,
   useQuery,
+  useQueries,
 } from "@tanstack/react-query";
 import type { Article, PaginatedApiResponse } from "@/types";
 import {
@@ -63,5 +64,15 @@ export const useInfiniteArticles = (filters: Omit<QueryParams, "page">) => {
       // Jika sudah di halaman terakhir, kembalikan undefined untuk menandakan tidak ada lagi data.
       return undefined;
     },
+  });
+};
+
+export const useArticleCategoryCounts = (categories: { name: string; slug: string }[]) => {
+  return useQueries({
+    queries: categories.map((cat) => ({
+      queryKey: ["articles", "count", cat.slug],
+      queryFn: () => getArticles({ category: cat.slug as any, per_page: 1 }),
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    })),
   });
 };

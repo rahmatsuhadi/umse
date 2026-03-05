@@ -47,6 +47,11 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.variants]);
 
+  const p = product;
+  const discountPct = p.discount_percentage ? Number(p.discount_percentage) : 0;
+  const hasDiscount = discountPct > 0 && p.discount_price != null;
+  const discountStr = hasDiscount ? `-${Math.round(discountPct)}%` : null;
+
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant
     ? selectedVariant.stock_quantity
@@ -117,9 +122,17 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
 
       {/* Harga */}
       <div className="detail-price-row">
-        <span className="detail-price">{formatPrice(currentPrice)}</span>
-        {/* Tampilkan harga lama & diskon jika ada varian dengan harga lebih tinggi */}
-        {product.highest_price && product.highest_price.value > product.lowest_price.value && (
+        {hasDiscount ? (
+          <>
+            <span className="detail-price">{formatPrice(p.discount_price as Price)}</span>
+            <span className="detail-price-old">{formatPrice(p.price)}</span>
+            <span className="detail-discount">{discountStr}</span>
+          </>
+        ) : (
+          <span className="detail-price">{formatPrice(currentPrice)}</span>
+        )}
+        {/* Tampilkan harga lama & diskon jika ada varian dengan harga lebih tinggi (hanya jika tidak sedang promo produk utama) */}
+        {!hasDiscount && product.highest_price && product.highest_price.value > product.lowest_price.value && (
           <>
             <span className="detail-price-old">{formatPrice(product.highest_price)}</span>
             <span className="detail-discount">
