@@ -62,6 +62,8 @@ export function TopLiteracies() {
                                             alt={article.title}
                                             fill
                                             style={{ objectFit: "cover" }}
+                                            unoptimized
+                                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
                                         />
                                     ) : (
                                         ARTICLE_ICONS[i % ARTICLE_ICONS.length]

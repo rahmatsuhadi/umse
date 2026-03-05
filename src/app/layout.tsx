@@ -9,9 +9,9 @@ import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextTopLoader from "nextjs-toploader";
 import { APP_URL } from "@/lib/envConfig";
-// import { FloatingWhatsApp } from "@/components/shared/FloatingMenu";
 import { headers } from "next/headers";
 import { BottomNav } from "@/components/shared/BottomNav";
+import { getWebSettings } from "@/features/settings/api";
 
 const jakarta = Plus_Jakarta_Sans({
   // Daftarkan font Plus Jakarta Sans
@@ -22,26 +22,62 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
-export const metadata: Metadata = {
-  title: "Slemanmart",
-  description: "Markeplace UMKM",
-  metadataBase: new URL(APP_URL),
-  alternates: {
-    canonical: "/",
-    languages: {
-      "en-US": "/en-US",
-      "de-DE": "/de-DE",
+export async function generateMetadata(): Promise<Metadata> {
+  const defaultMeta: Metadata = {
+    title: "Slemanmart",
+    description: "Markeplace UMKM",
+    metadataBase: new URL(APP_URL),
+    alternates: {
+      canonical: "/",
+      languages: {
+        "en-US": "/en-US",
+        "de-DE": "/de-DE",
+      },
     },
-  },
-  openGraph: {
-    images: {
-      url: "/slemanmartlogo.png",
-      width: 1200,
-      height: 630,
-      alt: "Slemanmart Logo",
+    openGraph: {
+      images: {
+        url: "/slemanmartlogo.png",
+        width: 1200,
+        height: 630,
+        alt: "Slemanmart Logo",
+      },
     },
-  },
-};
+    icons: {
+      icon: "/favicon.svg",
+    }
+  };
+
+  try {
+    const res = await getWebSettings();
+    if (res?.data?.site_identity) {
+      if (res.data.site_identity.app_name) {
+        defaultMeta.title = res.data.site_identity.app_name;
+      }
+      if (res.data.site_identity.app_description) {
+        defaultMeta.description = res.data.site_identity.app_description;
+      }
+      if (res.data.site_identity.logo_url) {
+        defaultMeta.openGraph = {
+          images: {
+            url: res.data.site_identity.logo_url,
+            width: 1200,
+            height: 630,
+            alt: res.data.site_identity.app_name || "Slemanmart Logo",
+          },
+        };
+      }
+      if (res.data.site_identity.favicon_url) {
+        defaultMeta.icons = {
+          icon: res.data.site_identity.favicon_url,
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Failed to load web settings for metadata:", error);
+  }
+
+  return defaultMeta;
+}
 
 export default async function RootLayout({
   children,
@@ -64,7 +100,6 @@ export default async function RootLayout({
           rel="stylesheet"
           href="https://cdn.ckeditor.com/ckeditor5/46.1.1/ckeditor5.css"
         />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {process.env.NODE_ENV === "development" && (
           <script
             suppressHydrationWarning

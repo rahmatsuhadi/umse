@@ -2,6 +2,7 @@
 import { Store } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useWebSettings } from "@/features/settings/hooks";
 
 interface MerchantCardProps {
     store: Store;
@@ -20,6 +21,9 @@ const COVER_GRADIENTS = [
 ];
 
 export function MerchantCard({ store }: MerchantCardProps) {
+    const { data: webSettings } = useWebSettings();
+    const settings = webSettings?.data;
+
     // Deterministic cover gradient based on store id character sum
     const idSum = store.id
         ? store.id.toString().split("").reduce((acc, c) => acc + c.charCodeAt(0), 0)
@@ -56,7 +60,7 @@ export function MerchantCard({ store }: MerchantCardProps) {
                         style={{ overflow: "hidden", padding: 0, background: "var(--cream-dark)" }}
                     >
                         <Image
-                            src={store.logo_url || "/slemanmartlogo.png"}
+                            src={store.logo_url || settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
                             alt={store.name}
                             width={64}
                             height={64}

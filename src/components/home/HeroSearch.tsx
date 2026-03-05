@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useProducts } from "@/features/products/hooks";
+import { useWebSettings } from "@/features/settings/hooks";
 
 type HeroSlide = {
     bg: string;
@@ -70,6 +71,8 @@ export function HeroSearch() {
     const [current, setCurrent] = useState(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const [apiSlides, setApiSlides] = useState<HeroSlide[]>([]);
+    const { data: webSettings } = useWebSettings();
+    const settings = webSettings?.data;
 
     // Fetch popular products to build dynamic tags
     const { data: popularData, isLoading: isLoadingPopular } = useProducts({ per_page: 10, sort: "-products_count" });
@@ -162,10 +165,10 @@ export function HeroSearch() {
                             Temukan Produk<br /> <span className="highlight">Unggulan</span><br /> Sleman
                         </h1>
                         <p className="hero-subtitle">
-                            Yuk dukung UMKM Sleman untuk tumbuh bersama 
+                            Yuk dukung UMKM Sleman untuk tumbuh bersama
                             <Image
-                                src="/slemanmartlogo.png"
-                                alt="Sleman Mart"
+                                src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
+                                alt={settings?.site_identity?.app_name || "Sleman Mart"}
                                 width={120}
                                 height={32}
                                 className="inline-block align-middle ml-1"
@@ -215,7 +218,7 @@ export function HeroSearch() {
                             {slidesData.map((s, i) => (
                                 <div className="carousel-slide" key={i}>
                                     <div className="carousel-slide-bg" style={{ background: s.bg }}>
-                                        <Image src={s.img} alt={s.eyebrow} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} />
+                                        <Image src={s.img} alt={s.eyebrow} fill sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: "cover" }} unoptimized onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                                     </div>
                                     <div className="carousel-content">
                                         {/* <div className="carousel-eyebrow">{s.eyebrow}</div> */}

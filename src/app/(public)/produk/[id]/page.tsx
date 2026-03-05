@@ -10,10 +10,9 @@ import ProductSimilarProduct from "@/components/products/ProductSimilarList";
 import ProductSimilarDistrict from "@/components/products/ProductSimilarDistrict";
 import { ProductRatingReview } from "@/components/products/ProductRatingReview";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
-import ProductCheckoutButton from "@/components/products/ProductCheckoutButton";
+import ProductDetailClient from "@/components/products/ProductDetailClient";
 import { APP_URL } from "@/lib/envConfig";
 import { generateManualDescription } from "@/lib/metadata";
-import ProductStickyWA from "@/components/products/ProductStickyWA";
 
 const buildSlug = (name: string | undefined, id: string | number | undefined) => {
   if (!name || !id) return "sleman";
@@ -123,22 +122,19 @@ export default async function ProductDetailPage({
           <span className="current">{product.name}</span>
         </div>
 
+
         {/* Main 2-Column Layout */}
         <div className="detail-layout">
 
           {/* Gallery (Left / Sticky) */}
           <ProductImageGallery images={images} isClosed={!product.store?.is_open} />
 
-          {/* Product Info (Right) */}
-          <div className="detail-info">
-            {!product.store?.is_open && product.store?.emergency_close_reason && (
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-xl mb-4 text-sm font-medium">
-                <i className="fas fa-info-circle mr-2"></i>
-                Toko Sedang Tutup: {product.store.emergency_close_reason}
-              </div>
-            )}
-            <ProductCheckoutButton product={product} isClosed={!product.store?.is_open} />
-          </div>
+          {/* Product Info (Right) — client wrapper holds shared variant/qty state */}
+          <ProductDetailClient
+            product={product}
+            isClosed={!product.store?.is_open}
+            mainImage={mainImage}
+          />
 
         </div>
       </div>
@@ -179,35 +175,6 @@ export default async function ProductDetailPage({
         <ContactSection />
       </AnimatedWrapper>
 
-      {/* ===== Sticky CTA Bar (Bottom) ===== */}
-      <div className="sticky-cta">
-        <div className="sticky-cta-inner">
-          {/* Product Info */}
-          <div className="sticky-product-info">
-            <div className="sticky-product-img">
-              <Image
-                src={mainImage}
-                alt={product.name}
-                width={48}
-                height={48}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <div className="sticky-product-name">{product.name}</div>
-              <div className="sticky-product-price">{product.price.formatted.split(",")[0]}</div>
-            </div>
-          </div>
-
-          {/* WhatsApp CTA */}
-          <ProductStickyWA
-            productId={product.id}
-            productName={product.name}
-            phone={product.store?.user?.phone_number || product.store?.phone || ''}
-            isClosed={!product.store?.is_open}
-          />
-        </div>
-      </div>
 
     </div>
   );

@@ -122,6 +122,19 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
             <div className="merchant-detail-body">
                 <div className="merchant-detail-layout">
                     <aside className="merchant-info-panel">
+                        {!store.is_open && store.emergency_close_reason && (
+                            <div className="relative overflow-hidden bg-gradient-to-b from-rose-50 to-white border border-red-100 rounded-2xl p-6 shadow-sm mb-6 flex flex-col items-center text-center pb-4" 
+                            style={{ padding: 20, marginBottom: 16 }}>
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-rose-400 to-red-500"></div>
+                                <div className="w-14 h-14 bg-red-100/80 rounded-full flex items-center justify-center text-red-500 mb-4 shadow-sm">
+                                    <i className="fas fa-door-closed text-2xl"></i>
+                                </div>
+                                <h3 className="text-lg font-bold text-red-800 mb-2" style={{ margin: 0 }}>Toko Sedang Tutup</h3>
+                                <div className="text-sm text-red-700/90 leading-relaxed bg-red-50/50 px-4 py-2 rounded-lg mt-3 inline-block">
+                                    {store.emergency_close_reason}
+                                </div>
+                            </div>
+                        )}
                         <div className="info-card">
                             <h3>Informasi Toko</h3>
                             <div className="info-row">
@@ -147,18 +160,7 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
                                 {store.description}
                             </div>
                         </div>
-                        {!store.is_open && store.emergency_close_reason && (
-                            <div className="mt-5 relative overflow-hidden bg-gradient-to-b from-rose-50 to-white border border-red-100 rounded-2xl p-6 shadow-sm mb-6 flex flex-col items-center text-center">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-rose-400 to-red-500"></div>
-                                <div className="w-14 h-14 bg-red-100/80 rounded-full flex items-center justify-center text-red-500 mb-4 shadow-sm">
-                                    <i className="fas fa-door-closed text-2xl"></i>
-                                </div>
-                                <h3 className="text-lg font-bold text-red-800 mb-2" style={{ margin: 0 }}>Toko Sedang Tutup</h3>
-                                <div className="text-sm text-red-700/90 leading-relaxed bg-red-50/50 px-4 py-2 rounded-lg mt-3 inline-block">
-                                    {store.emergency_close_reason}
-                                </div>
-                            </div>
-                        )}
+
                         {(store.instagram || store.facebook || store.tiktok) && (
                             <div className="info-card" style={{ marginTop: '20px' }}>
                                 <h3>Media Sosial</h3>

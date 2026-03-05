@@ -1,4 +1,5 @@
 import type { User } from './user';
+import type { District } from './location';
 
 export interface Store {
   id: string;
@@ -20,7 +21,7 @@ export interface Store {
   // Anda bisa menambahkan tipe lebih detail untuk regency, district, village jika perlu
   regency: { id: number; name: string };
   regency_id: string;
-  district: { id: number; name: string };
+  district: District;
   district_id: string;
   village: { id: number; name: string };
   village_id: number;

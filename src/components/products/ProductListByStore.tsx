@@ -52,7 +52,7 @@ const ProductListByStore = ({ id, store }: { id: string, store?: Store }) => {
     const renderContent = () => {
         if (isLoading) {
             return (
-                <div className="product-grid-lg" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', margin: 0, padding: 0, justifyItems: 'center' }}>
+                <div className="product-grid-lg">
                     {Array.from({ length: 8 }).map((_, index) => (
                         <div key={index} style={{ width: '100%', maxWidth: '220px', display: 'flex' }}>
                             <ProductSkeletonCard />
@@ -77,7 +77,6 @@ const ProductListByStore = ({ id, store }: { id: string, store?: Store }) => {
                 initial="hidden"
                 animate="visible"
                 className="product-grid-lg"
-                style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', margin: 0, padding: 0, justifyItems: 'center' }}
             >
                 {products.map((product) => (
                     <motion.div key={product.id} variants={itemVariants} style={{ width: '100%', maxWidth: '220px', display: 'flex' }}>

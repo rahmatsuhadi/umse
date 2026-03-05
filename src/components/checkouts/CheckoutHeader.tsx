@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { CheckoutStep, steps } from "./lib";
 import { useRouter } from "next/navigation";
+import { useWebSettings } from "@/features/settings/hooks";
 
 export default function CheckoutHeader({
   currentStep,
@@ -13,6 +14,8 @@ export default function CheckoutHeader({
   index: number;
 }) {
   const router = useRouter();
+  const { data: webSettings } = useWebSettings();
+  const settings = webSettings?.data;
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
@@ -29,8 +32,8 @@ export default function CheckoutHeader({
             <div className="flex-shrink-0 ml-4">
               <Link href="/" className="flex items-center gap-2">
                 <Image
-                  src="/slemanmartlogo.png"
-                  alt="Slemanmart Logo"
+                  src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
+                  alt={settings?.site_identity?.app_name || "Slemanmart Logo"}
                   width={150}
                   height={150}
                 />

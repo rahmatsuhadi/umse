@@ -19,17 +19,32 @@ interface CheckoutButtonProps {
   product: Product;
   isAuth?: boolean;
   isClosed?: boolean;
+  onVariantChange?: (variant: Variant | null) => void;
+  onQuantityChange?: (quantity: number) => void;
 }
 
-export default function ProductCheckoutButton({ product, isClosed }: CheckoutButtonProps) {
+export default function ProductCheckoutButton({ product, isClosed, onVariantChange, onQuantityChange }: CheckoutButtonProps) {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const { data: user } = useUser();
 
+  const handleVariantChange = (v: Variant | null) => {
+    setSelectedVariant(v);
+    onVariantChange?.(v);
+  };
+
+  const handleQuantityUpdate = (newQty: number) => {
+    setQuantity(newQty);
+    onQuantityChange?.(newQty);
+  };
+
   useEffect(() => {
     if (product.variants && product.variants.length > 0) {
-      setSelectedVariant(product.variants[0]);
+      const first = product.variants[0];
+      setSelectedVariant(first);
+      onVariantChange?.(first);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.variants]);
 
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
@@ -44,7 +59,7 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
   const handleQuantityChange = (amount: number) => {
     const newQuantity = quantity + amount;
     if (newQuantity >= 1 && newQuantity <= currentStock) {
-      setQuantity(newQuantity);
+      handleQuantityUpdate(newQuantity);
     }
   };
 
@@ -62,6 +77,20 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
 
   return (
     <>
+      {isClosed && (
+        <div className="relative overflow-hidden bg-white border border-red-500 rounded-2xl p-4 shadow-sm mb-4 flex flex-col sm:flex-row items-center gap-4" style={{ padding: 20, marginBottom: 16 }}>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-red-400 to-red-600"></div>
+          <div className="w-10 h-10 bg-red-100/80 rounded-full flex items-center justify-center text-red-600 shadow-sm flex-shrink-0">
+            <i className="fas fa-door-closed text-lg"></i>
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <h3 className="text-base font-bold text-red-600 mb-0.5">Toko Sedang Tutup</h3>
+            <p className="text-sm text-red-800/80 leading-tight font-medium">
+              {product.store.emergency_close_reason || "Maaf, toko ini sedang tidak dapat menerima pesanan untuk sementara waktu."}
+            </p>
+          </div>
+        </div>
+      )}
       {/* Badges */}
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
         <span className="badge badge-terracotta">🔥 Terlaris</span>
@@ -113,13 +142,24 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
         </div>
         <div className="detail-merchant-info" style={{ flex: 1, minWidth: 0 }}>
           <h4>{product.store.name}</h4>
-          <span>⭐ {Number(product.store.average_rating).toFixed(1)} · {product.store.products_count} produk</span>
           <Link
             href={`/kecamatan/${buildSlug(product.store.district?.name, product.store.district?.id) || 'sleman'}`}
             style={{ textDecoration: "none" }}
             className="location hover:text-terracotta transition-colors"
           >
-            📍 {product.store.district?.name || 'Sleman'}
+            {product.store.district?.logo || product.store.district?.icon ? (
+              <Image
+                src={(product.store.district?.logo) as string}
+                alt={product.store.district?.name || 'Kapanewon'}
+                width={16}
+                height={16}
+                style={{ width: 16, height: 16, objectFit: 'contain', display: 'inline', verticalAlign: 'middle', marginRight: 4 }}
+                unoptimized
+              />
+            ) : (
+              product.store.district?.emoji || '📍'
+            )}{' '}
+            {product.store.district?.name || 'Sleman'}
           </Link>
         </div>
         <div style={{ color: 'var(--terracotta)', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
@@ -136,7 +176,7 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
               <button
                 key={variant.id}
                 className={`variant-btn${selectedVariant?.id === variant.id ? ' active' : ''}`}
-                onClick={() => setSelectedVariant(variant)}
+                onClick={() => handleVariantChange(variant)}
               >
                 {variant.name}
               </button>
@@ -224,7 +264,8 @@ export default function ProductCheckoutButton({ product, isClosed }: CheckoutBut
           }}
           onClick={() => {
             if (!isClosed) {
-              const msg = `Halo, saya tertarik dengan produk ${product.name}`;
+              const variantPart = selectedVariant ? `, varian: *${selectedVariant.name}*` : '';
+              const msg = `Halo, saya ingin memesan *${product.name}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
               const phone = product.store?.user?.phone_number || product.store?.phone || '';
               window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
             }

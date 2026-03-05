@@ -8,6 +8,7 @@ import { ShoppingCart, User2 } from "lucide-react";
 import { useLogout, useUser } from "@/features/auth/hooks";
 import { getToken } from "@/lib/token-service";
 import { useCart } from "@/features/cart/hooks";
+import { useWebSettings } from "@/features/settings/hooks";
 
 const navLinks = [
   { name: "Beranda", href: "/", icon: "🏠", iconBg: "#D4EFDF" },
@@ -26,6 +27,8 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const pathname = usePathname();
+  const { data: webSettings } = useWebSettings();
+  const settings = webSettings?.data;
 
   useEffect(() => {
     setIsLoading(true);
@@ -63,7 +66,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
       <nav id="mainNav">
         <div className="nav-inner">
           <Link href="/" className="logo">
-            <Image src="/slemanmartlogo.png" alt="Sleman Mart" width={100} height={36} className="h-9 w-auto" />
+            <Image src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"} alt={settings?.site_identity?.app_name || "Sleman Mart"} width={100} height={36} className="h-9 w-auto" />
           </Link>
 
           <form className="nav-search" onSubmit={handleSearch}>
@@ -143,7 +146,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
       <div className={`drawer-overlay ${isDrawerOpen ? 'open visible' : ''}`} onClick={() => setIsDrawerOpen(false)}></div>
       <div className={`drawer ${isDrawerOpen ? 'open' : ''}`} id="mobileDrawer">
         <div className="drawer-header">
-          <Image src="/slemanmartlogo.png" alt="Sleman Mart" width={100} height={36} className="h-9 w-auto" />
+          <Image src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"} alt={settings?.site_identity?.app_name || "Sleman Mart"} width={100} height={36} className="h-9 w-auto" />
           <button className="drawer-close" onClick={() => setIsDrawerOpen(false)}>✕</button>
         </div>
         <nav className="drawer-nav">
@@ -184,7 +187,7 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
         </div> */}
 
         <div className="drawer-footer">
-          <p>© 2025 Sleman Mart · Kabupaten Sleman, DIY</p>
+          <p>{settings?.footer?.copyright_text || "© 2025 Sleman Mart"} · {settings?.contact?.address || "Kabupaten Sleman, DIY"}</p>
         </div>
       </div>
 

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useWebSettings } from "@/features/settings/hooks";
 
 const SOCIAL_LINKS = [
   { icon: "📘", href: "https://www.facebook.com/dinkopukmsleman", label: "Facebook", bg: "rgba(255,255,255,0.08)" },
@@ -32,6 +33,9 @@ const FOOTER_LINKS = {
 };
 
 export default function ContactSection() {
+  const { data: webSettings } = useWebSettings();
+  const settings = webSettings?.data;
+
   return (
     <footer>
       <div className="container">
@@ -39,37 +43,54 @@ export default function ContactSection() {
           <div className="footer-brand">
             <div className="logo" style={{ marginBottom: 4 }}>
               <Image
-                src="/slemanmartlogo.png"
-                alt="Sleman Mart"
+                src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
+                alt={settings?.site_identity?.app_name || "Sleman Mart"}
                 width={120}
                 height={48}
                 style={{ height: 48, width: "auto", objectFit: "contain" }}
               />
             </div>
-            <p>Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM tumbuh dan berkembang bersama komunitas.</p>
+            <p>
+              {settings?.site_identity?.app_description ||
+                "Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM tumbuh dan berkembang bersama komunitas."}
+            </p>
             <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-              {SOCIAL_LINKS.map((s) => (
-                <Link
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  title={s.label}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 8,
-                    background: s.bg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    fontSize: 16,
-                    textDecoration: "none",
-                  }}
-                >
-                  {s.icon}
-                </Link>
-              ))}
+              {settings?.social_media?.facebook_url && (
+                <a href={settings.social_media.facebook_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                  <div
+                    style={{
+                      width: 36, height: 36, borderRadius: 8, background: "rgba(255,255,255,0.08)",
+                      display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 16
+                    }}
+                  >
+                    📘
+                  </div>
+                </a>
+              )}
+              {settings?.social_media?.instagram_url && (
+                <a href={settings.social_media.instagram_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                  <div
+                    style={{
+                      width: 36, height: 36, borderRadius: 8, background: "rgba(255,255,255,0.08)",
+                      display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 16
+                    }}
+                  >
+                    📸
+                  </div>
+                </a>
+              )}
+              {settings?.contact?.whatsapp && (
+                <a href={`https://wa.me/${settings.contact.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div
+                    style={{
+                      width: 36, height: 36, borderRadius: 8, background: "#25D366",
+                      display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 16
+                    }}
+                  >
+                    💬
+                  </div>
+                </a>
+              )}
             </div>
           </div>
 
@@ -86,8 +107,8 @@ export default function ContactSection() {
         </div>
 
         <div className="footer-bottom">
-          <span>© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman.</span>
-          <span>Kabupaten Sleman, D.I. Yogyakarta</span>
+          <span>{settings?.footer?.copyright_text || "© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman."}</span>
+          <span>{settings?.contact?.address || "Kabupaten Sleman, D.I. Yogyakarta"}</span>
         </div>
       </div>
     </footer>

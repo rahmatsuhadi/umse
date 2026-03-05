@@ -5,22 +5,24 @@ import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
 interface ProductStickyWAProps {
     productId: string;
     productName: string;
+    selectedVariantName?: string;
     quantity?: number;
     phone: string; // store.user.phone_number
     isClosed?: boolean;
 }
 
-export default function ProductStickyWA({ productId, productName, quantity, phone, isClosed }: ProductStickyWAProps) {
+export default function ProductStickyWA({ productId, productName, selectedVariantName, quantity, phone, isClosed }: ProductStickyWAProps) {
     const { mutate: logVisitor } = useCreateVisitorLog();
 
     const handleClick = () => {
         logVisitor({ product_id: productId });
 
+        const variantPart = selectedVariantName ? `, varian: *${selectedVariantName}*` : '';
         let message: string;
         if (quantity && quantity > 0) {
-            message = `Halo, saya ingin memesan ${productName} sebanyak ${quantity} pcs. Apakah masih tersedia? Terima kasih.`;
+            message = `Halo, saya ingin memesan *${productName}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
         } else {
-            message = `Halo, saya tertarik dengan produk ${productName}`;
+            message = `Halo, saya tertarik dengan produk *${productName}*${variantPart}.`;
         }
 
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");

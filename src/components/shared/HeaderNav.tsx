@@ -1,8 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useWebSettings } from "@/features/settings/hooks";
 
 export function NavbarDashboard() {
+  const { data: webSettings } = useWebSettings();
+  const settings = webSettings?.data;
   return (
     <header className="bg-white sticky top-0 z-50 shadow-md md:px-10 ">
       <div className="container mx-auto px-4 py-4">
@@ -10,8 +13,8 @@ export function NavbarDashboard() {
           <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-primary">
               <Image
-                alt="Slemanmart Logo"
-                src={"/slemanmartlogo.png"}
+                alt={settings?.site_identity?.app_name || "Slemanmart Logo"}
+                src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
                 height={80}
                 width={80}
               />

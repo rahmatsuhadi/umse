@@ -3,10 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCategoriesFooter } from "@/features/categories/hooks";
+import { useWebSettings } from "@/features/settings/hooks";
 
 export function Footer() {
     const { data: categoriesData } = useCategoriesFooter();
     const categories = categoriesData?.data || [];
+    const { data: webSettings } = useWebSettings();
+    const settings = webSettings?.data;
 
     return (
         <footer>
@@ -15,63 +18,75 @@ export function Footer() {
                     <div className="footer-brand">
                         <div className="logo" style={{ marginBottom: 4 }}>
                             <Image
-                                src="/slemanmartlogo.png"
-                                alt="Sleman Mart"
+                                src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
+                                alt={settings?.site_identity?.app_name || "Sleman Mart"}
                                 width={120}
                                 height={48}
                                 style={{ height: 48, width: "auto", objectFit: "contain" }}
                             />
                         </div>
                         <p>
-                            Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM
-                            tumbuh dan berkembang bersama komunitas.
+                            {settings?.site_identity?.app_description ||
+                                "Platform showcase produk lokal Kabupaten Sleman. Mendukung UMKM tumbuh dan berkembang bersama komunitas."}
                         </p>
                         <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-                            <div
-                                style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: 8,
-                                    background: "rgba(255,255,255,0.08)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    cursor: "pointer",
-                                    fontSize: 16,
-                                }}
-                            >
-                                📘
-                            </div>
-                            <div
-                                style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: 8,
-                                    background: "rgba(255,255,255,0.08)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    cursor: "pointer",
-                                    fontSize: 16,
-                                }}
-                            >
-                                📸
-                            </div>
-                            <div
-                                style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: 8,
-                                    background: "#25D366",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    cursor: "pointer",
-                                    fontSize: 16,
-                                }}
-                            >
-                                💬
-                            </div>
+                            {settings?.social_media?.facebook_url && (
+                                <a href={settings.social_media.facebook_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                                    <div
+                                        style={{
+                                            width: 36,
+                                            height: 36,
+                                            borderRadius: 8,
+                                            background: "rgba(255,255,255,0.08)",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            cursor: "pointer",
+                                            fontSize: 16,
+                                        }}
+                                    >
+                                        📘
+                                    </div>
+                                </a>
+                            )}
+                            {settings?.social_media?.instagram_url && (
+                                <a href={settings.social_media.instagram_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                                    <div
+                                        style={{
+                                            width: 36,
+                                            height: 36,
+                                            borderRadius: 8,
+                                            background: "rgba(255,255,255,0.08)",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            cursor: "pointer",
+                                            fontSize: 16,
+                                        }}
+                                    >
+                                        📸
+                                    </div>
+                                </a>
+                            )}
+                            {settings?.contact?.whatsapp && (
+                                <a href={`https://wa.me/${settings.contact.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <div
+                                        style={{
+                                            width: 36,
+                                            height: 36,
+                                            borderRadius: 8,
+                                            background: "#25D366",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            cursor: "pointer",
+                                            fontSize: 16,
+                                        }}
+                                    >
+                                        💬
+                                    </div>
+                                </a>
+                            )}
                         </div>
                     </div>
                     <div className="footer-col">
@@ -83,21 +98,15 @@ export function Footer() {
                     </div>
                     <div className="footer-col">
                         <h4>Kategori</h4>
-                        {categories.length > 0
-                            ? categories.map((cat) => (
-                                <Link key={cat.slug} href={`/produk?category=${cat.slug}`}>
+                        {categories.length > 0 ? (
+                            categories.map((cat) => (
+                                <Link key={cat.slug || cat.id} href={`/produk?category=${cat.slug || cat.id}`}>
                                     {cat.name}
                                 </Link>
                             ))
-                            : [
-                                "Fashion & Wastra",
-                                "Kuliner & Makanan",
-                                "Kerajinan Tangan",
-                                "Peralatan Rumah",
-                            ].map((name) => (
-                                <Link key={name} href="#">{name}</Link>
-                            ))
-                        }
+                        ) : (
+                            <div style={{ opacity: 0.5 }}>Memuat kategori...</div>
+                        )}
                     </div>
                     <div className="footer-col">
                         <h4>Informasi</h4>
@@ -108,8 +117,8 @@ export function Footer() {
                     </div>
                 </div>
                 <div className="footer-bottom">
-                    <span>© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman.</span>
-                    <span>Kabupaten Sleman, D.I. Yogyakarta</span>
+                    <span>{settings?.footer?.copyright_text || "© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman."}</span>
+                    <span>{settings?.contact?.address || "Kabupaten Sleman, D.I. Yogyakarta"}</span>
                 </div>
             </div>
         </footer>
