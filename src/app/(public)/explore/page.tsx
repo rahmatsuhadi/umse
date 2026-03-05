@@ -464,7 +464,7 @@ function ExplorePageContent() {
                                         </div>
                                         <div className="catalog-hscroll py-16" id="exploreFFRow">
                                             {fastFoodProducts.map((product) => (
-                                                <ProductCard key={`ff-${product.id}`} product={product} />
+                                                <ProductCard key={`ff-${product.id}`} product={product} className="cat-card-scroll" />
                                             ))}
                                         </div>
                                     </div>
@@ -482,7 +482,7 @@ function ExplorePageContent() {
                                         </div>
                                         <div className="catalog-hscroll" id="exploreFrozenRow" style={{ padding: '16px 0' }}>
                                             {frozenProducts.map((product) => (
-                                                <ProductCard key={`fz-${product.id}`} product={product} />
+                                                <ProductCard key={`fz-${product.id}`} product={product} className="cat-card-scroll" />
                                             ))}
                                         </div>
                                     </div>
