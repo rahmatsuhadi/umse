@@ -153,7 +153,12 @@ export function HeroSearch() {
 
     return (
         <>
-            <section className="home-hero">
+            <section
+                className="home-hero"
+                style={{
+                    background: settings?.site_identity?.hex_color || "linear-gradient(135deg, var(--brown-dark) 0%, #3A2010 50%, #4A2810 100%)"
+                }}
+            >
                 <div className="hero-pattern"></div>
                 <div className="hero-layout">
                     {/* Left: Text + Search */}

@@ -568,7 +568,6 @@
     /* ===== HOME PAGE ===== */
     /* Hero / Search Section */
     .home-hero {
-      background: linear-gradient(135deg, var(--brown-dark) 0%, #3A2010 50%, #4A2810 100%);
       position: relative;
       overflow: hidden;
       padding: 60px 0 80px;

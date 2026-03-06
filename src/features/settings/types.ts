@@ -4,6 +4,7 @@ export interface WebSettings {
         app_description?: string;
         logo_url?: string;
         favicon_url?: string;
+        hex_color?: string;
     };
     contact?: {
         address?: string;
