@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueries,
 } from "@tanstack/react-query";
-import type { Article, PaginatedApiResponse } from "@/types";
+import type { Article, PaginatedApiResponse, CategoryArticle } from "@/types";
 import {
   getArticleById,
   getArticles,
@@ -71,7 +71,7 @@ export const useArticleCategoryCounts = (categories: { name: string; slug: strin
   return useQueries({
     queries: categories.map((cat) => ({
       queryKey: ["articles", "count", cat.slug],
-      queryFn: () => getArticles({ category: cat.slug as any, per_page: 1 }),
+      queryFn: () => getArticles({ category: cat.slug as CategoryArticle, per_page: 1 }),
       staleTime: 1000 * 60 * 5, // 5 minutes
     })),
   });

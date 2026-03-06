@@ -4,12 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useWebSettings } from "@/features/settings/hooks";
 
-const SOCIAL_LINKS = [
-  { icon: "📘", href: "https://www.facebook.com/dinkopukmsleman", label: "Facebook", bg: "rgba(255,255,255,0.08)" },
-  { icon: "📸", href: "https://www.instagram.com/dinkopukmsleman/", label: "Instagram", bg: "rgba(255,255,255,0.08)" },
-  { icon: "💬", href: "https://wa.me/6282322798318?text=Salam%20SlemanMart", label: "WhatsApp", bg: "#25D366" },
-];
-
 const FOOTER_LINKS = {
   Jelajahi: [
     { label: "Beranda", href: "/" },

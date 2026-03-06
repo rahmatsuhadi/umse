@@ -160,16 +160,6 @@ function ExplorePageContent() {
         return counts;
     }, [allProductsNoCat]);
 
-    const ratingCounts = useMemo(() => {
-        const counts: Record<string, number> = { '5': 0, '4': 0, '3': 0 };
-        allProducts.forEach((p: any) => {
-            const avg = parseFloat(p.average_rating || '0');
-            if (avg >= 5.0) { counts['5']++; counts['4']++; counts['3']++; }
-            else if (avg >= 4.0) { counts['4']++; counts['3']++; }
-            else if (avg >= 3.0) { counts['3']++; }
-        });
-        return counts;
-    }, [allProducts]);
 
     const specialCounts = useMemo(() => {
         let fastFood = 0;
@@ -221,11 +211,6 @@ function ExplorePageContent() {
         return selectedCategories.includes(c.slug) || count > 0;
     });
 
-    const ratingOptions = [
-        { label: '★★★★★ 5.0', key: '5' },
-        { label: '★★★★☆ 4.0+', key: '4' },
-        { label: '★★★☆☆ 3.0+', key: '3' },
-    ];
 
     const filterOptionLayoutStyle = { display: 'flex', alignItems: 'center', gap: '8px', width: '100%', marginBottom: '4px' } as const;
     const filterTextStyle = { flex: 1, minWidth: 0, textAlign: 'left' as const };
@@ -381,31 +366,6 @@ function ExplorePageContent() {
                                     </div>
 
 
-                                    {/* Rating */}
-                                    {/* {ratingOptions.some(r => (ratingCounts[r.key] || 0) > 0) && (
-                                        <div className="filter-section">
-                                            <h4>Rating</h4>
-                                            {ratingOptions.map((r, i) => {
-                                                const count = ratingCounts[r.key] || 0;
-                                                if (count === 0 && selectedRating !== r.key) return null;
-                                                return (
-                                                    <label key={i} className="filter-option" style={filterOptionLayoutStyle}>
-                                                        <input
-                                                            type="radio"
-                                                            name="ratingFilter"
-                                                            checked={selectedRating === r.key}
-                                                            onChange={() => setSelectedRating(r.key === selectedRating ? null : r.key)}
-                                                            onClick={() => {
-                                                                if (selectedRating === r.key) setSelectedRating(null);
-                                                            }}
-                                                        />
-                                                        <span style={filterTextStyle}>{r.label}</span>
-                                                        <span className="count" style={filterCountRightStyle}>{count}</span>
-                                                    </label>
-                                                );
-                                            })}
-                                        </div>
-                                    )} */}
 
 
                                     {/* Reset */}

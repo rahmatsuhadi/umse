@@ -6,7 +6,6 @@ import { useInfiniteArticles, useArticleCategoryCounts } from "@/features/articl
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArticleCardSkeleton } from "./ArticleCardSkeleton";
 import { CategoryArticle, Article, PaginatedApiResponse } from "@/types";
-import Link from "next/link";
 import { useState, useMemo } from "react";
 
 // Varian animasi

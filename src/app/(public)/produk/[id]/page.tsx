@@ -1,7 +1,6 @@
 import { getProductById } from "@/features/products/api";
 import { getDistrictById } from "@/features/locations/api";
 import { notFound, redirect } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
 import ContactSection from "@/components/landing/Contact";

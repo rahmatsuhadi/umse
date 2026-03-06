@@ -3,50 +3,9 @@ import { ShareButtons } from "./ShareButtons";
 import { Article } from "@/types";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
-import { IoLocation } from "react-icons/io5";
 
 type Props = {
     article: Article;
-};
-
-
-const MetadataInfo = ({ content }: { content: Article & { date?: string } }) => {
-
-    switch (content.category) {
-        case 'exhibition':
-        case 'training':
-            return (
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-slate-600 gap-4">
-                    {/* Tampilkan Tanggal Acara jika ada */}
-                    {content.date && (
-                        <div className="flex items-center">
-                            <Calendar />
-                            <p>
-                                <strong>Tanggal Acara:</strong> {formatDate(content.date)}
-                            </p>
-                        </div>
-                    )}
-                    {/* Tampilkan Lokasi jika ada */}
-                    {content.metadata?.location && (
-                        <div className="flex items-center">
-                            <IoLocation />
-                            <p>
-                                <strong>Lokasi:</strong> {content.metadata.location}
-                            </p>
-                        </div>
-                    )}
-                </div>
-            );
-
-        case 'literature':
-        default:
-            // Untuk artikel atau kategori lainnya, tampilkan tanggal publikasi
-            return (
-                <div className="flex items-center justify-between text-sm text-slate-500">
-                    <time>Dipublikasikan: {formatDate(content.updated_at)}</time>
-                </div>
-            );
-    }
 };
 
 

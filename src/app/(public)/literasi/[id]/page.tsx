@@ -1,13 +1,11 @@
 import ContactSection from "@/components/landing/Contact";
 import ArticleContent from "@/components/literacies/ArticleContent";
 import { AnimatedWrapper } from "@/components/shared/AnimateWrapper";
-import Breadcrumb from "@/components/shared/Breadcrumb";
 import { Navbar } from "@/components/shared/Navbar";
 import Link from "next/link";
 import { getArticleById } from "@/features/articles/api";
 import { APP_URL } from "@/lib/envConfig";
 import { isUUID } from "@/lib/uuid-check";
-import { CategoryArticle } from "@/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
