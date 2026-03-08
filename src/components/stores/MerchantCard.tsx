@@ -39,17 +39,24 @@ export function MerchantCard({ store }: MerchantCardProps) {
                 {/* Cover */}
                 <div
                     className="merchant-card-cover"
-                    style={{ background: coverGradient, overflow: "hidden" }}
+                    style={{
+                        backgroundImage: store.cover_path ? `url(${store.cover_path})` : coverGradient,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        overflow: "hidden"
+                    }}
                 >
-                    {/* Decorative batik-like pattern */}
-                    <div
-                        style={{
-                            position: "absolute",
-                            inset: 0,
-                            backgroundImage:
-                                "repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 22px)",
-                        }}
-                    />
+                    {/* Decorative batik-like pattern - only show if no cover_path */}
+                    {!store.cover_path && (
+                        <div
+                            style={{
+                                position: "absolute",
+                                inset: 0,
+                                backgroundImage:
+                                    "repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 22px)",
+                            }}
+                        />
+                    )}
                 </div>
 
                 {/* Body */}
@@ -106,7 +113,7 @@ export function MerchantCard({ store }: MerchantCardProps) {
 
                     {/* Stats */}
                     <div className="merchant-stats">
-                        <div className="merchant-stat">
+                        {/* <div className="merchant-stat">
                             <div className="value">
                                 ⭐{" "}
                                 {store.average_rating
@@ -114,7 +121,7 @@ export function MerchantCard({ store }: MerchantCardProps) {
                                     : "—"}
                             </div>
                             <div className="label">Rating</div>
-                        </div>
+                        </div> */}
                         <div className="merchant-stat">
                             <div className="value">{store.products_count ?? 0}</div>
                             <div className="label">Produk</div>

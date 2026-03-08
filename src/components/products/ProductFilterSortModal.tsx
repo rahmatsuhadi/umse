@@ -136,7 +136,7 @@ const FilterSortModal = () => {
         { value: '-created_at', label: 'Terbaru' },
         { value: 'price', label: 'Harga Rendah' },
         { value: '-price', label: 'Harga Tinggi' },
-        { value: '-average_rating', label: 'Rating Tertinggi' },
+        // { value: '-average_rating', label: 'Rating Tertinggi' },
         { value: 'name', label: 'Nama A-Z' },
     ];
 

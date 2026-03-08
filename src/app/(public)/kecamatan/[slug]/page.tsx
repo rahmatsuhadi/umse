@@ -373,7 +373,7 @@ export default function KecamatanDetailPage() {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
               >
-                <option value="rating">⭐ Rating</option>
+                {/* <option value="rating">⭐ Rating</option> */}
                 <option value="sold">🔥 Terlaris</option>
                 <option value="price-asc">💰 Harga Terendah</option>
                 <option value="price-desc">💰 Harga Tertinggi</option>

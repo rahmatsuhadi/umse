@@ -15,6 +15,7 @@ export interface CatCardProps {
     sold: number;
     img: string;
     isClosed?: boolean;
+    isEmergencyClose?: boolean;
     badge?: "Terlaris" | "Unggulan" | null;
     promo?: string | null;
     isNew?: boolean;
@@ -60,7 +61,7 @@ export function CatCard(p: CatCardProps) {
         closedOverlay = (
             <div className="closed-overlay">
                 <div className="closed-badge">🔒 Tutup</div>
-                <div className="closed-time">Buka jam {oh}:00</div>
+                {!p.isEmergencyClose && <div className="closed-time">Buka jam {oh}:00</div>}
             </div>
         );
     }
@@ -111,7 +112,7 @@ export function CatCard(p: CatCardProps) {
                         <div className="cat-card-price">{p.price}</div>
                         {p.priceOld && <div className="cat-card-price-old">{p.priceOld}</div>}
                         <div className="cat-card-rating font-semibold text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1.5 flex-wrap">
-                            ★ {p.rating} · {p.sold} terjual
+                            {/* ★ {p.rating} · */} {p.sold} terjual
                             {p.type && (
                                 <span className="tipe-barang-sm ml-1" style={{ fontSize: '10px', padding: '0px 6px' }}>
                                     {p.type.toLowerCase() === 'service' ? '🛠️ Jasa' : '📦 Barang'}

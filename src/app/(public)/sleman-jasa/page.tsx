@@ -358,8 +358,11 @@ export default function SlemanJasaPage() {
                                     </div>
 
                                     {/* Reset */}
-                                    <div style={{ padding: '0 16px 16px', marginTop: '16px' }}>
-                                        <button className="btn btn-outline btn-sm" style={{ width: '100%', borderColor: '#7B1FA2', color: '#7B1FA2' }} onClick={handleReset}>↺ Reset Filter</button>
+                                    <div style={{ padding: "16px" }}>
+                                        <button
+                                            onClick={handleReset}
+                                            className="btn-reset-filter">Reset Filter
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -387,7 +390,7 @@ export default function SlemanJasaPage() {
                                     style={{ borderColor: 'var(--cream-dark)' }}
                                     onChange={(e) => setSort(e.target.value)}
                                 >
-                                    <option value="-rating_avg">Rating Tertinggi</option>
+                                    {/* <option value="-rating_avg">Rating Tertinggi</option> */}
                                     <option value="price">Harga Terendah</option>
                                     <option value="-price">Harga Tertinggi</option>
                                     <option value="-sold_count">Terlaris</option>
@@ -428,9 +431,7 @@ export default function SlemanJasaPage() {
                                             <div className="jasa-empty-icon text-5xl mb-4">🔍</div>
                                             <div className="jasa-empty-title text-lg font-bold text-gray-800 mb-2">{isLoading ? 'Memuat layanan...' : 'Layanan tidak ditemukan'}</div>
                                             <div className="jasa-empty-sub text-sm text-gray-500">Coba ubah kata kunci atau reset filter</div>
-                                            {!isLoading && (
-                                                <button className="btn btn-primary mt-6" style={{ background: '#7B1FA2', border: 'none' }} onClick={handleReset}>Reset Filter</button>
-                                            )}
+                                            {!isLoading}
                                         </div>
                                     )}
                                 </div>
@@ -469,7 +470,7 @@ export default function SlemanJasaPage() {
                                                     </div>
                                                 )}
                                                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                                                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>⭐ {store.rating_avg || '0'}</span>
+                                                    {/* <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>⭐ {store.rating_avg || '0'}</span> */}
                                                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>📦 {store.services_count ?? store.products_count ?? 0} layanan</span>
                                                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>💬 {store.reviews_count || 0} ulasan</span>
                                                 </div>

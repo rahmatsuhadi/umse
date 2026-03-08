@@ -60,7 +60,7 @@ export function TopStores() {
                                     <div className="merchant-mini-info">
                                         <div className="name">{store.name}</div>
                                         <div className="area">📍 {store.district?.name || "Sleman"}</div>
-                                        <div className="rating">★ {Number(store.average_rating || 0).toFixed(1)}</div>
+                                        {/* <div className="rating">★ {Number(store.average_rating || 0).toFixed(1)}</div> */}
                                     </div>
                                 </Link>
                             ))}

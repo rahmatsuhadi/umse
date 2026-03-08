@@ -125,7 +125,7 @@ export default function MerchantsPage() {
                             value={sortBy}
                             onChange={handleSortChange}
                         >
-                            <option value="rating">Rating Tertinggi</option>
+                            {/* <option value="rating">Rating Tertinggi</option> */}
                             <option value="products">Produk Terbanyak</option>
                             <option value="name">Nama A-Z</option>
                             <option value="newest">Terbaru</option>

@@ -280,7 +280,7 @@ export default function SlemanFoodPage() {
                                     value={sort}
                                     onChange={(e) => setSort(e.target.value)}
                                 >
-                                    <option value="-rating_avg">Rating Tertinggi</option>
+                                    {/* <option value="-rating_avg">Rating Tertinggi</option> */}
                                     <option value="price">Harga Terendah</option>
                                     <option value="-price">Harga Tertinggi</option>
                                     <option value="-sold_count">Terlaris</option>

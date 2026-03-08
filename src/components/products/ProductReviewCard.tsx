@@ -54,9 +54,9 @@ export default function ProductReviewCard({ review, store, handlePreviewClick }:
 
                     {/* Star rating & Date Group */}
                     <div style={{ marginBottom: '8px' }}>
-                        <div style={{ color: 'var(--saffron)', fontSize: '14px', lineHeight: 1 }}>
+                        {/* <div style={{ color: 'var(--saffron)', fontSize: '14px', lineHeight: 1 }}>
                             {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                        </div>
+                        </div> */}
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             📅 {formatDate(review.created_at)}
                         </div>

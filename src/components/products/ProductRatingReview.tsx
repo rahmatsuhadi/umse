@@ -46,7 +46,7 @@ export function ProductRatingReview({ product }: CardRatingProps) {
       </div>
 
       {/* Summary */}
-      <div className="review-summary">
+      {/* <div className="review-summary">
         <div className="review-score">
           <div className="score">{avgRating.toFixed(1)}</div>
           <div className="stars">{renderStars(avgRating)}</div>
@@ -66,7 +66,7 @@ export function ProductRatingReview({ product }: CardRatingProps) {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Review List */}
       <ProductReviewList

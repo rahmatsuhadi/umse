@@ -247,10 +247,9 @@
     .nav-search {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       background: var(--cream-dark);
       border-radius: var(--radius-md);
-      border: 1.5px solid transparent;
       overflow: hidden;
       transition: all 0.2s;
     }
@@ -501,7 +500,7 @@
 
     .mobile-search-inner {
       display: flex;
-      align-items: center;
+      align-items: stretch;
       background: var(--cream-dark);
       border-radius: var(--radius-md);
       border: 1.5px solid transparent;

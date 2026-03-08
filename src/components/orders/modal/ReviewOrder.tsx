@@ -21,7 +21,7 @@ type ReviewModalOrderProps = {
 };
 
 export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOrderProps) {
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(5); // Default to 5 since input is hidden
     const [comment, setComment] = useState("");
     const [files, setFiles] = useState<File[]>([]);
 
@@ -38,10 +38,10 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (rating < 1) {
+        /* if (rating < 1) {
             toast.error("Harap berikan rating bintang untuk produk ini.")
             return;
-        }
+        } */
         await mutateAsync({
             rating,
             content: comment,
@@ -59,7 +59,7 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="pt-4 space-y-4">
-                    <StarRatingInput rating={rating} onRatingChange={setRating} disabled={isPending} />
+                    {/* <StarRatingInput rating={rating} onRatingChange={setRating} disabled={isPending} /> */}
 
                     <div>
                         <Label htmlFor="reviewComment" className="mb-2 text-sm block">Komentar</Label>
@@ -86,7 +86,7 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
                         <DialogClose asChild>
                             <Button type="button" variant="outline" disabled={isPending}>Batal</Button>
                         </DialogClose>
-                        <Button type="submit" disabled={isPending || rating < 1}>
+                        <Button type="submit" disabled={isPending /* || rating < 1 */}>
                             {isPending ? "Mengirim..." : "Kirim Ulasan"}
                         </Button>
                     </DialogFooter>

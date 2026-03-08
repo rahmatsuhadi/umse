@@ -85,7 +85,7 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
                     className="merchant-detail-cover"
                     id="mdCover"
                     style={{
-                        backgroundImage: `url(${store.cover_image || store.logo_url || '/assets/no-image.jpg'})`,
+                        backgroundImage: `url(${store.cover_path || store.logo_url || '/assets/no-image.jpg'})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         filter: 'brightness(0.7)'
@@ -106,9 +106,8 @@ export default async function StoreDetailPage({ params }: { params: Promise<{ id
                             <h1 id="mdName">{store.name}</h1>
                             <div className="meta-row">
                                 <span className="meta-item text-slate-600">📍 <strong id="mdArea">{store.district?.name}</strong></span>
-                                <span className="meta-item text-slate-600">⭐ <strong id="mdRating">{store.average_rating}</strong></span>
+                                {/* <span className="meta-item text-slate-600">⭐ <strong id="mdRating">{store.average_rating}</strong></span> */}
                                 <span className="meta-item text-slate-600">📦 <strong id="mdProducts">{store.products_count}</strong> produk</span>
-                                <span className="meta-item text-slate-600">👥 <strong id="mdFollowers">0</strong> mengikuti</span>
                             </div>
                         </div>
                     </div>

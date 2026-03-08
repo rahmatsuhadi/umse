@@ -20,12 +20,12 @@ export function StoreCard({ store }: StoreCardProps) {
             <p className="text-sm text-gray-600 mb-2">{store.brand_name}</p>
             <p className="text-xs text-gray-500">{store.address}</p>
             <div className="flex items-center justify-center mt-3">
-                <div className="flex items-center text-yellow-400 mr-2">
+                {/* <div className="flex items-center text-yellow-400 mr-2">
                     <i className="fas fa-star text-xs"></i>
                     <span className="text-gray-600 text-xs ml-1">
                         {store.average_rating}
                     </span>
-                </div>
+                </div> */}
                 <span className="text-xs text-gray-500">
                     {store.products_count} Produk
                 </span>

@@ -86,7 +86,8 @@ export const ProductCard = ({ product }: CardProductProps) => {
             </span>
             <div className="sold-row flex items-center gap-1.5 flex-wrap text-[11px] text-gray-500 font-semibold mb-1">
               <i className="fas fa-star text-yellow-400"></i>
-              <span>{product.average_rating} · {product.sold_count || 0} terjual</span>
+              {/* <span>{product.average_rating} · {product.sold_count || 0} terjual</span> */}
+              <span>{product.sold_count || 0} terjual</span>
               {product.type && (
                 <span className="tipe-barang-sm" style={{ padding: '0px 6px', fontSize: '10px' }}>
                   {product.type.toLowerCase() === 'jasa' ? '🛠️ Jasa' : '📦 Barang'}

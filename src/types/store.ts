@@ -12,6 +12,7 @@ export interface Store {
   average_rating: number;
   logo_url: string;
   cover_image?: string;
+  cover_path?: string;
   description: string;
   address: string;
   qris_url?: string;
@@ -29,6 +30,7 @@ export interface Store {
 
   products_count: number;
   is_open: boolean;
+  is_emergency_close?: boolean;
   phone?: string;
   emergency_close_reason?: string | null;
   reopen_at?: string | null;

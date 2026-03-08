@@ -42,7 +42,8 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
     const [imgError, setImgError] = useState(false);
 
     // From ProductCard parsing logic
-    const isClosed = p.store?.is_open === false;
+    const isEmergencyClose = p.store?.is_emergency_close === true;
+    const isClosed = p.store?.is_open === false || isEmergencyClose;
     const discountPct = p.discount_percentage ? Number(p.discount_percentage) : 0;
     const hasDiscount = discountPct > 0 && p.discount_price != null;
     const displayPrice = hasDiscount ? formatPrice(p.discount_price) : formatPrice(p.price);
@@ -94,7 +95,7 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
         closedOverlay = (
             <div className="closed-overlay">
                 <div className="closed-badge">🔒 Tutup</div>
-                <div className="closed-time">Buka jam {oh}:00</div>
+                {!isEmergencyClose && <div className="closed-time">Buka jam {oh}:00</div>}
             </div>
         );
     }
@@ -142,12 +143,16 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
             <div className="jasa-card-body">
                 <div className="jasa-card-name">{name}</div>
                 <div className="jasa-card-shop">🏪 {shop} &nbsp;·&nbsp; 📍 {area}</div>
-                <div className="jasa-card-desc" style={{ fontSize: '12px', color: '#666', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '8px' }}>{desc}</div>
+                <div
+                    className="jasa-card-desc"
+                    style={{ fontSize: '12px', color: '#666', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '8px' }}
+                    dangerouslySetInnerHTML={{ __html: desc }}
+                />
                 <div className="jasa-card-footer">
                     <div>
                         <div className="jasa-card-price" style={{ color: '#7B1FA2', fontWeight: 600, fontSize: '15px' }}>{displayPrice}</div>
                         <div className="jasa-card-meta" style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                            ⭐ {ratingDisplay} &nbsp;·&nbsp; {soldCount} dipesan
+                            {/* ⭐ {ratingDisplay} &nbsp;·&nbsp; */} {soldCount} dipesan
                         </div>
                     </div>
                     {isClosed ? (

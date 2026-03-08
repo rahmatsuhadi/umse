@@ -31,8 +31,9 @@ interface ProductCardProps {
 
 export function ProductCard({ product, isNew: isNewProp, className }: ProductCardProps) {
     const p = product;
-    // Use store.is_open directly from API (boolean)
-    const isClosed = p.store?.is_open === false;
+    // Use store.is_open and is_emergency_close from API
+    const isEmergencyClose = p.store?.is_emergency_close === true;
+    const isClosed = p.store?.is_open === false || isEmergencyClose;
 
     // Discount: discount_price is the sale price, price is original
     const discountPct = p.discount_percentage ? Number(p.discount_percentage) : 0;
@@ -80,6 +81,7 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
             sold={soldCount}
             img={p.media?.[0]?.media_url || p.thumbnail?.media_url || ""}
             isClosed={isClosed}
+            isEmergencyClose={isEmergencyClose}
             badge={null}
             promo={discountStr}
             isNew={isNew}

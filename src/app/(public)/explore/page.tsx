@@ -495,7 +495,7 @@ function ExplorePageContent() {
                                                     </div>
                                                 )}
                                                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                                                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>⭐ {store.rating_avg || '5.0'}</span>
+                                                    {/* <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>⭐ {store.rating_avg || '5.0'}</span> */}
                                                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>📦 {store.products_count || 0} produk</span>
                                                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>💬 {store.reviews_count || 0} ulasan</span>
                                                 </div>

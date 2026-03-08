@@ -104,11 +104,11 @@ export default function StoreDetailInfoCard({ store }: { store: Store }) {
                                         <div className="text-2xl font-bold text-primary">{store.products_count || 0}</div>
                                         <div className="text-sm text-gray-600">Produk</div>
                                     </div>
-                                    <div className="text-center flex items-center flex-col">
+                                    {/* <div className="text-center flex items-center flex-col">
                                         <StarRating rating={store.average_rating} />
                                         <div className="text-2xl font-bold text-primary">{store.average_rating}</div>
                                         <div className="text-sm text-gray-600">Rating Toko</div>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 {/* <!-- Contact Info --> */}
