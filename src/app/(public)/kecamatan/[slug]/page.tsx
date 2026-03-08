@@ -12,9 +12,11 @@ import { useInfiniteStores } from "@/features/store/hooks";
 import Image from "next/image";
 import { MerchantCard } from "@/components/stores/MerchantCard";
 import { ProductCard, SkeletonProductCard } from "@/components/shared/ProductCard";
+import { ServiceCard, SkeletonServiceCard } from "@/components/shared/ServiceCard";
+import { TopService } from "@/components/home/TopService";
 import type { Product, Store, Category } from "@/types";
 
-type TabKey = "semua" | "fast-food" | "frozen-food" | "toko";
+type TabKey = "semua" | "fast-food" | "frozen-food" | "service" | "toko";
 
 export default function KecamatanDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -69,6 +71,13 @@ export default function KecamatanDetailPage() {
     filter: { district_id: id, is_frozen: 1 },
   });
   const frozenTotal = frozenStatData?.meta?.total ?? 0;
+
+  // ─── STAT: Jasa total (type=service) ───
+  const { data: serviceStatData } = useProducts({
+    per_page: 1,
+    filter: { district_id: id, type: 'service' },
+  });
+  const serviceTotal = serviceStatData?.meta?.total ?? 0;
 
   // ─── SEMUA TAB: Fast Food preview scroll (up to 10) ───
   const { data: fastFoodPreviewData, isLoading: isLoadingFFPreview } = useProducts({
@@ -126,6 +135,25 @@ export default function KecamatanDetailPage() {
   const frozenGridProducts: Product[] =
     frozenInfiniteData?.pages.flatMap((p) => p.data as Product[]) || [];
 
+  // ─── SERVICE TAB: infinite scroll ───
+  const {
+    data: serviceInfiniteData,
+    fetchNextPage: fetchNextService,
+    hasNextPage: hasMoreService,
+    isFetchingNextPage: isFetchingMoreService,
+    isLoading: isLoadingServiceGrid,
+  } = useInfiniteProducts({
+    filter: {
+      district_id: id,
+      type: 'service',
+      ...(categoryFilter !== "all" ? { category__slug: categoryFilter } : {}),
+    },
+    sort: sortParam,
+    per_page: 12,
+  });
+  const serviceGridProducts: Product[] =
+    serviceInfiniteData?.pages.flatMap((p) => p.data as Product[]) || [];
+
   // ─── SEMUA (all) TAB when category filter is applied OR for tab-based browsing ───
   const {
     data: allProductsData,
@@ -180,6 +208,26 @@ export default function KecamatanDetailPage() {
     );
   };
 
+  // ─── Full service grid ───
+  const KecServiceGrid = ({ products, loading }: { products: Product[]; loading: boolean }) => {
+    if (loading) {
+      return (
+        <div className="kec-all-grid">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonServiceCard key={i} />
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className="kec-all-grid">
+        {products.map((p: Product) => (
+          <ServiceCard key={p.id} product={p} />
+        ))}
+      </div>
+    );
+  };
+
   // ─── Stores grid ───
   const renderStoresGrid = () => {
     if (isLoadingStores) {
@@ -216,7 +264,7 @@ export default function KecamatanDetailPage() {
   };
 
   const showCategoryFilter =
-    activeTab === "semua" || activeTab === "fast-food" || activeTab === "frozen-food";
+    activeTab === "semua" || activeTab === "fast-food" || activeTab === "frozen-food" || activeTab === "service";
 
   return (
     <div className="bg-cream">
@@ -258,6 +306,12 @@ export default function KecamatanDetailPage() {
                 <div className="kec-stat-value">{frozenTotal || "–"}</div>
                 <div className="kec-stat-label">Frozen Food</div>
               </div>
+
+              <div className="kec-stat">
+                <div className="kec-stat-value">{serviceTotal || "–"}</div>
+                <div className="kec-stat-label">Jasa</div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -282,6 +336,12 @@ export default function KecamatanDetailPage() {
               onClick={() => setActiveTab("frozen-food")}
             >
               🧊 Frozen Food
+            </button>
+            <button
+              className={`kec-tab${activeTab === "service" ? " active" : ""}`}
+              onClick={() => setActiveTab("service")}
+            >
+              🛠️ Jasa
             </button>
             <button
               className={`kec-tab${activeTab === "toko" ? " active" : ""}`}
@@ -381,6 +441,10 @@ export default function KecamatanDetailPage() {
                 </div>
               </div>
 
+              <div style={{ marginLeft: -16, marginRight: -16 }}>
+                <TopService districtId={id} />
+              </div>
+
               {/* Semua Produk — horizontal scroll (same behavior as Fast Food / Frozen Food) */}
               <div className="kec-special-section">
                 <div className="kec-special-header">
@@ -460,6 +524,34 @@ export default function KecamatanDetailPage() {
                   {hasMoreFrozen && !isFetchingMoreFrozen && (
                     <div className="flex-center mt-24">
                       <button className="kec-filter-chip" onClick={() => fetchNextFrozen()}>
+                        Muat Lebih Banyak
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* ══ TAB: Jasa ══ */}
+          {activeTab === "service" && (
+            <div>
+              {isLoadingServiceGrid ? (
+                <KecServiceGrid products={[]} loading />
+              ) : serviceGridProducts.length === 0 ? (
+                <div className="kec-empty">
+                  <div className="kec-empty-icon">🛠️</div>
+                  <div className="kec-empty-text">Belum ada jasa di kapanewon ini</div>
+                </div>
+              ) : (
+                <>
+                  <KecServiceGrid products={serviceGridProducts} loading={false} />
+                  {isFetchingMoreService && (
+                    <div className="empty-state-msg">Memuat...</div>
+                  )}
+                  {hasMoreService && !isFetchingMoreService && (
+                    <div className="flex-center mt-24">
+                      <button className="kec-filter-chip" onClick={() => fetchNextService()}>
                         Muat Lebih Banyak
                       </button>
                     </div>

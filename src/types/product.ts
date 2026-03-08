@@ -43,6 +43,7 @@ export interface Product {
   description: string;
   category_id: string;
   category: Category;
+  type?: string;
   review_status: 'pending' | 'approved' | 'rejected';
   reviewer: User | null;
   reviewed_at: string | null;

@@ -16,7 +16,7 @@ const navLinks = [
   { name: "Produk", href: "/produk", icon: "🛍️", iconBg: "#FDE8D8" },
   { name: "Sleman Food", href: "/sleman-food", icon: "🍱", iconBg: "#FFEDD5" },
   { name: "Jelajahi", href: "/explore", icon: "🔍", iconBg: "#E8EAF6" },
-  { name: "Profil", href: "/profile", icon: "👤", iconBg: "#E0F2F1" },
+  { name: "Sleman Jasa", href: "/sleman-jasa", icon: "🛠️", iconBg: "#F3E5F5" },
 ];
 
 export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
@@ -86,19 +86,15 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
 
           {withMenu && (
             <div className="nav-links">
-              {navLinks.map((link) => {
-                // For Profil, if not auth, go to /masuk
-                const actualHref = link.name === "Profil" && !isAuth ? "/profile" : link.href;
-                return (
-                  <Link
-                    key={link.name}
-                    href={actualHref}
-                    className={`nav-link ${pathname === link.href ? 'active' : ''}`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              })}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`nav-link ${pathname === link.href ? 'active' : ''}`}
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           )}
 

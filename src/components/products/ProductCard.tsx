@@ -40,7 +40,10 @@ export const ProductCard = ({ product }: CardProductProps) => {
     logVisitor({ product_id: product.id });
 
     const phone = product.store?.user?.phone_number || product.store?.phone || '';
-    const message = `Halo, saya tertarik dengan produk ${product.name}`;
+    const isService = product.type?.toLowerCase() === 'service' || product.type?.toLowerCase() === 'jasa';
+    const message = isService
+      ? `Halo, saya ingin memesan layanan *${product.name}*`
+      : `Halo, saya tertarik dengan produk ${product.name}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
@@ -66,18 +69,7 @@ export const ProductCard = ({ product }: CardProductProps) => {
         )}
       </div>
       <div className="product-body-lg flex flex-col flex-1">
-        <div className="flex items-center justify-between mb-2">
-          <span className="badge badge-terracotta flex-shrink-0 max-w-[60%] truncate">
-            {product.category.name}
-          </span>
 
-          <div className="flex items-center text-yellow-400">
-            <i className="fas fa-star text-xs"></i>
-            <span className="text-gray-600 text-xs ml-1 font-semibold">
-              {product.average_rating}
-            </span>
-          </div>
-        </div>
         <h3
           className="product-name-lg group-hover:text-primary transition-colors duration-300
                overflow-hidden line-clamp-2"
@@ -92,8 +84,14 @@ export const ProductCard = ({ product }: CardProductProps) => {
             <span className="product-price-lg">
               {priceDisplay}
             </span>
-            <div className="sold-row">
-              Stok: {product.stock_quantity}
+            <div className="sold-row flex items-center gap-1.5 flex-wrap text-[11px] text-gray-500 font-semibold mb-1">
+              <i className="fas fa-star text-yellow-400"></i>
+              <span>{product.average_rating} · {product.sold_count || 0} terjual</span>
+              {product.type && (
+                <span className="tipe-barang-sm" style={{ padding: '0px 6px', fontSize: '10px' }}>
+                  {product.type.toLowerCase() === 'jasa' ? '🛠️ Jasa' : '📦 Barang'}
+                </span>
+              )}
             </div>
           </div>
           <button

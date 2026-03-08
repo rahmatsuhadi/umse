@@ -93,8 +93,17 @@ export const logout = (): Promise<{ status: boolean }> => {
  * Mengambil data pengguna yang sedang login (terotentikasi).
  * Menggunakan token yang sudah tersimpan di cookie.
  */
-export const getMe = (): Promise<{ data: User; message: string }> => {
-  return apiClient<{ data: User; message: string }>("/user");
+export const getMe = async (): Promise<{ data: User; message: string }> => {
+  try {
+    return await apiClient<{ data: User; message: string }>("/user");
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes("Unauthenticated") || error.message.includes("401")) {
+        throw error;
+      }
+    }
+    throw error;
+  }
 };
 
 export type UpdateProfileData = Partial<

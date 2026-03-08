@@ -27,6 +27,7 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const { data: user } = useUser();
+  const router = useRouter();
 
   const handleVariantChange = (v: Variant | null) => {
     setSelectedVariant(v);
@@ -97,12 +98,17 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
         </div>
       )}
       {/* Badges */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px', alignItems: 'center' }}>
         <span className="badge badge-terracotta">🔥 Terlaris</span>
         {isAvailable ? (
           <span className="badge badge-forest">✓ Stok Tersedia</span>
         ) : (
           <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>✗ Stok Habis</span>
+        )}
+        {product.type && (
+          <span className="tipe-badge tipe-barang">
+            {product.type.toLowerCase() === 'jasa' ? '🛠️ Jasa' : '📦 Barang'}
+          </span>
         )}
         <span className="badge badge-saffron">🏅 Produk Unggulan</span>
       </div>
@@ -155,9 +161,13 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
         </div>
         <div className="detail-merchant-info" style={{ flex: 1, minWidth: 0 }}>
           <h4>{product.store.name}</h4>
-          <Link
-            href={`/kecamatan/${buildSlug(product.store.district?.name, product.store.district?.id) || 'sleman'}`}
-            style={{ textDecoration: "none" }}
+          <span
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/kecamatan/${buildSlug(product.store.district?.name, product.store.district?.id) || 'sleman'}`);
+            }}
+            style={{ textDecoration: "none", cursor: 'pointer' }}
             className="location hover:text-terracotta transition-colors"
           >
             {product.store.district?.logo || product.store.district?.icon ? (
@@ -173,7 +183,7 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
               product.store.district?.emoji || '📍'
             )}{' '}
             {product.store.district?.name || 'Sleman'}
-          </Link>
+          </span>
         </div>
         <div style={{ color: 'var(--terracotta)', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
           Lihat Toko →
@@ -228,25 +238,50 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
       {/* Deskripsi */}
       <div className="detail-desc" dangerouslySetInnerHTML={{ __html: product.description }} />
 
-      {/* Specs */}
-      <div className="detail-specs">
-        <div className="spec-row">
-          <span className="spec-label">Kategori</span>
-          <span className="spec-value">{product.category.name}</span>
+      {(!product.type || (product.type.toLowerCase() !== 'service' && product.type.toLowerCase() !== 'jasa')) ? (
+        <div className="detail-specs">
+          <div className="spec-row">
+            <span className="spec-label">Kategori</span>
+            <span className="spec-value">{product.category.name}</span>
+          </div>
+          <div className="spec-row">
+            <span className="spec-label">Status</span>
+            <span className="spec-value">{isAvailable ? '✓ Tersedia' : '✗ Stok Habis'}</span>
+          </div>
+          <div className="spec-row">
+            <span className="spec-label">Stok</span>
+            <span className="spec-value">{currentStock} unit</span>
+          </div>
+          <div className="spec-row">
+            <span className="spec-label">Pengiriman</span>
+            <span className="spec-value">Sleman &amp; sekitarnya</span>
+          </div>
         </div>
-        <div className="spec-row">
-          <span className="spec-label">Status</span>
-          <span className="spec-value">{isAvailable ? '✓ Tersedia' : '✗ Stok Habis'}</span>
+      ) : (
+        <div className="service-info-block" id="detailServiceBlock">
+          <div className="service-info-row">
+            <span className="service-info-icon">🛠️</span>
+            <span className="service-info-label">Tipe Layanan</span>
+            <span className="service-info-value" id="svcCat">{product.category.name}</span>
+          </div>
+          <div className="service-info-row" id="svcHourRow">
+            <span className="service-info-icon">🕐</span>
+            <span className="service-info-label">Jam Operasi</span>
+            <span className="service-info-value" id="svcHours">Lihat Toko</span>
+          </div>
+          <div className="service-info-row" id="svcAreaRow">
+            <span className="service-info-icon">📍</span>
+            <span className="service-info-label">Area Layanan</span>
+            <span className="service-info-value" id="svcArea">{product.store.district?.name || 'Sleman & sekitarnya'}</span>
+          </div>
+          <div className="service-info-row" id="svcTagsRow" style={{ display: 'none' }}>
+            <span className="service-info-icon">🏷️</span>
+            <span className="service-info-label">Termasuk</span>
+            <span className="service-info-value" id="svcTags">–</span>
+          </div>
         </div>
-        <div className="spec-row">
-          <span className="spec-label">Stok</span>
-          <span className="spec-value">{currentStock} unit</span>
-        </div>
-        <div className="spec-row">
-          <span className="spec-label">Pengiriman</span>
-          <span className="spec-value">Sleman &amp; sekitarnya</span>
-        </div>
-      </div>
+      )}
+
 
       {/* Store checkout handlers (hidden, exposed via window for sticky CTA) */}
       <div id="__checkout_handlers" style={{ display: 'none' }}
@@ -278,7 +313,15 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
           onClick={() => {
             if (!isClosed) {
               const variantPart = selectedVariant ? `, varian: *${selectedVariant.name}*` : '';
-              const msg = `Halo, saya ingin memesan *${product.name}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
+              const isService = product.type?.toLowerCase() === 'service' || product.type?.toLowerCase() === 'jasa';
+              let msg: string;
+
+              if (isService) {
+                msg = `Halo, saya ingin memesan layanan *${product.name}*${variantPart}.`;
+              } else {
+                msg = `Halo, saya ingin memesan *${product.name}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
+              }
+
               const phone = product.store?.user?.phone_number || product.store?.phone || '';
               window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
             }

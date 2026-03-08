@@ -5,13 +5,14 @@ import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
 interface ProductStickyWAProps {
     productId: string;
     productName: string;
+    productType?: string;
     selectedVariantName?: string;
     quantity?: number;
     phone: string; // store.user.phone_number
     isClosed?: boolean;
 }
 
-export default function ProductStickyWA({ productId, productName, selectedVariantName, quantity, phone, isClosed }: ProductStickyWAProps) {
+export default function ProductStickyWA({ productId, productName, productType, selectedVariantName, quantity, phone, isClosed }: ProductStickyWAProps) {
     const { mutate: logVisitor } = useCreateVisitorLog();
 
     const handleClick = () => {
@@ -19,7 +20,11 @@ export default function ProductStickyWA({ productId, productName, selectedVarian
 
         const variantPart = selectedVariantName ? `, varian: *${selectedVariantName}*` : '';
         let message: string;
-        if (quantity && quantity > 0) {
+        const isService = productType?.toLowerCase() === 'service' || productType?.toLowerCase() === 'jasa';
+
+        if (isService) {
+            message = `Halo, saya ingin memesan layanan *${productName}*${variantPart}.`;
+        } else if (quantity && quantity > 0) {
             message = `Halo, saya ingin memesan *${productName}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
         } else {
             message = `Halo, saya tertarik dengan produk *${productName}*${variantPart}.`;

@@ -21,6 +21,7 @@ export interface CatCardProps {
     openHour?: number;
     closeHour?: number;
     category?: string;
+    type?: string;
     hourPill?: { state: 'open' | 'closing-soon' | 'closed'; text: string; pillClass: string } | null;
     phone?: string;
     className?: string;
@@ -41,6 +42,8 @@ export function CatCard(p: CatCardProps) {
         : p.badge === 'Unggulan' ? <div className="star-badge">⭐ Unggulan</div> : null;
     const promoRibbon = p.promo ? <div className="promo-ribbon">{p.promo}</div> : null;
     const newRibbon = p.isNew ? <div className="new-ribbon">✨ Baru</div> : null;
+
+
 
     let hourPill = null;
     if (p.hourPill) {
@@ -107,7 +110,14 @@ export function CatCard(p: CatCardProps) {
                     <div className="cat-card-price-col">
                         <div className="cat-card-price">{p.price}</div>
                         {p.priceOld && <div className="cat-card-price-old">{p.priceOld}</div>}
-                        <div className="cat-card-rating">★ {p.rating} · {p.sold} terjual</div>
+                        <div className="cat-card-rating font-semibold text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1.5 flex-wrap">
+                            ★ {p.rating} · {p.sold} terjual
+                            {p.type && (
+                                <span className="tipe-barang-sm ml-1" style={{ fontSize: '10px', padding: '0px 6px' }}>
+                                    {p.type.toLowerCase() === 'service' ? '🛠️ Jasa' : '📦 Barang'}
+                                </span>
+                            )}
+                        </div>
                     </div>
                     {isClosed ? (
                         <button
@@ -125,7 +135,10 @@ export function CatCard(p: CatCardProps) {
                                 e.preventDefault();
                                 logVisitor({ product_id: p.id as string });
                                 const phone = p.phone || '';
-                                const message = `Halo, saya tertarik dengan produk ${p.name}`;
+                                const isService = p.type?.toLowerCase() === 'service' || p.type?.toLowerCase() === 'jasa';
+                                const message = isService
+                                    ? `Halo, saya ingin memesan layanan *${p.name}*`
+                                    : `Halo, saya tertarik dengan produk ${p.name}`;
                                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
                             }}
                         >

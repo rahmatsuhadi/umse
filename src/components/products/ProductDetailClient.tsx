@@ -61,6 +61,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage }: Pr
                     <ProductStickyWA
                         productId={product.id}
                         productName={product.name}
+                        productType={product.type}
                         selectedVariantName={selectedVariant?.name}
                         quantity={quantity}
                         phone={product.store?.user?.phone_number || product.store?.phone || ''}

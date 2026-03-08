@@ -16,3 +16,7 @@ export const getCategoriesFooter = (): Promise<{ data: Category[] }> => {
 export const getSlemanFoodCategories = (): Promise<{ data: Category[] }> => {
   return apiClient<{ data: Category[] }>('/categories?filter[is_ready_to_serve_or_frozen]=1');
 };
+
+export const getJasaCategories = (): Promise<{ data: Category[] }> => {
+  return apiClient<{ data: Category[] }>('/categories?filter[type]=service');
+};

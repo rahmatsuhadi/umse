@@ -83,6 +83,7 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
             badge={null}
             promo={discountStr}
             isNew={isNew}
+            type={p.type}
             openHour={openHour}
             closeHour={closeHour}
             hourPill={hourPill}

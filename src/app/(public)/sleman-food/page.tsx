@@ -68,6 +68,7 @@ export default function SlemanFoodPage() {
         district_id: activeDistrict !== "all" ? activeDistrict : undefined,
         min_price: priceMinInput ? Number(priceMinInput) : undefined,
         max_price: priceMaxInput ? Number(priceMaxInput) : undefined,
+        type: "product",
     };
     if (openNow) filters["is_open_store"] = 1;
 

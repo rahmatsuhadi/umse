@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCategories, getCategoriesFooter, getSlemanFoodCategories } from "./api";
+import { getCategories, getCategoriesFooter, getSlemanFoodCategories, getJasaCategories } from "./api";
 import type { Category } from "@/types";
 
 export const useCategories = () => {
@@ -26,5 +26,14 @@ export const useSlemanFoodCategories = () => {
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     queryFn: getSlemanFoodCategories,
+  });
+};
+
+export const useJasaCategories = () => {
+  return useQuery<{ data: Category[] }, Error>({
+    queryKey: ["jasa-categories"],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    queryFn: getJasaCategories,
   });
 };

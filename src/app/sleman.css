@@ -5864,3 +5864,479 @@
       background: var(--terracotta-dark);
       transform: translateX(3px);
     }
+
+    .tipe-barang-sm {
+        background: #E3F2FD;
+        color: #1565C0;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    .tipe-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+        border: 1.5px solid transparent;
+    }
+    
+    .tipe-barang {
+        background: #E3F2FD;
+        color: #1565C0;
+        border-color: #BBDEFB;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════ */
+    /* SLEMAN JASA — EXPLORE-STYLE HEADER + LAYOUT            */
+    /* ═══════════════════════════════════════════════════════ */
+    .jasa-explore-header {
+      background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 55%, #9C27B0 100%);
+      padding: 40px 20px;
+    }
+    .jasa-explore-header-inner { max-width: 1200px; margin: 0 auto; }
+    .jasa-explore-eyebrow {
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.65);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .jasa-explore-heading {
+      font-size: clamp(26px, 4vw, 38px); font-weight: 800; color: white; margin-bottom: 20px; line-height: 1.1;
+    }
+    .jasa-explore-heading em { color: var(--saffron); font-style: normal; }
+
+    .jasa-explore-search-bar {
+      display: flex; align-items: center; gap: 0; max-width: 620px;
+      background: white; border-radius: var(--radius-md);
+      padding: 6px 6px 6px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .jasa-explore-search-icon { font-size: 16px; margin-right: 8px; flex-shrink: 0; }
+    .jasa-explore-search-bar input {
+      flex: 1; border: none; outline: none; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; color: var(--text-primary); background: transparent;
+    }
+    .jasa-explore-search-bar button {
+      background: #7B1FA2; color: white; border: none; border-radius: var(--radius-sm);
+      padding: 10px 22px; font-weight: 700; font-size: 14px; cursor: pointer;
+      transition: background 0.15s; flex-shrink: 0;
+    }
+    .jasa-explore-search-bar button:hover { background: #6A1B9A; }
+
+    .jasa-explore-stats { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+    .jasa-explore-stat { color: rgba(255,255,255,0.8); font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .jasa-explore-stat strong { color: white; }
+
+    .jasa-explore-body { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+    .jasa-explore-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    @media (max-width: 900px) { .jasa-explore-layout { grid-template-columns: 1fr; } }
+
+    /* ── keep old jasa-card, jasa-grid, tipe-badge intact ──  */
+    .tipe-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px;
+      letter-spacing: 0.3px; border: 1.5px solid transparent;
+    }
+    .tipe-barang { background: #E3F2FD; color: #1565C0; border-color: #BBDEFB; }
+    .tipe-jasa   { background: #F3E5F5; color: #7B1FA2; border-color: #E1BEE7; }
+    .tipe-barang-sm { background: #E3F2FD; color: #1565C0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .tipe-jasa-sm   { background: #F3E5F5; color: #7B1FA2; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+
+    /* ───────────────────────────────────────────── */
+    /* SLEMAN JASA PAGE                              */
+    /* ───────────────────────────────────────────── */
+    .jasa-hero {
+      background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 50%, #9C27B0 100%);
+      padding: 56px 20px 72px; position: relative; overflow: hidden;
+    }
+    .jasa-hero::before {
+      content:''; position:absolute; inset:0; opacity:0.08;
+      background: radial-gradient(circle at 15% 50%, #F5A623 0%, transparent 45%),
+                  radial-gradient(circle at 85% 20%, #F7620A 0%, transparent 40%);
+    }
+    .jasa-hero::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:48px;
+      background:var(--cream); clip-path: ellipse(55% 100% at 50% 100%);
+    }
+    .jasa-hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+    .jasa-hero-eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(245,166,35,0.18); border:1px solid rgba(245,166,35,0.4);
+      color:var(--saffron); font-size:12px; font-weight:700; letter-spacing:1px;
+      text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:18px;
+    }
+    .jasa-hero h1 { font-size:clamp(28px,5vw,50px); font-weight:800; color:white; line-height:1.1; margin-bottom:12px; }
+    .jasa-hero h1 em { color:var(--saffron); font-style:normal; }
+    .jasa-hero-sub { font-size:16px; color:rgba(255,255,255,0.65); margin-bottom:32px; max-width:520px; }
+    .jasa-hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
+    .jasa-stat-val { font-size:26px; font-weight:800; color:white; }
+    .jasa-stat-lbl { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+
+    /* Category explorer */
+    .jasa-body { max-width:1200px; margin:0 auto; padding:36px 20px 64px; }
+
+    .jasa-cat-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px;
+      margin-bottom:44px;
+    }
+    .jasa-cat-card {
+      background:white; border-radius:var(--radius-md); padding:22px 14px 18px;
+      border:2px solid var(--cream-dark); cursor:pointer; transition:all 0.2s; text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .jasa-cat-card::before {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+      background:var(--jasa-color, #7B1FA2); transform:scaleX(0); transition:transform 0.2s;
+    }
+    .jasa-cat-card:hover, .jasa-cat-card.active {
+      border-color:var(--jasa-color, #7B1FA2); box-shadow:var(--shadow-md); transform:translateY(-3px);
+    }
+    .jasa-cat-card:hover::before, .jasa-cat-card.active::before { transform:scaleX(1); }
+    .jasa-cat-card.active { background:linear-gradient(135deg,rgba(123,31,162,0.06),rgba(156,39,176,0.03)); }
+    .jasa-cat-icon-wrap {
+      width:56px; height:56px; border-radius:var(--radius-md);
+      display:flex; align-items:center; justify-content:center; font-size:26px;
+      margin:0 auto 12px;
+    }
+    .jasa-cat-name { font-size:13px; font-weight:700; color:var(--text-primary); }
+    .jasa-cat-count { font-size:11px; color:var(--text-muted); margin-top:3px; }
+
+    /* Toolbar */
+    .jasa-toolbar {
+      background:white; border:1.5px solid var(--cream-dark); border-radius:var(--radius-md);
+      padding:16px 20px; display:flex; align-items:center; gap:12px;
+      flex-wrap:wrap; margin-bottom:28px;
+    }
+    .jasa-toolbar-left { display:flex; align-items:center; gap:8px; flex:1; flex-wrap:wrap; }
+    .jasa-filter-chip {
+      padding:7px 16px; border-radius:50px; font-size:12px; font-weight:700;
+      border:1.5px solid var(--cream-dark); cursor:pointer; background:white;
+      color:var(--text-muted); transition:all 0.15s;
+    }
+    .jasa-filter-chip:hover  { border-color:#7B1FA2; color:#7B1FA2; }
+    .jasa-filter-chip.active { background:#7B1FA2; color:white; border-color:#7B1FA2; }
+
+    /* Open-now toggle specifically for jasa */
+    .jasa-open-toggle { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--text-secondary); }
+
+    /* Service card */
+    .jasa-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px; }
+    .jasa-grid.list-view { grid-template-columns:1fr; }
+
+    .jasa-card {
+      background:white; border-radius:var(--radius-md); border:1.5px solid var(--cream-dark);
+      overflow:hidden; cursor:pointer; transition:all 0.22s; display:flex; flex-direction:column;
+    }
+    .jasa-card:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); border-color:rgba(123,31,162,0.3); }
+    .jasa-card.is-closed:hover { transform:translateY(-1px); box-shadow:var(--shadow-sm); border-color:#ddd; }
+
+    .jasa-card-img { height:192px; position:relative; overflow:hidden; flex-shrink:0; }
+    .jasa-card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+    .jasa-card:hover .jasa-card-img img { transform:scale(1.04); }
+    .jasa-tipe-ribbon {
+      position:absolute; top:0; left:0;
+      background:linear-gradient(135deg,#7B1FA2,#9C27B0);
+      color:white; font-size:10px; font-weight:800; padding:5px 14px 5px 9px;
+      clip-path:polygon(0 0,100% 0,85% 100%,0 100%); z-index:2; letter-spacing:0.5px;
+    }
+    .jasa-cat-tag {
+      position:absolute; top:10px; right:10px; z-index:2;
+      background:rgba(0,0,0,0.55); color:white; font-size:10px; font-weight:700;
+      padding:3px 10px; border-radius:20px; backdrop-filter:blur(4px);
+    }
+
+    .jasa-card-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; }
+    .jasa-card-name { font-size:15px; font-weight:800; color:var(--text-primary); line-height:1.35; margin-bottom:6px; }
+    .jasa-card-shop { font-size:12px; color:var(--text-muted); margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+    .jasa-card-desc { font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px; flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .jasa-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--cream-dark); gap:8px; margin-top:auto; }
+    .jasa-card-price { font-size:16px; font-weight:800; color:#7B1FA2; }
+    .jasa-card-meta { font-size:11px; color:var(--text-muted); margin-top:2px; }
+    .jasa-wa-btn {
+      width:36px; height:36px; border-radius:50%; background:#25D366;
+      border:none; color:white; cursor:pointer; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      transition:all 0.2s; box-shadow:0 2px 8px rgba(37,211,102,0.3);
+    }
+    .jasa-wa-btn:hover { background:#1da851; transform:scale(1.1); }
+    .jasa-wa-btn.disabled { background:#bbb; box-shadow:none; cursor:not-allowed; }
+    .jasa-wa-btn.disabled:hover { transform:none; background:#bbb; }
+
+    /* List-view variant */
+    .jasa-grid.list-view .jasa-card { flex-direction:row; }
+    .jasa-grid.list-view .jasa-card-img { width:200px; min-width:200px; height:auto; }
+    .jasa-grid.list-view .jasa-card-desc { -webkit-line-clamp:3; }
+    @media(max-width:600px){
+      .jasa-grid.list-view .jasa-card { flex-direction:column; }
+      .jasa-grid.list-view .jasa-card-img { width:100%; height:160px; }
+    }
+
+    /* Featured service strip */
+    .jasa-featured-strip { display:flex; gap:16px; overflow-x:auto; padding-bottom:10px; margin-bottom:40px; }
+    .jasa-featured-strip::-webkit-scrollbar { height:4px; }
+    .jasa-featured-strip::-webkit-scrollbar-thumb { background:#9C27B0; border-radius:2px; }
+
+    .jasa-featured-card {
+      flex-shrink:0; width:280px; border-radius:var(--radius-lg); overflow:hidden;
+      position:relative; min-height:200px; cursor:pointer; display:flex; align-items:flex-end;
+      transition:transform 0.2s, box-shadow 0.2s;
+    }
+    .jasa-featured-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+    .jasa-featured-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .jasa-featured-card::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,rgba(74,20,140,0.85) 0%,transparent 60%); }
+    .jasa-featured-body { position:relative; z-index:1; padding:20px; width:100%; }
+    .jasa-featured-name { font-size:15px; font-weight:800; color:white; line-height:1.3; margin-bottom:4px; }
+    .jasa-featured-price { font-size:14px; font-weight:700; color:var(--saffron); }
+
+    /* Section header */
+    .jasa-section-title { font-size:20px; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+
+    /* Count result bar */
+    .jasa-result-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding-bottom:14px; border-bottom:1.5px solid var(--cream-dark); }
+    .jasa-result-count { font-size:14px; color:var(--text-muted); font-weight:600; }
+    .jasa-result-count strong { color:var(--text-primary); }
+
+    /* Detail page – service info block */
+    .service-info-block {
+      background:linear-gradient(135deg,rgba(123,31,162,0.06),rgba(156,39,176,0.03));
+      border:1.5px solid rgba(123,31,162,0.2); border-radius:var(--radius-md);
+      padding:16px 20px; margin:16px 0; display:flex; flex-direction:column; gap:10px;
+    }
+    .service-info-row { display:flex; align-items:center; gap:10px; font-size:14px; }
+    .service-info-icon { font-size:18px; width:28px; text-align:center; flex-shrink:0; }
+    .service-info-label { color:var(--text-muted); font-weight:600; min-width:90px; }
+    .service-info-value { color:var(--text-primary); font-weight:700; }
+
+    /* Empty state for jasa */
+    .jasa-empty { text-align:center; padding:64px 20px; grid-column:1/-1; }
+    .jasa-empty-icon { font-size:56px; margin-bottom:16px; }
+    .jasa-empty-title { font-size:18px; font-weight:800; color:var(--text-primary); }
+    .jasa-empty-sub { font-size:14px; color:var(--text-muted); margin-top:6px; }
+/* ═══════════════════════════════════════════════════════ */
+/* SLEMAN JASA — EXPLORE-STYLE HEADER + LAYOUT            */
+/* ═══════════════════════════════════════════════════════ */
+.jasa-explore-header {
+  background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 55%, #9C27B0 100%);
+  padding: 40px 20px;
+}
+.jasa-explore-header-inner { max-width: 1200px; margin: 0 auto; }
+.jasa-explore-eyebrow {
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.65);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+}
+.jasa-explore-heading {
+  font-size: clamp(26px, 4vw, 38px); font-weight: 800; color: white; margin-bottom: 20px; line-height: 1.1;
+}
+.jasa-explore-heading em { color: var(--saffron); font-style: normal; }
+
+.jasa-explore-search-bar {
+  display: flex; align-items: center; gap: 0; max-width: 620px;
+  background: white; border-radius: var(--radius-md);
+  padding: 6px 6px 6px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.jasa-explore-search-icon { font-size: 16px; margin-right: 8px; flex-shrink: 0; }
+.jasa-explore-search-bar input {
+  flex: 1; border: none; outline: none; font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; color: var(--text-primary); background: transparent;
+}
+.jasa-explore-search-bar button {
+  background: #7B1FA2; color: white; border: none; border-radius: var(--radius-sm);
+  padding: 10px 22px; font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.jasa-explore-search-bar button:hover { background: #6A1B9A; }
+
+.jasa-explore-stats { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+.jasa-explore-stat { color: rgba(255,255,255,0.8); font-size: 14px; display: flex; align-items: center; gap: 6px; }
+.jasa-explore-stat strong { color: white; }
+
+.jasa-explore-body { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+.jasa-explore-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+@media (max-width: 900px) { .jasa-explore-layout { grid-template-columns: 1fr; } }
+
+/* ── keep old jasa-card, jasa-grid, tipe-badge intact ──  */
+.tipe-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px;
+  letter-spacing: 0.3px; border: 1.5px solid transparent;
+}
+.tipe-barang { background: #E3F2FD; color: #1565C0; border-color: #BBDEFB; }
+.tipe-jasa   { background: #F3E5F5; color: #7B1FA2; border-color: #E1BEE7; }
+.tipe-barang-sm { background: #E3F2FD; color: #1565C0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.tipe-jasa-sm   { background: #F3E5F5; color: #7B1FA2; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+
+/* ───────────────────────────────────────────── */
+/* SLEMAN JASA PAGE                              */
+/* ───────────────────────────────────────────── */
+.jasa-hero {
+  background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 50%, #9C27B0 100%);
+  padding: 56px 20px 72px; position: relative; overflow: hidden;
+}
+.jasa-hero::before {
+  content:''; position:absolute; inset:0; opacity:0.08;
+  background: radial-gradient(circle at 15% 50%, #F5A623 0%, transparent 45%),
+              radial-gradient(circle at 85% 20%, #F7620A 0%, transparent 40%);
+}
+.jasa-hero::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:48px;
+  background:var(--cream); clip-path: ellipse(55% 100% at 50% 100%);
+}
+.jasa-hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+.jasa-hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(245,166,35,0.18); border:1px solid rgba(245,166,35,0.4);
+  color:var(--saffron); font-size:12px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:18px;
+}
+.jasa-hero h1 { font-size:clamp(28px,5vw,50px); font-weight:800; color:white; line-height:1.1; margin-bottom:12px; }
+.jasa-hero h1 em { color:var(--saffron); font-style:normal; }
+.jasa-hero-sub { font-size:16px; color:rgba(255,255,255,0.65); margin-bottom:32px; max-width:520px; }
+.jasa-hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
+.jasa-stat-val { font-size:26px; font-weight:800; color:white; }
+.jasa-stat-lbl { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* Category explorer */
+.jasa-body { max-width:1200px; margin:0 auto; padding:36px 20px 64px; }
+
+.jasa-cat-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px;
+  margin-bottom:44px;
+}
+.jasa-cat-card {
+  background:white; border-radius:var(--radius-md); padding:22px 14px 18px;
+  border:2px solid var(--cream-dark); cursor:pointer; transition:all 0.2s; text-align:center;
+  position:relative; overflow:hidden;
+}
+.jasa-cat-card::before {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+  background:var(--jasa-color, #7B1FA2); transform:scaleX(0); transition:transform 0.2s;
+}
+.jasa-cat-card:hover, .jasa-cat-card.active {
+  border-color:var(--jasa-color, #7B1FA2); box-shadow:var(--shadow-md); transform:translateY(-3px);
+}
+.jasa-cat-card:hover::before, .jasa-cat-card.active::before { transform:scaleX(1); }
+.jasa-cat-card.active { background:linear-gradient(135deg,rgba(123,31,162,0.06),rgba(156,39,176,0.03)); }
+.jasa-cat-icon-wrap {
+  width:56px; height:56px; border-radius:var(--radius-md);
+  display:flex; align-items:center; justify-content:center; font-size:26px;
+  margin:0 auto 12px;
+}
+.jasa-cat-name { font-size:13px; font-weight:700; color:var(--text-primary); }
+.jasa-cat-count { font-size:11px; color:var(--text-muted); margin-top:3px; }
+
+/* Toolbar */
+.jasa-toolbar {
+  background:white; border:1.5px solid var(--cream-dark); border-radius:var(--radius-md);
+  padding:16px 20px; display:flex; align-items:center; gap:12px;
+  flex-wrap:wrap; margin-bottom:28px;
+}
+.jasa-toolbar-left { display:flex; align-items:center; gap:8px; flex:1; flex-wrap:wrap; }
+.jasa-filter-chip {
+  padding:7px 16px; border-radius:50px; font-size:12px; font-weight:700;
+  border:1.5px solid var(--cream-dark); cursor:pointer; background:white;
+  color:var(--text-muted); transition:all 0.15s;
+}
+.jasa-filter-chip:hover  { border-color:#7B1FA2; color:#7B1FA2; }
+.jasa-filter-chip.active { background:#7B1FA2; color:white; border-color:#7B1FA2; }
+
+/* Open-now toggle specifically for jasa */
+.jasa-open-toggle { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--text-secondary); }
+
+/* Service card */
+.jasa-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px; }
+.jasa-grid.list-view { grid-template-columns:1fr; }
+
+.jasa-card {
+  background:white; border-radius:var(--radius-md); border:1.5px solid var(--cream-dark);
+  overflow:hidden; cursor:pointer; transition:all 0.22s; display:flex; flex-direction:column;
+}
+.jasa-card:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); border-color:rgba(123,31,162,0.3); }
+.jasa-card.is-closed:hover { transform:translateY(-1px); box-shadow:var(--shadow-sm); border-color:#ddd; }
+
+.jasa-card-img { height:192px; position:relative; overflow:hidden; flex-shrink:0; }
+.jasa-card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+.jasa-card:hover .jasa-card-img img { transform:scale(1.04); }
+.jasa-tipe-ribbon {
+  position:absolute; top:0; left:0;
+  background:linear-gradient(135deg,#7B1FA2,#9C27B0);
+  color:white; font-size:10px; font-weight:800; padding:5px 14px 5px 9px;
+  clip-path:polygon(0 0,100% 0,85% 100%,0 100%); z-index:2; letter-spacing:0.5px;
+}
+.jasa-cat-tag {
+  position:absolute; top:10px; right:10px; z-index:2;
+  background:rgba(0,0,0,0.55); color:white; font-size:10px; font-weight:700;
+  padding:3px 10px; border-radius:20px; backdrop-filter:blur(4px);
+}
+
+.jasa-card-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; }
+.jasa-card-name { font-size:15px; font-weight:800; color:var(--text-primary); line-height:1.35; margin-bottom:6px; }
+.jasa-card-shop { font-size:12px; color:var(--text-muted); margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+.jasa-card-desc { font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px; flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.jasa-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--cream-dark); gap:8px; margin-top:auto; }
+.jasa-card-price { font-size:16px; font-weight:800; color:#7B1FA2; }
+.jasa-card-meta { font-size:11px; color:var(--text-muted); margin-top:2px; }
+.jasa-wa-btn {
+  width:36px; height:36px; border-radius:50%; background:#25D366;
+  border:none; color:white; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; box-shadow:0 2px 8px rgba(37,211,102,0.3);
+}
+.jasa-wa-btn:hover { background:#1da851; transform:scale(1.1); }
+.jasa-wa-btn.disabled { background:#bbb; box-shadow:none; cursor:not-allowed; }
+.jasa-wa-btn.disabled:hover { transform:none; background:#bbb; }
+
+/* List-view variant */
+.jasa-grid.list-view .jasa-card { flex-direction:row; }
+.jasa-grid.list-view .jasa-card-img { width:200px; min-width:200px; height:auto; }
+.jasa-grid.list-view .jasa-card-desc { -webkit-line-clamp:3; }
+@media(max-width:600px){
+  .jasa-grid.list-view .jasa-card { flex-direction:column; }
+  .jasa-grid.list-view .jasa-card-img { width:100%; height:160px; }
+}
+
+/* Featured service strip */
+.jasa-featured-strip { display:flex; gap:16px; overflow-x:auto; padding-bottom:10px; margin-bottom:40px; }
+.jasa-featured-strip::-webkit-scrollbar { height:4px; }
+.jasa-featured-strip::-webkit-scrollbar-thumb { background:#9C27B0; border-radius:2px; }
+
+.jasa-featured-card {
+  flex-shrink:0; width:280px; border-radius:var(--radius-lg); overflow:hidden;
+  position:relative; min-height:200px; cursor:pointer; display:flex; align-items:flex-end;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.jasa-featured-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+.jasa-featured-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.jasa-featured-card::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,rgba(74,20,140,0.85) 0%,transparent 60%); }
+.jasa-featured-body { position:relative; z-index:1; padding:20px; width:100%; }
+.jasa-featured-name { font-size:15px; font-weight:800; color:white; line-height:1.3; margin-bottom:4px; }
+.jasa-featured-price { font-size:14px; font-weight:700; color:var(--saffron); }
+
+/* Section header */
+.jasa-section-title { font-size:20px; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+
+/* Count result bar */
+.jasa-result-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding-bottom:14px; border-bottom:1.5px solid var(--cream-dark); }
+.jasa-result-count { font-size:14px; color:var(--text-muted); font-weight:600; }
+.jasa-result-count strong { color:var(--text-primary); }
+
+/* Detail page – service info block */
+.service-info-block {
+  background:linear-gradient(135deg,rgba(123,31,162,0.06),rgba(156,39,176,0.03));
+  border:1.5px solid rgba(123,31,162,0.2); border-radius:var(--radius-md);
+  padding:16px 20px; margin:16px 0; display:flex; flex-direction:column; gap:10px;
+}
+.service-info-row { display:flex; align-items:center; gap:10px; font-size:14px; }
+.service-info-icon { font-size:18px; width:28px; text-align:center; flex-shrink:0; }
+.service-info-label { color:var(--text-muted); font-weight:600; min-width:90px; }
+.service-info-value { color:var(--text-primary); font-weight:700; }
+
+/* Empty state for jasa */
+.jasa-empty { text-align:center; padding:64px 20px; grid-column:1/-1; }
+.jasa-empty-icon { font-size:56px; margin-bottom:16px; }
+.jasa-empty-title { font-size:18px; font-weight:800; color:var(--text-primary); }
+.jasa-empty-sub { font-size:14px; color:var(--text-muted); margin-top:6px; }
+
