@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CartItem } from "@/types";
 import { useAddReview } from "@/features/reviews/hooks";
-import { toast } from 'sonner';
 
 type ReviewModalOrderProps = {
     open: boolean;

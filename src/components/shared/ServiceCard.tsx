@@ -48,9 +48,9 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
     const hasDiscount = discountPct > 0 && p.discount_price != null;
     const displayPrice = hasDiscount ? formatPrice(p.discount_price) : formatPrice(p.price);
 
-    const ratingAvg = p.rating_avg ?? (p.average_rating ? Number(p.average_rating) : 0);
+    // const ratingAvg = p.rating_avg ?? (p.average_rating ? Number(p.average_rating) : 0);
     const soldCount = p.sold_count ?? 0;
-    const ratingDisplay = typeof ratingAvg === "number" && ratingAvg > 0 ? ratingAvg.toFixed(1) : "0";
+    // const ratingDisplay = typeof ratingAvg === "number" && ratingAvg > 0 ? ratingAvg.toFixed(1) : "0";
 
     const openHour = p.store?.open_hour ? Number(String(p.store.open_hour).split(':')[0]) : undefined;
     const closeHour = p.store?.close_hour ? Number(String(p.store.close_hour).split(':')[0]) : undefined;

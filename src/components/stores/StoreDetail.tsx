@@ -3,7 +3,6 @@
 import { Store } from "@/types";
 import Image from "next/image";
 import { useCallback } from "react";
-import { StarRating } from "../products/ProductStarRating";
 import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
 
 export function getWhatsAppLink(phone: string, message?: string): string {

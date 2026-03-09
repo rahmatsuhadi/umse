@@ -30,7 +30,8 @@ export default function ProductDetailClient({ product, isClosed, mainImage }: Pr
         if (selectedVariant) {
             baseVal = currentPrice.value - (currentPrice.value * discountPct / 100);
         } else if (product.discount_price) {
-            baseVal = Number((product.discount_price as any).value || product.discount_price);
+            const dp = product.discount_price;
+            baseVal = Number(typeof dp === 'object' && dp !== null && 'value' in dp ? dp.value : dp);
         }
     }
 
