@@ -22,6 +22,21 @@ export default function ProductDetailClient({ product, isClosed, mainImage }: Pr
     const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
     const [quantity, setQuantity] = useState(1);
 
+    const discountPct = product.discount_percentage ? Number(product.discount_percentage) : 0;
+    const currentPrice = selectedVariant ? selectedVariant.price : product.price;
+
+    let baseVal = currentPrice.value;
+    if (discountPct > 0) {
+        if (selectedVariant) {
+            baseVal = currentPrice.value - (currentPrice.value * discountPct / 100);
+        } else if (product.discount_price) {
+            baseVal = Number((product.discount_price as any).value || product.discount_price);
+        }
+    }
+
+    const totalVal = baseVal * quantity;
+    const stickyPriceStr = `Rp ${Math.round(totalVal).toLocaleString('id-ID').replace(/,/g, '.')}`;
+
     return (
         <>
             {/* Product Info (Right) */}
@@ -52,7 +67,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage }: Pr
                         <div>
                             <div className="sticky-product-name">{product.name}</div>
                             <div className="sticky-product-price">
-                                {(selectedVariant ? selectedVariant.price : product.price).formatted.split(",")[0]}
+                                {stickyPriceStr}
                             </div>
                         </div>
                     </div>

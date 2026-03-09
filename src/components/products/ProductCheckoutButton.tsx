@@ -59,8 +59,25 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
     : product.stock_quantity;
 
   const formatPrice = (price: Price) => {
-    return price.formatted.split(",")[0];
+    return price.formatted?.split(",")[0] || `Rp ${Math.round(Number(price.value || price)).toLocaleString('id-ID').replace(/,/g, '.')}`;
   };
+
+  let finalPriceStr = formatPrice(currentPrice);
+  let oldPriceStr = "";
+  let discountStrDisplay = discountStr;
+
+  if (hasDiscount) {
+    if (selectedVariant) {
+      const discVal = currentPrice.value - (currentPrice.value * discountPct / 100);
+      finalPriceStr = `Rp ${Math.round(discVal).toLocaleString('id-ID').replace(/,/g, '.')}`;
+    } else if (p.discount_price) {
+      finalPriceStr = formatPrice(p.discount_price as Price);
+    }
+    oldPriceStr = formatPrice(currentPrice);
+  } else if (!hasDiscount && product.highest_price && product.highest_price.value > product.lowest_price.value && !selectedVariant) {
+    oldPriceStr = formatPrice(product.highest_price);
+    discountStrDisplay = `-${Math.round(((product.highest_price.value - product.lowest_price.value) / product.highest_price.value) * 100)}%`;
+  }
 
   const handleQuantityChange = (amount: number) => {
     const newQuantity = quantity + amount;
@@ -128,23 +145,14 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
 
       {/* Harga */}
       <div className="detail-price-row">
-        {hasDiscount ? (
+        {oldPriceStr ? (
           <>
-            <span className="detail-price">{formatPrice(p.discount_price as Price)}</span>
-            <span className="detail-price-old">{formatPrice(p.price)}</span>
-            <span className="detail-discount">{discountStr}</span>
+            <span className="detail-price">{finalPriceStr}</span>
+            <span className="detail-price-old">{oldPriceStr}</span>
+            <span className="detail-discount">{discountStrDisplay}</span>
           </>
         ) : (
-          <span className="detail-price">{formatPrice(currentPrice)}</span>
-        )}
-        {/* Tampilkan harga lama & diskon jika ada varian dengan harga lebih tinggi (hanya jika tidak sedang promo produk utama) */}
-        {!hasDiscount && product.highest_price && product.highest_price.value > product.lowest_price.value && (
-          <>
-            <span className="detail-price-old">{formatPrice(product.highest_price)}</span>
-            <span className="detail-discount">
-              -{Math.round(((product.highest_price.value - product.lowest_price.value) / product.highest_price.value) * 100)}%
-            </span>
-          </>
+          <span className="detail-price">{finalPriceStr}</span>
         )}
       </div>
 
