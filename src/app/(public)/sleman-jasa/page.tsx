@@ -476,7 +476,7 @@ export default function SlemanJasaPage() {
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', flexShrink: 0 }}>
-                                                <button onClick={e => { e.stopPropagation(); const phone = store.user?.phone_number || store.phone || ''; window.open(`https://wa.me/${phone}?text=${encodeURIComponent('Halo, saya tertarik dengan layanan dari ' + store.name)}`, '_blank'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '12px', background: '#25D366', color: 'white', border: 'none', fontWeight: 700, fontSize: '13px', cursor: 'pointer', marginTop: '8px' }}>
+                                                <button onClick={e => { e.stopPropagation(); const phone = store.user?.phone_number || store.phone || ''; window.open(`https://wa.me/${phone}?text=${encodeURIComponent('Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan layanan dari ' + store.name)}`, '_blank'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '12px', background: '#25D366', color: 'white', border: 'none', fontWeight: 700, fontSize: '13px', cursor: 'pointer', marginTop: '8px' }}>
                                                     💬 Chat
                                                 </button>
                                             </div>

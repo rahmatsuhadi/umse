@@ -30,7 +30,7 @@ export default function StoreDetailInfoCard({ store }: { store: Store }) {
 
     const handleWhatsAppClick = useCallback(() => {
         try {
-            const message = `Halo, saya tertarik dengan produk/layanan dari toko ${store.name}`;
+            const message = `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk/layanan dari toko ${store.name}`;
             const link = getWhatsAppLink(store.user.phone_number, message);
             logVisitor({ product_id: store.id as unknown as string });
             window.open(link, "_blank");

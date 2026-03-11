@@ -42,8 +42,8 @@ export const ProductCard = ({ product }: CardProductProps) => {
     const phone = product.store?.user?.phone_number || product.store?.phone || '';
     const isService = product.type?.toLowerCase() === 'service' || product.type?.toLowerCase() === 'jasa';
     const message = isService
-      ? `Halo, saya ingin memesan layanan *${product.name}*`
-      : `Halo, saya tertarik dengan produk ${product.name}`;
+      ? `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${product.name}*`
+      : `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk ${product.name}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
   };
 

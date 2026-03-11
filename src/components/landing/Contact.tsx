@@ -20,7 +20,7 @@ const FOOTER_LINKS = {
   Informasi: [
     { label: "Sering Ditanyakan (FAQ)", href: "/faq" },
     { label: "Tentang Kami", href: "/" },
-    { label: "Daftarkan Toko", href: "/daftar" },
+    { label: "Daftarkan Toko", href: `${process.env.NEXT_PUBLIC_APP_URL}/register-email` },
     { label: "Kebijakan Privasi", href: "/" },
     { label: "Hubungi Kami", href: "/" },
   ],

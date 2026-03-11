@@ -170,7 +170,7 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                             onClick={(e) => {
                                 e.preventDefault();
                                 logVisitor({ product_id: p.id as string });
-                                const message = `Halo, saya ingin memesan layanan *${name}*`;
+                                const message = `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${name}*`;
                                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
                             }}
                         >

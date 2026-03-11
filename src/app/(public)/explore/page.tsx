@@ -183,7 +183,7 @@ function ExplorePageContent() {
     const handleStoreWhatsApp = (store: any) => {
         logVisitor({ product_id: store.id });
         const phone = store.user?.phone_number || store.phone || '';
-        const message = `Halo, saya tertarik dengan produk dari toko ${store.name}`;
+        const message = `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk dari toko ${store.name}`;
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
     };
 

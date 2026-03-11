@@ -138,8 +138,8 @@ export function CatCard(p: CatCardProps) {
                                 const phone = p.phone || '';
                                 const isService = p.type?.toLowerCase() === 'service' || p.type?.toLowerCase() === 'jasa';
                                 const message = isService
-                                    ? `Halo, saya ingin memesan layanan *${p.name}*`
-                                    : `Halo, saya tertarik dengan produk ${p.name}`;
+                                    ? `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${p.name}*`
+                                    : `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk ${p.name}`;
                                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
                             }}
                         >

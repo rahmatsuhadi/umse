@@ -325,9 +325,9 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
               let msg: string;
 
               if (isService) {
-                msg = `Halo, saya ingin memesan layanan *${product.name}*${variantPart}.`;
+                msg = `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${product.name}*${variantPart}.`;
               } else {
-                msg = `Halo, saya ingin memesan *${product.name}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
+                msg = `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan *${product.name}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
               }
 
               const phone = product.store?.user?.phone_number || product.store?.phone || '';

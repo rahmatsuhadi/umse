@@ -23,11 +23,11 @@ export default function ProductStickyWA({ productId, productName, productType, s
         const isService = productType?.toLowerCase() === 'service' || productType?.toLowerCase() === 'jasa';
 
         if (isService) {
-            message = `Halo, saya ingin memesan layanan *${productName}*${variantPart}.`;
+            message = `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${productName}*${variantPart}.`;
         } else if (quantity && quantity > 0) {
-            message = `Halo, saya ingin memesan *${productName}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
+            message = `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan *${productName}*${variantPart} sebanyak *${quantity} pcs*. Apakah masih tersedia? Terima kasih.`;
         } else {
-            message = `Halo, saya tertarik dengan produk *${productName}*${variantPart}.`;
+            message = `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk *${productName}*${variantPart}.`;
         }
 
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");

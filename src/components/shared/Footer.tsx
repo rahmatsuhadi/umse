@@ -116,7 +116,7 @@ export function Footer() {
                     <div className="footer-col">
                         <h4>Informasi</h4>
                         <Link href="#">Tentang Kami</Link>
-                        <Link href="#">Daftarkan Toko</Link>
+                        <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/register-email`}>Daftarkan Toko</Link>
                         <Link href="#">Kebijakan Privasi</Link>
                         <Link href="/faq">Sering Ditanyakan (FAQ)</Link>
                     </div>
