@@ -69,7 +69,7 @@ export default function CategoryList() {
                     )}
                   </div>
                   <div className="category-name">{category.name}</div>
-                  <div className="category-count">{(category as { products_count?: number }).products_count ?? 0} produk</div>
+                  <div className="category-count">{category.products_count ?? 0} produk</div>
                 </Link>
               );
             })}

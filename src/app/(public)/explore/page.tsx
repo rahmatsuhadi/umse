@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Navbar } from "@/components/shared/Navbar";
 import ContactSection from "@/components/landing/Contact";
-import { useInfiniteProducts } from "@/features/products/hooks";
+import { useProducts, useInfiniteProducts } from "@/features/products/hooks";
 import { useCategories } from "@/features/categories/hooks";
 import { useDistricts } from "@/features/locations/hooks";
 import { Filter } from "lucide-react";
@@ -89,8 +89,8 @@ function ExplorePageContent() {
             district_id: selectedDistricts.length ? selectedDistricts.join(',') : undefined,
             min_price: minP,
             max_price: maxP,
-            category__is_ready_to_serve: isFastFood ? 1 : undefined,
-            category__is_frozen: isFrozen ? 1 : undefined,
+            is_ready_to_serve: isFastFood ? 1 : undefined,
+            is_frozen: isFrozen ? 1 : undefined,
             is_open_store: isOpenNow ? 1 : undefined,
             min_rating: selectedRating ? parseInt(selectedRating) : undefined
         },
@@ -128,25 +128,38 @@ function ExplorePageContent() {
     const totalArticles = articlesData?.pages[0]?.meta?.total || 0;
 
     // ── Dynamic faceted counts
-    const { data: productsForDistrictFacet } = useInfiniteProducts({
+    // For counts to be accurate across combinations, we fetch a larger sample (max 100 per backend limit)
+
+    // Products matching ALL filters EXCEPT District (to calculate District counts)
+    const { data: facetedNoDistData } = useProducts({
         q: query,
+        per_page: 100,
         filter: {
             category__slug: selectedCategories.length ? selectedCategories.join(',') : undefined,
             min_price: minP,
             max_price: maxP,
+            is_ready_to_serve: isFastFood ? 1 : undefined,
+            is_frozen: isFrozen ? 1 : undefined,
+            is_open_store: isOpenNow ? 1 : undefined,
+            min_rating: selectedRating ? parseInt(selectedRating) : undefined
         }
     });
-    const allProductsNoDist = useMemo(() => productsForDistrictFacet?.pages.flatMap(p => p.data) || [], [productsForDistrictFacet]);
 
-    const { data: productsForCatFacet } = useInfiniteProducts({
+    // Products matching ALL filters EXCEPT Category/Special (to calculate Category/Special counts)
+    const { data: facetedNoCatData } = useProducts({
         q: query,
+        per_page: 100,
         filter: {
             district_id: selectedDistricts.length ? selectedDistricts.join(',') : undefined,
             min_price: minP,
             max_price: maxP,
+            is_open_store: isOpenNow ? 1 : undefined,
+            min_rating: selectedRating ? parseInt(selectedRating) : undefined
         }
     });
-    const allProductsNoCat = useMemo(() => productsForCatFacet?.pages.flatMap(p => p.data) || [], [productsForCatFacet]);
+
+    const allProductsNoDist = facetedNoDistData?.data || [];
+    const allProductsNoCat = facetedNoCatData?.data || [];
 
     const districtCounts = useMemo(() => {
         const counts: Record<string, number> = {};
@@ -170,12 +183,12 @@ function ExplorePageContent() {
     const specialCounts = useMemo(() => {
         let fastFood = 0;
         let frozen = 0;
-        allProducts.forEach((p: any) => {
-            if (p.category?.is_ready_to_serve) fastFood++;
-            if (p.category?.is_frozen) frozen++;
+        allProductsNoCat.forEach((p: any) => {
+            if (p.is_ready_to_serve) fastFood++;
+            if (p.is_frozen) frozen++;
         });
         return { fastFood, frozen };
-    }, [allProducts]);
+    }, [allProductsNoCat]);
 
 
     // ── Grid Renderers
@@ -207,13 +220,17 @@ function ExplorePageContent() {
     const districts = (districtsData?.data || []) as any[];
     const categories = (categoriesData?.data || []) as any[];
 
+    // Check if any filters or search query are active to determine counting strategy
+    const hasActiveFilters = !!(query || selectedDistricts.length || minPrice || maxPrice || isOpenNow || selectedRating);
+    const hasActiveCatFilters = !!(query || selectedCategories.length || minPrice || maxPrice || isOpenNow || selectedRating);
+
     const visibleDistricts = districts.filter((d: any) => {
-        const count = districtCounts[d.id?.toString()] || 0;
+        const count = hasActiveCatFilters ? (districtCounts[d.id?.toString()] || 0) : (d.products_count || 0);
         return selectedDistricts.includes(d.id?.toString()) || count > 0;
     });
 
     const visibleCategories = categories.filter((c: any) => {
-        const count = categoryCounts[c.slug] || 0;
+        const count = hasActiveFilters ? (categoryCounts[c.slug] || 0) : (c.products_count || 0);
         return selectedCategories.includes(c.slug) || count > 0;
     });
 
@@ -222,12 +239,16 @@ function ExplorePageContent() {
     const filterTextStyle = { flex: 1, minWidth: 0, textAlign: 'left' as const };
     const filterCountRightStyle = { marginLeft: 'auto', textAlign: 'right' as const };
 
-    // Filter products client-side for the special sections (if they match the query/filters, they are in allProducts)
-    const fastFoodProducts = allProducts.filter(p => p.category?.is_ready_to_serve);
-    const frozenProducts = allProducts.filter(p => p.category?.is_frozen);
+    const formatCount = (count: number) => {
+        return count >= 100 ? "100+" : count;
+    };
+
+    // Filter products client-side for the special sections
+    const fastFoodProducts = allProducts.filter(p => p.is_ready_to_serve);
+    const frozenProducts = allProducts.filter(p => p.is_frozen);
 
     // Remaining products not in the special sections
-    const remainingProducts = allProducts.filter(p => !p.category?.is_ready_to_serve && !p.category?.is_frozen);
+    const remainingProducts = allProducts.filter(p => !p.is_ready_to_serve && !p.is_frozen);
     const mainGridProducts = remainingProducts.length > 0
         ? remainingProducts
         : (!fastFoodProducts.length && !frozenProducts.length ? allProducts : []);
@@ -271,7 +292,7 @@ function ExplorePageContent() {
                                             <h4>Kapanewon</h4>
                                             <div id="filterSubdistricts">
                                                 {visibleDistricts.map((dist: any) => {
-                                                    const count = districtCounts[dist.id?.toString()] || 0;
+                                                    const count = hasActiveCatFilters ? (districtCounts[dist.id?.toString()] || 0) : (dist.products_count || 0);
                                                     return (
                                                         <label key={dist.id} className="filter-option" style={filterOptionLayoutStyle}>
                                                             <input
@@ -280,7 +301,7 @@ function ExplorePageContent() {
                                                                 onChange={() => toggleDistrict(dist.id?.toString())}
                                                             />
                                                             <span style={filterTextStyle}>{dist.name}</span>
-                                                            <span className="count" style={filterCountRightStyle}>{count}</span>
+                                                            <span className="count" style={filterCountRightStyle}>{formatCount(count)}</span>
                                                         </label>
                                                     );
                                                 })}
@@ -302,7 +323,7 @@ function ExplorePageContent() {
                                                 <span className="count" style={filterCountRightStyle}>–</span>
                                             </label>
                                             {visibleCategories.map((cat: any) => {
-                                                const count = categoryCounts[cat.slug] || 0;
+                                                const count = hasActiveFilters ? (categoryCounts[cat.slug] || 0) : (cat.products_count || 0);
                                                 return (
                                                     <label key={cat.id} className="filter-option" style={filterOptionLayoutStyle}>
                                                         <input
@@ -311,7 +332,7 @@ function ExplorePageContent() {
                                                             onChange={() => toggleCategory(cat.slug)}
                                                         />
                                                         <span style={filterTextStyle}>{cat.name}</span>
-                                                        <span className="count" style={filterCountRightStyle}>{count}</span>
+                                                        <span className="count" style={filterCountRightStyle}>{formatCount(count)}</span>
                                                     </label>
                                                 );
                                             })}
@@ -328,14 +349,14 @@ function ExplorePageContent() {
                                             <span className="filter-text-flex">
                                                 <span style={{ fontSize: '15px' }}>🍔</span> Fast Food Lokal
                                             </span>
-                                            <span className="count" style={filterCountRightStyle}>{specialCounts.fastFood}</span>
+                                            <span className="count" style={filterCountRightStyle}>{formatCount(specialCounts.fastFood)}</span>
                                         </label>
                                         <label className="filter-option filter-option-special" style={filterOptionLayoutStyle}>
                                             <input type="checkbox" checked={isFrozen} onChange={e => setIsFrozen(e.target.checked)} />
                                             <span className="filter-text-flex">
                                                 <span style={{ fontSize: '15px' }}>🧊</span> Frozen Food
                                             </span>
-                                            <span className="count" style={filterCountRightStyle}>{specialCounts.frozen}</span>
+                                            <span className="count" style={filterCountRightStyle}>{formatCount(specialCounts.frozen)}</span>
                                         </label>
                                         {/* Open now toggle */}
                                         <div className="filter-option filter-divider">

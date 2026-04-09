@@ -7,4 +7,5 @@ export interface Category {
   is_featured: boolean;
   icon_url: string;
   imageUrl?: string;
+  products_count?: number;
 }
