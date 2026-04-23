@@ -6,10 +6,26 @@ import { useState } from "react";
 type Props = {
   images: string[];
   isClosed?: boolean;
+  externalSelectedIndex?: number;
+  onIndexChange?: (index: number) => void;
 };
 
-export default function ProductImageGallery({ images, isClosed }: Props) {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+export default function ProductImageGallery({ 
+  images, 
+  isClosed, 
+  externalSelectedIndex, 
+  onIndexChange 
+}: Props) {
+  const [internalSelectedIndex, setInternalSelectedIndex] = useState(0);
+  const selectedIndex = externalSelectedIndex !== undefined ? externalSelectedIndex : internalSelectedIndex;
+
+  const handleIndexChange = (index: number) => {
+    if (onIndexChange) {
+      onIndexChange(index);
+    } else {
+      setInternalSelectedIndex(index);
+    }
+  };
 
   const fallback = "/assets/no-image.jpg";
   const displayImages = images.length > 0 ? images : [fallback];
@@ -56,7 +72,7 @@ export default function ProductImageGallery({ images, isClosed }: Props) {
             key={index}
             className={`gallery-thumb${selectedIndex === index ? ' active' : ''}`}
             style={{ overflow: 'hidden', padding: 0 }}
-            onClick={() => setSelectedIndex(index)}
+            onClick={() => handleIndexChange(index)}
           >
             <Image
               width={120}

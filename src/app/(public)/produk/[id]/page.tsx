@@ -124,17 +124,13 @@ export default async function ProductDetailPage({
 
         {/* Main 2-Column Layout */}
         <div className="detail-layout">
-
-          {/* Gallery (Left / Sticky) */}
-          <ProductImageGallery images={images} isClosed={!product.store?.is_open} />
-
-          {/* Product Info (Right) — client wrapper holds shared variant/qty state */}
+          {/* Product Detail Client handles both Gallery and Info for state sharing */}
           <ProductDetailClient
             product={product}
             isClosed={!product.store?.is_open}
             mainImage={mainImage}
+            images={images}
           />
-
         </div>
       </div>
 

@@ -59,7 +59,9 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
     : product.stock_quantity;
 
   const formatPrice = (price: Price) => {
-    return price.formatted?.split(",")[0] || `Rp ${Math.round(Number(price.value || price)).toLocaleString('id-ID').replace(/,/g, '.')}`;
+    if (price.formatted) return price.formatted.split(",")[0];
+    const val = price.amount ? Number(price.amount) : Number((price as any).value || price);
+    return `Rp ${Math.round(val).toLocaleString('id-ID').replace(/,/g, '.')}`;
   };
 
   let finalPriceStr = formatPrice(currentPrice);
@@ -67,7 +69,10 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
   let discountStrDisplay = discountStr;
 
   if (hasDiscount) {
-    if (selectedVariant) {
+    const variantDiscountPrice = (selectedVariant as any)?.discount_price;
+    if (selectedVariant && variantDiscountPrice) {
+      finalPriceStr = formatPrice(variantDiscountPrice);
+    } else if (selectedVariant) {
       const discVal = currentPrice.value - (currentPrice.value * discountPct / 100);
       finalPriceStr = `Rp ${Math.round(discVal).toLocaleString('id-ID').replace(/,/g, '.')}`;
     } else if (p.discount_price) {
