@@ -6,6 +6,7 @@ import CountdownTimer from "./CountDownPayment";
 import { formatDate } from "@/lib/format-date";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
+import { Clock, CheckCircle, Smartphone, QrCode, AlertCircle } from "lucide-react";
 
 export default function PaymentStep({
   currentStep: step,
@@ -19,11 +20,8 @@ export default function PaymentStep({
   const allowedStatuses = ["unpaid", "partially_paid", "rejected", "expired"];
 
   const now = new Date();
-
-  const paid_expired_at = new Date(order.payment_due_at); // Convert payment_due_at to Date object
-
+  const paid_expired_at = new Date(order.payment_due_at);
   const isAllowed = allowedStatuses.includes(order.payment_status);
-
   const isPaymentExpired = paid_expired_at <= now;
 
   const onPaymentSubmit = () => {
@@ -40,104 +38,137 @@ export default function PaymentStep({
         exit="exit"
         transition={{ duration: 0.3 }}
       >
-        <div id="paymentSection" className="bg-white rounded-lg shadow-md mb-6">
+        <div id="paymentSection" className="mb-6">
           {isAllowed && !isPaymentExpired ? (
-            <>
-              {/* Header */}
-              <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-bold text-gray-800">Pembayaran</h3>
-                <p className="text-sm text-gray-600">
-                  Scan QRIS untuk menyelesaikan pembayaran
-                </p>
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              {/* QRIS Card */}
+              <div className="checkout-card flex flex-col h-full lg:col-span-7">
+                <div className="checkout-header-section">
+                  <div className="checkout-header-icon-box">
+                    <QrCode className="w-5 h-5 text-[var(--terracotta)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Pembayaran QRIS</h3>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Scan/Unduh kode QR di bawah untuk menyelesaikan pembayaran</p>
+                  </div>
+                </div>
 
-              {/* Content */}
-              <div className="p-6">
-                <div className="text-center mb-6">
-                  {/* QRIS */}
-                  <div className="bg-white border-2 border-gray-200 rounded-lg p-8 inline-block mb-4">
-                    <div className="w-64 min-h-64 bg-gray-100 flex items-center justify-center rounded-lg">
-                      <Image
-                        src={order.store.qris_url}
-                        width={500}
-                        height={500}
-                        alt="Order Qris"
-                      />
+                <div className="flex-1 flex flex-col justify-between">
+                  <div className="flex flex-col items-center h-full justify-between gap-4">
+                    {/* QR Code Frame */}
+                    <div className="relative mb-3">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[var(--terracotta)]/10 to-transparent rounded-2xl blur-xl" />
+                      <div className="relative bg-white border-2 border-[var(--cream-dark)] rounded-2xl p-5 shadow-lg">
+                        <div className="w-60 h-60 flex items-center justify-center rounded-xl overflow-hidden bg-white">
+                          <Image
+                            src={order.store.qris_url}
+                            width={240}
+                            height={240}
+                            alt="Order QRIS"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      </div>
+                      {/* Corner accents */}
+                      <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[var(--terracotta)] rounded-tl-md" />
+                      <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[var(--terracotta)] rounded-tr-md" />
+                      <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[var(--terracotta)] rounded-bl-md" />
+                      <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[var(--terracotta)] rounded-br-md" />
                     </div>
-                  </div>
 
-                  <h4 className="text-lg font-bold text-gray-800 mb-2">
-                    Scan QRIS untuk Pembayaran
-                  </h4>
-                  <p className="text-gray-600 mb-4">
-                    Total yang harus dibayar:{" "}
-                    <span id="totalPayment" className="font-bold text-primary">
-                      {order.total.formatted}
-                    </span>
-                  </p>
+                    <div className="text-center">
+                      <h4 className="text-base font-bold text-[var(--text-primary)] mb-1">
+                        Scan QRIS untuk Pembayaran
+                      </h4>
+                      <p className="text-[var(--text-muted)] text-xs font-semibold">
+                        Total yang harus dibayar
+                      </p>
+                    </div>
 
-                  {/* Instruksi */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
-                    <h5 className="font-bold text-blue-800 mb-2">
-                      Cara Pembayaran:
-                    </h5>
-                    <ol className="text-sm text-blue-700 space-y-1">
-                      <li>
-                        1. Buka aplikasi mobile banking atau e-wallet Anda
-                      </li>
-                      <li>{`2. Pilih menu "Scan QR" atau "QRIS"`}</li>
-                      <li>3. Arahkan kamera ke QR code di atas</li>
-                      <li>4. Masukkan nominal sesuai total pembayaran</li>
-                      <li>5. Konfirmasi dan selesaikan pembayaran</li>
-                      <li>6. Simpan bukti pembayaran untuk konfirmasi</li>
-                    </ol>
-                  </div>
-
-                  {/* Timer */}
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
-                    <div className="flex items-center justify-center">
-                      <i className="fas fa-clock text-orange-500 mr-2"></i>
-                      <span className="text-orange-700">
-                        Selesaikan pembayaran dalam:
+                    <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-2xl px-6 py-3 mb-4 shadow-inner">
+                      <span id="totalPayment" className="text-2xl font-extrabold text-[var(--terracotta)] tracking-tight">
+                        {order.total.formatted}
                       </span>
-                      <span
-                        id="countdown"
-                        className="font-bold text-orange-800 ml-2"
-                      >
+                    </div>
+
+                    {/* Countdown */}
+                    <div className="w-full bg-[var(--cream)] border border-[var(--saffron-light)]/40 rounded-2xl p-3.5 mb-4 flex items-center justify-between shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 bg-[var(--saffron)]/10 rounded-lg flex items-center justify-center">
+                          <Clock className="w-4 h-4 text-[var(--saffron)]" />
+                        </div>
+                        <span className="text-[var(--text-secondary)] text-xs font-semibold">Batas pembayaran:</span>
+                      </div>
+                      <span id="countdown" className="text-xs">
                         <CountdownTimer targetDate={order.payment_due_at} />
                       </span>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={onPaymentSubmit}
-                    className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition duration-300"
-                  >
-                    <i className="fas fa-check mr-2"></i>Sudah Bayar? Konfirmasi
-                    Sekarang
-                  </button>
+                    {/* CTA Button */}
+                    <button
+                      onClick={onPaymentSubmit}
+                      className="w-full bg-[var(--terracotta)] text-white py-3.5 px-6 rounded-2xl font-bold transition-all duration-300 shadow-md shadow-[var(--terracotta)]/25 hover:bg-[var(--terracotta-dark)] hover:shadow-lg hover:shadow-[var(--terracotta)]/35 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 group cursor-pointer"
+                    >
+                      <CheckCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      Sudah Bayar? Konfirmasi Sekarang
+                    </button>
+                  </div>
                 </div>
               </div>
-            </>
+
+              {/* Cara Pembayaran */}
+              <div className="checkout-card flex flex-col h-full lg:col-span-5">
+                <div className="checkout-header-section">
+                  <div className="checkout-header-icon-box">
+                    <Smartphone className="w-5 h-5 text-[var(--terracotta)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Cara Pembayaran</h3>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Ikuti petunjuk langkah pembayaran di bawah ini</p>
+                  </div>
+                </div>
+                <ol className="space-y-4">
+                  {[
+                    "Buka aplikasi mobile banking atau e-wallet Anda",
+                    'Pilih menu "Scan QR" atau "QRIS"',
+                    "Arahkan kamera ke QR code di atas",
+                    "Masukkan nominal sesuai total pembayaran",
+                    "Konfirmasi dan selesaikan pembayaran",
+                    "Simpan bukti pembayaran untuk konfirmasi",
+                  ].map((step, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-[var(--cream)] text-[var(--terracotta)] border border-[var(--cream-dark)] rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+                        {i + 1}
+                      </span>
+                      <span className="text-sm text-[var(--text-secondary)] font-medium leading-relaxed mt-0.5">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
           ) : (
-            // Jika pembayaran tidak tersedia atau sudah lewat
-            <div className="p-6 text-center text-gray-600">
-              <i className="fas fa-info-circle text-blue-500 text-2xl mb-2"></i>
+            <div className="checkout-card text-center p-8">
+              <div className="w-16 h-16 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-[var(--text-muted)]" />
+              </div>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">
+                {isPaymentExpired ? "Waktu Pembayaran Habis" : "Pembayaran Tidak Tersedia"}
+              </h3>
               {isPaymentExpired ? (
-                <p>
+                <p className="text-[var(--text-secondary)] text-sm font-medium leading-relaxed">
                   Pembayaran sudah melewati batas waktu yang ditentukan pada{" "}
-                  <span className="font-semibold">
+                  <span className="font-bold text-[var(--terracotta)]">
                     {formatDate(order.payment_due_at)}
                   </span>
                   . Pembayaran tidak dapat dilakukan.
                 </p>
               ) : (
-                <p>
+                <p className="text-[var(--text-secondary)] text-sm font-medium leading-relaxed">
                   Status pesanan Anda saat ini{" "}
-                  <span className="font-semibold">{order.payment_status}</span>.
+                  <span className="font-bold text-[var(--terracotta)]">{order.payment_status}</span>.
+                  Pembayaran tidak tersedia untuk status ini.
                 </p>
               )}
-              <p>Pembayaran tidak tersedia untuk status ini.</p>
             </div>
           )}
         </div>

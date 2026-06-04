@@ -73,7 +73,7 @@ export async function apiClient<T>(
     const data = text ? JSON.parse(text) : {};
 
     if (!response.ok) {
-      const expectedErrors = [401, 403, 422];
+      const expectedErrors = [400, 401, 403, 422];
       if (!expectedErrors.includes(response.status)) {
         console.error("[apiClient:errorResponse]", {
           url,
@@ -82,7 +82,12 @@ export async function apiClient<T>(
           data,
         });
       }
-      throw new Error(data.message || `Request gagal: ${response.status}`);
+      // Extract the most helpful message available
+      const message =
+        data?.message ||
+        (data?.errors ? Object.values(data.errors).flat().join(" ") : null) ||
+        `Request gagal: ${response.status} ${response.statusText}`;
+      throw new Error(message);
     }
 
     return data;

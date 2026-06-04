@@ -61,13 +61,11 @@ export default function CheckoutItem({
       return <CheckoutSkeletonPage />;
     } else if (!isLoading && !!store && !!items) {
       return (
-        <div className="p-6">
-          <CheckoutForm
-            address={primaryAddress?.data}
-            store={store}
-            items={items}
-          />
-        </div>
+        <CheckoutForm
+          address={primaryAddress?.data}
+          store={store}
+          items={items}
+        />
       );
     } else {
       return <CheckoutEmpty />;
@@ -84,14 +82,7 @@ export default function CheckoutItem({
         exit="exit"
         transition={{ duration: 0.3 }}
       >
-        <div id="orderSection" className="bg-white rounded-lg shadow-md mb-6">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-bold text-gray-800">Detail Pesanan</h3>
-            <p className="text-sm text-gray-600">
-              Lengkapi informasi pengiriman
-            </p>
-          </div>
-
+        <div id="orderSection">
           {renderContent()}
         </div>
       </motion.div>

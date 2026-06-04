@@ -22,68 +22,61 @@ type Props = {
   onClose: () => void;
 };
 
-
-
 export default function OrderDetailModal({ open, orderId, onClose }: Props) {
   const { data, isLoading } = useGetOrderPayments(orderId);
   const order = data?.data;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto" style={{ borderRadius: "var(--radius-md)" }}>
         {isLoading || !order ? (
           <OrderDetailModalSkeleton />
         ) : (
           <>
             {/* Header */}
-            <DialogHeader>
+            <DialogHeader className="border-b border-[var(--cream-dark)] pb-4">
               <div className="flex items-center justify-between">
-                <DialogTitle>Pesanan # {order?.order_number}</DialogTitle>
+                <DialogTitle className="text-lg font-extrabold text-[var(--text-primary)]">Pesanan #{order?.order_number}</DialogTitle>
               </div>
-              <DialogDescription className="text-sm text-gray-600">
-                {formatDate(order.created_at)}
+              <DialogDescription className="text-xs text-[var(--text-muted)] mt-1">
+                Dibuat pada {formatDate(order.created_at)}
               </DialogDescription>
             </DialogHeader>
 
             {/* Status Badge */}
-            <div className="py-2 border-b border-gray-200 flex items-center gap-2">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(order.status == "awaiting_payment" ? order.payment_status : order.status
-                )}`}
-              >
+            <div className="py-3 flex items-center gap-2">
+              <span className={getStatusBadgeClass(order.status == "awaiting_payment" ? order.payment_status : order.status)}>
                 {order.status == "awaiting_payment" ? order.payment_status_label : order.status_label}
-
               </span>
             </div>
 
-
             {/* Status Detail Section */}
-            <div className="mt-3 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
+            <div className="p-4 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl text-sm space-y-2">
               {/* Status "Awaiting Payment" */}
               {order.status === "awaiting_payment" && (
                 <>
                   {order.payment_status === "rejected" && (
                     <>
-                      <p className="text-yellow-700 font-medium">Pembayaran ditolak oleh penjual.</p>
+                      <p className="text-[var(--terracotta)] font-bold">Pembayaran ditolak oleh penjual.</p>
                       {order.payment?.rejection_reason && (
-                        <p className="text-yellow-700 font-medium">
+                        <p className="text-[var(--text-secondary)]">
                           Alasan: {order.payment.rejection_reason}
                         </p>
                       )}
                     </>
                   )}
                   {order.payment_status === "unpaid" && (
-                    <p className="text-yellow-700 font-medium">
-                      Menunggu pembayaran sebelum {formatDate(order.payment_due_at)}
+                    <p className="text-[var(--text-secondary)] font-medium">
+                      Menunggu pembayaran sebelum <span className="font-bold text-[var(--terracotta)]">{formatDate(order.payment_due_at)}</span>
                     </p>
                   )}
                   {order.payment_status === "pending" && (
-                    <p className="text-yellow-700 font-medium">
+                    <p className="text-[var(--text-secondary)] font-medium">
                       Menunggu Konfirmasi pembayaran dari penjual
                     </p>
                   )}
                   {order.payment_status === "paid" && (
-                    <p className="text-gray-700">
+                    <p className="text-[var(--text-secondary)]">
                       Pembayaran Terverifikasi. Pesanan sedang menunggu konfirmasi dari penjual
                       {order.payment?.verified_at && ` sejak ${formatDate(order.payment.verified_at)}.`}
                     </p>
@@ -93,14 +86,14 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
               {/* Status "Pending" with Paid Payment */}
               {order.status === "pending" && order.payment_status === "paid" && (
-                <p className="text-yellow-700 font-medium">
+                <p className="text-[var(--text-secondary)] font-medium">
                   Pembayaran Berhasil. Menunggu konfirmasi pesanan diproses penjual
                 </p>
               )}
 
               {/* Status "Processing" */}
               {order.status === "processing" && (
-                <p className="text-gray-700">
+                <p className="text-[var(--text-secondary)]">
                   Pesanan sedang diproses dan dikemas oleh penjual
                 </p>
               )}
@@ -108,12 +101,12 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
               {/* Status "Shipped" */}
               {order.status === "shipped" && (
                 <>
-                  <p className="text-gray-700">
+                  <p className="text-[var(--text-secondary)]">
                     Pesanan dikirim {formatDate(order.shipped_at)} dengan{" "}
-                    {order.shipping_service?.toUpperCase()} ({order.shipping_service_type})
+                    <span className="font-bold">{order.shipping_service?.toUpperCase()}</span> ({order.shipping_service_type})
                   </p>
                   {order.estimated_delivery && (
-                    <p className="text-gray-600">
+                    <p className="text-[var(--text-muted)]">
                       Estimasi sampai:{" "}
                       {(() => {
                         const [min, max] = order.estimated_delivery
@@ -145,7 +138,6 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                             options
                           )} ${maxDate.toLocaleDateString("id-ID", monthYearOptions)}`;
                         } else {
-                          // Kalau beda bulan/tahun, tampilkan lengkap dua-duanya
                           return `${minDate.toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "long",
@@ -160,28 +152,28 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                     </p>
                   )}
                   {order.tracking_number && (
-                    <p className="text-blue-600 font-mono break-all">Resi: {order.tracking_number}</p>
+                    <p className="text-[var(--terracotta)] font-mono font-bold mt-1 break-all">Resi: {order.tracking_number}</p>
                   )}
                 </>
               )}
 
               {/* Status "Delivered" */}
               {order.status === "delivered" && (
-                <p className="text-green-700 font-medium">
+                <p className="text-[var(--forest)] font-bold">
                   Pesanan terkirim {formatDate(order.delivered_at)}.
                 </p>
               )}
 
               {/* Status "Completed" */}
               {order.status === "completed" && (
-                <p className="text-green-700 font-medium">
+                <p className="text-[var(--forest)] font-bold">
                   Pesanan selesai 🎉 Terima kasih sudah berbelanja!
                 </p>
               )}
 
               {/* Status "Cancelled" */}
               {order.status === "cancelled" && (
-                <p className="text-red-600">
+                <p className="text-[var(--terracotta-dark)]">
                   Pesanan dibatalkan {formatDate(order.cancelled_at)}.{" "}
                   {order.cancellation_reason && <span>Alasan: {order.cancellation_reason}</span>}
                 </p>
@@ -189,51 +181,50 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
               {/* Status "Expired" */}
               {order.status === "expired" && (
-                <p className="text-gray-700">Pesanan kadaluarsa.</p>
+                <p className="text-[var(--text-muted)]">Pesanan kadaluarsa.</p>
               )}
 
               {/* Order Notes */}
               {order.note && (
-                <p className="text-gray-600">
-                  <span className="font-medium">Catatan: </span>
-                  {order.note}
+                <p className="text-[var(--text-muted)] italic mt-2 pt-2 border-t border-[var(--cream-dark)]">
+                  <span className="font-bold not-italic">Catatan: </span>
+                  &quot;{order.note}&quot;
                 </p>
               )}
             </div>
 
-
             {/* Items */}
             <div className="py-4">
-              <h3 className="font-semibold mb-2">Item Pesanan</h3>
-              <div className="space-y-4 mb-6">
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)] mb-3">Item Pesanan</h3>
+              <div className="space-y-3 mb-6">
                 {order.items.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3"
+                    className="flex items-center space-x-3 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-3"
                   >
-                    <div className="bg-gray-300 w-12 h-12 rounded-lg flex items-center justify-center relative">
+                    <div className="bg-gray-300 w-12 h-12 rounded-lg flex items-center justify-center relative flex-shrink-0">
                       <Image
                         src={item.product ? item.product.thumbnail.media_url : '/assets/no-image.jpg'}
                         layout="fill"
                         alt="gambar"
                         objectFit="cover"
-                        className="rounded-sm"
+                        className="rounded-lg"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm truncate">
+                      <h4 className="font-bold text-sm text-[var(--text-primary)] truncate">
                         {item.variant_name || item.product_name}
                       </h4>
-                      <p className="text-xs text-gray-600 truncate">
+                      <p className="text-xs text-[var(--text-muted)] truncate">
                         {order.store.name}
                       </p>
-                      <div className="flex justify-between mt-1">
-                        <span className="text-primary font-bold text-sm">
+                      <div className="flex justify-between items-center mt-1">
+                        <span className="text-[var(--terracotta)] font-extrabold text-sm">
                           {item.variant_price
                             ? item.variant_price.formatted
                             : item.product_price.formatted}
                         </span>
-                        <span className="text-gray-600 text-xs">
+                        <span className="text-[var(--text-muted)] text-xs font-semibold">
                           x {item.quantity}
                         </span>
                       </div>
@@ -243,59 +234,59 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
               </div>
 
               {/* Address */}
-              <h3 className="font-semibold mb-2">Alamat Pengiriman</h3>
-              <div className="bg-gray-50 rounded-lg p-3 mb-6">
-                <p className="text-gray-800 text-sm leading-relaxed">
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)] mb-3">Alamat Pengiriman</h3>
+              <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-4 mb-6">
+                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
                   {order.shipping_address_line},{" "}
                   {order.shipping_village.name},{" "}
                   {order.shipping_district?.name},{" "}
                   {order.shipping_regency?.name},{" "}
                   {order.shipping_province?.name},{" "}
-                  {order.shipping_postal_code}
+                  <span className="font-bold">{order.shipping_postal_code}</span>
                 </p>
                 {order.shipping_note && (
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Catatan: </span>
-                    {order.shipping_note}
+                  <p className="text-sm text-[var(--text-muted)] mt-2 pt-2 border-t border-[var(--cream-dark)] italic">
+                    <span className="font-bold not-italic">Catatan: </span>
+                    &quot;{order.shipping_note}&quot;
                   </p>
                 )}
               </div>
 
               {/* Payment Summary */}
-              <h3 className="font-semibold mb-2">Ringkasan Pembayaran</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)] mb-3">Ringkasan Pembayaran</h3>
+              <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-4 space-y-2 text-sm">
+                <div className="flex justify-between text-[var(--text-secondary)]">
                   <span>Subtotal</span>
-                  <span>{order.subtotal.formatted}</span>
+                  <span className="font-semibold">{order.subtotal.formatted}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-[var(--text-secondary)]">
                   <span>Ongkos Kirim</span>
-                  <span>{order.shipping_cost.formatted}</span>
+                  <span className="font-semibold">{order.shipping_cost.formatted}</span>
                 </div>
-                <hr className="my-2" />
-                <div className="flex justify-between font-semibold text-base">
+                <hr className="border-[var(--cream-dark)] my-2" />
+                <div className="flex justify-between font-extrabold text-base text-[var(--text-primary)]">
                   <span>Total</span>
-                  <span className="text-primary">{order.total.formatted}</span>
+                  <span className="text-[var(--terracotta)]">{order.total.formatted}</span>
                 </div>
               </div>
 
               {order?.shipping_proof_images?.length > 0 && (
-                <ShippingProofs proofs={order.shipping_proof_images} />
+                <div className="mt-6">
+                  <ShippingProofs proofs={order.shipping_proof_images} />
+                </div>
               )}
 
               {order.shipping_notes && (
-                <div className="">
-                  <h3>Catatan Pengiriman</h3>
-                  <p>{order.shipping_notes}</p>
+                <div className="mt-6 p-4 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl">
+                  <h3 className="text-sm font-extrabold text-[var(--text-primary)] mb-2">Catatan Pengiriman</h3>
+                  <p className="text-sm text-[var(--text-secondary)]">{order.shipping_notes}</p>
                 </div>
-              )
-              }
-
+              )}
             </div>
 
-            <DialogFooter>
+            <DialogFooter className="border-t border-[var(--cream-dark)] pt-4">
               <DialogClose asChild>
-                <Button variant="outline">Tutup</Button>
+                <Button className="btn btn-secondary btn-sm" variant="outline">Tutup</Button>
               </DialogClose>
             </DialogFooter>
           </>
@@ -304,7 +295,6 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
     </Dialog>
   );
 }
-
 
 interface ShippingProofsProps {
   proofs: string[];
@@ -316,23 +306,21 @@ function ShippingProofs({ proofs }: ShippingProofsProps) {
   if (!proofs || proofs.length === 0) return null;
 
   return (
-    <div className="mb-4">
-      <h3 className="font-semibold mb-2">Bukti Pengiriman</h3>
-
-      {/* Grid Gambar */}
+    <div>
+      <h3 className="text-sm font-extrabold text-[var(--text-primary)] mb-3">Bukti Pengiriman</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {proofs.map((proof, i) => (
           <div
             key={i}
             onClick={() => setSelectedImage(proof)}
-            className="relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition"
+            className="relative w-full h-32 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
           >
             <Image
               src={proof}
               alt={`Bukti Pengiriman ${i + 1}`}
               layout="fill"
               objectFit="cover"
-              className="rounded-lg"
+              className="rounded-xl"
             />
           </div>
         ))}
@@ -344,70 +332,58 @@ function ShippingProofs({ proofs }: ShippingProofsProps) {
               type: "image",
               url: selectedImage || '',
             }}
-          />)}
+          />
+        )}
       </div>
-
     </div>
   );
 }
 
-
-
 const OrderDetailModalSkeleton = () => {
   return (
-    <div className="">
+    <div className="space-y-4 animate-pulse">
       {/* Header */}
-      <DialogHeader className="space-y-1">
-        <DialogTitle></DialogTitle>
-        <div className="h-4 w-2/3 bg-gray-300 rounded"></div>
-        <div className="h-3 w-1/3 bg-gray-300 rounded"></div>
-      </DialogHeader>
-
-      {/* Status Badge */}
-      <div className="py-2 border-b border-gray-200 flex items-center gap-2">
-        <Skeleton className="w-24 h-4 rounded-full" />
+      <div className="border-b border-[var(--cream-dark)] pb-4 space-y-2">
+        <Skeleton className="h-6 w-1/2 bg-gray-200" />
+        <Skeleton className="h-4 w-1/3 bg-gray-200" />
       </div>
 
+      {/* Status Badge */}
+      <Skeleton className="w-24 h-6 rounded-full bg-gray-200" />
+
       {/* Status Detail Section */}
-      <div className="mt-3 p-3 bg-gray-50 rounded-lg text-sm space-y-2">
-        <Skeleton className="w-full h-4" />
-        <Skeleton className="w-full h-4" />
-        <Skeleton className="w-full h-4" />
+      <div className="p-4 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl space-y-2">
+        <Skeleton className="w-full h-4 bg-gray-200" />
+        <Skeleton className="w-2/3 h-4 bg-gray-200" />
       </div>
 
       {/* Items */}
-      <div className="">
-        <h3 className="font-semibold mb-2">Item Pesanan</h3>
-        <div className="space-y-4 mb-6">
-          {[...Array(1)].map((_, i) => (
-            <div key={i} className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3">
-              <Skeleton className="w-12 h-12 rounded-lg" />
-              <div className="flex-1 min-w-0">
-                <Skeleton className="w-1/2 h-4 mb-2" />
-                <Skeleton className="w-1/3 h-4 mb-2" />
-                <Skeleton className="w-1/4 h-4" />
-              </div>
-            </div>
-          ))}
+      <div className="space-y-2">
+        <Skeleton className="w-1/4 h-5 bg-gray-200" />
+        <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-3 flex items-center space-x-3">
+          <Skeleton className="w-12 h-12 rounded-lg bg-gray-200" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="w-1/2 h-4 bg-gray-200" />
+            <Skeleton className="w-1/3 h-3 bg-gray-200" />
+          </div>
         </div>
       </div>
 
       {/* Address */}
-      <div className="py-1">
-        <h3 className="font-semibold mb-2">Alamat Pengiriman</h3>
-        <div className="bg-gray-50 rounded-lg p-3 mb-6">
-          <Skeleton className="w-full h-6 mb-4" />
-          <Skeleton className="w-2/3 h-4" />
+      <div className="space-y-2">
+        <Skeleton className="w-1/3 h-5 bg-gray-200" />
+        <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-4 space-y-2">
+          <Skeleton className="w-full h-4 bg-gray-200" />
+          <Skeleton className="w-5/6 h-4 bg-gray-200" />
         </div>
       </div>
 
       {/* Payment Summary */}
-      <div className="">
-        <h3 className="font-semibold mb-2">Ringkasan Pembayaran</h3>
-        <div className="space-y-2 text-sm">
-          <Skeleton className="w-full h-6" />
-          <Skeleton className="w-full h-6" />
-          <Skeleton className="w-full h-6" />
+      <div className="space-y-2">
+        <Skeleton className="w-1/3 h-5 bg-gray-200" />
+        <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-4 space-y-2">
+          <Skeleton className="w-full h-4 bg-gray-200" />
+          <Skeleton className="w-full h-4 bg-gray-200" />
         </div>
       </div>
     </div>

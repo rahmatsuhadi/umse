@@ -4,128 +4,196 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { usePasswordChange } from "@/features/auth/hooks";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, KeyRound, LockKeyhole, ShieldCheck } from "lucide-react";
 
-// Skema Zod tidak berubah, sudah bagus
 const passwordSchema = z
   .object({
-    old_password: z
-      .string()
-      .min(1, { message: "Password saat ini diperlukan." }),
+    old_password: z.string().min(1, { message: "Password saat ini diperlukan." }),
     new_password: z
       .string()
       .min(8, { message: "Password minimal 8 karakter." })
-      .regex(/[A-Z]/, {
-        message: "Password harus mengandung minimal satu huruf besar.",
-      })
-      .regex(/[a-z]/, {
-        message: "Password harus mengandung minimal satu huruf kecil.",
-      })
-      .regex(/[0-9]/, {
-        message: "Password harus mengandung minimal satu angka.",
-      })
-      .regex(/[^A-Za-z0-9]/, {
-        message: "Password harus mengandung minimal satu simbol.",
-      }),
-    new_password_confirmation: z
-      .string()
-      .min(1, { message: "Konfirmasi password diperlukan." }),
+      .regex(/[A-Z]/, { message: "Harus mengandung huruf besar." })
+      .regex(/[a-z]/, { message: "Harus mengandung huruf kecil." })
+      .regex(/[0-9]/, { message: "Harus mengandung angka." })
+      .regex(/[^A-Za-z0-9]/, { message: "Harus mengandung simbol." }),
+    new_password_confirmation: z.string().min(1, { message: "Konfirmasi password diperlukan." }),
   })
   .refine((data) => data.new_password === data.new_password_confirmation, {
-    message: "Password dan konfirmasi password tidak cocok.",
-    path: ["confirmPassword"],
+    message: "Password dan konfirmasi tidak cocok.",
+    path: ["new_password_confirmation"],
   });
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
+const inputStyle: React.CSSProperties = {
+  height: 48,
+  borderRadius: 12,
+  border: "1.5px solid var(--cream-dark, #F0D5C2)",
+  background: "white",
+  paddingLeft: 44,
+  paddingRight: 44,
+};
+
+const iconStyle: React.CSSProperties = {
+  position: "absolute",
+  left: 14,
+  top: "50%",
+  transform: "translateY(-50%)",
+  color: "var(--brown-light, #9B7B5A)",
+  pointerEvents: "none",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontWeight: 600,
+  fontSize: 13,
+  color: "var(--text-secondary, #4A3728)",
+};
+
 export default function PasswordSettingsPage() {
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showOld, setShowOld] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const form = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
-    defaultValues: {
-      old_password: "",
-      new_password: "",
-      new_password_confirmation: "",
-    },
+    mode: "onSubmit",
+    criteriaMode: "all",
+    defaultValues: { old_password: "", new_password: "", new_password_confirmation: "" },
   });
 
-  const { mutate: updatePassword, isPending: isLoading } = usePasswordChange();
+  const { mutate: updatePassword, isPending } = usePasswordChange();
 
   const onSubmit = (data: PasswordFormValues) => {
-    // Kirim data yang dibutuhkan oleh API (password lama dan baru)
     updatePassword(data);
   };
 
+  const EyeToggle = ({ show, onToggle }: { show: boolean; onToggle: () => void }) => (
+    <button
+      type="button"
+      onClick={onToggle}
+      style={{
+        position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)",
+        background: "none", border: "none", cursor: "pointer",
+        color: "var(--brown-light, #9B7B5A)", display: "flex", alignItems: "center",
+      }}
+    >
+      {show ? <EyeOff size={16} /> : <Eye size={16} />}
+    </button>
+  );
+
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Header tidak berubah */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Link
-                href={"/pengguna/"}
-                className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer"
-              >
-                <i className="fas fa-arrow-left text-xl"></i>
-              </Link>
-              <h1 className="text-xl font-bold text-gray-800">Keamanan Akun</h1>
+    <div style={{ background: "var(--cream, #FFF9F4)", minHeight: "100vh" }}>
+      {/* Sub-header */}
+      <div
+        style={{
+          background: "white",
+          borderBottom: "1px solid var(--cream-dark, #F0D5C2)",
+          padding: "0 20px",
+          height: 56,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          position: "sticky",
+          top: 0,
+          zIndex: 40,
+        }}
+      >
+        <Link
+          href="/pengguna"
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            width: 36, height: 36, borderRadius: 10,
+            background: "var(--cream, #FFF9F4)",
+            color: "var(--text-primary, #1A1008)",
+            textDecoration: "none",
+            border: "1.5px solid var(--cream-dark, #F0D5C2)",
+          }}
+        >
+          <ArrowLeft size={18} />
+        </Link>
+        <h1 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary, #1A1008)", margin: 0 }}>
+          Keamanan Akun
+        </h1>
+      </div>
+
+      <main style={{ maxWidth: 520, margin: "0 auto", padding: "28px 16px 64px" }}>
+
+        {/* Info box */}
+        <div
+          style={{
+            background: "rgba(247,98,10,0.06)",
+            border: "1.5px solid rgba(247,98,10,0.18)",
+            borderRadius: 14,
+            padding: "14px 18px",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 12,
+            marginBottom: 20,
+          }}
+        >
+          <ShieldCheck size={20} style={{ color: "var(--terracotta, #F7620A)", flexShrink: 0, marginTop: 1 }} />
+          <p style={{ fontSize: 13, color: "var(--text-secondary, #4A3728)", margin: 0, lineHeight: 1.6 }}>
+            Password harus minimal <strong>8 karakter</strong> dengan kombinasi huruf besar, huruf kecil, angka, dan simbol.
+          </p>
+        </div>
+
+        <div
+          style={{
+            background: "white",
+            borderRadius: 20,
+            border: "1.5px solid var(--cream-dark, #F0D5C2)",
+            boxShadow: "0 4px 20px rgba(44,24,16,0.08)",
+            padding: "32px 28px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 12,
+              background: "rgba(247,98,10,0.08)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "var(--terracotta, #F7620A)",
+            }}>
+              <KeyRound size={18} />
+            </div>
+            <div>
+              <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--text-primary, #1A1008)", margin: 0 }}>
+                Ubah Password
+              </h2>
+              <p style={{ fontSize: 12, color: "var(--text-muted, #6B4C2A)", margin: 0 }}>Perbarui keamanan akun Anda</p>
             </div>
           </div>
-        </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">
-            <i className="fas fa-key mr-2 text-primary"></i>Ubah Password
-          </h2>
-
-          {/* ✨ PERBAIKAN: Bungkus dengan komponen Form dari shadcn */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Current Password */}
+            <form onSubmit={form.handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+
+              {/* Password Lama */}
               <FormField
                 control={form.control}
                 name="old_password"
                 render={({ field }) => (
                   <FormItem>
-                    <Label>Password Saat Ini *</Label>
+                    <FormLabel style={labelStyle}>Password Saat Ini</FormLabel>
                     <FormControl>
-                      <div className="relative">
+                      <div style={{ position: "relative" }}>
+                        <LockKeyhole size={16} style={iconStyle} />
                         <Input
                           autoComplete="current-password"
-                          type={showCurrentPassword ? "text" : "password"}
-                          placeholder="Masukkan password saat ini"
+                          type={showOld ? "text" : "password"}
+                          placeholder="Password saat ini"
+                          style={inputStyle}
                           {...field}
                         />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setShowCurrentPassword(!showCurrentPassword)
-                          }
-                          className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
-                        >
-                          {showCurrentPassword ? (
-                            <EyeOff size={18} />
-                          ) : (
-                            <Eye size={18} />
-                          )}
-                        </button>
+                        <EyeToggle show={showOld} onToggle={() => setShowOld(v => !v)} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -133,66 +201,75 @@ export default function PasswordSettingsPage() {
                 )}
               />
 
-              {/* New Password */}
+              {/* Divider */}
+              <div style={{ height: 1, background: "var(--cream-dark, #F0D5C2)", margin: "4px 0" }} />
+
+              {/* Password Baru */}
               <FormField
                 control={form.control}
                 name="new_password"
                 render={({ field }) => (
                   <FormItem>
-                    <Label>Password Baru *</Label>
+                    <FormLabel style={labelStyle}>Password Baru</FormLabel>
                     <FormControl>
-                      <div className="relative">
+                      <div style={{ position: "relative" }}>
+                        <LockKeyhole size={16} style={iconStyle} />
                         <Input
                           autoComplete="new-password"
-                          type={showNewPassword ? "text" : "password"}
-                          placeholder="Masukkan password baru"
+                          type={showNew ? "text" : "password"}
+                          placeholder="Password baru"
+                          style={inputStyle}
                           {...field}
                         />
-                        <button
-                          type="button"
-                          onClick={() => setShowNewPassword(!showNewPassword)}
-                          className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
-                        >
-                          {showNewPassword ? (
-                            <EyeOff size={18} />
-                          ) : (
-                            <Eye size={18} />
-                          )}
-                        </button>
+                        <EyeToggle show={showNew} onToggle={() => setShowNew(v => !v)} />
                       </div>
                     </FormControl>
                     <FormMessage />
-                    <div className="mt-2 text-xs text-gray-500">
-                      Password harus minimal 8 karakter dengan kombinasi huruf,
-                      angka, dan simbol.
-                    </div>
                   </FormItem>
                 )}
               />
 
-              {/* Confirm Password */}
+              {/* Konfirmasi */}
               <FormField
                 control={form.control}
                 name="new_password_confirmation"
                 render={({ field }) => (
                   <FormItem>
-                    <Label>Konfirmasi Password Baru *</Label>
+                    <FormLabel style={labelStyle}>Konfirmasi Password Baru</FormLabel>
                     <FormControl>
-                      <Input
-                        autoComplete="new-password"
-                        type="password"
-                        placeholder="Ulangi password baru"
-                        {...field}
-                      />
+                      <div style={{ position: "relative" }}>
+                        <LockKeyhole size={16} style={iconStyle} />
+                        <Input
+                          autoComplete="new-password"
+                          type={showConfirm ? "text" : "password"}
+                          placeholder="Ulangi password baru"
+                          style={inputStyle}
+                          {...field}
+                        />
+                        <EyeToggle show={showConfirm} onToggle={() => setShowConfirm(v => !v)} />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Mengubah..." : "Ubah Password"}
-              </Button>
+              <button
+                type="submit"
+                disabled={isPending}
+                style={{
+                  height: 48, borderRadius: 12,
+                  background: "var(--terracotta, #F7620A)",
+                  color: "white", border: "none",
+                  fontWeight: 700, fontSize: 15,
+                  cursor: isPending ? "not-allowed" : "pointer",
+                  opacity: isPending ? 0.75 : 1,
+                  width: "100%", marginTop: 4,
+                  transition: "opacity 0.2s",
+                }}
+              >
+                {isPending ? "Memperbarui..." : "Ubah Password"}
+              </button>
             </form>
           </Form>
         </div>

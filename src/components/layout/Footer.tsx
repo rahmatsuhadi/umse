@@ -1,12 +1,2 @@
-export default function Footer() {
-  return (
-    <footer className="bg-gray-800 text-white py-8 sm:py-12 md:px-10 mt-auto">
-      <div className="container mx-auto px-4 text-center">
-        <h3 className="font-bold text-lg sm:text-xl">Sleman Mart</h3>
-        <p className="text-xs text-[#9CA3AF] sm:text-sm">
-          Platform UMKM Digital Kabupaten Sleman
-        </p>
-      </div>
-    </footer>
-  );
-}
+// Re-export shared Footer so existing imports from "@/components/layout/Footer" keep working
+export { Footer as default } from "@/components/shared/Footer";

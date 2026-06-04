@@ -4,6 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
+import { useRouter, usePathname } from "next/navigation";
+import { useAddToCart } from "@/features/cart/hooks";
+import { useUser } from "@/features/auth/hooks";
+import { ShoppingCart } from "lucide-react";
 
 export interface CatCardProps {
     id: number | string;
@@ -37,7 +41,24 @@ const waIcon = (
 export function CatCard(p: CatCardProps) {
     const isClosed = p.isClosed === true;
     const { mutate: logVisitor } = useCreateVisitorLog();
+    const router = useRouter();
+    const pathname = usePathname();
+    const { data: user } = useUser();
+    const { mutate: addToCart, isPending } = useAddToCart();
     const grayStyle = isClosed ? { filter: "grayscale(100%) brightness(0.72)" } : {};
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user) {
+            router.push(`/masuk?redirect=${pathname}`);
+            return;
+        }
+        addToCart({
+            product_id: String(p.id),
+            quantity: 1,
+        });
+    };
 
     const topBadge = p.badge === 'Terlaris' ? <div className="hot-badge">🔥 Terlaris</div>
         : p.badge === 'Unggulan' ? <div className="star-badge">⭐ Unggulan</div> : null;
@@ -122,28 +143,23 @@ export function CatCard(p: CatCardProps) {
                     </div>
                     {isClosed ? (
                         <button
-                            className="cat-card-wa disabled"
+                            className="cat-card-cart disabled"
                             title="Toko sedang tutup"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }}
                         >
-                            {waIcon}
+                            <ShoppingCart size={16} />
                         </button>
                     ) : (
                         <button
-                            className="cat-card-wa"
-                            title="Pesan via WhatsApp"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                logVisitor({ product_id: p.id as string });
-                                const phone = p.phone || '';
-                                const isService = p.type?.toLowerCase() === 'service' || p.type?.toLowerCase() === 'jasa';
-                                const message = isService
-                                    ? `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${p.name}*`
-                                    : `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk ${p.name}`;
-                                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
-                            }}
+                            className="cat-card-cart"
+                            title="Tambahkan ke Keranjang"
+                            disabled={isPending}
+                            onClick={handleAddToCart}
                         >
-                            {waIcon}
+                            <ShoppingCart size={16} />
                         </button>
                     )}
                 </div>

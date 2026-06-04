@@ -636,3 +636,35 @@
   transform: none;
   background: #bbb;
 }
+
+.cat-card-cart {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary, #F97316);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+}
+
+.cat-card-cart:hover {
+  background: var(--primary-dark, #EA580C);
+  transform: scale(1.1);
+}
+
+.cat-card-cart.disabled {
+  background: #bbb;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.cat-card-cart.disabled:hover {
+  transform: none;
+  background: #bbb;
+}

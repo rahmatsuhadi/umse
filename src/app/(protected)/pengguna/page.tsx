@@ -1,207 +1,344 @@
 "use client";
-import Footer from "@/components/layout/Footer";
+import { Footer } from "@/components/shared/Footer";
 import { Navbar } from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLogout, useUser } from "@/features/auth/hooks";
+import {
+  Edit3,
+  MapPin,
+  ShieldCheck,
+  ShoppingBag,
+  ShoppingCart,
+  LogOut,
+  ChevronRight,
+  User2,
+  Package,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function PesananPage() {
+export default function PenggunaPage() {
   const router = useRouter();
-
   const { data } = useUser();
-
   const { mutate: handleLogout } = useLogout();
-
   const user = data?.data;
 
   const logout = () => {
     handleLogout();
-    // Implementasi logout
-
-    // Redirect ke login
   };
 
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "U";
+
   return (
-    <div className="bg-gray-50 ">
+    <div style={{ background: "var(--cream, #FFF9F4)", minHeight: "100vh" }}>
       <Navbar />
 
-      <main className="container mx-auto px-4 py-6">
-        {/* Profile Header */}
-        <div className="bg-white rounded-lg shadow-md mb-6">
-          <div className="relative">
-            {/* Cover Background */}
-            <div className="h-32 primary-light rounded-t-lg"></div>
+      <main style={{ maxWidth: 760, margin: "0 auto", padding: "32px 16px 64px" }}>
 
-            {/* Profile Info */}
-            <div className="relative px-6 pb-6">
-              <div className="flex flex-col items-center -mt-16 mb-4">
-                {/* Profile Photo */}
-                <div className="relative mb-4">
-                  <Avatar className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-2 border-4 border-gray-200">
-                    <AvatarImage
-                      src={user?.profile_path ? user.profile_url : ""}
-                      alt="Profile"
-                      width={400}
-                      height={400}
-                      className="object-cover w-full h-full"
-                    />
-                    <AvatarFallback>
-                      <i className="fas fa-user text-3xl md:text-5xl"></i>
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
+        {/* ── Profile Card ── */}
+        <div
+          style={{
+            background: "white",
+            borderRadius: "24px",
+            border: "1.5px solid var(--cream-dark, #F0D5C2)",
+            boxShadow: "0 4px 24px rgba(44,24,16,0.10)",
+            overflow: "hidden",
+            marginBottom: "24px",
+          }}
+        >
+          {/* Cover */}
+          <div
+            style={{
+              height: 120,
+              background: "linear-gradient(135deg, var(--terracotta, #F7620A) 0%, #F5A623 100%)",
+              position: "relative",
+            }}
+          >
+            {/* decorative circles */}
+            <div style={{
+              position: "absolute", right: -20, top: -20,
+              width: 140, height: 140, borderRadius: "50%",
+              background: "rgba(255,255,255,0.08)",
+            }} />
+            <div style={{
+              position: "absolute", left: 40, bottom: -30,
+              width: 80, height: 80, borderRadius: "50%",
+              background: "rgba(255,255,255,0.06)",
+            }} />
+          </div>
 
-                {/* User Info */}
-                <div className="text-center flex-1">
-                  <div className="mb-2">
-                    <h1
-                      id="userName"
-                      className="text-2xl font-bold text-gray-800 mb-1"
-                    >
-                      {user?.name}
-                    </h1>
-                    <p id="userEmail" className="text-gray-600 mb-3">
-                      {user?.email}
-                    </p>
-                    <button
-                      onClick={() => router.replace("/pengguna/edit")}
-                      className="bg-white border  hover:cursor-pointer border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
-                      title="Edit Profile"
-                    >
-                      <i className="fas fa-edit mr-2"></i>Edit Profile
-                    </button>
-                  </div>
-                </div>
-              </div>
+          {/* Avatar + Info */}
+          <div style={{ padding: "0 28px 28px", textAlign: "center" }}>
+            <div style={{ marginTop: -52, marginBottom: 16, display: "flex", justifyContent: "center" }}>
+              <Avatar
+                style={{
+                  width: 104,
+                  height: 104,
+                  border: "4px solid white",
+                  boxShadow: "0 4px 16px rgba(44,24,16,0.18)",
+                }}
+              >
+                <AvatarImage
+                  src={user?.profile_path ? user.profile_url : ""}
+                  alt="Profile"
+                  style={{ objectFit: "cover" }}
+                />
+                <AvatarFallback
+                  style={{
+                    background: "var(--cream-dark, #F0D5C2)",
+                    color: "var(--terracotta, #F7620A)",
+                    fontSize: 32,
+                    fontWeight: 700,
+                  }}
+                >
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
             </div>
+
+            <h1
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                color: "var(--text-primary, #1A1008)",
+                margin: "0 0 4px",
+              }}
+            >
+              {user?.name || "Pengguna"}
+            </h1>
+            <p
+              style={{
+                fontSize: 14,
+                color: "var(--text-muted, #6B4C2A)",
+                margin: "0 0 20px",
+              }}
+            >
+              {user?.email}
+            </p>
+
+            <button
+              onClick={() => router.push("/pengguna/edit")}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 24px",
+                borderRadius: 50,
+                border: "1.5px solid var(--terracotta, #F7620A)",
+                background: "transparent",
+                color: "var(--terracotta, #F7620A)",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "var(--terracotta, #F7620A)";
+                (e.currentTarget as HTMLButtonElement).style.color = "white";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                (e.currentTarget as HTMLButtonElement).style.color = "var(--terracotta, #F7620A)";
+              }}
+            >
+              <Edit3 size={15} />
+              Edit Profil
+            </button>
           </div>
         </div>
 
-        {/* Profile Stats */}
-        {/* <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-white rounded-lg shadow-md p-4 text-center">
-                        <div className="text-2xl font-bold text-primary mb-1">15</div>
-                        <div className="text-gray-600 text-sm">Total Pesanan</div>
-                    </div>
-                    <div className="bg-white rounded-lg shadow-md p-4 text-center">
-                        <div className="text-2xl font-bold text-green-600 mb-1">12</div>
-                        <div className="text-gray-600 text-sm">Selesai</div>
-                    </div>
-                    <div className="bg-white rounded-lg shadow-md p-4 text-center">
-                        <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
-                        <div className="text-gray-600 text-sm">Dalam Proses</div>
-                    </div>
-                </div> */}
+        {/* ── Menu Sections ── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-        {/* Menu Sections */}
-        <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-4">
-          {/* Account Management */}
-          <div className="bg-white rounded-lg shadow-md">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-800">
-                <i className="fas fa-user-cog mr-2 text-primary"></i>Manajemen
-                Akun
-              </h3>
-            </div>
-            <div className="divide-y divide-gray-200">
-              <MenuItem
-                icon="fas fa-edit"
-                label="Edit Profile"
-                link="/pengguna/edit"
-              />
-              <MenuItem
-                icon="fas fa-map-marker-alt"
-                label="Alamat Saya"
-                link="/pengguna/alamat"
-              />
-              <MenuItem
-                icon="fas fa-shield-alt"
-                label="Keamanan"
-                link="/pengguna/ganti-password"
-              />
-            </div>
-          </div>
+          {/* Manajemen Akun */}
+          <MenuCard
+            title="Manajemen Akun"
+            icon={<User2 size={16} style={{ color: "var(--terracotta, #F7620A)" }} />}
+            items={[
+              { icon: <Edit3 size={16} />, label: "Edit Profil", href: "/pengguna/edit" },
+              { icon: <MapPin size={16} />, label: "Alamat Saya", href: "/pengguna/alamat" },
+              { icon: <ShieldCheck size={16} />, label: "Keamanan & Password", href: "/pengguna/ganti-password" },
+            ]}
+          />
 
-          {/* Orders & Shopping */}
-          <div className="bg-white rounded-lg shadow-md">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-800">
-                <i className="fas fa-shopping-bag mr-2 text-primary"></i>Belanja
-                & Pesanan
-              </h3>
-            </div>
-            <div className="divide-y divide-gray-200">
-              <MenuItem
-                icon="fas fa-list-alt"
-                label="Riwayat Pesanan"
-                link="/pesanan"
-              />
-              <MenuItem
-                icon="fas fa-shopping-cart"
-                label="Keranjang"
-                link="/keranjang"
-              />
-            </div>
-          </div>
+          {/* Belanja & Pesanan */}
+          <MenuCard
+            title="Belanja & Pesanan"
+            icon={<ShoppingBag size={16} style={{ color: "var(--terracotta, #F7620A)" }} />}
+            items={[
+              { icon: <Package size={16} />, label: "Riwayat Pesanan", href: "/pesanan" },
+              { icon: <ShoppingCart size={16} />, label: "Keranjang Saya", href: "/keranjang" },
+            ]}
+          />
 
-          {/* Support & Info */}
-          {/* <div className="bg-white rounded-lg shadow-md">
-                        <div className="p-4 border-b border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-800">
-                                <i className="fas fa-info-circle mr-2 text-primary"></i>Bantuan & Info
-                            </h3>
-                        </div>
-                        <div className="divide-y divide-gray-200">
-                            <MenuItem icon="fas fa-headset" label="Pusat Bantuan" link="#" />
-                            <MenuItem icon="fas fa-file-alt" label="Syarat & Ketentuan" link="#" />
-                            <MenuItem icon="fas fa-user-shield" label="Kebijakan Privasi" link="#" />
-                        </div>
-                    </div> */}
-
-          {/* Logout */}
-          <div className="">
-            <div className="bg-white rounded-lg shadow-md">
-              <button
-                onClick={logout}
-                className="w-full flex hover:cursor-pointer items-center justify-between p-4 text-red-600 hover:bg-red-50 transition-colors rounded-lg"
+          {/* Keluar */}
+          <button
+            onClick={logout}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "18px 20px",
+              background: "white",
+              border: "1.5px solid #FDDCDC",
+              borderRadius: 16,
+              cursor: "pointer",
+              transition: "background 0.2s",
+              boxShadow: "0 2px 8px rgba(44,24,16,0.06)",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#FFF5F5";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "white";
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: "#FFF0F0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#E74C3C",
+                  flexShrink: 0,
+                }}
               >
-                <div className="flex items-center">
-                  <i className="fas fa-sign-out-alt w-5"></i>
-                  <span className="ml-3 font-medium">Keluar</span>
-                </div>
-                <i className="fas fa-chevron-right"></i>
-              </button>
+                <LogOut size={16} />
+              </div>
+              <span style={{ fontWeight: 600, fontSize: 15, color: "#E74C3C" }}>Keluar</span>
             </div>
-          </div>
+            <ChevronRight size={16} style={{ color: "#E74C3C", opacity: 0.6 }} />
+          </button>
         </div>
       </main>
 
-      {/* <!-- Footer --> */}
       <Footer />
     </div>
   );
 }
 
-interface MenuItemProps {
-  icon: string;
-  label: string;
-  link: string;
+/* ── MenuCard Component ── */
+interface MenuCardProps {
+  title: string;
+  icon: React.ReactNode;
+  items: { icon: React.ReactNode; label: string; href: string }[];
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ icon, label, link }) => {
+function MenuCard({ title, icon, items }: MenuCardProps) {
   return (
-    <Link href={link} className="w-full">
-      <button
-        type="button"
-        className=" text-left w-full  hover:cursor-pointer flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+    <div
+      style={{
+        background: "white",
+        borderRadius: 16,
+        border: "1.5px solid var(--cream-dark, #F0D5C2)",
+        boxShadow: "0 2px 8px rgba(44,24,16,0.06)",
+        overflow: "hidden",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "14px 20px",
+          borderBottom: "1px solid var(--cream-dark, #F0D5C2)",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          background: "var(--cream, #FFF9F4)",
+        }}
       >
-        <div className="flex items-center">
-          <i className={`${icon} text-gray-500 w-5`}></i>
-          <span className="ml-3 text-gray-800">{label}</span>
+        {icon}
+        <h3
+          style={{
+            fontSize: 14,
+            fontWeight: 700,
+            color: "var(--text-primary, #1A1008)",
+            margin: 0,
+            letterSpacing: "0.01em",
+            textTransform: "uppercase",
+          }}
+        >
+          {title}
+        </h3>
+      </div>
+
+      {/* Items */}
+      <div>
+        {items.map((item, i) => (
+          <MenuRow key={i} icon={item.icon} label={item.label} href={item.href} isLast={i === items.length - 1} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── MenuRow Component ── */
+interface MenuRowProps {
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  isLast?: boolean;
+}
+
+function MenuRow({ icon, label, href, isLast }: MenuRowProps) {
+  return (
+    <Link href={href} style={{ textDecoration: "none", display: "block" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "15px 20px",
+          borderBottom: isLast ? "none" : "1px solid var(--cream-dark, #F0D5C2)",
+          transition: "background 0.15s",
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLDivElement).style.background = "var(--cream, #FFF9F4)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLDivElement).style.background = "transparent";
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: "rgba(247, 98, 10, 0.08)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--terracotta, #F7620A)",
+              flexShrink: 0,
+            }}
+          >
+            {icon}
+          </div>
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "var(--text-primary, #1A1008)",
+            }}
+          >
+            {label}
+          </span>
         </div>
-        <i className="fas fa-chevron-right text-gray-400"></i>
-      </button>
+        <ChevronRight size={16} style={{ color: "var(--text-muted, #6B4C2A)", opacity: 0.5 }} />
+      </div>
     </Link>
   );
-};
+}

@@ -4,7 +4,11 @@ import type { AddToCartData } from "./api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const CART_QUERY_KEY = ["cart"];
+const CART_ITEMS_KEY = ["cart"];
+const CART_KEY = ["cart-summary"];
+
+// Legacy alias kept for compatibility
+const CART_QUERY_KEY = CART_ITEMS_KEY;
 
 /**
  * Hook untuk mengambil data keranjang.
@@ -12,7 +16,7 @@ const CART_QUERY_KEY = ["cart"];
  */
 export const useCartItems = () => {
   return useQuery({
-    queryKey: CART_QUERY_KEY,
+    queryKey: CART_ITEMS_KEY,
     queryFn: getCartItems,
   });
 };
@@ -23,7 +27,7 @@ export const useCartItems = () => {
  */
 export const useCart = () => {
   return useQuery({
-    queryKey: [CART_QUERY_KEY[1] + "-item"],
+    queryKey: CART_KEY,
     queryFn: getCart,
   });
 };
@@ -38,13 +42,16 @@ export const useAddToCart = () => {
     mutationFn: (data: AddToCartData) => addToCart(data),
     onSuccess: () => {
       toast.success("Produk berhasil ditambahkan ke keranjang!");
-      // Invalidate query 'cart' agar data keranjang di seluruh aplikasi otomatis ter-update
-      queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY[0] + "-item", CART_QUERY_KEY[0]] });
-      router.push("/keranjang")
+      // Invalidate both cart query keys so navbar badge & list both refresh
+      queryClient.invalidateQueries({ queryKey: CART_ITEMS_KEY });
+      queryClient.invalidateQueries({ queryKey: CART_KEY });
+      router.push("/keranjang");
     },
-    onError: (error) => {
-      toast.error("Gagal menambahkan ke keranjang", { description: error.message });
-    }
+    onError: (error: Error) => {
+      toast.error("Gagal menambahkan ke keranjang", {
+        description: error.message || "Terjadi kesalahan, coba lagi.",
+      });
+    },
   });
 };
 

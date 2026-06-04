@@ -3,6 +3,10 @@ import { useInView } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
+import { useAddToCart } from "@/features/cart/hooks";
+import { useUser } from "@/features/auth/hooks";
+import { useRouter, usePathname } from "next/navigation";
+import { ShoppingCart } from "lucide-react";
 
 interface CardProductProps {
   product: Product;
@@ -33,18 +37,22 @@ export const ProductCard = ({ product }: CardProductProps) => {
 
   const priceDisplay = `Rp ${price.value.toLocaleString()}`;
 
-  const handleWhatsAppClick = (e: React.MouseEvent) => {
+  const { data: user } = useUser();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { mutate: addToCart, isPending } = useAddToCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    logVisitor({ product_id: product.id });
-
-    const phone = product.store?.user?.phone_number || product.store?.phone || '';
-    const isService = product.type?.toLowerCase() === 'service' || product.type?.toLowerCase() === 'jasa';
-    const message = isService
-      ? `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${product.name}*`
-      : `Halo, Saya melihat produk anda dari SlemanMart, saya tertarik dengan produk ${product.name}`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+    if (!user) {
+      router.push(`/masuk?redirect=${pathname}`);
+      return;
+    }
+    addToCart({
+      product_id: String(product.id),
+      quantity: 1,
+    });
   };
 
   return (
@@ -95,14 +103,29 @@ export const ProductCard = ({ product }: CardProductProps) => {
               )}
             </div>
           </div>
-          <button
-            type="button"
-            className="btn-wa-compact"
-            onClick={handleWhatsAppClick}
-            title="Pesan via WhatsApp"
-          >
-            <i className="fab fa-whatsapp"></i>
-          </button>
+          {(() => {
+            const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
+            return isClosed ? (
+              <button
+                type="button"
+                className="cat-card-cart disabled"
+                title="Toko sedang tutup"
+                onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+              >
+                <ShoppingCart size={16} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="cat-card-cart"
+                onClick={handleAddToCart}
+                disabled={isPending}
+                title="Masukkan Keranjang"
+              >
+                <ShoppingCart size={16} />
+              </button>
+            );
+          })()}
         </div>
       </div>
     </div>

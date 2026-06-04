@@ -137,21 +137,62 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? "") : props.children
 
-  if (!body) {
+  // With criteriaMode:"all", react-hook-form stores all errors in error.types
+  const messages: string[] = []
+  if (error) {
+    if (error.types && typeof error.types === "object") {
+      // criteriaMode:"all" — collect every individual validation message
+      Object.values(error.types).forEach((msg) => {
+        if (typeof msg === "string") {
+          msg.split(",").forEach((m) => {
+            const trimmed = m.trim()
+            if (trimmed && !messages.includes(trimmed)) messages.push(trimmed)
+          })
+        } else if (Array.isArray(msg)) {
+          msg.forEach((m: string) => {
+            if (m && !messages.includes(m)) messages.push(m)
+          })
+        }
+      })
+    }
+    // Fallback to single message if no types (e.g. .refine errors)
+    if (messages.length === 0 && error.message) {
+      messages.push(error.message)
+    }
+  }
+
+  if (messages.length === 0 && !props.children) {
     return null
   }
 
   return (
-    <p
+    <div
       data-slot="form-message"
       id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
-      {...props}
+      className={className}
+      style={{ marginTop: "6px", display: "flex", flexDirection: "column", gap: "3px" }}
     >
-      {body}
-    </p>
+      {messages.length > 0
+        ? messages.map((msg, i) => (
+            <p
+              key={`${formMessageId}-err-${i}`}
+              style={{
+                fontSize: "12px",
+                color: "#E74C3C",
+                margin: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                fontWeight: 500,
+              }}
+            >
+              <span style={{ fontSize: "10px", lineHeight: 1 }}>⚠</span>
+              {msg}
+            </p>
+          ))
+        : props.children}
+    </div>
   )
 }
 

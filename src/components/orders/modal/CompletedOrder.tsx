@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useCompleteOrder } from '@/features/order/hooks'; // Sesuaikan path
-import { Order } from '@/types'; // Sesuaikan path
+import { useCompleteOrder } from '@/features/order/hooks';
+import { Order } from '@/types';
 
 type Props = {
   open: boolean;
@@ -18,30 +17,38 @@ export function CompleteOrderModal({ open, onClose, order }: Props) {
   const handleComplete = () => {
     mutate(order.id, {
       onSuccess: () => {
-        onClose(); // Tutup modal jika mutasi sukses
+        onClose();
       },
     });
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Selesaikan Pesanan?</DialogTitle>
-          <DialogDescription className="pt-2">
-            Apakah Anda yakin ingin menyelesaikan pesanan <strong>{order.order_number}</strong>?
-            {`Status pesanan akan diubah menjadi "Selesai" dan tindakan ini tidak dapat dibatalkan.`}
+      <DialogContent style={{ borderRadius: "var(--radius-md)" }} className="max-w-sm">
+        <DialogHeader className="border-b border-[var(--cream-dark)] pb-4">
+          <DialogTitle className="text-lg font-extrabold text-[var(--text-primary)]">
+            Selesaikan Pesanan?
+          </DialogTitle>
+          <DialogDescription className="pt-2 text-sm text-[var(--text-muted)] leading-relaxed">
+            Apakah Anda yakin ingin menyelesaikan pesanan <strong className="text-[var(--text-primary)]">#{order.order_number}</strong>?
+            <span className="block mt-2">Status pesanan akan diubah menjadi &quot;Selesai&quot; dan tindakan ini tidak dapat dibatalkan.</span>
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="pt-4 gap-2">
           <DialogClose asChild>
-            <Button type="button" variant="outline" disabled={isPending}>
+            <button type="button" className="btn btn-secondary btn-sm" disabled={isPending}>
               Batal
-            </Button>
+            </button>
           </DialogClose>
-          <Button onClick={handleComplete} disabled={isPending}>
+          <button 
+            type="button" 
+            onClick={handleComplete} 
+            className="btn btn-primary btn-sm" 
+            style={{ background: "var(--forest)" }}
+            disabled={isPending}
+          >
             {isPending ? "Memproses..." : "Ya, Selesaikan"}
-          </Button>
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

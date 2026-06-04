@@ -2,45 +2,52 @@ import { CartItem } from "@/types";
 import Image from "next/image";
 
 export default function CheckoutItemCard({ item }: { item: CartItem }) {
+  const imageUrl = item.variant
+    ? item.variant.thumbnail?.media_url || item.product.thumbnail?.media_url || "/assets/no-image.jpg"
+    : item.product.thumbnail?.media_url || "/assets/no-image.jpg";
+
+  const priceFormatted = item.variant
+    ? item.variant.price.formatted
+    : item.product.price.formatted;
+
+  const totalValue = (item.variant
+    ? item.variant.price.value
+    : item.product.price.value) * item.quantity;
+
   return (
-    <div className="flex items-center bg-gray-50 rounded-lg p-4">
-      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mr-4">
+    <div className="checkout-item-card">
+      <div className="checkout-item-img-box">
         <Image
-          className="w-full h-full object-cover rounded-lg"
-          src={
-            item.variant
-              ? item.variant.thumbnail?.media_url ||
-                item.product.thumbnail?.media_url ||
-                "/assets/no-image.jpg"
-              : item.product.thumbnail?.media_url
-          }
-          width={100} // Atur lebar sesuai keinginan
-          height={100} // Atur tinggi sesuai keinginan
+          className="object-cover"
+          src={imageUrl}
+          fill
+          sizes="56px"
           alt={"gambar-" + item.product.name}
         />
       </div>
-      <div className="flex-1">
-        <h5 className="font-medium text-gray-800">
+      <div className="flex-1 min-w-0">
+        <h5 className="checkout-item-title truncate">
           {item.variant?.name ?? item.product.name}
         </h5>
-        <p className="text-sm text-gray-600">
-          Varian: {item.variant ? item.variant.name : "-"}
-        </p>
-        <p className="text-sm text-primary font-bold mt-1">
-          {item.variant
-            ? item.variant.price.formatted
-            : item.product.price.formatted}{" "}
-          x {item.quantity}
+        
+        {item.variant ? (
+          <span className="checkout-item-badge">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--terracotta-light)" }}></span>
+            Varian: {item.variant.name}
+          </span>
+        ) : (
+          <span className="checkout-item-badge">
+            Standard
+          </span>
+        )}
+
+        <p className="checkout-item-price">
+          {priceFormatted} <span className="font-medium text-[10px]" style={{ color: "var(--text-muted)" }}>x {item.quantity}</span>
         </p>
       </div>
-      <div className="text-right">
-        <p className="font-bold text-gray-800">
-          Rp{" "}
-          {(
-            (item.variant
-              ? item.variant.price.value
-              : item.product.price.value) * item.quantity
-          ).toLocaleString()}
+      <div className="text-right flex-shrink-0 pl-2">
+        <p className="checkout-item-total">
+          Rp {totalValue.toLocaleString("id-ID")}
         </p>
       </div>
     </div>

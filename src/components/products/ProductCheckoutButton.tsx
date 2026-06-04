@@ -60,7 +60,7 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
 
   const formatPrice = (price: Price) => {
     if (price.formatted) return price.formatted.split(",")[0];
-    const val = price.amount ? Number(price.amount) : Number((price as any).value || price);
+    const val = price.amount ? Number(price.amount) : Number((price as unknown as { value?: number }).value || price);
     return `Rp ${Math.round(val).toLocaleString('id-ID').replace(/,/g, '.')}`;
   };
 
@@ -69,7 +69,7 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
   let discountStrDisplay = discountStr;
 
   if (hasDiscount) {
-    const variantDiscountPrice = (selectedVariant as any)?.discount_price;
+    const variantDiscountPrice = (selectedVariant as unknown as { discount_price?: Price })?.discount_price;
     if (selectedVariant && variantDiscountPrice) {
       finalPriceStr = formatPrice(variantDiscountPrice);
     } else if (selectedVariant) {

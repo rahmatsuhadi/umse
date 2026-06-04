@@ -21,6 +21,17 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
+import {
+  Upload,
+  X,
+  Send,
+  ArrowLeft,
+  User,
+  Banknote,
+  CalendarClock,
+  FileText,
+  ShieldCheck,
+} from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -109,7 +120,6 @@ export default function ConfirmationPage({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validasi tipe file
     if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
       toast.error("File harus berupa gambar JPG atau PNG");
       form.setError("paymentProof", {
@@ -120,7 +130,6 @@ export default function ConfirmationPage({
       return;
     }
 
-    // Validasi ukuran file
     if (file.size > MAX_FILE_SIZE) {
       toast.error("Ukuran file maksimal 5MB");
       form.setError("paymentProof", {
@@ -134,7 +143,6 @@ export default function ConfirmationPage({
     form.clearErrors("paymentProof");
     form.setValue("paymentProof", file, { shouldValidate: true });
 
-    // buat preview URL
     const preview = URL.createObjectURL(file);
     setPreviewUrl(preview);
   };
@@ -158,227 +166,253 @@ export default function ConfirmationPage({
         exit="exit"
         transition={{ duration: 0.3 }}
       >
-        <div
-          id="confirmationSection"
-          className="bg-white rounded-lg shadow-md mb-6"
-        >
-          <div className="p-6 border-b border-gray-200">
-            <Button
-              className="mb-2 hover:cursor-pointer"
-              onClick={backToPayment}
-            >
-              Kembali
-            </Button>
-            <h3 className="text-lg font-bold text-gray-800">
-              Konfirmasi Pembayaran
-            </h3>
-            <p className="text-sm text-gray-600">
-              Upload bukti pembayaran untuk menyelesaikan pesanan
-            </p>
+        <div id="confirmationSection" className="mb-6">
+          {/* Header Card */}
+          <div className="bg-white rounded-[24px] shadow-md border border-[var(--cream-dark)] overflow-hidden mb-6">
+            <div className="bg-gradient-to-r from-[var(--terracotta)] to-[var(--terracotta-dark)] p-6 text-white">
+              <button
+                onClick={backToPayment}
+                className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm mb-3 transition-colors group cursor-pointer font-bold"
+              >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+                Kembali ke Pembayaran
+              </button>
+              <h3 className="text-base font-bold">Konfirmasi Pembayaran</h3>
+              <p className="text-white/80 text-xs mt-0.5">
+                Upload bukti pembayaran untuk menyelesaikan pesanan
+              </p>
+            </div>
+
+            {/* Total Summary Bar */}
+            <div className="px-6 py-4.5 bg-[var(--cream)] border-b border-[var(--cream-dark)] flex items-center justify-between">
+              <span className="text-sm font-semibold text-[var(--text-secondary)]">Total yang Harus Dibayarkan</span>
+              <span className="text-xl font-extrabold text-[var(--terracotta)]">{formatRupiah(paidTotal)}</span>
+            </div>
           </div>
 
-          <div className="p-6">
-            <Form {...form}>
-              <form
-                id="confirmationForm"
-                onSubmit={form.handleSubmit(handleUploadConfirmation)}
-              >
-                {/* Upload Bukti Pembayaran */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bukti Pembayaran *
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition duration-300">
-                    <input
-                      id="paymentProof"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                    {!previewUrl ? (
-                      <div
-                        id="uploadArea"
-                        className="cursor-pointer"
-                        onClick={() =>
-                          document.getElementById("paymentProof")?.click()
-                        }
-                      >
-                        <div style={{ position: "relative", width: "40px", height: "40px", margin: "0 auto 8px" }}>
-                          <Image
-                            src="/assets/qris-icon.png"
-                            alt="Upload Icon"
-                            fill
-                            style={{ objectFit: "contain" }}
-                            className="text-gray-400"
-                          />
-                        </div>
-                        <p className="text-gray-600 mb-2">
-                          Klik untuk upload bukti pembayaran
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Format Image: JPG, PNG, JPEG (Max 5MB)
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="relative inline-block">
-                        <div style={{ position: "relative", width: "100%", height: "256px" }}>
-                          <Image
-                            src={previewUrl}
-                            alt="Preview"
-                            fill
-                            style={{ objectFit: "contain" }}
-                            className="mx-auto rounded-lg border"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          className="absolute top-2 right-2 bg-white text-red-500 rounded-full p-1 shadow"
-                          onClick={handleRemoveFile}
+          {/* Form Card */}
+          <div className="bg-white rounded-[24px] shadow-md border border-[var(--cream-dark)] overflow-hidden">
+            <div className="p-6 md:p-8">
+              <Form {...form}>
+                <form
+                  id="confirmationForm"
+                  onSubmit={form.handleSubmit(handleUploadConfirmation)}
+                  className="space-y-6"
+                >
+                  {/* Upload Area */}
+                  <div>
+                    <label className="block text-sm font-bold text-[var(--text-primary)] mb-2">
+                      Bukti Pembayaran <span className="text-red-500">*</span>
+                    </label>
+                    <div
+                      className={`border-2 border-dashed rounded-[20px] p-6 text-center transition-all duration-300 cursor-pointer
+                        ${previewUrl
+                          ? "border-[var(--terracotta)]/40 bg-[var(--cream)]"
+                          : "border-[var(--cream-dark)] hover:border-[var(--terracotta)] hover:bg-[var(--cream)]/40"
+                        }`}
+                    >
+                      <input
+                        id="paymentProof"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      {!previewUrl ? (
+                        <div
+                          id="uploadArea"
+                          onClick={() =>
+                            document.getElementById("paymentProof")?.click()
+                          }
                         >
-                          <i className="fas fa-times"></i>
-                        </button>
-                      </div>
-                    )}
-                    {form.formState.errors.paymentProof && (
-                      <p className="text-red-500 text-sm mt-2">
-                        {form.formState.errors.paymentProof.message?.toString()}
-                      </p>
-                    )}
+                          <div className="w-14 h-14 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-[20px] flex items-center justify-center mx-auto mb-3">
+                            <Upload className="w-6 h-6 text-[var(--terracotta)]" />
+                          </div>
+                          <p className="text-[var(--text-primary)] font-bold mb-1">
+                            Klik untuk upload bukti pembayaran
+                          </p>
+                          <p className="text-xs text-[var(--text-muted)] font-medium">
+                            Format: JPG, PNG, JPEG &middot; Maks. 5MB
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="relative inline-block w-full">
+                          <div className="relative w-full h-64 rounded-xl overflow-hidden bg-white">
+                            <Image
+                              src={previewUrl}
+                              alt="Preview"
+                              fill
+                              style={{ objectFit: "contain" }}
+                              className="rounded-xl"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            className="absolute top-2 right-2 bg-white text-red-500 border border-red-100 rounded-full p-1.5 shadow-md hover:bg-red-50 transition-colors cursor-pointer"
+                            onClick={handleRemoveFile}
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+                      {form.formState.errors.paymentProof && (
+                        <p className="text-red-500 text-sm mt-2 font-medium">
+                          {form.formState.errors.paymentProof.message?.toString()}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="bg-white border rounded-xl shadow-sm p-4 md:p-6 mb-6">
-                  <div className=" pt-3 mt-3 flex justify-between text-base font-semibold text-gray-900">
-                    <span>Total yang Harus Dibayarkan</span>
-                    <span> {formatRupiah(paidTotal)}</span>
+                  {/* Form Fields */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField
+                      disabled={isPending}
+                      control={form.control}
+                      name="senderName"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="flex items-center gap-1.5 text-[var(--text-primary)] font-bold text-sm">
+                            <User className="w-3.5 h-3.5 text-[var(--terracotta)]" />
+                            Nama Pengirim <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              className="rounded-xl border-[var(--cream-dark)] bg-white focus:border-[var(--terracotta)] focus:ring-[var(--terracotta)] text-[var(--text-primary)] font-medium h-11"
+                              placeholder="Nama sesuai rekening/e-wallet"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      disabled={isPending}
+                      control={form.control}
+                      name="paidAmount"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="flex items-center gap-1.5 text-[var(--text-primary)] font-bold text-sm">
+                            <Banknote className="w-3.5 h-3.5 text-[var(--terracotta)]" />
+                            Nominal yang Dibayar <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              value={displayValue}
+                              disabled={field.disabled}
+                              className="rounded-xl border-[var(--cream-dark)] bg-white focus:border-[var(--terracotta)] focus:ring-[var(--terracotta)] text-[var(--text-primary)] font-medium h-11"
+                              onChange={(e) => {
+                                const cleanValue = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
+                                const numValue = Number(cleanValue);
+                                field.onChange(numValue);
+                              }}
+                              type="tel"
+                              placeholder={formatRupiah(paidTotal)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      disabled={isPending}
+                      control={form.control}
+                      name="paymentDateTime"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="flex items-center gap-1.5 text-[var(--text-primary)] font-bold text-sm">
+                            <CalendarClock className="w-3.5 h-3.5 text-[var(--terracotta)]" />
+                            Tanggal &amp; Waktu Pembayaran <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              className="rounded-xl border-[var(--cream-dark)] bg-white focus:border-[var(--terracotta)] focus:ring-[var(--terracotta)] text-[var(--text-primary)] font-medium h-11"
+                              type="datetime-local"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                </div>
 
-                {/* Form lainnya */}
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <FormField
-                    disabled={isPending}
-                    control={form.control}
-                    name="senderName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nama Pengirim *</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Nama sesuai rekening/e-wallet"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    disabled={isPending}
-                    control={form.control}
-                    name="paidAmount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nominal yang Dibayar *</FormLabel>
-                        <FormControl>
-                          <Input
-                            value={displayValue}
-                            disabled={field.disabled}
-                            onChange={(e) => {
-                              const cleanValue = e.target.value.replace(
-                                /[^0-9]/g,
-                                ""
-                              );
-                              const numValue = Number(cleanValue);
-                              field.onChange(numValue);
-                            }}
-                            type="tel"
-                            placeholder={formatRupiah(paidTotal)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    disabled={isPending}
-                    control={form.control}
-                    name="paymentDateTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tanggal & Waktu Pembayaran *</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="datetime-local" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="mb-6">
                   <FormField
                     disabled={isPending}
                     control={form.control}
                     name="note"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Catatan Tambahan (Opsional)</FormLabel>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="flex items-center gap-1.5 text-[var(--text-primary)] font-bold text-sm">
+                          <FileText className="w-3.5 h-3.5 text-[var(--terracotta)]" />
+                          Catatan Tambahan{" "}
+                          <span className="text-[var(--text-muted)] font-normal text-xs">(Opsional)</span>
+                        </FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
+                            className="rounded-xl border-[var(--cream-dark)] bg-white focus:border-[var(--terracotta)] focus:ring-[var(--terracotta)] text-[var(--text-primary)] font-medium resize-none p-3"
+                            rows={3}
                             placeholder="Catatan tambahan terkait pembayaran"
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-                </div>
 
-                {/* Syarat & Ketentuan */}
-                <div className="mb-6">
-                  <label className="flex items-start">
-                    <input
-                      type="checkbox"
-                      className="mt-1 w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
-                      {...form.register("termsAgreement")}
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      Saya menyatakan bahwa informasi yang saya berikan benar.
-                      <a href="#" className="text-primary ml-1">
-                        Syarat & Ketentuan
-                      </a>
-                    </span>
-                  </label>
-                  {form.formState.errors.termsAgreement && (
-                    <p className="text-red-500 text-sm">
-                      {form.formState.errors.termsAgreement.message}
-                    </p>
-                  )}
-                </div>
+                  {/* Terms */}
+                  <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-xl p-4">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        className="mt-0.5 w-4 h-4 text-[var(--terracotta)] bg-white border-[var(--cream-dark)] rounded focus:ring-[var(--terracotta)] cursor-pointer"
+                        {...form.register("termsAgreement")}
+                      />
+                      <div className="flex items-start gap-1.5">
+                        <ShieldCheck className="w-4 h-4 text-[var(--brown-light)] mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-[var(--text-secondary)] font-medium leading-relaxed">
+                          Saya menyatakan bahwa informasi yang saya berikan benar dan sesuai.{" "}
+                          <a href="#" className="text-[var(--terracotta)] font-bold hover:underline">
+                            Syarat &amp; Ketentuan
+                          </a>
+                        </span>
+                      </div>
+                    </label>
+                    {form.formState.errors.termsAgreement && (
+                      <p className="text-red-500 text-xs mt-2 ml-7 font-semibold">
+                        {form.formState.errors.termsAgreement.message}
+                      </p>
+                    )}
+                  </div>
 
-                <Button
-                  disabled={isPending || !isAgreementChecked}
-                  type="submit"
-                  className="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition duration-300"
-                >
-                  {isPending ? (
-                    "Mengirim Konfirmasi..."
-                  ) : (
-                    <>
-                      <i className="fas fa-paper-plane mr-2"></i>
-                      Kirim Konfirmasi Pembayaran
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
+                  <Button
+                    disabled={isPending || !isAgreementChecked}
+                    type="submit"
+                    className="w-full py-6 rounded-xl font-bold text-base shadow-md transition-all duration-300 flex items-center justify-center gap-2 group bg-[var(--terracotta)] hover:bg-[var(--terracotta-dark)] text-white hover:scale-[1.01] active:scale-[0.99] disabled:bg-[var(--cream-dark)] disabled:text-[var(--text-muted)] cursor-pointer disabled:cursor-not-allowed shadow-[var(--terracotta)]/20 hover:shadow-lg"
+                  >
+                    {isPending ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Mengirim Konfirmasi...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                        Kirim Konfirmasi Pembayaran
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </div>
           </div>
         </div>
       </motion.div>
-    </AnimatePresence >
+    </AnimatePresence>
   );
 }

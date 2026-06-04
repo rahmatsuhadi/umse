@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Product, Variant } from "@/types";
+import type { Product, Variant, Price } from "@/types";
 import ProductCheckoutButton from "./ProductCheckoutButton";
 import ProductStickyWA from "./ProductStickyWA";
 import ProductImageGallery from "./ProductImageGallery";
@@ -47,7 +47,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage, imag
     let baseVal = currentPrice.value;
     if (discountPct > 0) {
         if (selectedVariant) {
-            const variantDiscountPrice = (selectedVariant as any).discount_price;
+            const variantDiscountPrice = (selectedVariant as unknown as { discount_price?: Price }).discount_price;
             if (variantDiscountPrice) {
                 baseVal = typeof variantDiscountPrice === 'object' ? variantDiscountPrice.value : Number(variantDiscountPrice);
             } else {
@@ -109,6 +109,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage, imag
                         productId={product.id}
                         productName={product.name}
                         productType={product.type}
+                        selectedVariantId={selectedVariant?.id}
                         selectedVariantName={selectedVariant?.name}
                         quantity={quantity}
                         phone={product.store?.user?.phone_number || product.store?.phone || ''}

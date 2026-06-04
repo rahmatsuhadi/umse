@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/shared/Navbar";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -16,8 +15,7 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="bg-[#f8f9fa] min-h-screen">
-      <Navbar />
+    <div className="min-h-screen bg-white">
       {children}
     </div>
   );

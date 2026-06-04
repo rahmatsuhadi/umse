@@ -41,72 +41,86 @@ export default function OrderFilter() {
         setSearchTerm(searchParams.get("q") || "");
     }, [searchParams]);
 
+    const labelStyle: React.CSSProperties = {
+        fontWeight: 600,
+        fontSize: 13,
+        color: "var(--text-secondary, #4A3728)",
+        marginBottom: 8,
+        display: "block",
+    };
+
     return (
         <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold mb-4">Filter Pesanan</h3>
-
-                {/* Status Filter */}
-                <div className="mb-4 sm:mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Status Pesanan</label>
-                    <select
-                        id="statusFilter"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                    >
-                        <option value="">Semua Status</option>
-                        <option value="pending">Menunggu Konfirmasi</option>
-                        <option value="processing">Diproses</option>
-                        <option value="shipped">Dikirim</option>
-                        <option value="delivered">Sampai</option>
-                        {/* <option value="cancelled">Cancel</option> */}
-                        <option value="completed">Selesai</option>
-                        <option value="expired">Expired</option>
-                    </select>
+            <div className="cart-sidebar-panel">
+                <div className="cart-sidebar-header">
+                    <h3 className="cart-sidebar-title">
+                        Filter Pesanan
+                    </h3>
                 </div>
 
-                {/* Date Range */}
-                <div className="mb-4 sm:mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Periode</label>
-                    <div className="space-y-2">
+                <div style={{ padding: 20 }}>
+                    {/* Status Filter */}
+                    <div style={{ marginBottom: 16 }}>
+                        <label style={labelStyle}>Status Pesanan</label>
+                        <select
+                            id="statusFilter"
+                            className="price-input"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="">Semua Status</option>
+                            <option value="pending">Menunggu Konfirmasi</option>
+                            <option value="processing">Diproses</option>
+                            <option value="shipped">Dikirim</option>
+                            <option value="delivered">Sampai</option>
+                            <option value="completed">Selesai</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+
+                    {/* Date Range */}
+                    <div style={{ marginBottom: 16 }}>
+                        <label style={labelStyle}>Periode</label>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                            <input
+                                type="date"
+                                id="startDate"
+                                className="price-input"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                            />
+                            <input
+                                type="date"
+                                id="endDate"
+                                className="price-input"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Search */}
+                    <div style={{ marginBottom: 20 }}>
+                        <label style={labelStyle}>Cari Pesanan</label>
                         <input
-                            type="date"
-                            id="startDate"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
-                        <input
-                            type="date"
-                            id="endDate"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
+                            type="text"
+                            id="searchOrder"
+                            placeholder="Nomor pesanan"
+                            className="price-input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                </div>
 
-                {/* Search */}
-                <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Cari Pesanan</label>
-                    <input
-                        type="text"
-                        id="searchOrder"
-                        placeholder="Nomor pesanan"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    {/* Apply Filter Button */}
+                    <button
+                        onClick={applyFilters}
+                        className="btn btn-primary btn-sm w-full justify-center"
+                        style={{ display: "inline-flex" }}
+                    >
+                        Terapkan Filter
+                    </button>
                 </div>
-
-                {/* Apply Filter Button */}
-                <button
-                    onClick={applyFilters}
-                    className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition duration-300"
-                >
-                    <i className="fas fa-filter mr-2"></i>Terapkan Filter
-                </button>
             </div>
         </div>
     );

@@ -2,6 +2,8 @@ import { Price } from "@/types";
 import Image from "next/image";
 import { Checkbox } from "../ui/checkbox";
 import { formatRupiah } from "@/lib/curency-format";
+import { useState } from "react";
+import { Trash2, Package } from "lucide-react";
 
 interface CartItemProps {
     title: string;
@@ -11,10 +13,10 @@ interface CartItemProps {
     onIncrement: () => void;
     onDecrement: () => void;
     onRemove: () => void;
-    isChecked: boolean;  // Tambahkan ini untuk mengontrol status checkbox
-    onCheck: () => void; // Fungsi untuk mengubah status checkbox item
-    media: string
-    disabledUpdateStock:boolean
+    isChecked: boolean;
+    onCheck: () => void;
+    media: string;
+    disabledUpdateStock: boolean;
 }
 
 export const CartItemCard = ({
@@ -27,49 +29,99 @@ export const CartItemCard = ({
     onIncrement,
     onDecrement,
     onRemove,
-    isChecked, // Status checkbox
-    onCheck, // Fungsi untuk toggle checkbox
-}: CartItemProps) => (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 border-b border-gray-100 space-y-4 sm:space-y-0">
-        <div className="flex items-start sm:items-center">
-            <Checkbox
-                checked={isChecked}
-                onCheckedChange={onCheck} // Mengubah status checkbox item
-                className="mr-3 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
-            />
-            <div className="bg-gray-200 rounded w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                {/* <i className="fas fa-image text-gray-400"></i> */}
-                {/* <Image src={media} width={100} height={100} alt="thumb-product" /> */}
-                <Image
-                    className="w-full h-full object-cover rounded-lg"
-                    src={media}
-                    width={100}  // Atur lebar sesuai keinginan
-                    height={100} // Atur tinggi sesuai keinginan
-                    alt={"thumb-" + title}
+    isChecked,
+    onCheck,
+}: CartItemProps) => {
+    const [imgError, setImgError] = useState(false);
+
+    return (
+        <div className="cart-item-row">
+            
+            {/* Top Row: Checkbox, Image, Info & Delete Button */}
+            <div className="cart-item-left">
+                {/* Checkbox */}
+                <Checkbox
+                    checked={isChecked}
+                    onCheckedChange={onCheck}
+                    className="flex-shrink-0"
                 />
+
+                {/* Product Image */}
+                <div className="cart-item-img-wrapper">
+                    {!imgError && media ? (
+                        <Image
+                            src={media}
+                            width={72}
+                            height={72}
+                            alt={title}
+                            className="object-cover w-full h-full"
+                            onError={() => setImgError(true)}
+                        />
+                    ) : (
+                        <Package size={24} className="text-[var(--text-muted,#6B4C2A)] opacity-40" />
+                    )}
+                </div>
+
+                {/* Product Info */}
+                <div className="flex-1 min-w-0">
+                    <h4 className="cart-item-title">
+                        {title}
+                    </h4>
+                    <p className="cart-item-variant">
+                        Varian: {variant}
+                    </p>
+                    <p className="cart-item-price">
+                        {price.formatted}
+                    </p>
+                </div>
             </div>
-            <div className="flex-1 min-w-0">
-                <h4 className="font-bold text-gray-800 text-sm sm:text-base">{title}</h4>
-                <p className="text-xs sm:text-sm text-gray-600">Varian: {variant}</p>
-                <p className="text-primary font-bold text-sm sm:text-base">{price.formatted}</p>
+
+            {/* Bottom Row (Mobile) / Right Side (Desktop): Quantity, Subtotal, Delete */}
+            <div className="cart-item-right">
+                
+                {/* Quantity Controls */}
+                <div className="cart-item-qty-adjuster">
+                    <button
+                        disabled={disabledUpdateStock}
+                        onClick={onDecrement}
+                        className="cart-qty-adjust-btn"
+                    >
+                        −
+                    </button>
+                    <span className="cart-qty-value">
+                        {quantity}
+                    </span>
+                    <button
+                        disabled={disabledUpdateStock}
+                        onClick={onIncrement}
+                        className="cart-qty-adjust-btn"
+                        style={{ color: "var(--terracotta)" }}
+                    >
+                        +
+                    </button>
+                </div>
+
+                {/* Subtotal & Delete Action Wrapper */}
+                <div className="flex items-center gap-4">
+                    <div className="cart-subtotal-info">
+                        <p className="cart-subtotal-label">Subtotal</p>
+                        <p className="cart-subtotal-value">
+                            {formatRupiah(price.value * quantity)}
+                        </p>
+                    </div>
+
+                    {/* Delete Button */}
+                    <button
+                        onClick={onRemove}
+                        className="cart-item-remove-btn"
+                        title="Hapus item"
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                </div>
+
             </div>
+
         </div>
-        <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4">
-            <div className="flex items-center border border-gray-300 rounded">
-                <button disabled={disabledUpdateStock} className="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100" onClick={onDecrement}>
-                    <i className="fas fa-minus text-xs sm:text-sm"></i>
-                </button>
-                <span className="px-3 sm:px-4 py-1 text-center text-sm">{quantity}</span>
-                <button disabled={disabledUpdateStock} className="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100" onClick={onIncrement}>
-                    <i className="fas fa-plus text-xs sm:text-sm"></i>
-                </button>
-            </div>
-            <div className="text-right">
-                <p className="font-bold text-gray-800 text-sm sm:text-base">{formatRupiah(price.value * quantity)}</p>
-            </div>
-            <button className="text-red-500 hover:text-red-700" onClick={onRemove}>
-                <i className="fas fa-trash text-sm"></i>
-            </button>
-        </div>
-    </div>
-);
+    );
+};

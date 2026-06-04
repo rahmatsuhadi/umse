@@ -28,6 +28,16 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: "localhost",
+        protocol: "http",
+        port: "8000",
+      },
+      {
+        hostname: "127.0.0.1",
+        protocol: "http",
+        port: "8000",
+      },
+      {
+        hostname: "localhost",
       },
     ],
   },

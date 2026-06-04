@@ -30,11 +30,11 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
   }, [targetDate]);
 
   if (!timeLeft) {
-    return <span className="text-red-600 font-semibold">Waktu Habis</span>;
+    return <span className="text-red-600 font-bold">Waktu Habis</span>;
   }
 
   return (
-    <span className="font-bold text-orange-800 ml-2">
+    <span className="font-extrabold text-[var(--terracotta)] tracking-wider">
       {timeLeft.hours.toString().padStart(2, "0")}:
       {timeLeft.minutes.toString().padStart(2, "0")}:
       {timeLeft.seconds.toString().padStart(2, "0")}

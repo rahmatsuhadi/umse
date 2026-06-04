@@ -15,6 +15,16 @@ import {
   useSetDefaultAddress,
 } from "@/features/address/hooks";
 import { Address } from "@/types";
+import {
+  ArrowLeft,
+  Edit3,
+  Home,
+  MapPin,
+  Phone,
+  Plus,
+  Star,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,9 +34,7 @@ export default function AddressPage() {
   const { mutate: deleteAddress } = useDeleteAddress();
   const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
-  // Panggil hook untuk mengambil data alamat spesifik
   const { data, isLoading } = useAddresses();
-
   const addresses = data?.data || [];
 
   const { mutate: handleSetDefaultAddress } = useSetDefaultAddress();
@@ -34,202 +42,318 @@ export default function AddressPage() {
   const confirmDelete = () => {
     if (addressToDelete) {
       deleteAddress(addressToDelete.id, {
-        onSuccess: () => setAddressToDelete(null), // Tutup modal setelah sukses
+        onSuccess: () => setAddressToDelete(null),
       });
     }
   };
 
-  const setDefaultAddress = (id: string) => {
-    handleSetDefaultAddress(id);
-    // saveAddresses(newAddresses);
-  };
-
-  const editAddress = (id: string) => {
-    router.push(`/pengguna/alamat/${id}`);
-  };
-
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Link
-                href={"/pengguna"}
-                className="text-gray-600 hover:text-primary transition-colors hover:cursor-pointer"
-              >
-                <i className="fas fa-arrow-left text-xl"></i>
-              </Link>
-              <h1 className="text-xl font-bold text-gray-800">Alamat Saya</h1>
-            </div>
+    <div style={{ background: "var(--cream, #FFF9F4)", minHeight: "100vh" }}>
+      {/* Sub-header */}
+      <div
+        style={{
+          background: "white",
+          borderBottom: "1px solid var(--cream-dark, #F0D5C2)",
+          padding: "0 20px",
+          height: 56,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          position: "sticky",
+          top: 0,
+          zIndex: 40,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Link
+            href="/pengguna"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 36, height: 36, borderRadius: 10,
+              background: "var(--cream, #FFF9F4)",
+              color: "var(--text-primary, #1A1008)",
+              textDecoration: "none",
+              border: "1.5px solid var(--cream-dark, #F0D5C2)",
+            }}
+          >
+            <ArrowLeft size={18} />
+          </Link>
+          <h1 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary, #1A1008)", margin: 0 }}>
+            Alamat Saya
+          </h1>
+        </div>
 
-            <Link
-              href={"/pengguna/alamat/tambah"}
-              className="bg-primary text-white px-4 py-2 hover:cursor-pointer rounded-lg hover:bg-primary-dark transition-colors"
+        <Link
+          href="/pengguna/alamat/tambah"
+          style={{
+            display: "flex", alignItems: "center", gap: 6,
+            padding: "8px 16px", borderRadius: 50,
+            background: "var(--terracotta, #F7620A)",
+            color: "white", fontSize: 13, fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          <Plus size={15} />
+          Tambah
+        </Link>
+      </div>
+
+      <main style={{ maxWidth: 620, margin: "0 auto", padding: "24px 16px 64px" }}>
+
+        {isLoading ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {[1, 2].map((i) => (
+              <AddressSkeleton key={i} />
+            ))}
+          </div>
+        ) : addresses.length === 0 ? (
+          /* Empty state */
+          <div
+            style={{
+              background: "white",
+              borderRadius: 20,
+              border: "1.5px solid var(--cream-dark, #F0D5C2)",
+              boxShadow: "0 4px 20px rgba(44,24,16,0.06)",
+              padding: "56px 24px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: 72, height: 72, borderRadius: "50%",
+                background: "rgba(247,98,10,0.08)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                margin: "0 auto 16px",
+                color: "var(--terracotta, #F7620A)",
+              }}
             >
-              <i className="fas fa-plus mr-2"></i>Tambah
+              <MapPin size={32} />
+            </div>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary, #1A1008)", margin: "0 0 8px" }}>
+              Belum ada alamat
+            </h3>
+            <p style={{ fontSize: 14, color: "var(--text-muted, #6B4C2A)", margin: "0 0 24px" }}>
+              Tambah alamat untuk memudahkan proses pengiriman
+            </p>
+            <Link
+              href="/pengguna/alamat/tambah"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 50,
+                background: "var(--terracotta, #F7620A)",
+                color: "white", fontWeight: 700, fontSize: 14,
+                textDecoration: "none",
+              }}
+            >
+              <Plus size={16} /> Tambah Alamat Pertama
             </Link>
           </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 min-h-[80vh]">
-        <div className="bg-white rounded-lg shadow-md">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800">
-              <i className="fas fa-map-marker-alt mr-2 text-primary"></i>Daftar
-              Alamat
-            </h2>
-            <p className="text-gray-600 text-sm mt-1">
-              Kelola alamat pengiriman Anda
-            </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {addresses.map((address) => (
+              <AddressCard
+                key={address.id}
+                address={address}
+                onEdit={() => router.push(`/pengguna/alamat/${address.id}`)}
+                onDelete={() => setAddressToDelete(address)}
+                onSetDefault={() => handleSetDefaultAddress(address.id)}
+              />
+            ))}
           </div>
-
-          {/* Address List */}
-          <div id="addressesList" className="divide-y divide-gray-200">
-            {isLoading ? (
-              Array(1)
-                .fill(null)
-                .map((_, index) => <CardSkeletonAddress key={index} />)
-            ) : addresses.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                <i className="fas fa-map-marker-alt text-4xl mb-4 text-gray-300"></i>
-                <h3 className="text-lg font-medium mb-2">Belum ada alamat</h3>
-                <p className="text-sm mb-4">
-                  Tambah alamat untuk memudahkan pengiriman
-                </p>
-                <Link
-                  className="bg-primary hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
-                  href={"/pengguna/alamat/tambah"}
-                >
-                  <i className="fas fa-plus mr-2"></i>Tambah Alamat Pertama
-                </Link>
-              </div>
-            ) : (
-              addresses.map((address) => (
-                <div key={address.id} className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-sm font-medium text-gray-800">
-                          {address.recipient_name}
-                        </span>
-                        {address.is_primary && (
-                          <span className="bg-primary text-white px-2 py-1 rounded-full text-xs">
-                            Utama
-                          </span>
-                        )}
-                        {address.label && (
-                          <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-                            {address.label}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-gray-600 text-sm mb-1">
-                        <i className="fas fa-phone mr-2"></i>
-                        {address.recipient_phone_number}
-                      </p>
-                      <p className="text-gray-700 text-sm leading-relaxed mb-1">
-                        <i className="fas fa-map-marker-alt mr-2"></i>
-                        {address.address}
-                      </p>
-                      <p className="text-gray-500 text-sm">
-                        <i className="fas fa-envelope mr-2"></i>
-                        {address.district.name}, {address.regency.name}{" "}
-                        {address.postal_code}
-                      </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 ml-4">
-                      <button
-                        onClick={() => editAddress(address.id)}
-                        className="text-primary hover:cursor-pointer hover:text-primary-dark p-2 hover:bg-primary-light hover:bg-opacity-20 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        onClick={() => setAddressToDelete(address)}
-                        className="text-red-500 hover:cursor-pointer hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Hapus"
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                      {!address.is_primary && (
-                        <button
-                          onClick={() => setDefaultAddress(address.id)}
-                          className="text-yellow-500 hover:cursor-pointer hover:text-yellow-700 p-2 hover:bg-yellow-50 rounded-lg transition-colors"
-                          title="Jadikan Utama"
-                        >
-                          <i className="fas fa-star"></i>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        )}
       </main>
 
-      <AlertDialog
-        open={!!addressToDelete}
-        onOpenChange={() => setAddressToDelete(null)}
-      >
+      {/* Delete confirmation */}
+      <AlertDialog open={!!addressToDelete} onOpenChange={() => setAddressToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Apakah Anda Yakin?</AlertDialogTitle>
+            <AlertDialogTitle>Hapus Alamat?</AlertDialogTitle>
             <AlertDialogDescription>
-              Tindakan ini tidak dapat diurungkan. Alamat untuk
-              <span className="font-bold"> {addressToDelete?.label}</span> akan
-              dihapus secara permanen.
+              Alamat <strong>{addressToDelete?.label || addressToDelete?.recipient_name}</strong> akan dihapus secara permanen dan tidak dapat dikembalikan.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>
-              Ya, Hapus Alamat
+            <AlertDialogAction
+              onClick={confirmDelete}
+              style={{ background: "#E74C3C", color: "white" }}
+            >
+              Ya, Hapus
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-16 sticky bottom-0">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <h3 className="text-xl font-bold mb-2">Sleman Mart</h3>
-            <p className="text-gray-400">
-              Platform UMKM Digital Kabupaten Sleman
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
 
-const CardSkeletonAddress = () => {
+/* ── AddressCard ── */
+function AddressCard({
+  address,
+  onEdit,
+  onDelete,
+  onSetDefault,
+}: {
+  address: Address;
+  onEdit: () => void;
+  onDelete: () => void;
+  onSetDefault: () => void;
+}) {
   return (
-    <div className="p-4 animate-pulse">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-2 mb-2">
-            <div className="w-32 h-4 bg-gray-300 rounded-full"></div>
-            <div className="w-20 h-4 bg-gray-300 rounded-full"></div>
-          </div>
-          <div className="w-24 h-3 bg-gray-300 rounded-full mb-1"></div>
-          <div className="w-48 h-4 bg-gray-300 rounded-full mb-1"></div>
-          <div className="w-32 h-3 bg-gray-300 rounded-full mb-1"></div>
+    <div
+      style={{
+        background: "white",
+        borderRadius: 16,
+        border: `1.5px solid ${address.is_primary ? "var(--terracotta, #F7620A)" : "var(--cream-dark, #F0D5C2)"}`,
+        boxShadow: address.is_primary
+          ? "0 4px 16px rgba(247,98,10,0.12)"
+          : "0 2px 8px rgba(44,24,16,0.06)",
+        padding: "18px 20px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Primary strip */}
+      {address.is_primary && (
+        <div
+          style={{
+            position: "absolute", top: 0, left: 0, right: 0,
+            height: 3,
+            background: "var(--terracotta, #F7620A)",
+            borderRadius: "16px 16px 0 0",
+          }}
+        />
+      )}
+
+      {/* Header row */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary, #1A1008)" }}>
+            {address.recipient_name}
+          </span>
+          {address.is_primary && (
+            <span
+              style={{
+                fontSize: 11, fontWeight: 700,
+                background: "var(--terracotta, #F7620A)",
+                color: "white",
+                padding: "2px 10px", borderRadius: 50,
+                letterSpacing: "0.3px",
+              }}
+            >
+              Utama
+            </span>
+          )}
+          {address.label && (
+            <span
+              style={{
+                fontSize: 11, fontWeight: 600,
+                background: "var(--cream-dark, #F0D5C2)",
+                color: "var(--text-secondary, #4A3728)",
+                padding: "2px 10px", borderRadius: 50,
+              }}
+            >
+              {address.label}
+            </span>
+          )}
         </div>
-        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 ml-4">
-          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-          {/* <div className="w-10 h-10 bg-gray-300 rounded-full"></div> */}
+
+        {/* Action buttons */}
+        <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+          {!address.is_primary && (
+            <ActionBtn
+              onClick={onSetDefault}
+              title="Jadikan Utama"
+              color="#F39C12"
+              bg="#FFFBF0"
+            >
+              <Star size={14} />
+            </ActionBtn>
+          )}
+          <ActionBtn onClick={onEdit} title="Edit" color="var(--terracotta, #F7620A)" bg="rgba(247,98,10,0.06)">
+            <Edit3 size={14} />
+          </ActionBtn>
+          <ActionBtn onClick={onDelete} title="Hapus" color="#E74C3C" bg="#FFF5F5">
+            <Trash2 size={14} />
+          </ActionBtn>
         </div>
+      </div>
+
+      {/* Detail */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+        <InfoRow icon={<Phone size={13} />} text={address.recipient_phone_number} />
+        <InfoRow icon={<Home size={13} />} text={address.address} />
+        <InfoRow
+          icon={<MapPin size={13} />}
+          text={`${address.district?.name}, ${address.regency?.name} ${address.postal_code || ""}`}
+        />
       </div>
     </div>
   );
-};
+}
+
+function InfoRow({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: "var(--text-secondary, #4A3728)" }}>
+      <span style={{ color: "var(--text-muted, #6B4C2A)", marginTop: 1, flexShrink: 0 }}>{icon}</span>
+      <span>{text}</span>
+    </div>
+  );
+}
+
+function ActionBtn({
+  onClick, title, color, bg, children,
+}: {
+  onClick: () => void;
+  title: string;
+  color: string;
+  bg: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      style={{
+        width: 32, height: 32, borderRadius: 8,
+        background: bg, border: "none",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: "pointer", color, transition: "opacity 0.15s",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.75")}
+      onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ── Skeleton ── */
+function AddressSkeleton() {
+  return (
+    <div
+      style={{
+        background: "white", borderRadius: 16,
+        border: "1.5px solid var(--cream-dark, #F0D5C2)",
+        padding: "18px 20px",
+        animation: "pulse 1.5s ease-in-out infinite",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ width: 100, height: 16, borderRadius: 8, background: "#F0D5C2" }} />
+          <div style={{ width: 50, height: 16, borderRadius: 8, background: "#F0D5C2" }} />
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: "#F0D5C2" }} />
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: "#F0D5C2" }} />
+        </div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ width: "40%", height: 12, borderRadius: 6, background: "#F0D5C2" }} />
+        <div style={{ width: "80%", height: 12, borderRadius: 6, background: "#F0D5C2" }} />
+        <div style={{ width: "60%", height: 12, borderRadius: 6, background: "#F0D5C2" }} />
+      </div>
+    </div>
+  );
+}

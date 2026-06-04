@@ -6,6 +6,7 @@ import { Checkbox } from "../ui/checkbox";
 import Image from "next/image";
 import { CartItemCard } from "./CartItemCard";
 import { formatRupiah } from "@/lib/curency-format";
+import { ShoppingBag, MapPin, ArrowRight } from "lucide-react";
 
 interface StoreCartItemProps {
     storeName: string;
@@ -112,31 +113,52 @@ export const CartStoreCard = ({
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-md mb-6">
-            <div className="bg-gray-50 px-4 sm:px-6 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-                <div className="flex items-center">
-                    <Checkbox
-                        onCheckedChange={(checked: boolean) => handleStoreCheckboxChange(checked)} // Menangani perubahan checkbox store
-                        checked={isStoreChecked} // Status checkbox store
-                        className="mr-3 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
-                    />
-                    <div className="bg-primary rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mr-3">
-                        {/* <i className="fas fa-store text-white text-sm sm:text-base"></i> */}
-                        <Image src={img} className='rounded-full' alt='store-img' width={200} height={200} />
+        <div className="cart-store-container">
+            {/* Top gradient accent bar */}
+            <div className="cart-store-header-bar" />
 
+            {/* Store Header */}
+            <div className="cart-store-header">
+                <div className="cart-store-info">
+                    <Checkbox
+                        onCheckedChange={(checked: boolean) => handleStoreCheckboxChange(checked)}
+                        checked={isStoreChecked}
+                        className="flex-shrink-0"
+                    />
+
+                    {/* Store Logo */}
+                    <div className="cart-store-logo-wrapper">
+                        <Image
+                            src={img}
+                            alt={storeName}
+                            width={44}
+                            height={44}
+                            className="object-cover w-full h-full"
+                        />
                     </div>
-                    <div>
-                        <h3 className="font-bold text-gray-800 text-sm sm:text-base">{storeName}</h3>
-                        <p className="text-xs sm:text-sm text-gray-600">{storeLocation}</p>
+
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="cart-store-name">
+                                {storeName}
+                            </h3>
+                            <span className="cart-store-badge">
+                                <ShoppingBag className="w-2.5 h-2.5 mr-1" />
+                                {items.length} produk
+                            </span>
+                        </div>
+                        {storeLocation && (
+                            <p className="cart-store-location">
+                                <MapPin className="w-3 h-3 flex-shrink-0" />
+                                {storeLocation}
+                            </p>
+                        )}
                     </div>
                 </div>
-                {/* <div className="flex items-center text-xs sm:text-sm text-gray-600 ml-auto sm:ml-0">
-                    <i className="fas fa-truck mr-1"></i>
-                    <span>Ongkir: Rp {shipping}</span>
-                </div> */}
             </div>
 
-            <div className="p-4 sm:p-6">
+            {/* Items List */}
+            <div className="pb-2">
                 {items.map((item, index) => (
                     <CartItemCard
                         key={index}
@@ -149,25 +171,36 @@ export const CartStoreCard = ({
                         onIncrement={() => handleQuantityChange(item, +1)}
                         onDecrement={() => handleQuantityChange(item, -1)}
                         onRemove={() => removeItem(item.id)}
-                        isChecked={itemChecked[index]} // Mengatur status checkbox item
-                        onCheck={() => handleItemCheckboxChange(index)} // Menangani perubahan checkbox item
+                        isChecked={itemChecked[index]}
+                        onCheck={() => handleItemCheckboxChange(index)}
                     />
                 ))}
+            </div>
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-4 space-y-3 sm:space-y-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0">
-                        <span className="text-xs sm:text-sm text-gray-600">Subtotal Produk: {formatRupiah(selectedItems.reduce((acc, item) => acc + (item.variant?.price.value || item.product.price.value) * item.quantity, 0))}</span>
-                        {/* <span className="text-xs sm:text-sm text-gray-600">Ongkir: Rp {shipping}</span> */}
-                    </div>
-                    <div className="text-left sm:text-right">
-                        {/* <p className="text-base sm:text-lg font-bold text-gray-800">Total: Rp {items.reduce((acc, item) => acc + item.price * item.quantity, 0) + shipping}</p> */}
-                        {/* <Link href={"/checkout"}> */}
-                        <button type="button" disabled={selectedItems.length == 0} onClick={onCheckout} className="bg-primary disabled:bg-primary/50 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300 mt-2 text-sm sm:text-base w-full sm:w-auto">
-                            <i className="fas fa-shopping-cart mr-2"></i>Checkout Toko Ini
-                        </button>
-                        {/* </Link> */}
-                    </div>
+            {/* Footer — Subtotal & Checkout CTA */}
+            <div className="cart-store-footer">
+                {/* Subtotal */}
+                <div>
+                    <p className="cart-store-subtotal-title">
+                        Subtotal produk dipilih
+                    </p>
+                    <p className="cart-store-subtotal-value">
+                        {formatRupiah(selectedItems.reduce((acc, item) => acc + (item.variant?.price.value || item.product.price.value) * item.quantity, 0))}
+                    </p>
+                   
                 </div>
+
+                {/* Checkout Button */}
+                <button
+                    type="button"
+                    disabled={selectedItems.length === 0}
+                    onClick={onCheckout}
+                    className="cart-checkout-btn"
+                >
+                    Checkout Toko Ini
+                    <ArrowRight className="w-4 h-4" />
+                </button>
+                
             </div>
         </div>
     );

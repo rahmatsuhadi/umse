@@ -39,10 +39,32 @@ export default function OrderStatusTab({ meta, activeStatus, handleTabChange }: 
     }, [meta])
 
     return (
-        <div className="bg-white rounded-lg shadow-md mb-4 sm:mb-6 ">
-            <div className="border-b border-gray-200 ">
+        <div style={{ marginBottom: 24 }}>
+            <style dangerouslySetInnerHTML={{__html: `
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .no-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `}} />
+            
+            <div 
+                className="no-scrollbar"
+                style={{ 
+                    overflowX: "auto",
+                    WebkitOverflowScrolling: "touch",
+                    padding: "4px 0",
+                }}
+            >
                 <nav
-                    className="flex flex-wrap space-x-2 px-4 sm:px-6"
+                    style={{ 
+                        display: "flex",
+                        gap: 8,
+                        width: "max-content",
+                        padding: "4px 2px"
+                    }}
                     aria-label="Tabs"
                 >
                     {TABS.map((tab) => {
@@ -53,21 +75,53 @@ export default function OrderStatusTab({ meta, activeStatus, handleTabChange }: 
                                     ? counts[tab.value as keyof typeof counts]
                                     : 0;
 
+                        const isActive = activeStatus === tab.value;
+
                         return (
                             <button
                                 key={tab.value}
                                 onClick={() => handleTabChange(tab.value)}
-                                className={`tab-button border-b-2 ${activeStatus === tab.value
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                    } py-3 sm:py-4 px-3 text-xs sm:text-sm font-medium whitespace-nowrap`}
+                                style={{
+                                    background: isActive ? "var(--terracotta)" : "white",
+                                    border: isActive ? "1.5px solid var(--terracotta)" : "1.5px solid var(--cream-dark)",
+                                    color: isActive ? "white" : "var(--text-secondary)",
+                                    fontWeight: 600,
+                                    padding: "8px 16px",
+                                    borderRadius: 50,
+                                    fontSize: 13,
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: 8,
+                                    cursor: "pointer",
+                                    transition: "all 0.2s ease",
+                                    boxShadow: isActive ? "0 4px 12px rgba(247,98,10,0.2)" : "0 2px 4px rgba(44,24,16,0.03)",
+                                    outline: "none",
+                                }}
+                                onMouseEnter={(e) => {
+                                    if (!isActive) {
+                                        e.currentTarget.style.background = "var(--cream)";
+                                        e.currentTarget.style.borderColor = "var(--brown-light)";
+                                        e.currentTarget.style.color = "var(--text-primary)";
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (!isActive) {
+                                        e.currentTarget.style.background = "white";
+                                        e.currentTarget.style.borderColor = "var(--cream-dark)";
+                                        e.currentTarget.style.color = "var(--text-secondary)";
+                                    }
+                                }}
                             >
-                                {tab.label}
+                                <span>{tab.label}</span>
                                 <span
-                                    className={`hidden lg:inline ${activeStatus === tab.value
-                                        ? "bg-primary text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                        } px-2 py-1 rounded-full text-xs ml-2`}
+                                    style={{
+                                        background: isActive ? "white" : "var(--cream-dark)",
+                                        color: isActive ? "var(--terracotta)" : "var(--text-secondary)",
+                                        fontWeight: 700,
+                                        fontSize: 10,
+                                        padding: "1px 6px",
+                                        borderRadius: 50,
+                                    }}
                                 >
                                     {count}
                                 </span>
@@ -77,5 +131,5 @@ export default function OrderStatusTab({ meta, activeStatus, handleTabChange }: 
                 </nav>
             </div>
         </div>
-    )
+    );
 }

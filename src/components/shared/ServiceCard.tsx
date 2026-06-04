@@ -4,6 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
+import { useAddToCart } from "@/features/cart/hooks";
+import { useUser } from "@/features/auth/hooks";
+import { useRouter, usePathname } from "next/navigation";
+import { ShoppingCart } from "lucide-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -40,6 +44,23 @@ const waIcon = (
 export function ServiceCard({ product: p, className }: ServiceCardProps) {
     const { mutate: logVisitor } = useCreateVisitorLog();
     const [imgError, setImgError] = useState(false);
+    const { data: user } = useUser();
+    const router = useRouter();
+    const pathname = usePathname();
+    const { mutate: addToCart, isPending } = useAddToCart();
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user) {
+            router.push(`/masuk?redirect=${pathname}`);
+            return;
+        }
+        addToCart({
+            product_id: String(p.id),
+            quantity: 1,
+        });
+    };
 
     // From ProductCard parsing logic
     const isEmergencyClose = p.store?.is_emergency_close === true;
@@ -157,24 +178,23 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                     </div>
                     {isClosed ? (
                         <button
-                            className="jasa-wa-btn disabled"
+                            className="cat-card-cart disabled"
                             title="Toko sedang tutup"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }}
                         >
-                            {waIcon}
+                            <ShoppingCart size={16} />
                         </button>
                     ) : (
                         <button
-                            className="jasa-wa-btn"
-                            title="Pesan via WhatsApp"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                logVisitor({ product_id: p.id as string });
-                                const message = `Halo, Saya melihat produk anda dari SlemanMart, saya ingin memesan layanan *${name}*`;
-                                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
-                            }}
+                            className="cat-card-cart"
+                            title="Tambahkan ke Keranjang"
+                            disabled={isPending}
+                            onClick={handleAddToCart}
                         >
-                            {waIcon}
+                            <ShoppingCart size={16} />
                         </button>
                     )}
                 </div>

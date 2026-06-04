@@ -30,14 +30,14 @@ export default function PanduanPembeliPage() {
                                 <p>Gunakan fitur pencarian atau jelajahi per kategori dan kapanewon untuk menemukan produk yang Anda inginkan.</p>
                             </div>
                             <div className="guide-card">
-                                <div className="guide-card-icon">💬</div>
-                                <h3>Hubungi Penjual</h3>
-                                <p>Klik tombol &quot;Pesan via WhatsApp&quot; untuk terhubung langsung dengan UMKM. Pastikan toko dalam status &quot;Buka&quot;.</p>
+                                <div className="guide-card-icon">🛒</div>
+                                <h3>Masukkan Keranjang</h3>
+                                <p>Klik tombol &quot;Masukkan Keranjang&quot; untuk menambahkan produk pilihan Anda ke keranjang belanja.</p>
                             </div>
                             <div className="guide-card">
-                                <div className="guide-card-icon">🤝</div>
-                                <h3>Transaksi Langsung</h3>
-                                <p>SlemanMart adalah platform showcase. Transaksi, pembayaran, dan pengiriman disepakati langsung antara Anda dan penjual.</p>
+                                <div className="guide-card-icon">💳</div>
+                                <h3>Checkout &amp; Pembayaran</h3>
+                                <p>Buka keranjang belanja Anda, isi alamat pengiriman, dan lakukan checkout untuk menyelesaikan pesanan Anda dengan mudah.</p>
                             </div>
                         </div>
                     </div>
@@ -47,15 +47,15 @@ export default function PanduanPembeliPage() {
                         <div className="faq-list">
                             <FaqItem
                                 question="Apakah saya perlu membuat akun?"
-                                answer="Tidak perlu. Anda bisa langsung menjelajahi produk dan menghubungi penjual tanpa harus mendaftar akun terlebih dahulu."
+                                answer="Ya. Anda perlu masuk atau mendaftar akun pembeli di platform SlemanMart agar dapat menggunakan fitur keranjang belanja dan memproses transaksi."
                             />
                             <FaqItem
                                 question="Bagaimana sistem pengirimannya?"
-                                answer="Sistem pengiriman (COD, jasa kurir, atau ambil di tempat) disepakati langsung saat Anda menghubungi penjual via WhatsApp."
+                                answer="Sistem pengiriman menggunakan pilihan kurir yang tersedia dan ongkos kirim akan dihitung secara otomatis berdasarkan alamat pengiriman Anda saat proses checkout."
                             />
                             <FaqItem
                                 question="Apakah produk di SlemanMart asli?"
-                                answer="Ya, semua produk yang terdaftar adalah hasil karya UMKM lokal Kabupaten Sleman yang telah melalui proses verifikasi."
+                                answer="Ya, semua produk yang terdaftar adalah hasil karya UMKM lokal Kabupaten Sleman yang telah melalui proses verifikasi resmi."
                             />
                         </div>
                     </div>

@@ -50,7 +50,7 @@ export default function PaymentPage() {
     }
 
     return (
-        <div className="bg-gray-50 min-h-[100vh] font-jakarta">
+        <div className="bg-[var(--cream)] min-h-screen font-jakarta pb-12">
             {/* header */}
 
             {/* <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
@@ -94,10 +94,8 @@ export default function PaymentPage() {
             </header> */}
 
 
-            {/* main content */}
-
             <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto ">
+                <div className="max-w-6xl mx-auto">
 
                     <StepIndicator currentStep={step} />
                     {renderContent()}

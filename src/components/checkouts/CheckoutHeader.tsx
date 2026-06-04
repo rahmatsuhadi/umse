@@ -18,50 +18,56 @@ export default function CheckoutHeader({
   const settings = webSettings?.data;
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-40 md:px-10">
+    <header className="bg-white/90 backdrop-blur-md border-b border-[var(--cream-dark)] sticky top-0 z-40 md:px-10 transition-all duration-300">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between min-h-16 py-2">
-          <div className="flex items-center">
-            <Image
-              src="/logo_kab_sleman.png"
-              alt="Slemanmart Logo"
-              width={45}
-              height={45}
-            />
+        <div className="flex items-center justify-between min-h-16 py-3">
+          <div className="flex items-center gap-3">
+            <div className="relative hover:scale-105 transition-transform duration-200">
+              <Image
+                src="/logo_kab_sleman.png"
+                alt="Slemanmart Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+            </div>
 
-            <div className="flex-shrink-0 ml-4">
-              <Link href="/" className="flex items-center gap-2">
+            <div className="h-6 w-px bg-[var(--cream-dark)]"></div>
+
+            <div className="flex-shrink-0">
+              <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity duration-200">
                 <Image
                   src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
                   alt={settings?.site_identity?.app_name || "Slemanmart Logo"}
-                  width={150}
-                  height={150}
+                  width={130}
+                  height={130}
+                  className="object-contain"
                 />
               </Link>
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-2 text-sm">
-            <Link href="/" className="text-gray-600 hover:text-primary">
+          <nav className="hidden md:flex items-center space-x-2 text-sm font-semibold">
+            <Link href="/" className="text-[var(--text-secondary)] hover:text-[var(--terracotta)] transition-colors duration-200">
               Beranda
             </Link>
-            <i className="fas fa-chevron-right text-gray-400 text-xs"></i>
+            <i className="fas fa-chevron-right text-[var(--text-muted)] opacity-50 text-[10px]"></i>
 
             <Link
               href="/keranjang"
-              className="text-gray-600 hover:text-primary"
+              className="text-[var(--text-secondary)] hover:text-[var(--terracotta)] transition-colors duration-200"
             >
               Keranjang
             </Link>
 
-            {steps.slice(0, index + 1).map((s, index) => (
-              <React.Fragment key={index}>
-                <i className="fas fa-chevron-right text-gray-400 text-xs"></i>
+            {steps.slice(0, index + 1).map((s, idx) => (
+              <React.Fragment key={s.key}>
+                <i className="fas fa-chevron-right text-[var(--text-muted)] opacity-50 text-[10px]"></i>
                 <span
                   className={
                     s.key === currentStep
-                      ? "text-primary font-medium"
-                      : "text-gray-600"
+                      ? "text-[var(--terracotta)] font-bold"
+                      : "text-[var(--text-muted)] font-medium"
                   }
                 >
                   {s.label}
@@ -70,15 +76,12 @@ export default function CheckoutHeader({
             ))}
           </nav>
 
-          {/* <Link href="/keranjang" className="text-gray-600 hover:text-primary">
-                            <i className="fas fa-arrow-left mr-2"></i>Kembali
-                        </Link>
-                         */}
           <button
             onClick={() => router.back()}
-            className="text-gray-600 hover:cursor-pointer hover:text-primary"
+            className="group flex items-center gap-1.5 text-sm font-bold text-[var(--text-secondary)] hover:cursor-pointer hover:text-[var(--terracotta)] transition-colors duration-200 bg-white hover:bg-[var(--cream)] px-4 py-1.5 rounded-full border border-[var(--cream-dark)] hover:border-[var(--terracotta-light)]/40 shadow-sm"
           >
-            <i className="fas fa-arrow-left mr-2"></i>Kembali
+            <i className="fas fa-arrow-left text-xs transition-transform duration-200 group-hover:-translate-x-1"></i>
+            <span>Kembali</span>
           </button>
         </div>
       </div>
