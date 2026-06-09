@@ -74,7 +74,7 @@ export default function PaymentStatusPage() {
 
                             {order.payment_status === "rejected" && order.status !== "expired" && (
                                 <>
-                                    <ConfirmationPage backToPayment={() => router.push(`/pembayaran/${id}/status`)} paidTotal={order.total.value} id={id} currentStep={"payment"} />
+                                    <ConfirmationPage backToPayment={() => router.push(`/pembayaran/${id}/status`)} order={order} id={id} currentStep={"payment"} />
                                     <ComparationCardPayment />
                                 </>
                             )}

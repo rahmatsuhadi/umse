@@ -158,8 +158,8 @@ function ExplorePageContent() {
         }
     });
 
-    const allProductsNoDist = facetedNoDistData?.data || [];
-    const allProductsNoCat = facetedNoCatData?.data || [];
+    const allProductsNoDist = useMemo(() => facetedNoDistData?.data || [], [facetedNoDistData?.data]);
+    const allProductsNoCat = useMemo(() => facetedNoCatData?.data || [], [facetedNoCatData?.data]);
 
     const districtCounts = useMemo(() => {
         const counts: Record<string, number> = {};

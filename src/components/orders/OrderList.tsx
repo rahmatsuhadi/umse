@@ -10,8 +10,10 @@ import OrderDetailModal from "./modal/DetailOrder";
 import { ReviewModalOrder } from "./modal/ReviewOrder";
 import { CompleteOrderModal } from "./modal/CompletedOrder";
 import { DeliveredOrderModal } from "./modal/DeliveredOrder";
+import ComplainOrderModal from "./modal/ComplainOrderModal";
 import OrderSkeletonCard from "./OrderSkeletonCard";
 import OrderEmpty from "./OrderEmpty";
+import { PaymentStatusModal } from "./modal/PaymentStatusModal";
 
 
 
@@ -34,7 +36,11 @@ export default function OrderList() {
     const filter: Record<string, string> = {};
 
     if (statusFromParams) {
-        filter.status = statusFromParams;
+        if (statusFromParams === "pending") {
+            filter.status = "awaiting_payment,pending";
+        } else {
+            filter.status = statusFromParams;
+        }
     }
 
     if (startDate || endDate) {
@@ -68,9 +74,15 @@ export default function OrderList() {
         setActiveStatus(statusFromParams);
     }, [statusFromParams]);
 
-    const filteredOrders = ordersData.filter((order) =>
-        activeStatus ? order.status === activeStatus : true
-    );
+    const filteredOrders = ordersData.filter((order) => {
+        if (activeStatus === "awaiting_payment") {
+            return order.status === "awaiting_payment" && (order.payment_status === "unpaid" || order.payment_status === "rejected");
+        }
+        if (activeStatus === "pending") {
+            return order.status === "pending" || (order.status === "awaiting_payment" && order.payment_status === "pending");
+        }
+        return activeStatus ? order.status === activeStatus : true;
+    });
 
 
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -80,6 +92,10 @@ export default function OrderList() {
     const [orderToComplete, setOrderToComplete] = useState<Order | null>(null);
 
     const [orderToDelivered, setDeliveredOrder] = useState<Order | null>(null);
+
+    const [paymentStatusOrderId, setPaymentStatusOrderId] = useState<string | null>(null);
+
+    const [orderToComplain, setOrderToComplain] = useState<Order | null>(null);
 
 
 
@@ -104,17 +120,21 @@ export default function OrderList() {
                             viewOrderDetail={() => setSelectedOrder(order)}
                             // trackOrder={trackOrder}
                             openReviewModal={(item) => setSelectedItemReview(item)}
+                            viewPaymentStatus={(id) => setPaymentStatusOrderId(id)}
+                            onComplainOrder={(order) => setOrderToComplain(order)}
                             // confirmReceived={confirmReceived}
                         />
                     )) : (
                         <OrderEmpty/>
                     )}
 
-                <OrderDetailModal
-                    open={!!selectedOrder}
-                    orderId={selectedOrder?.id || ''}
-                    onClose={() => setSelectedOrder(null)}
-                />
+                {selectedOrder && (
+                    <OrderDetailModal
+                        open={!!selectedOrder}
+                        orderId={selectedOrder.id}
+                        onClose={() => setSelectedOrder(null)}
+                    />
+                )}
 
                 {selectedItemReview && (
                     <ReviewModalOrder
@@ -138,6 +158,22 @@ export default function OrderList() {
                         open={!!orderToDelivered}
                         onClose={() => setDeliveredOrder(null)}
                         order={orderToDelivered}
+                    />
+                )}
+
+                {paymentStatusOrderId && (
+                    <PaymentStatusModal
+                        open={!!paymentStatusOrderId}
+                        orderId={paymentStatusOrderId}
+                        onClose={() => setPaymentStatusOrderId(null)}
+                    />
+                )}
+
+                {orderToComplain && (
+                    <ComplainOrderModal
+                        open={!!orderToComplain}
+                        order={orderToComplain}
+                        onClose={() => setOrderToComplain(null)}
                     />
                 )}
 

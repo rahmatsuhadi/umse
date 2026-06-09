@@ -34,7 +34,8 @@ import { Button } from "../ui/button";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { addAddress, setDefaultAddress } from "@/features/address/api";
-import { Loader2, User2, Phone, Home, FileText, MapPin } from "lucide-react";
+import { Loader2, User2, Phone, Home, MapPin } from "lucide-react";
+import { StepIndicator } from "@/components/orders/step/StepIndicator";
 
 // Skema validasi dengan Zod
 const addressSchema = z.object({
@@ -231,6 +232,7 @@ export default function CheckoutForm({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Side: Delivery Details Form */}
             <div className="lg:col-span-7 space-y-6">
+              <StepIndicator currentStep="checkout" />
               <div className="checkout-card">
                 <div className="checkout-header-section">
                   <div className="checkout-header-icon-box">
@@ -578,9 +580,10 @@ export default function CheckoutForm({
 
             {/* Right Side: Sticky Checkout Card Summary */}
             <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
-              {/* Store Info Card */}
-              <div className="checkout-store-card">
-                <div className="flex items-center gap-4">
+              {/* Merged: Store Info + Items & Order Details */}
+              <div className="checkout-card" style={{ padding: "24px" }}>
+                {/* Store Info Header */}
+                <div className="flex items-center gap-4 border-b pb-4 mb-4" style={{ borderColor: "var(--cream-dark)", paddingBottom: "12px" }}>
                   <div className="checkout-store-logo-box">
                     <Image
                       className="rounded-xl object-cover"
@@ -603,16 +606,14 @@ export default function CheckoutForm({
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* Items & Order Details Summary */}
-              <div className="checkout-card" style={{ padding: "24px" }}>
-                <div className="flex items-center justify-between border-b pb-4 mb-4" style={{ borderColor: "var(--cream-dark)" }}>
+                {/* Items Header */}
+                <div className="flex items-center justify-between mb-4">
                   <h4 className="font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
-                    <i className="fas fa-shopping-bag" style={{ color: "var(--terracotta)" }}></i>
+                    <i className="fas fa-shopping-bag" style={{ color: "var(--terracotta)", padding: "12px" }}></i>
                     Item Pesanan
                   </h4>
-                  <span className="text-[11px] px-2 py-1 rounded-lg border font-semibold" style={{ background: "var(--cream)", color: "var(--text-secondary)", borderColor: "var(--cream-dark)" }}>
+                  <span className="text-[11px] px-2 py-1 rounded-lg border font-semibold" style={{ background: "var(--cream)", color: "var(--text-secondary)", borderColor: "var(--cream-dark)", padding: "6px" }}>
                     {items.length} Barang
                   </span>
                 </div>

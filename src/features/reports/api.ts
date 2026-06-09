@@ -67,6 +67,8 @@ export type CreateReportData = {
   description: string
   category: string
   media: File[]
+  order_id?: string
+  desired_action?: string
 };
 
 
@@ -79,6 +81,13 @@ export const addReport = (data: CreateReportData): Promise<Report> => {
   formData.append('description', data.description);
   formData.append("reporterId", '01990380-16e2-734a-ae88-22d72d17e368')
   formData.append('category', data.category);
+  
+  if (data.order_id) {
+    formData.append('order_id', data.order_id);
+  }
+  if (data.desired_action) {
+    formData.append('desired_action', data.desired_action);
+  }
 
   // Menambahkan media (file) ke FormData
   data.media.forEach((file, index) => {

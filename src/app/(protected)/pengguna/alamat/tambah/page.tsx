@@ -121,22 +121,22 @@ export default function FormAddressPage({}: FormAddressPageProps) {
     form.setValue("regency_id", "");
     form.setValue("district_id", "");
     form.setValue("village_id", "");
-  }, [form.setValue]);
+  }, [form]);
 
   const handleRegencyChange = useCallback((v: string) => {
     form.setValue("regency_id", v);
     form.setValue("district_id", "");
     form.setValue("village_id", "");
-  }, [form.setValue]);
+  }, [form]);
 
   const handleDistrictChange = useCallback((v: string) => {
     form.setValue("district_id", v);
     form.setValue("village_id", "");
-  }, [form.setValue]);
+  }, [form]);
 
   const handleVillageChange = useCallback((v: string) => {
     form.setValue("village_id", v);
-  }, [form.setValue]);
+  }, [form]);
 
   function onSubmit(values: z.infer<typeof addressSchema>) {
     handleAddAddress({

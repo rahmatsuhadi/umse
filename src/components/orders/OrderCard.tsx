@@ -12,6 +12,8 @@ interface OrderCardProps {
   onCompleteOrder: () => void;
   onDeliveredOrder: () => void;
   openReviewModal: (item: ShippingItem) => void;
+  viewPaymentStatus: (id: string) => void;
+  onComplainOrder: (order: Order) => void;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({
@@ -20,6 +22,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
   onCompleteOrder,
   onDeliveredOrder,
   openReviewModal,
+  viewPaymentStatus,
+  onComplainOrder,
 }) => {
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
   const router = useRouter();
@@ -44,19 +48,19 @@ const OrderCard: React.FC<OrderCardProps> = ({
         {/* Items List */}
         <div className="mb-2">
           {order.items.map((item, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               style={{ padding: '16px 20px' }}
               className="flex items-center justify-between gap-4 border-b border-[var(--cream-dark)] last:border-b-0"
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="cart-item-img-wrapper relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
-                  <Image 
-                    src={item.product ? item.product.thumbnail.media_url : "/assets/no-image.jpg"} 
-                    layout='fill' 
-                    alt='gambar' 
-                    objectFit='cover' 
-                    className='rounded-md' 
+                  <Image
+                    src={item.product ? item.product.thumbnail.media_url : "/assets/no-image.jpg"}
+                    layout='fill'
+                    alt='gambar'
+                    objectFit='cover'
+                    className='rounded-md'
                   />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -65,7 +69,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                       <h4 className="cart-item-title text-sm sm:text-base font-bold text-[var(--text-primary)] truncate">{item.product_name}</h4>
                     </Link>
                   ) : (
-                    <h4 className="cart-item-title text-sm sm:text-base font-bold text-[var(--text-primary)] truncate">{item.product_name}</h4>                  
+                    <h4 className="cart-item-title text-sm sm:text-base font-bold text-[var(--text-primary)] truncate">{item.product_name}</h4>
                   )}
                   <p className="text-xs text-[var(--text-muted)] truncate mt-0.5">{order.store.name}</p>
                   <p className="cart-item-price text-xs sm:text-sm font-extrabold mt-1">
@@ -81,8 +85,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
                       Sudah diulas
                     </span>
                   ) : (
-                    <button 
-                      onClick={() => openReviewModal(item)} 
+                    <button
+                      onClick={() => openReviewModal(item)}
                       className="btn btn-primary btn-sm"
                     >
                       Ulasan
@@ -118,8 +122,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
             </button>
 
             {order.status == "awaiting_payment" && order.payment_status == "unpaid" && (
-              <button 
-                onClick={() => router.push("/pembayaran/" + order.id)} 
+              <button
+                onClick={() => router.push("/pembayaran/" + order.id)}
                 className="btn btn-primary btn-sm"
               >
                 Bayar
@@ -130,18 +134,18 @@ const OrderCard: React.FC<OrderCardProps> = ({
               (order.status == "awaiting_payment" && order.payment_status == "unpaid") ||
               (order.status == "awaiting_payment" && order.payment_status == "pending") ||
               (order.status == "awaiting_payment" && order.payment_status == "rejected")) && (
-              <Link 
-                href={"/pembayaran/" + order.id + "/status"} 
-                className="btn btn-secondary btn-sm"
-                style={{ color: "var(--terracotta)", borderColor: "var(--terracotta)", borderWidth: "1.5px" }}
-              >
-                Status Bayar
-              </Link>
-            )}
+                <button
+                  onClick={() => viewPaymentStatus(order.id)}
+                  className="btn btn-secondary btn-sm"
+                  style={{ color: "var(--terracotta)", borderColor: "var(--terracotta)", borderWidth: "1.5px" }}
+                >
+                  Status Bayar
+                </button>
+              )}
 
             {order.payment_status == "rejected" && (
-              <Link 
-                href={`/pembayaran/${order.id}/upload-ulang`} 
+              <Link
+                href={`/pembayaran/${order.id}/upload-ulang`}
                 className="btn btn-primary btn-sm"
                 style={{ background: "#E67E22" }}
               >
@@ -149,9 +153,37 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </Link>
             )}
 
-            {order.status === 'delivered' && (
-              <button 
-                onClick={onCompleteOrder} 
+            {order.status === 'delivered' && !order.has_complaint && (
+              <button
+                onClick={() => onComplainOrder(order)}
+                className="btn btn-secondary btn-sm"
+                style={{ color: "var(--terracotta)", borderColor: "var(--terracotta)", borderWidth: "1.5px" }}
+              >
+                Komplain
+              </button>
+            )}
+
+            {order.has_complaint && order.complaint && (
+              <span className={
+                order.complaint.status === 'pending' || order.complaint.status === 'in_progress'
+                  ? "badge badge-saffron"
+                  : order.complaint.status === 'resolved'
+                    ? "badge badge-forest"
+                    : order.complaint.status === 'rejected'
+                      ? "badge badge-terracotta"
+                      : "badge"
+              }>
+                {order.complaint.status === 'pending' ? 'Komplain Diajukan'
+                  : order.complaint.status === 'in_progress' ? 'Komplain Diproses'
+                    : order.complaint.status === 'resolved' ? 'Komplain Selesai'
+                      : order.complaint.status === 'rejected' ? 'Komplain Ditolak'
+                        : 'Komplain'}
+              </span>
+            )}
+
+            {order.status === 'delivered' && (!order.has_complaint || (order.complaint && ['resolved', 'rejected', 'closed'].includes(order.complaint.status))) && (
+              <button
+                onClick={onCompleteOrder}
                 className="btn btn-primary btn-sm"
                 style={{ background: "var(--forest)", color: "white" }}
               >
@@ -160,8 +192,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
             )}
 
             {order.status === 'shipped' && (
-              <button 
-                onClick={onDeliveredOrder} 
+              <button
+                onClick={onDeliveredOrder}
                 className="btn btn-primary btn-sm"
                 style={{ background: "var(--terracotta-light)", color: "white" }}
               >

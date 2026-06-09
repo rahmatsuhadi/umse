@@ -7,6 +7,7 @@ import { formatDate } from "@/lib/format-date";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
 import { Clock, CheckCircle, Smartphone, QrCode, AlertCircle } from "lucide-react";
+import { StepIndicator } from "@/components/orders/step/StepIndicator";
 
 export default function PaymentStep({
   currentStep: step,
@@ -42,108 +43,115 @@ export default function PaymentStep({
           {isAllowed && !isPaymentExpired ? (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
               {/* QRIS Card */}
-              <div className="checkout-card flex flex-col h-full lg:col-span-7">
-                <div className="checkout-header-section">
-                  <div className="checkout-header-icon-box">
-                    <QrCode className="w-5 h-5 text-[var(--terracotta)]" />
+              <div className="flex flex-col h-full lg:col-span-7 space-y-6">
+                {/* Step Indicator — sejajar dengan informasi wizard */}
+                <StepIndicator currentStep={step} />
+
+                <div className="checkout-card flex flex-col flex-1">
+                  <div className="checkout-header-section">
+                    <div className="checkout-header-icon-box">
+                      <QrCode className="w-5 h-5 text-[var(--terracotta)]" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Pembayaran QRIS</h3>
+                      <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Scan/Unduh kode QR di bawah untuk menyelesaikan pembayaran</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Pembayaran QRIS</h3>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Scan/Unduh kode QR di bawah untuk menyelesaikan pembayaran</p>
-                  </div>
-                </div>
 
-                <div className="flex-1 flex flex-col justify-between">
-                  <div className="flex flex-col items-center h-full justify-between gap-4">
-                    {/* QR Code Frame */}
-                    <div className="relative mb-3">
-                      <div className="absolute inset-0 bg-gradient-to-br from-[var(--terracotta)]/10 to-transparent rounded-2xl blur-xl" />
-                      <div className="relative bg-white border-2 border-[var(--cream-dark)] rounded-2xl p-5 shadow-lg">
-                        <div className="w-60 h-60 flex items-center justify-center rounded-xl overflow-hidden bg-white">
-                          <Image
-                            src={order.store.qris_url}
-                            width={240}
-                            height={240}
-                            alt="Order QRIS"
-                            className="w-full h-full object-contain"
-                          />
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div className="flex flex-col items-center h-full justify-between gap-4">
+                      {/* QR Code Frame */}
+                      <div className="relative mb-3">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--terracotta)]/10 to-transparent rounded-2xl blur-xl" />
+                        <div className="relative bg-white border-2 border-[var(--cream-dark)] rounded-2xl p-5 shadow-lg">
+                          <div className="w-60 h-60 flex items-center justify-center rounded-xl overflow-hidden bg-white">
+                            <Image
+                              src={order.store.qris_url}
+                              width={240}
+                              height={240}
+                              alt="Order QRIS"
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
                         </div>
+                        {/* Corner accents */}
+                        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[var(--terracotta)] rounded-tl-md" />
+                        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[var(--terracotta)] rounded-tr-md" />
+                        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[var(--terracotta)] rounded-bl-md" />
+                        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[var(--terracotta)] rounded-br-md" />
                       </div>
-                      {/* Corner accents */}
-                      <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[var(--terracotta)] rounded-tl-md" />
-                      <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[var(--terracotta)] rounded-tr-md" />
-                      <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[var(--terracotta)] rounded-bl-md" />
-                      <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[var(--terracotta)] rounded-br-md" />
-                    </div>
 
-                    <div className="text-center">
-                      <h4 className="text-base font-bold text-[var(--text-primary)] mb-1">
-                        Scan QRIS untuk Pembayaran
-                      </h4>
-                      <p className="text-[var(--text-muted)] text-xs font-semibold">
-                        Total yang harus dibayar
-                      </p>
-                    </div>
+                      <div className="text-center">
+                        <h4 className="text-base font-bold text-[var(--text-primary)] mb-1">
+                          Scan QRIS untuk Pembayaran
+                        </h4>
+                        <p className="text-[var(--text-muted)] text-xs font-semibold">
+                          Total yang harus dibayar
+                        </p>
+                      </div>
 
-                    <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-2xl px-6 py-3 mb-4 shadow-inner">
-                      <span id="totalPayment" className="text-2xl font-extrabold text-[var(--terracotta)] tracking-tight">
-                        {order.total.formatted}
-                      </span>
-                    </div>
+                      <div className="bg-[var(--cream)] border border-[var(--cream-dark)] rounded-2xl px-6 py-3 mb-4 shadow-inner">
+                        <span id="totalPayment" className="text-2xl font-extrabold text-[var(--terracotta)] tracking-tight">
+                          {order.total.formatted}
+                        </span>
+                      </div>
 
-                    {/* Countdown */}
-                    <div className="w-full bg-[var(--cream)] border border-[var(--saffron-light)]/40 rounded-2xl p-3.5 mb-4 flex items-center justify-between shadow-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 bg-[var(--saffron)]/10 rounded-lg flex items-center justify-center">
-                          <Clock className="w-4 h-4 text-[var(--saffron)]" />
+                      {/* Countdown */}
+                      <div className="w-full bg-[var(--cream)] border border-[var(--saffron-light)]/40 rounded-2xl p-3.5 mb-4 flex items-center justify-between shadow-sm" style={{ paddingRight: "15px" }}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 bg-[var(--saffron)]/10 rounded-lg flex items-center justify-center">
+                            <Clock className="w-4 h-4 text-[var(--saffron)]" />
+                          </div>
+                          <span className="text-[var(--text-secondary)] text-xs font-semibold">Batas pembayaran:</span>
                         </div>
-                        <span className="text-[var(--text-secondary)] text-xs font-semibold">Batas pembayaran:</span>
+                        <span id="countdown" className="text-xs">
+                          <CountdownTimer targetDate={order.payment_due_at} />
+                        </span>
                       </div>
-                      <span id="countdown" className="text-xs">
-                        <CountdownTimer targetDate={order.payment_due_at} />
-                      </span>
-                    </div>
 
-                    {/* CTA Button */}
-                    <button
-                      onClick={onPaymentSubmit}
-                      className="w-full bg-[var(--terracotta)] text-white py-3.5 px-6 rounded-2xl font-bold transition-all duration-300 shadow-md shadow-[var(--terracotta)]/25 hover:bg-[var(--terracotta-dark)] hover:shadow-lg hover:shadow-[var(--terracotta)]/35 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 group cursor-pointer"
-                    >
-                      <CheckCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                      Sudah Bayar? Konfirmasi Sekarang
-                    </button>
+                      {/* CTA Button */}
+                      <button
+                        onClick={onPaymentSubmit}
+                        className="checkout-btn-full"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        Sudah Bayar? Konfirmasi Sekarang
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Cara Pembayaran */}
-              <div className="checkout-card flex flex-col h-full lg:col-span-5">
-                <div className="checkout-header-section">
-                  <div className="checkout-header-icon-box">
-                    <Smartphone className="w-5 h-5 text-[var(--terracotta)]" />
+              <div className="flex flex-col h-full lg:col-span-5 space-y-6">
+                <div className="checkout-card flex flex-col flex-1">
+                  <div className="checkout-header-section">
+                    <div className="checkout-header-icon-box">
+                      <Smartphone className="w-5 h-5 text-[var(--terracotta)]" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Cara Pembayaran</h3>
+                      <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Ikuti petunjuk langkah pembayaran di bawah ini</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Cara Pembayaran</h3>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Ikuti petunjuk langkah pembayaran di bawah ini</p>
-                  </div>
+                  <ol className="space-y-4">
+                    {[
+                      "Buka aplikasi mobile banking atau e-wallet Anda",
+                      'Pilih menu "Scan QR" atau "QRIS"',
+                      "Arahkan kamera ke QR code di atas",
+                      "Masukkan nominal sesuai total pembayaran",
+                      "Konfirmasi dan selesaikan pembayaran",
+                      "Simpan bukti pembayaran untuk konfirmasi",
+                    ].map((step, i) => (
+                      <li key={i} className="flex items-start gap-3" style={{ padding: "5px 0 5px 0" }}>
+                        <span className="flex-shrink-0 w-6 h-6 bg-[var(--cream)] text-[var(--terracotta)] border border-[var(--cream-dark)] rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+                          {i + 1}
+                        </span>
+                        <span className="text-sm text-[var(--text-secondary)] font-medium leading-relaxed mt-0.5">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-                <ol className="space-y-4">
-                  {[
-                    "Buka aplikasi mobile banking atau e-wallet Anda",
-                    'Pilih menu "Scan QR" atau "QRIS"',
-                    "Arahkan kamera ke QR code di atas",
-                    "Masukkan nominal sesuai total pembayaran",
-                    "Konfirmasi dan selesaikan pembayaran",
-                    "Simpan bukti pembayaran untuk konfirmasi",
-                  ].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-[var(--cream)] text-[var(--terracotta)] border border-[var(--cream-dark)] rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
-                        {i + 1}
-                      </span>
-                      <span className="text-sm text-[var(--text-secondary)] font-medium leading-relaxed mt-0.5">{step}</span>
-                    </li>
-                  ))}
-                </ol>
               </div>
             </div>
           ) : (

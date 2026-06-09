@@ -1,4 +1,5 @@
 import { Skeleton } from "../ui/skeleton";
+import { StepIndicator } from "@/components/orders/step/StepIndicator";
 
 export default function CheckoutSkeletonPage() {
   return (
@@ -6,6 +7,7 @@ export default function CheckoutSkeletonPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Delivery Details Form Skeleton */}
         <div className="lg:col-span-7 space-y-6">
+          <StepIndicator currentStep="checkout" />
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
             <div className="flex items-center gap-3 border-b border-gray-100 pb-5 mb-6">
               <Skeleton className="w-10 h-10 rounded-xl" />

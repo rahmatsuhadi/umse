@@ -57,16 +57,20 @@ export const useAddReport = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateReportData) => addReport(data),
-    onSuccess: () => {
-      toast.success("Laporan complain berhasil dikirim");
+    onSuccess: (data, variables) => {
+      toast.success("Laporan komplain berhasil dikirim");
       queryClient.refetchQueries({
         queryKey: ['reports', 'infinite']
       })
-      router.replace("/laporan")
-
+      queryClient.invalidateQueries({
+        queryKey: ['orders']
+      })
+      if (!variables.order_id) {
+        router.replace("/laporan")
+      }
     },
     onError: (error) => {
-      toast.error("Gagal Mengirim Coplain", { description: error.message });
+      toast.error("Gagal Mengirim Komplain", { description: error.message });
     }
   });
 };

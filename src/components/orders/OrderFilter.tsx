@@ -51,7 +51,16 @@ export default function OrderFilter() {
 
     return (
         <div className="lg:col-span-1">
-            <div className="cart-sidebar-panel">
+            <style dangerouslySetInnerHTML={{__html: `
+                @media (min-width: 1024px) {
+                    .sticky-sidebar-panel {
+                        position: sticky;
+                        top: 88px;
+                        z-index: 10;
+                    }
+                }
+            `}} />
+            <div className="cart-sidebar-panel sticky-sidebar-panel">
                 <div className="cart-sidebar-header">
                     <h3 className="cart-sidebar-title">
                         Filter Pesanan

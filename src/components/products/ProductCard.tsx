@@ -2,7 +2,6 @@ import { Product } from "@/types";
 import { useInView } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-import { useCreateVisitorLog } from "@/features/visitor-logs/hooks";
 import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { useRouter, usePathname } from "next/navigation";
@@ -15,7 +14,6 @@ interface CardProductProps {
 export const ProductCard = ({ product }: CardProductProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
-  const { mutate: logVisitor } = useCreateVisitorLog();
 
   const discountPct = product.discount_percentage ? Number(product.discount_percentage) : 0;
   const hasDiscount = discountPct > 0 && product.discount_price != null;

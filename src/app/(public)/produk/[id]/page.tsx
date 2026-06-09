@@ -7,8 +7,7 @@ import ContactSection from "@/components/landing/Contact";
 import { trimDescription } from "@/lib/seoMetadataUtils";
 import ProductSimilarProduct from "@/components/products/ProductSimilarList";
 import ProductSimilarDistrict from "@/components/products/ProductSimilarDistrict";
-// import { ProductRatingReview } from "@/components/products/ProductRatingReview";
-import ProductImageGallery from "@/components/products/ProductImageGallery";
+import { ProductRatingReview } from "@/components/products/ProductRatingReview";
 import ProductDetailClient from "@/components/products/ProductDetailClient";
 import { APP_URL } from "@/lib/envConfig";
 import { generateManualDescription } from "@/lib/metadata";
@@ -135,9 +134,9 @@ export default async function ProductDetailPage({
       </div>
 
       {/* ===== Reviews Section ===== */}
-      {/* <div className="product-detail-footer">
+      <div className="product-detail-footer">
         <ProductRatingReview product={product} />
-      </div> */}
+      </div>
 
       {/* ===== Similar Products Section ===== */}
       <div className="bg-white pt-40">

@@ -60,7 +60,7 @@ export default function CheckoutHeader({
               Keranjang
             </Link>
 
-            {steps.slice(0, index + 1).map((s, idx) => (
+            {steps.slice(0, index + 1).map((s) => (
               <React.Fragment key={s.key}>
                 <i className="fas fa-chevron-right text-[var(--text-muted)] opacity-50 text-[10px]"></i>
                 <span

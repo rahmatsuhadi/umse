@@ -1,5 +1,5 @@
 import { useDebounce } from "@/lib/hooks/useDebounce";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +27,7 @@ export default function SelectASNApiSearch({
     data,
     isLoading: loading,
   } = useOrganizations(debouncedSearchTerm);
-  const options = data || [];
+  const options = useMemo(() => data || [], [data]);
 
   const handleValueChange = (value: string) => {
     setSelectedValue(value);
@@ -36,7 +36,7 @@ export default function SelectASNApiSearch({
 
   return (
     <Select value={selectedValue} onValueChange={handleValueChange}>
-      <SelectTrigger className="w-full py-5 truncate max-w-full">
+      <SelectTrigger className="checkout-select-trigger w-full truncate max-w-full">
         <SelectValue
           placeholder="Pilih Badan Usaha"
           className="truncate max-w-full"

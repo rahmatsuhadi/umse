@@ -14,7 +14,6 @@ import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from "lucide-
 import { useLogin } from "@/features/auth/hooks";
 import { getToken, setToken } from "@/lib/token-service";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -214,7 +213,7 @@ export default function LoginPage() {
                   )}
                 />
 
-                <div className="flex items-center justify-center p-2 border border-[var(--cream-dark)] rounded-2xl bg-white shadow-xs">
+                <div className="flex items-center justify-center"  style={{ paddingBottom: "10px" }}>
                   <ReCAPTCHA
                     ref={captchaRef}
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}

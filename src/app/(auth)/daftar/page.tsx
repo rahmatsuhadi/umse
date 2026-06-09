@@ -13,7 +13,6 @@ import { withMask } from "use-mask-input";
 
 import { useRegister } from "@/features/auth/hooks";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -82,36 +81,6 @@ const formSchema = z
     }
   });
 
-/* Shared inline styles -------------------------------------------------- */
-const inputStyle: React.CSSProperties = {
-  height: "48px",
-  borderRadius: "12px",
-  border: "1.5px solid var(--cream-dark, #F0D5C2)",
-  background: "white",
-  paddingLeft: "44px",
-  paddingRight: "16px",
-  paddingTop: "12px",
-  paddingBottom: "12px",
-};
-
-const inputWithRightStyle: React.CSSProperties = {
-  ...inputStyle,
-  paddingRight: "44px",
-};
-
-const iconStyle: React.CSSProperties = {
-  position: "absolute",
-  left: "14px",
-  top: "50%",
-  transform: "translateY(-50%)",
-  color: "var(--brown-light, #9B7B5A)",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontWeight: 600,
-  color: "var(--text-secondary, #4A3728)",
-};
-/* ----------------------------------------------------------------------- */
 
 export default function DaftarPage() {
   const router = useRouter();
@@ -393,16 +362,21 @@ export default function DaftarPage() {
                   control={form.control}
                   name="is_asn"
                   render={({ field }) => (
-                    <FormItem className="mb-0">
-                      <div
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[var(--cream-dark)] bg-white cursor-pointer hover:border-[var(--terracotta)] transition-colors"
-                        onClick={() => field.onChange(!field.value)}
+                    <FormItem className="mb-0"  >
+                      <label
+                        className="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-[var(--cream-dark)] bg-white cursor-pointer hover:border-[var(--terracotta)] hover:shadow-xs transition-all duration-200"
+                        style={{padding:"5px", marginBottom:"15px"}}
                       >
-                        <Checkbox checked={field.value} />
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
                         <span className="text-xs lg:text-sm font-semibold text-[var(--text-secondary)] select-none">
                           Apakah Anda ASN (Aparatur Sipil Negara)?
                         </span>
-                      </div>
+                      </label>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -410,12 +384,12 @@ export default function DaftarPage() {
 
                 {/* ASN Fields (conditional) */}
                 {isAsnChecked && (
-                  <div className="space-y-4 p-4 rounded-2xl bg-[var(--cream)] border border-[var(--cream-dark)] animate-slide-up">
+                  <div className="">
                     <FormField
                       control={form.control}
                       name="organization_id"
                       render={({ field }) => (
-                        <FormItem className="mb-0">
+                        <FormItem className="checkout-input-group mb-0">
                           <FormLabel className="checkout-input-label">Badan Usaha</FormLabel>
                           <FormControl>
                             <SelectASNApiSearch onChange={field.onChange} />
@@ -432,13 +406,15 @@ export default function DaftarPage() {
                         <FormItem className="checkout-input-group mb-0">
                           <FormLabel className="checkout-input-label">Unggah Bukti ASN</FormLabel>
                           <FormControl>
-                            <Input
-                              type="file"
-                              accept=".jpeg,.jpg,.png,.webp"
-                              onChange={handleFileChange}
-                              className="checkout-input pt-2"
-                              style={{ paddingLeft: "16px" }}
-                            />
+                            <div className="checkout-input-wrapper">
+                              <FileText size={16} className="checkout-input-icon" />
+                              <Input
+                                type="file"
+                                accept=".jpeg,.jpg,.png,.webp"
+                                onChange={handleFileChange}
+                                className="checkout-input pt-2.5"
+                              />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -448,7 +424,7 @@ export default function DaftarPage() {
                 )}
 
                 {/* reCAPTCHA */}
-                <div className="flex items-center justify-center p-2 border border-[var(--cream-dark)] rounded-2xl bg-white shadow-xs">
+                <div className="flex items-center justify-center"  style={{ paddingBottom: "10px" }}>
                   <ReCAPTCHA
                     ref={captchaRef}
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}

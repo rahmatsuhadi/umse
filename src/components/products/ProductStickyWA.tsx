@@ -18,12 +18,8 @@ interface ProductStickyWAProps {
 
 export default function ProductStickyWA({
     productId,
-    productName,
-    productType,
     selectedVariantId,
-    selectedVariantName,
     quantity,
-    phone,
     isClosed
 }: ProductStickyWAProps) {
     const { data: user } = useUser();

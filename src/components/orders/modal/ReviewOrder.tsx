@@ -3,10 +3,10 @@ import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 
 import { MediaPreview } from '@/components/shared/MediaPreview';
-import { Plus, X, FileText, Upload } from 'lucide-react';
+import { X, FileText, Upload } from 'lucide-react';
 import Image from "next/image";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { ShippingItem } from "@/types";
 import { useAddReview } from "@/features/reviews/hooks";
@@ -47,14 +47,26 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white border border-[var(--cream-dark)] p-6 shadow-xl" style={{ borderRadius: "var(--radius-lg)" }}>
-                <DialogHeader className="border-b border-[var(--cream-dark)] pb-4">
-                    <DialogTitle className="text-lg font-extrabold text-[var(--text-primary)] flex items-center gap-2">
-                        <i className="fas fa-pen-fancy text-[var(--terracotta)]"></i> Beri Ulasan
+            <DialogContent 
+                className="max-w-md bg-white border border-[var(--cream-dark)] p-7 shadow-xl" 
+                style={{ 
+                    borderRadius: "var(--radius-lg)",
+                    padding: "28px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "20px"
+                }}
+            >
+                <DialogHeader className="border-b border-[var(--cream-dark)] pb-5" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <DialogTitle className="text-xl font-extrabold text-[var(--text-primary)] flex items-center gap-2.5" style={{ fontSize: "20px", lineHeight: "1.2" }}>
+                        <i className="fas fa-pen-fancy text-[var(--terracotta)] text-2xl"></i> Beri Ulasan
                     </DialogTitle>
+                    <DialogDescription className="text-xs text-[var(--text-muted)] mt-1.5 flex items-center gap-1.5 font-medium" style={{ fontSize: "12px" }}>
+                        <i className="far fa-comment-dots text-[var(--brown-light)]"></i> Bagikan pengalaman Anda tentang produk ini untuk membantu pembeli lain.
+                    </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="pt-4 space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                     {/* Product Card */}
                     <div className="flex items-center gap-3.5 bg-[var(--cream)] border border-[var(--cream-dark)] p-3.5 rounded-[var(--radius-md)] hover:bg-white hover:border-[var(--terracotta-light)] hover:shadow-md transition-all duration-300">
                         <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-[var(--cream-dark)] bg-white shadow-xs">
@@ -101,13 +113,21 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
                         disabled={isPending}
                     />
 
-                    <DialogFooter className="border-t border-[var(--cream-dark)] pt-4 gap-2">
+                    <DialogFooter className="border-t border-[var(--cream-dark)] pt-5 gap-3" style={{ display: "flex", justifyContent: "end", gap: "12px", paddingTop: "20px" }}>
                         <DialogClose asChild>
-                            <button type="button" className="btn btn-secondary btn-sm" disabled={isPending}>
-                                <X size={14} className="mr-1 inline animate-none" /> Batal
+                            <button type="button" className="btn btn-secondary btn-sm" disabled={isPending} style={{ padding: "10px 20px" }}>
+                                <X size={14} className="mr-1.5 inline animate-none" /> Batal
                             </button>
                         </DialogClose>
-                        <button type="submit" className="btn btn-primary btn-sm flex items-center justify-center gap-1.5" disabled={isPending}>
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary btn-sm flex items-center justify-center gap-2" 
+                            style={{ 
+                                padding: "10px 20px",
+                                boxShadow: "0 4px 12px rgba(247, 98, 10, 0.2)" 
+                            }} 
+                            disabled={isPending}
+                        >
                             {isPending ? (
                                 <>
                                     <i className="fas fa-spinner animate-spin"></i>

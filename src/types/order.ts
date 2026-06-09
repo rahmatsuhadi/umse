@@ -1,4 +1,5 @@
 import { Location } from "./address"
+import { Complaint } from "./complaint"
 import { Payment } from "./payment"
 import { Price } from "./product"
 import { ShippingItem } from "./shipping"
@@ -10,6 +11,8 @@ export type StatusPayment = 'unpaid' | 'pending' | 'paid' | 'uploaded' | 'verifi
 
 export interface Order {
     order_number: string
+    complaint?: Complaint
+    has_complaint?: boolean
     
     id: string
     customer_id: string

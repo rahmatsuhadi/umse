@@ -29,6 +29,10 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
   const pathname = usePathname();
   const { data: webSettings } = useWebSettings();
   const settings = webSettings?.data;
+  const { mutate: logout } = useLogout();
+  const { data: user } = useUser();
+  const { data: cartData } = useCart();
+  const cartCount = cartData?.data?.items_count || 0;
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,9 +61,32 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
           </div>
 
           <div className="top-bar-right">
-            <Link href="/masuk" className="top-bar-link" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}>
-              Masuk
-            </Link>
+            {!isLoading && (
+              isAuth ? (
+                <button
+                  onClick={() => logout()}
+                  className="top-bar-link"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontWeight: "bold",
+                    color: "inherit",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Keluar
+                </button>
+              ) : (
+                <Link href="/masuk" className="top-bar-link" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}>
+                  Masuk
+                </Link>
+              )
+            )}
           </div>
         </div>
       </div>
@@ -105,6 +132,39 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
             </div>
           )}
 
+          {!isLoading && isAuth && (
+            <div className="flex md:hidden items-center gap-2 mr-1">
+              {/* Profile Link */}
+              <Link href="/pengguna" className="p-1 hover:bg-orange-50 rounded" aria-label="Profil">
+                <User2 className="w-5 h-5 text-[var(--text-secondary)]" />
+              </Link>
+              {/* Cart Link */}
+              <Link href="/keranjang" className="p-1 hover:bg-orange-50 rounded relative" aria-label="Keranjang">
+                <ShoppingCart className="w-5 h-5 text-[var(--text-secondary)]" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[var(--terracotta)] text-white text-[9px] font-bold rounded-full w-4.5 h-4.5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              {/* Pesanan Link */}
+              <Link href="/pesanan" className="p-1 hover:bg-orange-50 rounded" aria-label="Pesanan">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[var(--text-secondary)]">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+              </Link>
+              {/* Keluar Button */}
+              <button onClick={() => logout()} className="p-1 hover:bg-red-50 rounded" aria-label="Keluar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </button>
+            </div>
+          )}
           <button className="nav-search-icon-btn" onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} aria-label="Cari">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8" />
@@ -146,6 +206,42 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
           <button className="drawer-close" onClick={() => setIsDrawerOpen(false)}>✕</button>
         </div>
         <nav className="drawer-nav">
+          {!isLoading && isAuth && (
+            <div className="drawer-user-profile" style={{
+              padding: "16px",
+              background: "linear-gradient(135deg, rgba(200, 87, 58, 0.05) 0%, rgba(245, 166, 35, 0.05) 100%)",
+              borderRadius: "var(--radius-md)",
+              marginBottom: "16px",
+              border: "1px solid var(--cream-dark)",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px"
+            }}>
+              <div style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "var(--cream-dark)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--terracotta)",
+                fontWeight: "bold",
+                flexShrink: 0
+              }}>
+                {user?.data?.name ? user.data.name.charAt(0).toUpperCase() : <User2 className="w-5 h-5" />}
+              </div>
+              <div style={{ overflow: "hidden" }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", margin: 0, textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                  {user?.data?.name || "Pengguna"}
+                </p>
+                <p style={{ fontSize: 11, color: "var(--text-muted)", margin: 0, textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                  {user?.data?.email || ""}
+                </p>
+              </div>
+            </div>
+          )}
+
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -158,29 +254,127 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
               <span>{link.name}</span>
             </Link>
           ))}
-          <div className="drawer-divider"></div>
-          {/* <Link href="/literasi" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
-            <div className="drawer-nav-icon" style={{ background: "#E0F2F1" }}>📝</div>
-            <span>Tips & Artikel</span>
-          </Link>
-          <Link href="/kontak" className="drawer-nav-item" onClick={() => setIsDrawerOpen(false)} style={{ textDecoration: 'none' }}>
-            <div className="drawer-nav-icon" style={{ background: "#FFF3E0" }}>📞</div>
-            <span>Hubungi Kami</span>
-          </Link> */}
-        </nav>
 
-        {/* <div className="mobile-auth-drawer" style={{ padding: "0 20px 20px" }}>
-          <div className="drawer-divider" style={{ margin: "0 -20px 16px" }}></div>
-          {!isLoading && !isAuth && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <Link href="/daftar" style={{ width: "100%", display: "block", background: "var(--cream-dark)", color: "var(--text-primary)", padding: "12px", borderRadius: "8px", textAlign: "center", fontWeight: 700, textDecoration: "none" }} onClick={() => setIsDrawerOpen(false)}>Daftar</Link>
-              <Link href="/masuk" style={{ width: "100%", display: "block", background: "var(--terracotta)", color: "white", padding: "12px", borderRadius: "8px", textAlign: "center", fontWeight: 700, textDecoration: "none" }} onClick={() => setIsDrawerOpen(false)}>Masuk</Link>
-            </div>
-          )}
           {!isLoading && isAuth && (
-            <MobileAuthSection closeDrawer={() => setIsDrawerOpen(false)} />
+            <>
+              <div className="drawer-divider"></div>
+              
+              <Link
+                href="/pengguna"
+                className={`drawer-nav-item ${pathname === '/pengguna' ? 'active' : ''}`}
+                onClick={() => setIsDrawerOpen(false)}
+                style={{ textDecoration: 'none' }}
+              >
+                <div className="drawer-nav-icon" style={{ background: "#E8EAF6" }}>👤</div>
+                <span>Profil Saya</span>
+              </Link>
+
+              <Link
+                href="/keranjang"
+                className={`drawer-nav-item ${pathname === '/keranjang' ? 'active' : ''}`}
+                onClick={() => setIsDrawerOpen(false)}
+                style={{ textDecoration: 'none', display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div className="drawer-nav-icon" style={{ background: "#E8F5E9" }}>🛒</div>
+                  <span>Keranjang</span>
+                </div>
+                {cartCount > 0 && (
+                  <span style={{
+                    background: "var(--terracotta)",
+                    color: "white",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    borderRadius: "50px",
+                    padding: "2px 8px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "4px"
+                  }}>
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                href="/pesanan"
+                className={`drawer-nav-item ${pathname === '/pesanan' ? 'active' : ''}`}
+                onClick={() => setIsDrawerOpen(false)}
+                style={{ textDecoration: 'none' }}
+              >
+                <div className="drawer-nav-icon" style={{ background: "#FFF3E0" }}>📦</div>
+                <span>Pesanan Saya</span>
+              </Link>
+
+              <button
+                onClick={() => {
+                  logout();
+                  setIsDrawerOpen(false);
+                }}
+                className="drawer-nav-item"
+                style={{
+                  textDecoration: 'none',
+                  color: '#E74C3C',
+                  background: 'none',
+                  border: 'none',
+                  width: '100%',
+                  textAlign: 'left',
+                  cursor: 'pointer'
+                }}
+              >
+                <div className="drawer-nav-icon" style={{ background: "#FFEBEE" }}>🚪</div>
+                <span style={{ fontWeight: 600 }}>Keluar</span>
+              </button>
+            </>
           )}
-        </div> */}
+
+          {!isLoading && !isAuth && (
+            <>
+              <div className="drawer-divider"></div>
+              <div style={{ padding: "8px 4px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                <Link
+                  href="/daftar"
+                  style={{
+                    width: "100%",
+                    display: "block",
+                    background: "var(--cream-dark)",
+                    color: "var(--text-primary)",
+                    padding: "12px",
+                    borderRadius: "12px",
+                    textAlign: "center",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    fontSize: "14px",
+                    transition: "all 0.2s"
+                  }}
+                  onClick={() => setIsDrawerOpen(false)}
+                >
+                  Daftar
+                </Link>
+                <Link
+                  href="/masuk"
+                  style={{
+                    width: "100%",
+                    display: "block",
+                    background: "var(--terracotta)",
+                    color: "white",
+                    padding: "12px",
+                    borderRadius: "12px",
+                    textAlign: "center",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    fontSize: "14px",
+                    transition: "all 0.2s"
+                  }}
+                  onClick={() => setIsDrawerOpen(false)}
+                >
+                  Masuk
+                </Link>
+              </div>
+            </>
+          )}
+        </nav>
 
         <div className="drawer-footer">
           <p>{settings?.footer?.copyright_text || "© 2025 Sleman Mart"} · {settings?.contact?.address || "Kabupaten Sleman, DIY"}</p>

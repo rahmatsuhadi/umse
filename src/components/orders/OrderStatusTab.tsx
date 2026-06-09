@@ -4,11 +4,11 @@ import { useMemo } from "react";
 const TABS = [
     { label: "Semua", value: "" },
     { label: "Menunggu Pembayaran", value: "awaiting_payment" },
-    { label: "Menunggu", value: "pending" },
+    { label: "Menunggu Konfirmasi", value: "pending" },
     { label: "Diproses", value: "processing" },
     { label: "Dikirim", value: "shipped" },
     { label: "Sampai", value: "delivered" },
-    // { label: "Canceled", value: "cancelled" },
+    { label: "Canceled", value: "cancelled" },
     { label: "Selesai", value: "completed" },
     { label: "Expired", value: "expired" },
 ];
@@ -58,7 +58,7 @@ export default function OrderStatusTab({ meta, activeStatus, handleTabChange }: 
                     padding: "4px 0",
                 }}
             >
-                <nav
+                <div
                     style={{ 
                         display: "flex",
                         gap: 8,
@@ -128,7 +128,7 @@ export default function OrderStatusTab({ meta, activeStatus, handleTabChange }: 
                             </button>
                         );
                     })}
-                </nav>
+                </div>
             </div>
         </div>
     );
