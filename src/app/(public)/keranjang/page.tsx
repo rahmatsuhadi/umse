@@ -4,12 +4,20 @@ import { Footer } from "@/components/shared/Footer";
 import { Navbar } from "@/components/shared/Navbar";
 import CartList from "@/components/carts/CartList";
 import CartSidebar from "@/components/carts/CartSidebar";
-import { useCartItems } from "@/features/cart/hooks";
+import { useCartItems, useGuestCart } from "@/features/cart/hooks";
+import { useUser } from "@/features/auth/hooks";
 
 export default function CartPage() {
+    const { data: userData } = useUser();
+    const isLoggedIn = !!userData?.data;
+
     const { data, isPending } = useCartItems();
-    const cartItems = data?.data || [];
-    const isEmpty = !isPending && cartItems.length === 0;
+    const { items: guestItems } = useGuestCart();
+
+    const serverCartItems = data?.data || [];
+    const hasItems =
+        (isLoggedIn && !isPending && serverCartItems.length > 0) ||
+        guestItems.length > 0;
 
     return (
         <div className="cart-page-wrapper">
@@ -26,11 +34,7 @@ export default function CartPage() {
                     </p>
                 </div>
 
-                {isEmpty ? (
-                    <div className="w-full">
-                        <CartList />
-                    </div>
-                ) : (
+                {hasItems ? (
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
                         {/* Cart Items List */}
                         <div className="lg:col-span-3">
@@ -41,6 +45,10 @@ export default function CartPage() {
                         <div className="lg:col-span-1">
                             <CartSidebar />
                         </div>
+                    </div>
+                ) : (
+                    <div className="w-full">
+                        <CartList />
                     </div>
                 )}
             </main>

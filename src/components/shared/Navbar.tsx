@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, User2 } from "lucide-react";
 import { useLogout, useUser } from "@/features/auth/hooks";
 import { getToken } from "@/lib/token-service";
-import { useCart } from "@/features/cart/hooks";
+import { useCart, useGuestCart } from "@/features/cart/hooks";
 import { useWebSettings } from "@/features/settings/hooks";
 
 const navLinks = [
@@ -33,6 +33,8 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
   const { data: user } = useUser();
   const { data: cartData } = useCart();
   const cartCount = cartData?.data?.items_count || 0;
+  const { items: guestItems } = useGuestCart();
+  const guestCartCount = guestItems?.length || 0;
 
   useEffect(() => {
     setIsLoading(true);
@@ -125,13 +127,45 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
             </div>
           )}
 
-          {/* Auth section replaces empty space */}
-          {!isLoading && isAuth && (
-            <div className="desktop-auth" style={{ marginLeft: "16px", display: "flex", alignItems: "center" }}>
-              <AuthSection />
-            </div>
+          {/* Auth section replaces empty space / Guest Cart icon for Desktop */}
+          {!isLoading && (
+            isAuth ? (
+              <div className="desktop-auth" style={{ marginLeft: "16px", display: "flex", alignItems: "center" }}>
+                <AuthSection />
+              </div>
+            ) : (
+              <div className="desktop-auth" style={{ marginLeft: "16px", display: "flex", alignItems: "center" }}>
+                <Link
+                  href="/keranjang"
+                  style={{ position: "relative", color: "var(--text-secondary)", textDecoration: "none" }}
+                  aria-label="Keranjang"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  {guestCartCount > 0 && (
+                    <span style={{
+                      position: "absolute",
+                      top: -6,
+                      right: -6,
+                      background: "var(--terracotta)",
+                      color: "white",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      borderRadius: "50%",
+                      width: 16,
+                      height: 16,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}>
+                      {guestCartCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
+            )
           )}
 
+          {/* Mobile auth links */}
           {!isLoading && isAuth && (
             <div className="flex md:hidden items-center gap-2 mr-1">
               {/* Profile Link */}
@@ -163,6 +197,20 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
                   <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
               </button>
+            </div>
+          )}
+
+          {/* Mobile guest cart icon */}
+          {!isLoading && !isAuth && (
+            <div className="flex md:hidden items-center gap-2 mr-1">
+              <Link href="/keranjang" className="p-1 hover:bg-orange-50 rounded relative" aria-label="Keranjang">
+                <ShoppingCart className="w-5 h-5 text-[var(--text-secondary)]" />
+                {guestCartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[var(--terracotta)] text-white text-[9px] font-bold rounded-full w-4.5 h-4.5 flex items-center justify-center">
+                    {guestCartCount}
+                  </span>
+                )}
+              </Link>
             </div>
           )}
           <button className="nav-search-icon-btn" onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} aria-label="Cari">
@@ -331,6 +379,36 @@ export function Navbar({ withMenu = true }: { withMenu?: boolean }) {
 
           {!isLoading && !isAuth && (
             <>
+              <div className="drawer-divider"></div>
+              
+              <Link
+                href="/keranjang"
+                className={`drawer-nav-item ${pathname === '/keranjang' ? 'active' : ''}`}
+                onClick={() => setIsDrawerOpen(false)}
+                style={{ textDecoration: 'none', display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div className="drawer-nav-icon" style={{ background: "#E8F5E9" }}>🛒</div>
+                  <span>Keranjang</span>
+                </div>
+                {guestCartCount > 0 && (
+                  <span style={{
+                    background: "var(--terracotta)",
+                    color: "white",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    borderRadius: "50px",
+                    padding: "2px 8px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "4px"
+                  }}>
+                    {guestCartCount}
+                  </span>
+                )}
+              </Link>
+
               <div className="drawer-divider"></div>
               <div style={{ padding: "8px 4px", display: "flex", flexDirection: "column", gap: "10px" }}>
                 <Link

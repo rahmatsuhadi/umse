@@ -21,7 +21,10 @@ export function MediaPreview({ open, onOpenChange, media }: MediaPreviewProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         className="max-w-lg bg-white border border-[var(--cream-dark)] p-6 shadow-xl flex flex-col gap-4" 
-        style={{ borderRadius: "var(--radius-lg)" }}
+        style={{ 
+          borderRadius: "var(--radius-lg)",
+          padding: "28px"
+        }}
       >
         <DialogHeader className="border-b border-[var(--cream-dark)] pb-3">
           <DialogTitle className="text-lg font-extrabold text-[var(--text-primary)] flex items-center gap-2">

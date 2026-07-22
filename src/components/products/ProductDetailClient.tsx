@@ -106,6 +106,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage, imag
 
                     {/* WhatsApp CTA */}
                     <ProductStickyWA
+                        product={product}
                         productId={product.id}
                         productName={product.name}
                         productType={product.type}
@@ -114,6 +115,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage, imag
                         quantity={quantity}
                         phone={product.store?.user?.phone_number || product.store?.phone || ''}
                         isClosed={isClosed}
+                        hasNoQris={!product.store?.qris_url}
                     />
                 </div>
             </div>

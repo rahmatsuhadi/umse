@@ -134,13 +134,13 @@ const OrderCard: React.FC<OrderCardProps> = ({
               (order.status == "awaiting_payment" && order.payment_status == "unpaid") ||
               (order.status == "awaiting_payment" && order.payment_status == "pending") ||
               (order.status == "awaiting_payment" && order.payment_status == "rejected")) && (
-                <button
-                  onClick={() => viewPaymentStatus(order.id)}
+                <Link
+                  href={`/pembayaran/${order.id}/status`}
                   className="btn btn-secondary btn-sm"
                   style={{ color: "var(--terracotta)", borderColor: "var(--terracotta)", borderWidth: "1.5px" }}
                 >
                   Status Bayar
-                </button>
+                </Link>
               )}
 
             {order.payment_status == "rejected" && (

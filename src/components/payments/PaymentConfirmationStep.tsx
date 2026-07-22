@@ -23,6 +23,8 @@ import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
 import { Order } from "@/types";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
 import CheckoutItemCard from "@/components/checkouts/CheckoutItem";
+import CountdownTimer from "./CountDownPayment";
+import { ComparationCardPayment, PaymentGuideLinePayment, RejectedCardPayment } from "./PaymentAlertCard";
 import {
   Upload,
   X,
@@ -34,6 +36,7 @@ import {
   FileText,
   ShieldCheck,
   MapPin,
+  Clock,
 } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -79,11 +82,13 @@ export default function ConfirmationPage({
   id,
   order,
   backToPayment,
+  rejectionReason,
 }: {
   backToPayment: () => void;
   order: Order;
   id: string;
   currentStep: CheckoutStep;
+  rejectionReason?: string;
 }) {
   const form = useForm<PaymentConfirmationForm>({
     resolver: zodResolver(paymentConfirmationSchema),
@@ -175,6 +180,10 @@ export default function ConfirmationPage({
             <div className="flex flex-col lg:col-span-7 space-y-6">
               {/* Step Indicator */}
               <StepIndicator currentStep={step} />
+
+              {rejectionReason && (
+                <RejectedCardPayment reason={rejectionReason} />
+              )}
 
               {/* Kembali ke Pembayaran */}
               <button
@@ -433,10 +442,24 @@ export default function ConfirmationPage({
                   </Form>
                 </div>
               </div>
+
+              {rejectionReason && <ComparationCardPayment />}
             </div>
 
             {/* Right Column: Order Details Sidebar */}
             <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
+              {rejectionReason && (
+                <div className="flex items-center justify-between bg-[var(--cream)] border border-[var(--saffron)]/30 rounded-2xl px-4 py-3 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-[var(--saffron)]/10 rounded-xl flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-[var(--saffron)]" />
+                    </div>
+                    <span className="text-[var(--text-secondary)] text-sm font-semibold">Selesaikan sebelum:</span>
+                  </div>
+                  <CountdownTimer targetDate={order.payment_due_at} />
+                </div>
+              )}
+
               <div className="checkout-card" style={{ padding: "24px" }}>
                 {/* Header */}
                 <div className="checkout-header-section mb-4">
@@ -515,6 +538,8 @@ export default function ConfirmationPage({
                   </div>
                 </div>
               </div>
+
+              {rejectionReason && <PaymentGuideLinePayment />}
             </div>
           </div>
         </div>

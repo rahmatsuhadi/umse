@@ -11,6 +11,7 @@ import { SlemanFoodSections } from "@/components/home/SlemanFoodSections";
 import { useAddToCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
 
 function ProductsContent() {
     const searchParams = useSearchParams();
@@ -189,14 +190,26 @@ function ProductsContent() {
                                 </div>
                                 {(() => {
                                     const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
-                                    return isClosed ? (
-                                        <button
-                                            title="Toko sedang tutup"
-                                            className="cat-card-cart disabled"
-                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                    const hasNoQris = !product.store?.qris_url;
+                                    return isClosed || hasNoQris ? (
+                                        <span
+                                            title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                toast.error("Gagal menambahkan ke keranjang", {
+                                                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                                                });
+                                            }}
+                                            style={{ display: "inline-flex" }}
                                         >
-                                            <ShoppingCart size={16} />
-                                        </button>
+                                            <button
+                                                className="cat-card-cart disabled"
+                                                style={{ pointerEvents: "none" }}
+                                            >
+                                                <ShoppingCart size={16} />
+                                            </button>
+                                        </span>
                                     ) : (
                                         <button
                                             title="Tambahkan ke Keranjang"

@@ -4,11 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAddToCart } from "@/features/cart/hooks";
+import { useAddToCart, useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
+import type { Product } from "@/types";
 
 export interface CatCardProps {
+    product?: Product;
     id: number | string;
     name: string;
     shop: string;
@@ -28,6 +31,7 @@ export interface CatCardProps {
     type?: string;
     hourPill?: { state: 'open' | 'closing-soon' | 'closed'; text: string; pillClass: string } | null;
     phone?: string;
+    qrisUrl?: string;
     className?: string;
 }
 
@@ -38,13 +42,36 @@ export function CatCard(p: CatCardProps) {
     const pathname = usePathname();
     const { data: user } = useUser();
     const { mutate: addToCart, isPending } = useAddToCart();
+    const { addItem: addToGuestCart } = useGuestCart();
     const grayStyle = isClosed ? { filter: "grayscale(100%) brightness(0.72)" } : {};
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         if (!user) {
-            router.push(`/masuk?redirect=${pathname}`);
+            if (p.product) {
+                const product = p.product;
+                addToGuestCart({
+                    product_id: String(product.id),
+                    quantity: 1,
+                    product_name: product.name,
+                    product_thumbnail: product.thumbnail?.media_url || product.media?.[0]?.media_url || '',
+                    product_price_value: product.price?.value || 0,
+                    product_price_formatted: product.price?.formatted || '',
+                    store_id: product.store.id,
+                    store_name: product.store.name,
+                    store_logo_url: product.store.logo_url || '',
+                    store_address: product.store.address || '',
+                    store_slug: product.store.slug,
+                    store_qris_url: product.store.qris_url,
+                    store_village_id: product.store.village_id != null ? String(product.store.village_id) : undefined,
+                    store_district_id: product.store.district_id != null ? String(product.store.district_id) : undefined,
+                    store_regency_id: product.store.regency_id != null ? String(product.store.regency_id) : undefined,
+                    store_description: product.store.description,
+                });
+            } else {
+                router.push(`/masuk?redirect=${pathname}`);
+            }
             return;
         }
         addToCart({
@@ -134,17 +161,25 @@ export function CatCard(p: CatCardProps) {
                             )}
                         </div>
                     </div>
-                    {isClosed ? (
-                        <button
-                            className="cat-card-cart disabled"
-                            title="Toko sedang tutup"
+                    {isClosed || !p.qrisUrl ? (
+                        <span
+                            title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+                                toast.error("Gagal menambahkan ke keranjang", {
+                                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                                });
                             }}
+                            style={{ display: "inline-flex" }}
                         >
-                            <ShoppingCart size={16} />
-                        </button>
+                            <button
+                                className="cat-card-cart disabled"
+                                style={{ pointerEvents: "none" }}
+                            >
+                                <ShoppingCart size={16} />
+                            </button>
+                        </span>
                     ) : (
                         <button
                             className="cat-card-cart"

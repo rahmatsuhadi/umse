@@ -12,7 +12,7 @@ import {
 import type { User, LoginCredentials, RegisterData } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { removeToken } from "@/lib/token-service";
+import { removeToken, getToken } from "@/lib/token-service";
 
 /**
  * Hook untuk mengambil data pengguna yang sedang login.
@@ -24,6 +24,7 @@ export const useUser = () => {
     queryFn: getMe, // Fungsi API yang dipanggil
     refetchOnWindowFocus: false,
     retry: false, // Jangan coba ulang jika gagal (misal, karena belum login)
+    enabled: typeof window !== "undefined" && !!getToken(),
   });
 };
 

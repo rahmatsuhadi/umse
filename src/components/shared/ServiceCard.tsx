@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useAddToCart } from "@/features/cart/hooks";
+import { useAddToCart, useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
-import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -38,15 +38,31 @@ interface ServiceCardProps {
 export function ServiceCard({ product: p, className }: ServiceCardProps) {
     const [imgError, setImgError] = useState(false);
     const { data: user } = useUser();
-    const router = useRouter();
-    const pathname = usePathname();
     const { mutate: addToCart, isPending } = useAddToCart();
+    const { addItem: addToGuestCart } = useGuestCart();
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         if (!user) {
-            router.push(`/masuk?redirect=${pathname}`);
+            addToGuestCart({
+                product_id: String(p.id),
+                quantity: 1,
+                product_name: p.name,
+                product_thumbnail: p.thumbnail?.media_url || p.media?.[0]?.media_url || '',
+                product_price_value: p.price?.value || 0,
+                product_price_formatted: p.price?.formatted || '',
+                store_id: p.store.id,
+                store_name: p.store.name,
+                store_logo_url: p.store.logo_url || '',
+                store_address: p.store.address || '',
+                store_slug: p.store.slug,
+                store_qris_url: p.store.qris_url,
+                store_village_id: p.store.village_id != null ? String(p.store.village_id) : undefined,
+                store_district_id: p.store.district_id != null ? String(p.store.district_id) : undefined,
+                store_regency_id: p.store.regency_id != null ? String(p.store.regency_id) : undefined,
+                store_description: p.store.description,
+            });
             return;
         }
         addToCart({
@@ -168,17 +184,25 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                             {/* ⭐ {ratingDisplay} &nbsp;·&nbsp; */} {soldCount} dipesan
                         </div>
                     </div>
-                    {isClosed ? (
-                        <button
-                            className="cat-card-cart disabled"
-                            title="Toko sedang tutup"
+                    {isClosed || !p.store?.qris_url ? (
+                        <span
+                            title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+                                toast.error("Gagal menambahkan ke keranjang", {
+                                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                                });
                             }}
+                            style={{ display: "inline-flex" }}
                         >
-                            <ShoppingCart size={16} />
-                        </button>
+                            <button
+                                className="cat-card-cart disabled"
+                                style={{ pointerEvents: "none" }}
+                            >
+                                <ShoppingCart size={16} />
+                            </button>
+                        </span>
                     ) : (
                         <button
                             className="cat-card-cart"

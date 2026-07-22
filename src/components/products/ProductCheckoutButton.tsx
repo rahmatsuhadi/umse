@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { Price, Product, Variant } from "@/types";
 import { useAddToCart } from "@/features/cart/hooks";
+import { useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -354,6 +355,7 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { mutate: addToCart, isPending } = useAddToCart();
+  const { addItem: addToGuestCart } = useGuestCart();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleAddToCart = ({
@@ -364,7 +366,30 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     quantity: number;
   }) => {
     if (!isAuth) {
-      router.push(`/masuk?redirect=${pathname}`);
+      // Guest: simpan ke localStorage
+      const price = selectedVariant ? selectedVariant.price : product.price;
+      addToGuestCart({
+        product_id: product.id,
+        variant_id: selectedVariant?.id,
+        quantity,
+        product_name: product.name,
+        product_thumbnail: product.thumbnail?.media_url || '',
+        product_price_value: product.price?.value || 0,
+        product_price_formatted: product.price?.formatted || '',
+        variant_name: selectedVariant?.name,
+        variant_price_value: selectedVariant ? price?.value : undefined,
+        variant_price_formatted: selectedVariant ? price?.formatted : undefined,
+        store_id: product.store.id,
+        store_name: product.store.name,
+        store_logo_url: product.store.logo_url || '',
+        store_address: product.store.address || '',
+        store_slug: product.store.slug,
+        store_qris_url: product.store.qris_url,
+        store_village_id: product.store.village_id != null ? String(product.store.village_id) : undefined,
+        store_district_id: product.store.district_id != null ? String(product.store.district_id) : undefined,
+        store_regency_id: product.store.regency_id != null ? String(product.store.regency_id) : undefined,
+        store_description: product.store.description,
+      });
       return;
     }
     const reqData: { product_id: string; quantity: number; variant_id?: string } = {

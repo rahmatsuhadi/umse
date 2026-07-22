@@ -72,6 +72,7 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
 
     return (
         <CatCard
+            product={p}
             id={p.id}
             name={p.name}
             shop={p.store?.name || "UMKM Sleman"}
@@ -90,6 +91,7 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
             closeHour={closeHour}
             hourPill={hourPill}
             phone={p.store?.user?.phone_number || p.store?.phone || ""}
+            qrisUrl={p.store?.qris_url}
             className={className}
         />
     );

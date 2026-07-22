@@ -2,10 +2,10 @@ import { Product } from "@/types";
 import { useInView } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-import { useAddToCart } from "@/features/cart/hooks";
+import { useAddToCart, useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
-import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
 
 interface CardProductProps {
   product: Product;
@@ -36,15 +36,31 @@ export const ProductCard = ({ product }: CardProductProps) => {
   const priceDisplay = `Rp ${price.value.toLocaleString()}`;
 
   const { data: user } = useUser();
-  const router = useRouter();
-  const pathname = usePathname();
   const { mutate: addToCart, isPending } = useAddToCart();
+  const { addItem: addToGuestCart } = useGuestCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
-      router.push(`/masuk?redirect=${pathname}`);
+      addToGuestCart({
+        product_id: product.id,
+        quantity: 1,
+        product_name: product.name,
+        product_thumbnail: product.thumbnail?.media_url || '',
+        product_price_value: product.price?.value || 0,
+        product_price_formatted: product.price?.formatted || '',
+        store_id: product.store.id,
+        store_name: product.store.name,
+        store_logo_url: product.store.logo_url || '',
+        store_address: product.store.address || '',
+        store_slug: product.store.slug,
+        store_qris_url: product.store.qris_url,
+        store_village_id: product.store.village_id != null ? String(product.store.village_id) : undefined,
+        store_district_id: product.store.district_id != null ? String(product.store.district_id) : undefined,
+        store_regency_id: product.store.regency_id != null ? String(product.store.regency_id) : undefined,
+        store_description: product.store.description,
+      });
       return;
     }
     addToCart({
@@ -103,15 +119,27 @@ export const ProductCard = ({ product }: CardProductProps) => {
           </div>
           {(() => {
             const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
-            return isClosed ? (
-              <button
-                type="button"
-                className="cat-card-cart disabled"
-                title="Toko sedang tutup"
-                onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+            const hasNoQris = !product.store?.qris_url;
+            return isClosed || hasNoQris ? (
+              <span
+                title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  toast.error("Gagal menambahkan ke keranjang", {
+                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                  });
+                }}
+                style={{ display: "inline-flex" }}
               >
-                <ShoppingCart size={16} />
-              </button>
+                <button
+                  type="button"
+                  className="cat-card-cart disabled"
+                  style={{ pointerEvents: "none" }}
+                >
+                  <ShoppingCart size={16} />
+                </button>
+              </span>
             ) : (
               <button
                 type="button"

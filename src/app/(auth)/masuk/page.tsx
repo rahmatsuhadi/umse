@@ -13,6 +13,7 @@ import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from "lucide-
 
 import { useLogin } from "@/features/auth/hooks";
 import { getToken, setToken } from "@/lib/token-service";
+import { useSyncGuestCart } from "@/features/cart/hooks";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -38,6 +39,7 @@ export default function LoginPage() {
   const captchaRef = useRef<ReCAPTCHA>(null);
 
   const { mutate: handleLogin, isPending } = useLogin();
+  const { syncGuestCart } = useSyncGuestCart();
 
   useEffect(() => {
     const token = getToken();
@@ -61,13 +63,16 @@ export default function LoginPage() {
         redirectUrl,
       },
       {
-        onSuccess: ({ data }, variables) => {
+        onSuccess: async ({ data }, variables) => {
           queryClient.setQueryData(["user"], data.user);
           if (data.token) setToken(data.token);
 
           toast.success("Login Berhasil", {
             description: `Selamat datang kembali, ${data.user.name}.`,
           });
+
+          // Sync guest cart ke server cart
+          await syncGuestCart();
 
           captchaRef.current?.reset();
           setCaptchaToken(null);

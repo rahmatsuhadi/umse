@@ -14,6 +14,7 @@ import { formatDate } from "@/lib/format-date";
 import { getStatusBadgeClass } from "../lib";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MediaPreview } from "@/components/shared/MediaPreview";
+import { ComplaintMedia } from "@/types";
 
 type Props = {
   open: boolean;
@@ -89,7 +90,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
             </div>
 
             {/* Status Detail Section Banner */}
-            <div className={`p-4 ${bannerStyle.bg} border rounded-[var(--radius-md)] text-sm space-y-3`}  style={{padding: "5px"}}>
+            <div className={`p-4 ${bannerStyle.bg} border rounded-[var(--radius-md)] text-sm space-y-3`}>
               <div className="flex items-center gap-3">
                 <i className={`${bannerStyle.icon} ${bannerStyle.text} text-2xl flex-shrink-0`}></i>
                 <div className="flex-1 space-y-1">
@@ -242,6 +243,71 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
             {/* Items Container */}
             <div className="py-4 space-y-5">
+              {/* Detail Komplain Card */}
+              {order.has_complaint && order.complaint && (
+                <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300" style={{ marginBottom: "5px" }}>
+                  <div className="flex items-center justify-between gap-2.5 pb-2.5 border-b border-[var(--cream-dark)] mb-3">
+                    <div className="flex items-center gap-2">
+                      <i className="fas fa-exclamation-circle text-[var(--terracotta)] text-sm"></i>
+                      <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Detail Komplain</h4>
+                    </div>
+                    <span className={
+                      order.complaint.status === 'pending' || order.complaint.status === 'in_progress'
+                        ? "badge badge-saffron"
+                        : order.complaint.status === 'resolved'
+                          ? "badge badge-forest"
+                          : order.complaint.status === 'rejected'
+                            ? "badge badge-terracotta"
+                            : "badge"
+                    }>
+                      {order.complaint.status === 'pending' ? 'Komplain Diajukan'
+                        : order.complaint.status === 'in_progress' ? 'Komplain Diproses'
+                          : order.complaint.status === 'resolved' ? 'Komplain Selesai'
+                            : order.complaint.status === 'rejected' ? 'Komplain Ditolak'
+                              : 'Komplain'}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs sm:text-sm pl-6">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                      <span className="text-[var(--text-muted)] font-semibold">No. Tiket:</span>
+                      <span className="font-bold text-[var(--text-primary)]">#{order.complaint.ticket_number}</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                      <span className="text-[var(--text-muted)] font-semibold">Kategori:</span>
+                      <span className="font-bold text-[var(--text-primary)] capitalize">
+                        {order.complaint.category === 'payment' ? 'Pembayaran'
+                          : order.complaint.category === 'product' ? 'Produk'
+                          : order.complaint.category === 'shipping' ? 'Pengiriman'
+                          : order.complaint.category === 'account' ? 'Akun'
+                          : order.complaint.category === 'app' ? 'Aplikasi'
+                          : 'Lainnya'}
+                      </span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                      <span className="text-[var(--text-muted)] font-semibold">Judul Masalah:</span>
+                      <span className="font-bold text-[var(--text-primary)]">{order.complaint.title}</span>
+                    </div>
+                    
+                    <div className="mt-3 p-3 bg-[var(--cream)] rounded-[var(--radius-sm)] border border-[var(--cream-dark)]/40">
+                      <span className="text-[var(--text-muted)] text-xs font-bold block mb-1">Deskripsi Masalah:</span>
+                      <p className="text-[var(--text-secondary)] text-xs leading-relaxed whitespace-pre-wrap">{order.complaint.description}</p>
+                    </div>
+
+                    {order.complaint.desired_action && (
+                      <div className="mt-2.5 pt-2.5 border-t border-[var(--cream-dark)]/40 flex flex-col sm:flex-row sm:justify-between gap-1">
+                        <span className="text-[var(--text-muted)] font-semibold">Solusi yang Diinginkan:</span>
+                        <span className="font-bold text-[var(--terracotta-dark)]">{order.complaint.desired_action}</span>
+                      </div>
+                    )}
+
+                    {order.complaint.media && order.complaint.media.length > 0 && (
+                      <ComplaintProofs media={order.complaint.media} />
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <i className="fas fa-shopping-bag text-[var(--terracotta)] text-sm"></i>
@@ -282,7 +348,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
               </div>
 
               {/* Address Card */}
-              <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300" style={{marginBottom:"5px", padding: "5px"}}>
+              <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300" style={{marginBottom:"5px"}}>
                 <div className="flex items-start gap-2.5 mb-2">
                   <i className="fas fa-map-marker-alt text-[var(--terracotta)] text-base mt-0.5"></i>
                   <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Alamat Pengiriman</h4>
@@ -304,7 +370,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
               </div>
 
               {/* Payment Summary Card */}
-              <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 space-y-3.5 shadow-sm" style={{marginBottom:"5px", padding:"5px"}}>
+              <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 space-y-3.5 shadow-sm" style={{marginBottom:"5px"}}>
                 <div className="flex items-center gap-2 mb-1">
                   <i className="fas fa-wallet text-[var(--terracotta)] text-sm"></i>
                   <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Ringkasan Pembayaran</h4>
@@ -335,7 +401,7 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
               {/* Shipping Notes */}
               {order.shipping_notes && (
-                <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-4 shadow-sm" style={{marginBottom:"5px", padding: "5px"}}>
+                <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-4 shadow-sm" style={{marginBottom:"5px"}}>
                   <div className="flex items-center gap-2 mb-2">
                     <i className="fas fa-info-circle text-[var(--terracotta)] text-sm"></i>
                     <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Catatan Pengiriman</h4>
@@ -370,8 +436,8 @@ function ShippingProofs({ proofs }: ShippingProofsProps) {
   if (!proofs || proofs.length === 0) return null;
 
   return (
-    <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-4 shadow-sm" style={{marginBottom:"5px", padding: "5px"}}>
-      <div className="flex items-center gap-2 mb-3" style={{padding:"5px"}}>
+    <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-4 shadow-sm" style={{marginBottom:"5px"}}>
+      <div className="flex items-center gap-2 mb-3">
         <i className="fas fa-camera text-[var(--terracotta)] text-sm"></i>
         <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Bukti Pengiriman</h4>
       </div>
@@ -404,6 +470,51 @@ function ShippingProofs({ proofs }: ShippingProofsProps) {
     </div>
   );
 }
+
+interface ComplaintProofsProps {
+  media: ComplaintMedia[];
+}
+
+function ComplaintProofs({ media }: ComplaintProofsProps) {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  if (!media || media.length === 0) return null;
+
+  return (
+    <div className="mt-3">
+      <span className="text-[var(--text-muted)] text-xs font-bold block mb-2">
+        Bukti Pendukung:
+      </span>
+      <div className="grid grid-cols-3 gap-2">
+        {media.map((med, i) => (
+          <div
+            key={i}
+            onClick={() => setSelectedImage(med.media_url)}
+            className="relative w-full h-20 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-[var(--radius-sm)] overflow-hidden cursor-pointer hover:border-[var(--terracotta)] transition-all duration-300 shadow-xs"
+          >
+            <Image
+              src={med.media_url}
+              alt={med.name || `Bukti Komplain ${i + 1}`}
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+        ))}
+      </div>
+      {selectedImage && (
+        <MediaPreview
+          open={!!selectedImage}
+          onOpenChange={() => setSelectedImage(null)}
+          media={{
+            type: "image",
+            url: selectedImage || '',
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
 
 const OrderDetailModalSkeleton = () => {
   return (
