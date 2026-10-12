@@ -184,7 +184,7 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                             {/* ⭐ {ratingDisplay} &nbsp;·&nbsp; */} {soldCount} dipesan
                         </div>
                     </div>
-                    {isClosed || !p.store?.qris_url ? (
+                    {isClosed || !p.store?.nmid ? (
                         <span
                             title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
                             onClick={(e) => {

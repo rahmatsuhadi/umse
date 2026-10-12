@@ -57,6 +57,7 @@ export interface Order {
     created_at: string
     total: Price
     shipping_proof_images: string[]
-
-
+    qr_string?: string | null
+    va_number?: string | null
+    payment_expired_at?: string | null
 }

@@ -6,8 +6,34 @@ import CountdownTimer from "./CountDownPayment";
 import { formatDate } from "@/lib/format-date";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import { animationVariants } from "@/components/checkouts/CheckoutItemPageStep";
-import { Clock, CheckCircle, Smartphone, QrCode, AlertCircle } from "lucide-react";
+import {
+  Clock,
+  CheckCircle,
+  Smartphone,
+  QrCode,
+  AlertCircle,
+  Loader2,
+  RefreshCw,
+  Download,
+  Copy,
+} from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
+import { useCallback, useEffect, useState } from "react";
+import QRCode from "react-qr-code";
+import { apiClient } from "@/lib/api-client";
+import { toast } from "sonner";
+
+interface QrisResponseData {
+  nmid: string;
+  terminal_label: string;
+  amount: string;
+  type?: string | null;
+  invoice_id: string;
+  callback_url: string;
+  qr_string: string;
+  expired_time: string;
+  created_at: string;
+}
 
 export default function PaymentStep({
   currentStep: step,
@@ -21,9 +47,104 @@ export default function PaymentStep({
   const allowedStatuses = ["unpaid", "partially_paid", "rejected", "expired"];
 
   const now = new Date();
-  const paid_expired_at = new Date(order.payment_due_at);
+  const paymentExpiryDate = order.payment_expired_at || order.payment_due_at;
+  const paid_expired_at = new Date(paymentExpiryDate);
   const isAllowed = allowedStatuses.includes(order.payment_status);
   const isPaymentExpired = paid_expired_at <= now;
+
+  const [qrisData, setQrisData] = useState<QrisResponseData | null>(null);
+  const [isLoadingQris, setIsLoadingQris] = useState<boolean>(false);
+  const [qrisError, setQrisError] = useState<string | null>(null);
+
+  // Gunakan qr_string yang sudah tersimpan di order, atau dari respons API
+  const effectiveQrString = order.qr_string || qrisData?.qr_string || null;
+
+  const fetchBpdQris = useCallback(async () => {
+    // Jika qr_string sudah tersedia di order, tidak perlu hit API lagi
+    if (order.qr_string) {
+      return;
+    }
+
+    const nmid = order.store?.nmid;
+
+    setIsLoadingQris(true);
+    setQrisError(null);
+
+    try {
+      const amountVal = order.total.value ?? Number(order.total.amount) ?? 0;
+      const res = await apiClient<{ data: QrisResponseData; message: string; status: string }>(
+        "/qris/create",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            nmid,
+            amount: String(amountVal),
+            invoice_id: order.order_number,
+          }),
+        }
+      );
+
+      if (res?.data?.qr_string) {
+        setQrisData(res.data);
+      } else {
+        throw new Error(res.message || "Gagal mendapatkan kode QRIS dari Bank BPD DIY.");
+      }
+    } catch (err: any) {
+      console.error("[BPD QRIS Error]:", err);
+      setQrisError(err.message || "Gagal membuat QRIS Bank BPD DIY.");
+    } finally {
+      setIsLoadingQris(false);
+    }
+  }, [order.qr_string, order.store?.nmid, order.total, order.order_number]);
+
+  useEffect(() => {
+    // Lakukan hit createQris hanya jika qr_string belum ada di database
+    if (!order.qr_string && !qrisData?.qr_string) {
+      fetchBpdQris();
+    }
+  }, [fetchBpdQris, order.qr_string, qrisData?.qr_string]);
+
+  const downloadQrCode = () => {
+    const svg = document.getElementById("bpd-qris-svg");
+    if (!svg) {
+      toast.error("Kode QR tidak ditemukan.");
+      return;
+    }
+
+    try {
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new window.Image();
+      img.setAttribute("src", "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData))));
+
+      img.onload = () => {
+        canvas.width = 440;
+        canvas.height = 440;
+        if (ctx) {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, 440, 440);
+          ctx.drawImage(img, 20, 20, 400, 400);
+        }
+        const pngFile = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `QRIS-${order.order_number || "bpd"}.png`;
+        downloadLink.href = pngFile;
+        downloadLink.click();
+        toast.success("QRIS berhasil diunduh!");
+      };
+    } catch {
+      toast.error("Gagal mengunduh QRIS.");
+    }
+  };
+
+  const copyQrString = () => {
+    const str = effectiveQrString;
+    if (str) {
+      navigator.clipboard.writeText(str);
+      toast.success("String QRIS berhasil disalin!");
+    }
+  };
 
   const onPaymentSubmit = () => {
     onConfirmation();
@@ -61,17 +182,64 @@ export default function PaymentStep({
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex flex-col items-center h-full justify-between gap-4">
                       {/* QR Code Frame */}
-                      <div className="relative mb-3">
+                      <div className="relative mb-2">
                         <div className="absolute inset-0 bg-gradient-to-br from-[var(--terracotta)]/10 to-transparent rounded-2xl blur-xl" />
                         <div className="relative bg-white border-2 border-[var(--cream-dark)] rounded-2xl p-5 shadow-lg">
-                          <div className="w-60 h-60 flex items-center justify-center rounded-xl overflow-hidden bg-white">
-                            <Image
-                              src={order.store.qris_url}
-                              width={240}
-                              height={240}
-                              alt="Order QRIS"
-                              className="w-full h-full object-contain"
-                            />
+                          <div className="w-60 h-60 flex flex-col items-center justify-center rounded-xl overflow-hidden bg-white">
+                            {isLoadingQris ? (
+                              <div className="flex flex-col items-center justify-center gap-3 p-4 text-center">
+                                <Loader2 className="w-8 h-8 animate-spin text-[var(--terracotta)]" />
+                                <span className="text-xs font-semibold text-[var(--text-primary)]">
+                                  Menghubungkan ke Bank BPD DIY...
+                                </span>
+                                <span className="text-[11px] text-[var(--text-muted)]">
+                                  Menyiapkan QRIS Dinamis
+                                </span>
+                              </div>
+                            ) : effectiveQrString ? (
+                              <div className="flex flex-col items-center justify-center p-2">
+                                <QRCode
+                                  id="bpd-qris-svg"
+                                  size={216}
+                                  style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                                  value={effectiveQrString}
+                                  viewBox="0 0 256 256"
+                                />
+                              </div>
+                            ) : qrisError ? (
+                              <div className="flex flex-col items-center justify-center gap-2 p-4 text-center">
+                                <AlertCircle className="w-8 h-8 text-amber-500" />
+                                <span className="text-xs font-semibold text-[var(--text-primary)]">
+                                  Gagal memuat QRIS BPD
+                                </span>
+                                <span className="text-[10px] text-[var(--text-muted)] line-clamp-2">
+                                  {qrisError}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={fetchBpdQris}
+                                  className="mt-1 flex items-center gap-1.5 px-3 py-1.5 bg-[var(--cream)] hover:bg-[var(--cream-dark)] text-xs font-semibold text-[var(--terracotta)] rounded-lg transition-colors border border-[var(--cream-dark)]"
+                                >
+                                  <RefreshCw className="w-3.5 h-3.5" />
+                                  Coba Lagi
+                                </button>
+                              </div>
+                            ) : order.store?.qris_url ? (
+                              <Image
+                                src={order.store.qris_url}
+                                width={240}
+                                height={240}
+                                alt="Order QRIS"
+                                className="w-full h-full object-contain"
+                              />
+                            ) : (
+                              <div className="flex flex-col items-center justify-center gap-2 p-4 text-center">
+                                <QrCode className="w-10 h-10 text-[var(--text-muted)] opacity-40" />
+                                <span className="text-xs text-[var(--text-muted)]">
+                                  QRIS tidak tersedia
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         {/* Corner accents */}
@@ -80,6 +248,45 @@ export default function PaymentStep({
                         <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[var(--terracotta)] rounded-bl-md" />
                         <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[var(--terracotta)] rounded-br-md" />
                       </div>
+
+                      {/* Download / Copy Action Buttons */}
+                      {effectiveQrString && (
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={downloadQrCode}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[var(--cream-dark)] hover:border-[var(--terracotta)] text-[11px] font-semibold text-[var(--text-secondary)] hover:text-[var(--terracotta)] rounded-lg shadow-sm transition-all"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            Unduh QR Code
+                          </button>
+                          <button
+                            type="button"
+                            onClick={copyQrString}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[var(--cream-dark)] hover:border-[var(--terracotta)] text-[11px] font-semibold text-[var(--text-secondary)] hover:text-[var(--terracotta)] rounded-lg shadow-sm transition-all"
+                            title="Salin String EMVCo QRIS"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                            Salin Kode
+                          </button>
+                        </div>
+                      )}
+
+                      {/* BPD DIY Merchant Info */}
+                      {(order.store?.nmid || qrisData?.nmid) && (
+                        <div className="text-center px-4 py-2 bg-[var(--cream)]/60 border border-[var(--cream-dark)] rounded-xl w-full max-w-xs">
+                          <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-[var(--text-primary)]">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>QRIS Dinamis Bank BPD DIY</span>
+                          </div>
+                          <div className="text-[10px] text-[var(--text-muted)] mt-0.5 flex items-center justify-center gap-2">
+                            <span>NMID: <strong className="text-[var(--text-primary)]">{order.store?.nmid || qrisData?.nmid}</strong></span>
+                            {(qrisData?.invoice_id || order.order_number) && (
+                              <span>• Inv: <strong className="text-[var(--text-primary)]">{qrisData?.invoice_id || order.order_number}</strong></span>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="text-center">
                         <h4 className="text-base font-bold text-[var(--text-primary)] mb-1">
@@ -102,10 +309,17 @@ export default function PaymentStep({
                           <div className="w-7 h-7 bg-[var(--saffron)]/10 rounded-lg flex items-center justify-center">
                             <Clock className="w-4 h-4 text-[var(--saffron)]" />
                           </div>
-                          <span className="text-[var(--text-secondary)] text-xs font-semibold">Batas pembayaran:</span>
+                          <div className="flex flex-col">
+                            <span className="text-[var(--text-secondary)] text-xs font-semibold">Batas pembayaran:</span>
+                            {paymentExpiryDate && (
+                              <span className="text-[10px] text-[var(--text-muted)]">
+                                {formatDate(paymentExpiryDate)}
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <span id="countdown" className="text-xs">
-                          <CountdownTimer targetDate={order.payment_due_at} />
+                          <CountdownTimer targetDate={paymentExpiryDate} />
                         </span>
                       </div>
 

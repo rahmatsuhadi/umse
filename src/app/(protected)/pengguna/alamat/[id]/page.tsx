@@ -45,10 +45,18 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { normalizePhoneNumber } from "@/components/checkouts/CheckoutForm";
 
 const addressSchema = z.object({
   recipient_name: z.string().min(1, "Nama penerima wajib diisi."),
-  recipient_phone_number: z.string().min(10, "Nomor telepon tidak valid."),
+  recipient_phone_number: z
+    .string()
+    .min(1, "Nomor telepon wajib diisi.")
+    .transform((val) => normalizePhoneNumber(val))
+    .refine(
+      (val) => /^08[0-9]{8,12}$/.test(val),
+      "Nomor telepon tidak valid. Gunakan format nomor ponsel Indonesia (contoh: 08123456789)."
+    ),
   address: z.string().min(1, "Alamat lengkap wajib diisi."),
   province_id: z.string().min(1, "Provinsi wajib dipilih."),
   regency_id: z.string().min(1, "Kabupaten/Kota wajib dipilih."),
@@ -110,7 +118,7 @@ export default function EditAddressPage({}: FormAddressPageProps) {
     if (existingAddress) {
       form.reset({
         recipient_name: existingAddress.recipient_name || "",
-        recipient_phone_number: existingAddress.recipient_phone_number || "",
+        recipient_phone_number: existingAddress.recipient_phone_number ? normalizePhoneNumber(existingAddress.recipient_phone_number) : "",
         address: existingAddress.address || "",
         postal_code: String(existingAddress.postal_code || ""),
         province_id: existingAddress.province_id ? String(existingAddress.province_id) : "",

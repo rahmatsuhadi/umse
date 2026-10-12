@@ -16,6 +16,7 @@ export interface Store {
   description: string;
   address: string;
   qris_url?: string;
+  nmid?: string;
   instagram?: string;
   facebook?: string;
   tiktok?: string;

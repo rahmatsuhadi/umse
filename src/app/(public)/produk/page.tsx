@@ -190,7 +190,7 @@ function ProductsContent() {
                                 </div>
                                 {(() => {
                                     const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
-                                    const hasNoQris = !product.store?.qris_url;
+                                    const hasNoQris = !product.store?.nmid;
                                     return isClosed || hasNoQris ? (
                                         <span
                                             title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}

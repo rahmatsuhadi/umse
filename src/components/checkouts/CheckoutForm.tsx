@@ -36,11 +36,31 @@ import { useUser } from "@/features/auth/hooks";
 import { addAddress, setDefaultAddress } from "@/features/address/api";
 import { Loader2, User2, Phone, Home, MapPin } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
+import { toast } from "sonner";
+
+export const normalizePhoneNumber = (phone: string): string => {
+  let cleaned = phone.replace(/[\s\-()]/g, "");
+  if (cleaned.startsWith("+62")) {
+    cleaned = "0" + cleaned.slice(3);
+  } else if (cleaned.startsWith("62")) {
+    cleaned = "0" + cleaned.slice(2);
+  } else if (cleaned.startsWith("8")) {
+    cleaned = "0" + cleaned;
+  }
+  return cleaned;
+};
 
 // Skema validasi dengan Zod
 const addressSchema = z.object({
   recipientName: z.string().min(1, "Nama penerima wajib diisi."),
-  recipientPhone: z.string().min(10, "Nomor telepon tidak valid."),
+  recipientPhone: z
+    .string()
+    .min(1, "Nomor telepon wajib diisi.")
+    .transform((val) => normalizePhoneNumber(val))
+    .refine(
+      (val) => /^08[0-9]{8,12}$/.test(val),
+      "Nomor telepon tidak valid. Gunakan format nomor ponsel Indonesia (contoh: 08123456789)."
+    ),
   fullAddress: z.string().min(1, "Alamat lengkap wajib diisi."),
   province_id: z.string().min(1, "Province wajib dipilih."),
   regency_id: z.string().min(1, "Kabupaten/Kota wajib dipilih."),
@@ -102,7 +122,7 @@ export default function CheckoutForm({
     if (address) {
       form.reset({
         recipientName: address.recipient_name ?? "",
-        recipientPhone: address.recipient_phone_number ?? "",
+        recipientPhone: address.recipient_phone_number ? normalizePhoneNumber(address.recipient_phone_number) : "",
         fullAddress: address.address ?? "",
         province_id: String(address.province_id),
         regency_id: String(address.regency_id),
@@ -114,7 +134,7 @@ export default function CheckoutForm({
     } else if (user) {
       form.reset({
         recipientName: user.name ?? "",
-        recipientPhone: user.phone_number ?? "",
+        recipientPhone: user.phone_number ? normalizePhoneNumber(user.phone_number) : "",
         fullAddress: "",
         province_id: "",
         regency_id: "",
@@ -137,7 +157,7 @@ export default function CheckoutForm({
         // Simpan data alamat baru
         const newAddress = await addAddress({
           recipient_name: data.recipientName,
-          recipient_phone_number: data.recipientPhone.replace(/\s+/g, ""),
+          recipient_phone_number: data.recipientPhone,
           address: data.fullAddress,
           province_id: Number(data.province_id),
           regency_id: Number(data.regency_id),
@@ -180,15 +200,16 @@ export default function CheckoutForm({
           regency_id: Number(data.regency_id),
           village_id: Number(data.village_id),
           recipient_name: data.recipientName,
-          recipient_phone_number: data.recipientPhone.replace(/\s+/g, ""),
+          recipient_phone_number: data.recipientPhone,
           postal_code: Number(data.postalCode),
           note: data.note,
         },
       };
 
       await createOrderMutate(orderData);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Gagal memproses alamat atau pesanan:", error);
+      toast.error(error?.message || "Gagal memproses alamat atau pesanan");
     } finally {
       setIsSubmitting(false);
     }
