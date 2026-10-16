@@ -12,7 +12,7 @@ interface OrderCardProps {
   onCompleteOrder: () => void;
   onDeliveredOrder: () => void;
   openReviewModal: (item: ShippingItem) => void;
-  viewPaymentStatus: (id: string) => void;
+  viewPaymentStatus?: (id: string) => void;
   onComplainOrder: (order: Order) => void;
 }
 
@@ -22,7 +22,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
   onCompleteOrder,
   onDeliveredOrder,
   openReviewModal,
-  viewPaymentStatus,
   onComplainOrder,
 }) => {
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);

@@ -207,9 +207,15 @@ export default function CheckoutForm({
       };
 
       await createOrderMutate(orderData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Gagal memproses alamat atau pesanan:", error);
-      toast.error(error?.message || "Gagal memproses alamat atau pesanan");
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message: unknown }).message)
+          : "Gagal memproses alamat atau pesanan";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

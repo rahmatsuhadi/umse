@@ -89,9 +89,15 @@ export default function PaymentStep({
       } else {
         throw new Error(res.message || "Gagal mendapatkan kode QRIS dari Bank BPD DIY.");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("[BPD QRIS Error]:", err);
-      setQrisError(err.message || "Gagal membuat QRIS Bank BPD DIY.");
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+          ? String((err as { message: unknown }).message)
+          : "Gagal membuat QRIS Bank BPD DIY.";
+      setQrisError(errorMessage);
     } finally {
       setIsLoadingQris(false);
     }

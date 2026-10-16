@@ -17,7 +17,7 @@ const CART_ITEMS_KEY = ["cart"];
 const CART_KEY = ["cart-summary"];
 
 // Legacy alias kept for compatibility
-const CART_QUERY_KEY = CART_ITEMS_KEY;
+export const CART_QUERY_KEY = CART_ITEMS_KEY;
 
 /**
  * Hook untuk mengambil data keranjang.
