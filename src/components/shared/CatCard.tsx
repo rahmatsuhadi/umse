@@ -31,7 +31,7 @@ export interface CatCardProps {
     type?: string;
     hourPill?: { state: 'open' | 'closing-soon' | 'closed'; text: string; pillClass: string } | null;
     phone?: string;
-    qrisUrl?: string;
+    nmid?: string;
     className?: string;
 }
 
@@ -161,7 +161,7 @@ export function CatCard(p: CatCardProps) {
                             )}
                         </div>
                     </div>
-                    {isClosed || !p.qrisUrl ? (
+                    {isClosed || !p.nmid ? (
                         <span
                             title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
                             onClick={(e) => {

@@ -91,7 +91,7 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
             closeHour={closeHour}
             hourPill={hourPill}
             phone={p.store?.user?.phone_number || p.store?.phone || ""}
-            qrisUrl={p.store?.nmid || p.store?.qris_url}
+            nmid={p.store?.nmid}
             className={className}
         />
     );
