@@ -7,6 +7,7 @@ import Image from "next/image";
 import { CartItemCard } from "./CartItemCard";
 import { formatRupiah } from "@/lib/curency-format";
 import { ShoppingBag, MapPin, ArrowRight } from "lucide-react";
+import { getComputedPrice } from "@/lib/price-helper";
 
 interface StoreCartItemProps {
     storeName: string;
@@ -68,28 +69,40 @@ export const CartStoreCard = ({
 
         if (selectedItems.length === 0) return;
 
-        const store = selectedItems[0].store
-        
+        const store = selectedItems[0].store;
 
         const items = selectedItems.map(item => {
+            const itemPrice = getComputedPrice(item.product, item.variant);
+
             return {
                 id: item.id,
                 product: {
                     id: item.product.id,
                     name: item.product.name,
                     thumbnail: item.product.thumbnail,
-                    price:item.product.price
+                    price: item.product.price,
+                    original_price: item.product.price,
+                    discount_percentage: item.product.discount_percentage,
+                    discount_price: item.product.discount_price,
                 },
                 variant: item.variant ? {
                     id: item.variant.id,
                     name: item.variant.name,
                     thumbnail: item.variant.thumbnail,
-                    price:item.variant.price
+                    price: item.variant.price,
+                    original_price: item.variant.price,
+                    discount_percentage: item.variant.discount_percentage,
+                    discount_price: item.variant.discount_price,
                 } : null,
                 quantity: item.quantity,
-                subtotal: item.subtotal
-            }
-        })
+                subtotal: {
+                    amount: String(itemPrice.finalPriceValue * item.quantity * 100),
+                    currency: 'IDR' as const,
+                    formatted: formatRupiah(itemPrice.finalPriceValue * item.quantity),
+                    value: itemPrice.finalPriceValue * item.quantity,
+                }
+            };
+        });
 
         const saveLocal = {
             store:{
@@ -105,12 +118,12 @@ export const CartStoreCard = ({
                 description:store.description
             },
             items
-        }
+        };
 
         localStorage.setItem("checkout_items", JSON.stringify(saveLocal));
 
         router.push("/checkout?store=" + storeId);
-    }
+    };
 
     return (
         <div className="cart-store-container">
@@ -159,22 +172,36 @@ export const CartStoreCard = ({
 
             {/* Items List */}
             <div className="pb-2">
-                {items.map((item, index) => (
-                    <CartItemCard
-                        key={index}
-                        title={item.product.name}
-                        variant={item.variant?.name || 'Tanpa Variant'}
-                        price={item.variant?.price || item.product.price}
-                        quantity={item.quantity}
-                        disabledUpdateStock={isPending}
-                        media={item.product.thumbnail.media_url}
-                        onIncrement={() => handleQuantityChange(item, +1)}
-                        onDecrement={() => handleQuantityChange(item, -1)}
-                        onRemove={() => removeItem(item.id)}
-                        isChecked={itemChecked[index]}
-                        onCheck={() => handleItemCheckboxChange(index)}
-                    />
-                ))}
+                {items.map((item, index) => {
+                    const itemPrice = getComputedPrice(item.product, item.variant);
+                    const displayPrice = itemPrice.hasDiscount ? {
+                        amount: String(itemPrice.finalPriceValue * 100),
+                        currency: 'IDR' as const,
+                        formatted: itemPrice.finalPriceFormatted,
+                        value: itemPrice.finalPriceValue,
+                    } : (item.variant?.price || item.product.price);
+                    const originalPrice = itemPrice.hasDiscount ? (item.variant?.price || item.product.price) : undefined;
+
+                    return (
+                        <CartItemCard
+                            key={index}
+                            title={item.product.name}
+                            variant={item.variant?.name || 'Tanpa Variant'}
+                            price={displayPrice}
+                            originalPrice={originalPrice}
+                            hasDiscount={itemPrice.hasDiscount}
+                            discountPercentage={itemPrice.discountPercentage}
+                            quantity={item.quantity}
+                            disabledUpdateStock={isPending}
+                            media={item.product.thumbnail?.media_url || ''}
+                            onIncrement={() => handleQuantityChange(item, +1)}
+                            onDecrement={() => handleQuantityChange(item, -1)}
+                            onRemove={() => removeItem(item.id)}
+                            isChecked={itemChecked[index]}
+                            onCheck={() => handleItemCheckboxChange(index)}
+                        />
+                    );
+                })}
             </div>
 
             {/* Footer — Subtotal & Checkout CTA */}
@@ -185,7 +212,10 @@ export const CartStoreCard = ({
                         Subtotal produk dipilih
                     </p>
                     <p className="cart-store-subtotal-value">
-                        {formatRupiah(selectedItems.reduce((acc, item) => acc + (item.variant?.price.value || item.product.price.value) * item.quantity, 0))}
+                        {formatRupiah(selectedItems.reduce((acc, item) => {
+                            const itemPrice = getComputedPrice(item.product, item.variant);
+                            return acc + itemPrice.finalPriceValue * item.quantity;
+                        }, 0))}
                     </p>
                    
                 </div>

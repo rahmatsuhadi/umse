@@ -1,6 +1,21 @@
 import { Order, PaginatedApiResponse } from "@/types";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { completedOrder, createOrder, CreateOrderData, CreateOrderPayment, createPayment, deliveredOrder, getOrders, getPaymentOrderById } from "./api";
+import {
+  completedOrder,
+  createOrder,
+  CreateOrderData,
+  CreateOrderPayment,
+  createPayment,
+  deliveredOrder,
+  getOrders,
+  getOrderPaymentStatus,
+  getPaymentOrderById,
+  OrderPaymentStatusData,
+  getOrderTracking,
+  OrderTrackingData,
+  regenerateOrderQris,
+  RegenerateQrisResponse,
+} from "./api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -138,3 +153,59 @@ export const useDeliveredOrder = () => {
     },
   });
 };
+
+/**
+ * Hook polling realtime status pembayaran untuk frontend
+ */
+export const useOrderPaymentStatus = (
+  id: string,
+  options?: { enabled?: boolean; refetchInterval?: number }
+) => {
+  return useQuery<{ status: boolean; data: OrderPaymentStatusData }, Error>({
+    queryKey: ['orders', id, 'payment-status'],
+    enabled: options?.enabled ?? !!id,
+    refetchInterval: options?.refetchInterval ?? 2500, // Polling tiap 2.5 detik
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+    queryFn: () => getOrderPaymentStatus(id),
+  });
+};
+
+/**
+ * Hook untuk generate ulang QRIS (BPD DIY / KiriminAja / All)
+ */
+export const useRegenerateQris = (orderId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    RegenerateQrisResponse,
+    Error,
+    { type?: 'bpd' | 'kiriminaja' | 'all' } | void
+  >({
+    mutationFn: (variables) =>
+      regenerateOrderQris(orderId, variables?.type ?? 'all'),
+    onSuccess: (data) => {
+      toast.success(data.message || 'QRIS berhasil diperbarui!');
+      // Invalidate detail order dan status payment agar UI langsung ter-update
+      queryClient.invalidateQueries({ queryKey: ['orders', orderId] });
+      queryClient.invalidateQueries({ queryKey: ['orders', orderId, 'payment-status'] });
+    },
+    onError: (error) => {
+      toast.error('Gagal memperbarui QRIS', { description: error.message });
+    },
+  });
+};
+
+/**
+ * Hook untuk mengambil riwayat tracking pengiriman pesanan KiriminAja
+ */
+export const useOrderTracking = (orderId: string, enabled = true) => {
+  return useQuery<{ status: boolean; data: OrderTrackingData }, Error>({
+    queryKey: ['orders', orderId, 'tracking'],
+    queryFn: () => getOrderTracking(orderId),
+    enabled: !!orderId && enabled,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 30, // 30s cache
+  });
+};
+

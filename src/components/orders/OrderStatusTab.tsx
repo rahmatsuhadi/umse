@@ -4,7 +4,6 @@ import { useMemo } from "react";
 const TABS = [
     { label: "Semua", value: "" },
     { label: "Menunggu Pembayaran", value: "awaiting_payment" },
-    { label: "Menunggu Konfirmasi", value: "pending" },
     { label: "Diproses", value: "processing" },
     { label: "Dikirim", value: "shipped" },
     { label: "Sampai", value: "delivered" },

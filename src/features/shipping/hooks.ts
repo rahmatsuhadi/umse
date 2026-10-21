@@ -1,47 +1,79 @@
 import { useQuery } from "@tanstack/react-query";
-import { getShippingRates } from "./api";
+import { getInstantShippingRates, getShippingRates } from "./api";
 import { ItemShipping, ResponseShippingRates } from "@/types";
 
+export interface UseShippingRatesParams {
+    destination_village_id?: number;
+    items: ItemShipping[];
+    origin_village_id?: number;
+    include_instant?: boolean;
+    courier?: string | string[];
+    origin_lat?: number;
+    origin_long?: number;
+    destination_lat?: number;
+    destination_long?: number;
+}
 
 export const useShippingRates = ({ 
     destination_village_id, 
     items, 
-    origin_village_id 
-}: { destination_village_id?: number, items: ItemShipping[], origin_village_id?: number }) => {
-    return useQuery<{ data: ResponseShippingRates[], isMock?: boolean, errorMsg?: string }, Error>({
-        queryKey: ["shippingRates", destination_village_id, origin_village_id], // Kunci query unik untuk produk ini
+    origin_village_id,
+    include_instant = true,
+    courier,
+    origin_lat,
+    origin_long,
+    destination_lat,
+    destination_long,
+}: UseShippingRatesParams) => {
+    return useQuery<{ data: ResponseShippingRates[], message?: string }, Error>({
+        queryKey: ["shippingRates", destination_village_id, origin_village_id, include_instant, courier, origin_lat, origin_long, destination_lat, destination_long, JSON.stringify(items)],
         refetchOnReconnect: false,
         refetchOnWindowFocus: false,
-        retry: false,
+        retry: 1,
         queryFn: async () => {
-            try {
-                const res = await getShippingRates({
-                    destination_village_id, items, origin_village_id
-                });
-                return res;
-            } catch (err) {
-                const error = err as Error;
-                console.warn("Shipping rate vendor error, falling back to mock:", error);
-                return {
-                    data: [
-                        {
-                            service: "jne",
-                            service_name: "JNE Reguler (Estimasi)",
-                            service_type: "REG",
-                            cost: {
-                                value: 15000,
-                                amount: "15000",
-                                formatted: "Rp 15.000",
-                                currency: "IDR",
-                            },
-                            etd: "2-4 hari"
-                        }
-                    ],
-                    isMock: true,
-                    errorMsg: error.message || "Gagal mendapatkan ongkos kirim dari vendor"
-                };
-            }
+            const res = await getShippingRates({
+                destination_village_id,
+                items,
+                origin_village_id,
+                include_instant,
+                courier,
+                origin_lat,
+                origin_long,
+                destination_lat,
+                destination_long,
+            });
+            return res;
         },
-        enabled: !!destination_village_id && !!origin_village_id, // Hanya jalankan query jika slug ada
+        enabled: !!destination_village_id && !!origin_village_id,
+    });
+};
+
+export const useInstantShippingRates = ({
+    destination_village_id,
+    items,
+    origin_village_id,
+    origin_lat,
+    origin_long,
+    destination_lat,
+    destination_long,
+}: UseShippingRatesParams) => {
+    return useQuery<{ data: ResponseShippingRates[], message?: string }, Error>({
+        queryKey: ["instantShippingRates", destination_village_id, origin_village_id, origin_lat, origin_long, destination_lat, destination_long, JSON.stringify(items)],
+        refetchOnReconnect: false,
+        refetchOnWindowFocus: false,
+        retry: 1,
+        queryFn: async () => {
+            const res = await getInstantShippingRates({
+                destination_village_id,
+                items,
+                origin_village_id,
+                origin_lat,
+                origin_long,
+                destination_lat,
+                destination_long,
+            });
+            return res;
+        },
+        enabled: !!destination_village_id && !!origin_village_id,
     });
 };

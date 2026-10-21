@@ -13,7 +13,13 @@ export interface ItemShipping {
 export interface ShippingRates {
     destination_village_id?: number;
     items: ItemShipping[];
-    origin_village_id?: number
+    origin_village_id?: number;
+    include_instant?: boolean;
+    courier?: string | string[];
+    origin_lat?: number;
+    origin_long?: number;
+    destination_lat?: number;
+    destination_long?: number;
 }
 
 export interface ShippingItem extends CartItem{

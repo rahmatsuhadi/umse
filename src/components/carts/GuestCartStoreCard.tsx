@@ -62,7 +62,9 @@ export const GuestCartStoreCard = ({
   };
 
   const subtotal = selectedItems.reduce((acc, item) => {
-    const priceVal = item.variant_price_value ?? item.product_price_value;
+    const originalPriceVal = item.variant_price_value ?? item.product_price_value;
+    const hasDiscount = Boolean(item.discount_price_value && item.discount_price_value < originalPriceVal);
+    const priceVal = hasDiscount ? item.discount_price_value! : originalPriceVal;
     return acc + priceVal * item.quantity;
   }, 0);
 
@@ -166,22 +168,33 @@ export const GuestCartStoreCard = ({
       {/* Items List */}
       <div className="pb-2">
         {items.map((item, index) => {
-          const priceVal = item.variant_price_value ?? item.product_price_value;
-          const priceFmt =
-            item.variant_price_formatted ??
-            item.product_price_formatted ??
-            formatRupiah(priceVal);
+          const originalPriceVal = item.variant_price_value ?? item.product_price_value;
+          const hasDiscount = Boolean(item.discount_price_value && item.discount_price_value < originalPriceVal);
+          const finalPriceVal = hasDiscount ? item.discount_price_value! : originalPriceVal;
+          const finalPriceFmt = hasDiscount
+            ? (item.discount_price_formatted ?? formatRupiah(finalPriceVal))
+            : (item.variant_price_formatted ?? item.product_price_formatted ?? formatRupiah(finalPriceVal));
+          const origPriceFmt = item.variant_price_formatted ?? item.product_price_formatted ?? formatRupiah(originalPriceVal);
+
           return (
             <CartItemCard
               key={item.id}
               title={item.product_name}
               variant={item.variant_name || "Tanpa Variant"}
-              price={
-                {
-                  value: priceVal,
-                  formatted: priceFmt,
-                } as never
-              }
+              price={{
+                value: finalPriceVal,
+                formatted: finalPriceFmt,
+                currency: "IDR",
+                amount: String(finalPriceVal * 100),
+              }}
+              originalPrice={hasDiscount ? {
+                value: originalPriceVal,
+                formatted: origPriceFmt,
+                currency: "IDR",
+                amount: String(originalPriceVal * 100),
+              } : undefined}
+              hasDiscount={hasDiscount}
+              discountPercentage={item.discount_percentage}
               quantity={item.quantity}
               disabledUpdateStock={false}
               media={item.product_thumbnail}

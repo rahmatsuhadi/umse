@@ -16,6 +16,10 @@ export interface GuestCartItem {
   variant_name?: string;
   variant_price_value?: number;
   variant_price_formatted?: string;
+  // Info diskon
+  discount_percentage?: number;
+  discount_price_value?: number;
+  discount_price_formatted?: string;
   // Info toko (untuk pengelompokan)
   store_id: string;
   store_name: string;

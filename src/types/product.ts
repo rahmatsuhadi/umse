@@ -25,6 +25,8 @@ export interface Variant {
   id: string;
   name: string;
   price: Price;
+  discount_percentage?: string | number;
+  discount_price?: string | number | Price;
   stock_quantity: number;
   thumbnail: Media;
   options: VariantOption[];

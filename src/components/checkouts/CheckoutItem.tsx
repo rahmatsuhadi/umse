@@ -1,18 +1,15 @@
 import { CartItem } from "@/types";
 import Image from "next/image";
+import { getComputedPrice } from "@/lib/price-helper";
+import { formatRupiah } from "@/lib/curency-format";
 
 export default function CheckoutItemCard({ item }: { item: CartItem }) {
   const imageUrl = item.variant
     ? item.variant.thumbnail?.media_url || item.product.thumbnail?.media_url || "/assets/no-image.jpg"
     : item.product.thumbnail?.media_url || "/assets/no-image.jpg";
 
-  const priceFormatted = item.variant
-    ? item.variant.price.formatted
-    : item.product.price.formatted;
-
-  const totalValue = (item.variant
-    ? item.variant.price.value
-    : item.product.price.value) * item.quantity;
+  const itemPrice = getComputedPrice(item.product, item.variant);
+  const totalValue = itemPrice.originalPriceValue * item.quantity;
 
   return (
     <div className="checkout-item-card">
@@ -42,12 +39,12 @@ export default function CheckoutItemCard({ item }: { item: CartItem }) {
         )}
 
         <p className="checkout-item-price">
-          {priceFormatted} <span className="font-medium text-[10px]" style={{ color: "var(--text-muted)" }}>x {item.quantity}</span>
+          {itemPrice.originalPriceFormatted} <span className="font-medium text-[10px]" style={{ color: "var(--text-muted)" }}>x {item.quantity}</span>
         </p>
       </div>
       <div className="text-right flex-shrink-0 pl-2">
         <p className="checkout-item-total">
-          Rp {totalValue.toLocaleString("id-ID")}
+          {formatRupiah(totalValue)}
         </p>
       </div>
     </div>

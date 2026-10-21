@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { getComputedPrice } from "@/lib/price-helper";
 
 interface ProductStickyWAProps {
     product?: Product;
@@ -39,6 +40,7 @@ export default function ProductStickyWA({
             if (product) {
                 const selectedVariant = product.variants?.find(v => v.id === selectedVariantId) || null;
                 const price = selectedVariant ? selectedVariant.price : product.price;
+                const computed = getComputedPrice(product, selectedVariant);
                 addToGuestCart({
                     product_id: product.id,
                     variant_id: selectedVariantId,
@@ -50,6 +52,9 @@ export default function ProductStickyWA({
                     variant_name: selectedVariant?.name,
                     variant_price_value: selectedVariant ? price?.value : undefined,
                     variant_price_formatted: selectedVariant ? price?.formatted : undefined,
+                    discount_percentage: computed.hasDiscount ? computed.discountPercentage : undefined,
+                    discount_price_value: computed.hasDiscount ? computed.finalPriceValue : undefined,
+                    discount_price_formatted: computed.hasDiscount ? computed.finalPriceFormatted : undefined,
                     store_id: product.store.id,
                     store_name: product.store.name,
                     store_logo_url: product.store.logo_url || '',

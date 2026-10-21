@@ -2,14 +2,32 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useCategoriesFooter } from "@/features/categories/hooks";
 import { useWebSettings } from "@/features/settings/hooks";
-
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
+const FOOTER_LINKS = {
+  Jelajahi: [
+    { label: "Beranda", href: "/" },
+    { label: "Semua Produk", href: "/produk" },
+    { label: "Toko Lokal", href: "/umkm" },
+    { label: "Explore", href: "/explore" },
+  ],
+  Kategori: [
+    { label: "Fashion & Wastra", href: "/produk?q=batik" },
+    { label: "Kuliner & Makanan", href: "/produk?q=kuliner" },
+    { label: "Kerajinan Tangan", href: "/produk?q=kerajinan" },
+    { label: "Peralatan Rumah", href: "/produk?q=peralatan" },
+  ],
+  Informasi: [
+    { label: "Sering Ditanyakan (FAQ)", href: "/faq" },
+    { label: "Tentang Kami", href: "/" },
+    { label: "Daftarkan Toko", href: `${process.env.NEXT_PUBLIC_APP_URL || ""}/register-email` },
+    { label: "Kebijakan Privasi", href: "/" },
+    { label: "Hubungi Kami", href: "/" },
+  ],
+};
+
 export function Footer() {
-    const { data: categoriesData } = useCategoriesFooter();
-    const categories = categoriesData?.data || [];
     const { data: webSettings } = useWebSettings();
     const settings = webSettings?.data;
 
@@ -94,33 +112,19 @@ export function Footer() {
                             )}
                         </div>
                     </div>
-                    <div className="footer-col">
-                        <h4>Jelajahi</h4>
-                        <Link href="/">Beranda</Link>
-                        <Link href="/produk">Semua Produk</Link>
-                        <Link href="/toko">Toko Lokal</Link>
-                        <Link href="/explore">Explore</Link>
-                    </div>
-                    <div className="footer-col">
-                        <h4>Kategori</h4>
-                        {categories.length > 0 ? (
-                            categories.map((cat) => (
-                                <Link key={cat.slug || cat.id} href={`/produk?category=${cat.slug || cat.id}`}>
-                                    {cat.name}
+
+                    {(Object.entries(FOOTER_LINKS) as [string, { label: string; href: string }[]][]).map(([title, links]) => (
+                        <div className="footer-col" key={title}>
+                            <h4>{title}</h4>
+                            {links.map((link) => (
+                                <Link key={link.label} href={link.href} style={{ textDecoration: "none", cursor: "pointer" }}>
+                                    {link.label}
                                 </Link>
-                            ))
-                        ) : (
-                            <div style={{ opacity: 0.5 }}>Memuat kategori...</div>
-                        )}
-                    </div>
-                    <div className="footer-col">
-                        <h4>Informasi</h4>
-                        <Link href="#">Tentang Kami</Link>
-                        <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/register-email`}>Daftarkan Toko</Link>
-                        <Link href="#">Kebijakan Privasi</Link>
-                        <Link href="/faq">Sering Ditanyakan (FAQ)</Link>
-                    </div>
+                            ))}
+                        </div>
+                    ))}
                 </div>
+
                 <div className="footer-bottom">
                     <span>{settings?.footer?.copyright_text || "© 2025 Sleman Mart. Dibuat dengan ❤️ untuk UMKM Sleman."}</span>
                     <span>{settings?.contact?.address || "Kabupaten Sleman, D.I. Yogyakarta"}</span>

@@ -6,6 +6,7 @@ import { useAddToCart, useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
+import { getComputedPrice } from "@/lib/price-helper";
 
 interface CardProductProps {
   product: Product;
@@ -43,6 +44,7 @@ export const ProductCard = ({ product }: CardProductProps) => {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
+      const computed = getComputedPrice(product, null);
       addToGuestCart({
         product_id: product.id,
         quantity: 1,
@@ -50,6 +52,9 @@ export const ProductCard = ({ product }: CardProductProps) => {
         product_thumbnail: product.thumbnail?.media_url || '',
         product_price_value: product.price?.value || 0,
         product_price_formatted: product.price?.formatted || '',
+        discount_percentage: computed.hasDiscount ? computed.discountPercentage : undefined,
+        discount_price_value: computed.hasDiscount ? computed.finalPriceValue : undefined,
+        discount_price_formatted: computed.hasDiscount ? computed.finalPriceFormatted : undefined,
         store_id: product.store.id,
         store_name: product.store.name,
         store_logo_url: product.store.logo_url || '',

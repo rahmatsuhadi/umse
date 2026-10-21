@@ -9,6 +9,9 @@ interface CartItemProps {
     title: string;
     variant: string;
     price: Price;
+    originalPrice?: Price;
+    discountPercentage?: number;
+    hasDiscount?: boolean;
     quantity: number;
     onIncrement: () => void;
     onDecrement: () => void;
@@ -25,6 +28,9 @@ export const CartItemCard = ({
     variant,
     media,
     price,
+    originalPrice,
+    discountPercentage,
+    hasDiscount,
     quantity,
     onIncrement,
     onDecrement,
@@ -70,9 +76,23 @@ export const CartItemCard = ({
                     <p className="cart-item-variant">
                         Varian: {variant}
                     </p>
-                    <p className="cart-item-price">
-                        {price.formatted}
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap mt-1">
+                        <span className="cart-item-price font-bold">
+                            {price.formatted}
+                        </span>
+                        {hasDiscount && originalPrice && (
+                            <>
+                                <span className="text-xs line-through" style={{ color: "var(--text-muted, #6B4C2A)", opacity: 0.7 }}>
+                                    {originalPrice.formatted}
+                                </span>
+                                {discountPercentage ? (
+                                    <span className="badge badge-terracotta text-[10px] px-1.5 py-0.5 font-bold" style={{ borderRadius: "6px" }}>
+                                        -{Math.round(discountPercentage)}%
+                                    </span>
+                                ) : null}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 

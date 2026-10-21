@@ -8,6 +8,8 @@ import { useUser } from "@/features/auth/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { getComputedPrice, formatPriceDisplay } from "@/lib/price-helper";
+import { formatRupiah } from "@/lib/curency-format";
 
 const buildSlug = (name: string, id: string | number) =>
   String(name || "")
@@ -49,39 +51,18 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.variants]);
 
-  const p = product;
-  const discountPct = p.discount_percentage ? Number(p.discount_percentage) : 0;
-  const hasDiscount = discountPct > 0 && p.discount_price != null;
-  const discountStr = hasDiscount ? `-${Math.round(discountPct)}%` : null;
-
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant
     ? selectedVariant.stock_quantity
     : product.stock_quantity;
 
-  const formatPrice = (price: Price) => {
-    if (price.formatted) return price.formatted.split(",")[0];
-    const val = price.amount ? Number(price.amount) : Number((price as unknown as { value?: number }).value || price);
-    return `Rp ${Math.round(val).toLocaleString('id-ID').replace(/,/g, '.')}`;
-  };
+  const computed = getComputedPrice(product, selectedVariant);
+  const finalPriceStr = computed.hasDiscount ? computed.finalPriceFormatted : (currentPrice.formatted || formatPriceDisplay(currentPrice));
+  let oldPriceStr = computed.hasDiscount ? (currentPrice.formatted || formatPriceDisplay(currentPrice)) : "";
+  let discountStrDisplay = computed.discountBadge;
 
-  let finalPriceStr = formatPrice(currentPrice);
-  let oldPriceStr = "";
-  let discountStrDisplay = discountStr;
-
-  if (hasDiscount) {
-    const variantDiscountPrice = (selectedVariant as unknown as { discount_price?: Price })?.discount_price;
-    if (selectedVariant && variantDiscountPrice) {
-      finalPriceStr = formatPrice(variantDiscountPrice);
-    } else if (selectedVariant) {
-      const discVal = currentPrice.value - (currentPrice.value * discountPct / 100);
-      finalPriceStr = `Rp ${Math.round(discVal).toLocaleString('id-ID').replace(/,/g, '.')}`;
-    } else if (p.discount_price) {
-      finalPriceStr = formatPrice(p.discount_price as Price);
-    }
-    oldPriceStr = formatPrice(currentPrice);
-  } else if (!hasDiscount && product.highest_price && product.highest_price.value > product.lowest_price.value && !selectedVariant) {
-    oldPriceStr = formatPrice(product.highest_price);
+  if (!computed.hasDiscount && product.highest_price && product.highest_price.value > product.lowest_price.value && !selectedVariant) {
+    oldPriceStr = formatPriceDisplay(product.highest_price);
     discountStrDisplay = `-${Math.round(((product.highest_price.value - product.lowest_price.value) / product.highest_price.value) * 100)}%`;
   }
 
@@ -368,6 +349,7 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     if (!isAuth) {
       // Guest: simpan ke localStorage
       const price = selectedVariant ? selectedVariant.price : product.price;
+      const computed = getComputedPrice(product, selectedVariant);
       addToGuestCart({
         product_id: product.id,
         variant_id: selectedVariant?.id,
@@ -379,6 +361,9 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
         variant_name: selectedVariant?.name,
         variant_price_value: selectedVariant ? price?.value : undefined,
         variant_price_formatted: selectedVariant ? price?.formatted : undefined,
+        discount_percentage: computed.hasDiscount ? computed.discountPercentage : undefined,
+        discount_price_value: computed.hasDiscount ? computed.finalPriceValue : undefined,
+        discount_price_formatted: computed.hasDiscount ? computed.finalPriceFormatted : undefined,
         store_id: product.store.id,
         store_name: product.store.name,
         store_logo_url: product.store.logo_url || '',
@@ -413,6 +398,8 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
       return;
     }
     setIsLoading(true);
+    const computed = getComputedPrice(product, selectedVariant);
+
     const items = [
       {
         product: {
@@ -420,6 +407,9 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
           name: product.name,
           thumbnail: product.thumbnail,
           price: product.price,
+          original_price: product.price,
+          discount_percentage: product.discount_percentage,
+          discount_price: product.discount_price,
         },
         variant: selectedVariant
           ? {
@@ -427,9 +417,18 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
             name: selectedVariant.name,
             thumbnail: selectedVariant.thumbnail,
             price: selectedVariant.price,
+            original_price: selectedVariant.price,
+            discount_percentage: selectedVariant.discount_percentage,
+            discount_price: selectedVariant.discount_price,
           }
           : null,
         quantity,
+        subtotal: {
+          amount: String(computed.finalPriceValue * quantity * 100),
+          currency: "IDR" as const,
+          formatted: formatRupiah(computed.finalPriceValue * quantity),
+          value: computed.finalPriceValue * quantity,
+        },
       },
     ];
     const saveLocal = {

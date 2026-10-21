@@ -78,7 +78,7 @@ export default function OrderFilter() {
                             onChange={(e) => setStatus(e.target.value)}
                         >
                             <option value="">Semua Status</option>
-                            <option value="pending">Menunggu Konfirmasi</option>
+                            <option value="awaiting_payment">Menunggu Pembayaran</option>
                             <option value="processing">Diproses</option>
                             <option value="shipped">Dikirim</option>
                             <option value="delivered">Sampai</option>

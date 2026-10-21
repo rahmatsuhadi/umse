@@ -60,4 +60,35 @@ export interface Order {
     qr_string?: string | null
     va_number?: string | null
     payment_expired_at?: string | null
+    shipping_payment_id?: string | null
+    shipping_payment_status?: string | null
+    shipping_qr_string?: string | null
+    shipping_payment_expired_at?: string | null
+    shipping_paid_at?: string | null
+    requires_shipping_payment?: boolean
+    is_order_paid?: boolean
+    is_shipping_paid?: boolean
+    is_fully_paid?: boolean
+    payment_bpd?: {
+        nominal?: Price
+        amount?: Price
+        status?: string
+        status_label?: string
+        qr_string?: string | null
+        expired_at?: string | null
+        paid_at?: string | null
+        is_paid?: boolean
+    }
+    payment_shipping?: {
+        payment_id?: string | null
+        nominal?: Price
+        amount?: Price
+        status?: string
+        status_label?: string
+        qr_string?: string | null
+        shipping_qr_string?: string | null
+        expired_at?: string | null
+        paid_at?: string | null
+        is_paid?: boolean
+    } | null
 }

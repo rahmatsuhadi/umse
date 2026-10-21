@@ -240,9 +240,20 @@ export default function CheckoutForm({
   const districts = districtsData?.data || [];
   const villages = villagesData?.data || [];
 
-  const [isValidShip, setIsValidShip] = useState<boolean>(false);
+  const isServiceOrder =
+    items.length > 0 &&
+    items.every((item) => {
+      const type = item.product?.type?.toLowerCase();
+      return type === "service" || type === "jasa";
+    });
+
+  const [isValidShip, setIsValidShip] = useState<boolean>(isServiceOrder);
 
   useEffect(() => {
+    if (isServiceOrder) {
+      setIsValidShip(true);
+      return;
+    }
     if (!watchedVillage) {
       setShippingService({
         name: "",
@@ -250,7 +261,7 @@ export default function CheckoutForm({
       });
       setIsValidShip(false);
     }
-  }, [watchedVillage]);
+  }, [watchedVillage, isServiceOrder]);
 
   return (
     <div className="w-full">
@@ -656,11 +667,23 @@ export default function CheckoutForm({
                   items={items}
                   storeVillageId={store.village_id}
                   handleValidShipping={(val) => {
+                    if (isServiceOrder) {
+                      setIsValidShip(true);
+                      setShippingService({ name: "", type: "" });
+                      return;
+                    }
                     setIsValidShip(!!val);
-                    setShippingService({
-                      name: val.service,
-                      type: val.service_type,
-                    });
+                    if (val && val.service !== "none") {
+                      setShippingService({
+                        name: val.service,
+                        type: val.service_type,
+                      });
+                    } else {
+                      setShippingService({
+                        name: "",
+                        type: "",
+                      });
+                    }
                   }}
                 />
 

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { Product, Variant, Price } from "@/types";
+import type { Product, Variant } from "@/types";
 import ProductCheckoutButton from "./ProductCheckoutButton";
 import ProductStickyWA from "./ProductStickyWA";
 import ProductImageGallery from "./ProductImageGallery";
 import Image from "next/image";
+import { getComputedPrice } from "@/lib/price-helper";
 
 interface ProductDetailClientProps {
     product: Product;
@@ -41,25 +42,8 @@ export default function ProductDetailClient({ product, isClosed, mainImage, imag
         }
     };
 
-    const discountPct = product.discount_percentage ? Number(product.discount_percentage) : 0;
-    const currentPrice = selectedVariant ? selectedVariant.price : product.price;
-
-    let baseVal = currentPrice.value;
-    if (discountPct > 0) {
-        if (selectedVariant) {
-            const variantDiscountPrice = (selectedVariant as unknown as { discount_price?: Price }).discount_price;
-            if (variantDiscountPrice) {
-                baseVal = typeof variantDiscountPrice === 'object' ? variantDiscountPrice.value : Number(variantDiscountPrice);
-            } else {
-                baseVal = currentPrice.value - (currentPrice.value * discountPct / 100);
-            }
-        } else if (product.discount_price) {
-            const dp = product.discount_price;
-            baseVal = Number(typeof dp === 'object' && dp !== null && 'value' in dp ? dp.value : dp);
-        }
-    }
-
-    const totalVal = baseVal * quantity;
+    const computed = getComputedPrice(product, selectedVariant);
+    const totalVal = computed.finalPriceValue * quantity;
     const stickyPriceStr = `Rp ${Math.round(totalVal).toLocaleString('id-ID').replace(/,/g, '.')}`;
 
     return (

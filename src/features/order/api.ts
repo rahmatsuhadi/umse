@@ -154,5 +154,75 @@ export const deliveredOrder = (id: string): Promise<{ message: string }> => {
   return apiClient<{ message: string }>(`/customer/orders/${id}/status/delivered`, {
     method: 'POST',
   });
+};
+
+export interface OrderPaymentStatusData {
+  order_id: string;
+  order_number: string;
+  order_status: string;
+  order_status_label: string;
+  bpd_paid: boolean;
+  bpd_status: string;
+  shipping_paid: boolean;
+  shipping_status: string;
+  requires_shipping_payment: boolean;
+  is_fully_paid: boolean;
+  should_redirect: boolean;
+  redirect_url: string | null;
 }
+
+export const getOrderPaymentStatus = (id: string): Promise<{ status: boolean; data: OrderPaymentStatusData }> => {
+  return apiClient<{ status: boolean; data: OrderPaymentStatusData }>(`/customer/orders/${id}/payment-status`);
+};
+
+export interface RegenerateQrisResponse {
+  status: boolean;
+  message: string;
+  data: {
+    qr_string?: string | null;
+    payment_expired_at?: string | null;
+    shipping_qr_string?: string | null;
+    shipping_payment_expired_at?: string | null;
+    is_order_paid: boolean;
+    is_shipping_paid: boolean;
+    is_fully_paid: boolean;
+  };
+}
+
+export const regenerateOrderQris = (
+  id: string,
+  type: 'bpd' | 'kiriminaja' | 'all' = 'all'
+): Promise<RegenerateQrisResponse> => {
+  return apiClient<RegenerateQrisResponse>(`/customer/orders/${id}/regenerate-qris`, {
+    method: 'POST',
+    body: JSON.stringify({ type }),
+  });
+};
+
+export interface TrackingHistoryItem {
+  time?: string | null;
+  description?: string | null;
+  location?: string | null;
+}
+
+export interface OrderTrackingData {
+  status: boolean;
+  is_instant?: boolean;
+  courier?: string;
+  service_type?: string;
+  tracking_number?: string;
+  current_status?: string;
+  order_status?: string;
+  histories: TrackingHistoryItem[];
+  recipient?: {
+    name?: string;
+    phone?: string;
+    address?: string;
+  };
+  message?: string;
+}
+
+export const getOrderTracking = (id: string): Promise<{ status: boolean; data: OrderTrackingData }> => {
+  return apiClient<{ status: boolean; data: OrderTrackingData }>(`/customer/orders/${id}/tracking`);
+};
 

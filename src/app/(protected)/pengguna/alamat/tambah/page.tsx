@@ -45,15 +45,16 @@ import { useCallback, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { normalizePhoneNumber } from "@/components/checkouts/CheckoutForm";
+import { AddressLocationPicker } from "@/components/maps/AddressLocationPicker";
+import { toast } from "sonner";
 
 const addressSchema = z.object({
   recipient_name: z.string().min(1, "Nama penerima wajib diisi."),
   recipient_phone_number: z
     .string()
     .min(1, "Nomor telepon wajib diisi.")
-    .transform((val) => normalizePhoneNumber(val))
     .refine(
-      (val) => /^08[0-9]{8,12}$/.test(val),
+      (val) => /^08[0-9]{8,12}$/.test(normalizePhoneNumber(val)),
       "Nomor telepon tidak valid. Gunakan format nomor ponsel Indonesia (contoh: 08123456789)."
     ),
   address: z.string().min(1, "Alamat lengkap wajib diisi."),
@@ -61,10 +62,18 @@ const addressSchema = z.object({
   regency_id: z.string().min(1, "Kabupaten/Kota wajib dipilih."),
   district_id: z.string().min(1, "Kecamatan wajib dipilih."),
   village_id: z.string().min(1, "Kelurahan wajib dipilih."),
-  postal_code: z.string().min(5, "Kode pos tidak valid.").max(5, "Kode pos tidak valid."),
+  postal_code: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || /^[0-9]{5}$/.test(val),
+      "Kode pos harus terdiri dari 5 digit angka."
+    ),
   is_primary: z.boolean(),
   label: z.string().min(1, "Label alamat wajib diisi."),
   note: z.string().optional(),
+  latitude: z.number().nullable().optional(),
+  longitude: z.number().nullable().optional(),
 });
 
 const labelStyle: React.CSSProperties = {
@@ -104,13 +113,19 @@ export default function FormAddressPage({}: FormAddressPageProps) {
     defaultValues: {
       address: "", is_primary: false, label: "",
       postal_code: "", recipient_name: "", recipient_phone_number: "", note: "",
+      latitude: null, longitude: null,
     },
   });
 
   // useWatch isolates subscriptions per field — prevents whole-form re-renders
+  // that trigger Radix useComposedRefs setState loop (React 19)
   const watchedProvince = useWatch({ control: form.control, name: "province_id" });
   const watchedRegency = useWatch({ control: form.control, name: "regency_id" });
   const watchedDistrict = useWatch({ control: form.control, name: "district_id" });
+  const watchedVillage = useWatch({ control: form.control, name: "village_id" });
+  const watchedAddress = useWatch({ control: form.control, name: "address" });
+  const watchedLatitude = useWatch({ control: form.control, name: "latitude" });
+  const watchedLongitude = useWatch({ control: form.control, name: "longitude" });
 
   const { data: provincesData, isLoading: isLoadingProvinces } = useProvinces();
   const { data: regenciesData, isLoading: isLoadingRegencies } = useRegencies(watchedProvince);
@@ -122,6 +137,51 @@ export default function FormAddressPage({}: FormAddressPageProps) {
   const regencies = useMemo(() => regenciesData?.data ?? [], [regenciesData?.data]);
   const districts = useMemo(() => districtsData?.data ?? [], [districtsData?.data]);
   const villages = useMemo(() => villagesData?.data ?? [], [villagesData?.data]);
+
+  const selectedProvinceName = useMemo(() => {
+    return provinces.find((p) => String(p.id) === String(watchedProvince))?.name || "";
+  }, [provinces, watchedProvince]);
+
+  const selectedRegencyName = useMemo(() => {
+    return regencies.find((r) => String(r.id) === String(watchedRegency))?.name || "";
+  }, [regencies, watchedRegency]);
+
+  const selectedDistrictName = useMemo(() => {
+    return districts.find((d) => String(d.id) === String(watchedDistrict))?.name || "";
+  }, [districts, watchedDistrict]);
+
+  const selectedVillageName = useMemo(() => {
+    return villages.find((v) => String(v.id) === String(watchedVillage))?.name || "";
+  }, [villages, watchedVillage]);
+
+  // Query alamat lengkap untuk pencarian otomatis pada peta saat create
+  const formAddressQuery = useMemo(() => {
+    const parts: string[] = [];
+    if (watchedAddress?.trim()) parts.push(watchedAddress.trim());
+    if (selectedVillageName && !watchedAddress?.toLowerCase().includes(selectedVillageName.toLowerCase())) {
+      parts.push(selectedVillageName);
+    }
+    if (selectedDistrictName && !watchedAddress?.toLowerCase().includes(selectedDistrictName.toLowerCase())) {
+      parts.push(selectedDistrictName);
+    }
+    if (selectedRegencyName && !watchedAddress?.toLowerCase().includes(selectedRegencyName.toLowerCase())) {
+      parts.push(selectedRegencyName);
+    }
+    if (selectedProvinceName && !watchedAddress?.toLowerCase().includes(selectedProvinceName.toLowerCase())) {
+      parts.push(selectedProvinceName);
+    }
+    return parts.join(", ");
+  }, [watchedAddress, selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
+
+  // Query fallback jika alamat spesifik tidak terindeks Nominatim OSM
+  const formFallbackQuery = useMemo(() => {
+    const parts: string[] = [];
+    if (selectedVillageName) parts.push(selectedVillageName);
+    if (selectedDistrictName) parts.push(selectedDistrictName);
+    if (selectedRegencyName) parts.push(selectedRegencyName);
+    if (selectedProvinceName) parts.push(selectedProvinceName);
+    return parts.join(", ");
+  }, [selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
 
   // Stable handler references — inline arrows in JSX change every render
   const handleProvinceChange = useCallback((v: string) => {
@@ -146,14 +206,37 @@ export default function FormAddressPage({}: FormAddressPageProps) {
     form.setValue("village_id", v);
   }, [form]);
 
+  const handleLocationSelect = useCallback((lat: number, lng: number) => {
+    form.setValue("latitude", lat, { shouldValidate: true, shouldDirty: true });
+    form.setValue("longitude", lng, { shouldValidate: true, shouldDirty: true });
+  }, [form]);
+
+  const handleLocationClear = useCallback(() => {
+    form.setValue("latitude", null, { shouldValidate: true, shouldDirty: true });
+    form.setValue("longitude", null, { shouldValidate: true, shouldDirty: true });
+  }, [form]);
+
+  const onInvalid = useCallback((errors: Record<string, unknown>) => {
+    console.error("Form validation errors:", errors);
+    const errorList = Object.values(errors) as Array<{ message?: string }>;
+    const firstMsg = errorList.find((e) => e?.message)?.message;
+    if (firstMsg) {
+      toast.error("Form belum lengkap", { description: String(firstMsg) });
+    }
+  }, []);
+
   function onSubmit(values: z.infer<typeof addressSchema>) {
     handleAddAddress({
       ...values,
-      note: values.note || "",
+      recipient_phone_number: normalizePhoneNumber(values.recipient_phone_number),
+      note: values.note ? values.note : null,
+      postal_code: values.postal_code ? values.postal_code : null,
       district_id: Number(values.district_id),
       province_id: Number(values.province_id),
       regency_id: Number(values.regency_id),
       village_id: Number(values.village_id),
+      latitude: values.latitude != null ? Number(values.latitude) : null,
+      longitude: values.longitude != null ? Number(values.longitude) : null,
     });
   }
 
@@ -191,7 +274,7 @@ export default function FormAddressPage({}: FormAddressPageProps) {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
               {/* Label */}
               <FormField control={form.control} name="label" render={({ field }) => (
@@ -308,6 +391,17 @@ export default function FormAddressPage({}: FormAddressPageProps) {
                   </FormItem>
                 )} />
               </div>
+
+              <SectionDivider label="Titik Koordinat Lokasi" />
+
+              <AddressLocationPicker
+                latitude={watchedLatitude}
+                longitude={watchedLongitude}
+                onLocationSelect={handleLocationSelect}
+                onLocationClear={handleLocationClear}
+                formAddressQuery={formAddressQuery}
+                formFallbackQuery={formFallbackQuery}
+              />
 
               {/* Catatan */}
               <FormField control={form.control} name="note" render={({ field }) => (
@@ -470,28 +564,12 @@ function LocationSelect({ form, name, label, items, isLoading, disabled, placeho
       control={form.control}
       name={name}
       render={({ field }: { field: { value: string } }) => {
-        // Find selected item label directly — Radix Select only registers SelectItem text
-        // when the dropdown is opened; using children on SelectValue bypasses this limitation
-        const selectedLabel = (items as Array<{ id: number | string; name: string }>)
-          .find((item) => String(item.id) === field.value)?.name;
-
-        // When value is set but label not yet found (items still loading/not matched),
-        // Radix SelectValue with children=undefined falls through to nativeOptionValue (empty)
-        // instead of showing placeholder — explicitly render a spinner in this case
-        const displayContent = field.value
-          ? selectedLabel ?? (
-              <span style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--text-muted)" }}>
-                <Loader2 size={13} className="animate-spin" /> Memuat...
-              </span>
-            )
-          : undefined;
-
         return (
           <FormItem>
             <FormLabel style={labelStyle}>{label}</FormLabel>
             <Select
               disabled={disabled || isLoading}
-              value={field.value || ""}
+              value={field.value ? String(field.value) : ""}
               onValueChange={onValueChange}
             >
               <FormControl>
@@ -503,9 +581,17 @@ function LocationSelect({ form, name, label, items, isLoading, disabled, placeho
                     fontSize: 14,
                   }}
                 >
-                  <SelectValue placeholder={placeholder}>
-                    {displayContent}
-                  </SelectValue>
+                  <SelectValue
+                    placeholder={
+                      isLoading ? (
+                        <span style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--text-muted)" }}>
+                          <Loader2 size={13} className="animate-spin" /> Memuat...
+                        </span>
+                      ) : (
+                        placeholder
+                      )
+                    }
+                  />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>

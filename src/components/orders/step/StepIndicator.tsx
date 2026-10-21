@@ -1,20 +1,14 @@
 import { CheckoutStep } from "@/components/checkouts/lib";
 
 export const StepIndicator = ({ currentStep }: { currentStep: CheckoutStep | "cart" }) => {
-    const steps = ["cart", "checkout", "payment", "confirmation"];
-    const stepIndex = steps.indexOf(currentStep as string);
+    const steps = ["cart", "checkout", "payment"];
+    const stepIndex = currentStep === "success" || currentStep === "confirmation"
+        ? 3
+        : steps.indexOf(currentStep as string);
 
     // Fungsi untuk menentukan style lingkaran step
     const getStepStyle = (index: number): React.CSSProperties => {
-        if (currentStep === 'success') {
-            return {
-                background: "#10B981",
-                color: "white",
-                boxShadow: "0 0 0 4px rgba(16,185,129,0.15), 0 4px 10px rgba(16,185,129,0.2)",
-                border: "none",
-            };
-        }
-        if (index < stepIndex) {
+        if (currentStep === 'success' || index < stepIndex) {
             return {
                 background: "#10B981",
                 color: "white",
@@ -41,8 +35,7 @@ export const StepIndicator = ({ currentStep }: { currentStep: CheckoutStep | "ca
 
     // Fungsi untuk menentukan style garis penghubung
     const getLineStyle = (index: number): React.CSSProperties => {
-        if (currentStep === 'success') return { background: "#10B981" };
-        if (index < stepIndex) return { background: "#10B981" };
+        if (currentStep === 'success' || index < stepIndex) return { background: "#10B981" };
         return { background: "var(--cream-dark, #F0D5C2)" };
     };
 
@@ -83,7 +76,7 @@ export const StepIndicator = ({ currentStep }: { currentStep: CheckoutStep | "ca
                 marginBottom: "32px"
             }}
         >
-            <div className="flex items-center justify-center max-w-3xl mx-auto flex-wrap md:flex-nowrap gap-y-4">
+            <div className="flex items-center justify-center max-w-2xl mx-auto flex-wrap md:flex-nowrap gap-y-4">
                 {/* Step 1: Keranjang */}
                 <div className="flex items-center">
                     <div 
@@ -130,34 +123,7 @@ export const StepIndicator = ({ currentStep }: { currentStep: CheckoutStep | "ca
                     </div>
                     <div className="hidden md:block ml-3">
                         <p style={getTitleStyle(2)}>Pembayaran</p>
-                        <p style={getSubStyle(2)}>QRIS Payment</p>
-                    </div>
-                </div>
-                <div 
-                    className="flex-grow h-[2px] min-w-[20px] max-w-[60px] md:max-w-[80px] mx-2 md:mx-4 rounded-full transition-all duration-300"
-                    style={getLineStyle(2)}
-                ></div>
-
-                {/* Step 4: Konfirmasi */}
-                <div className="flex items-center">
-                    <div 
-                        className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 flex-shrink-0 text-sm font-bold"
-                        style={getStepStyle(3)}
-                    >
-                        {currentStep === 'success' || stepIndex > 3 ? <i className="fas fa-check text-xs"></i> : <span>4</span>}
-                    </div>
-                    <div className="hidden md:block ml-3">
-                        {currentStep === 'success' ? (
-                            <>
-                                <p style={getTitleStyle(3)}>Selesai</p>
-                                <p style={{ ...getSubStyle(3), color: "#10B981", fontWeight: 600 }}>Pesanan Berhasil</p>
-                            </>
-                        ) : (
-                            <>
-                                <p style={getTitleStyle(3)}>Konfirmasi</p>
-                                <p style={getSubStyle(3)}>Upload Bukti</p>
-                            </>
-                        )}
+                        <p style={getSubStyle(2)}>{currentStep === 'success' ? "Pesanan Selesai" : "QRIS Payment"}</p>
                     </div>
                 </div>
             </div>

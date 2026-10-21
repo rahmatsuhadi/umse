@@ -11,10 +11,12 @@ export interface Address {
   village: Location;
   village_id: number;
   address: string;
-  postal_code?: string;
+  postal_code?: string | null;
   is_primary: boolean;
-  note:string;
+  note?: string | null;
   label: string; // Contoh: "Rumah", "Kantor"
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface Location{

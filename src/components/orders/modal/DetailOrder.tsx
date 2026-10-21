@@ -8,7 +8,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { useGetOrderPayments } from "@/features/order/hooks";
+import { useGetOrderPayments, useOrderTracking } from "@/features/order/hooks";
 import Image from "next/image";
 import { formatDate } from "@/lib/format-date";
 import { getStatusBadgeClass } from "../lib";
@@ -240,6 +240,11 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                 </div>
               )}
             </div>
+
+            {/* Tracking KiriminAja Section (Khusus PROCESSING, SHIPPED, DELIVERED) */}
+            {['processing', 'shipped', 'delivered'].includes(order.status?.toLowerCase()) && (
+              <OrderTrackingSection orderId={order.id} orderStatus={order.status} />
+            )}
 
             {/* Items Container */}
             <div className="py-4 space-y-5">
@@ -562,3 +567,128 @@ const OrderDetailModalSkeleton = () => {
     </div>
   );
 };
+
+interface OrderTrackingSectionProps {
+  orderId: string;
+  orderStatus: string;
+}
+
+function OrderTrackingSection({ orderId, orderStatus }: OrderTrackingSectionProps) {
+  const [isOpen, setIsOpen] = useState(orderStatus === 'shipped');
+  const { data, isLoading, error, refetch } = useOrderTracking(orderId, isOpen);
+  const tracking = data?.data;
+
+  return (
+    <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] overflow-hidden shadow-sm transition-all duration-300">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full p-4 flex items-center justify-between text-left hover:bg-[var(--cream)]/30 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-[var(--terracotta)]/10 text-[var(--terracotta)] flex items-center justify-center text-base">
+            <i className="fas fa-truck-moving"></i>
+          </div>
+          <div>
+            <h4 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center gap-2">
+              Lacak Pengiriman Ekspedisi
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[var(--terracotta)]/10 text-[var(--terracotta)]">
+                {orderStatus.toUpperCase()}
+              </span>
+            </h4>
+            <p className="text-xs text-[var(--text-muted)] font-medium">
+              {isOpen ? "Klik untuk menutup pelacakan" : "Klik untuk melihat status kurir dan riwayat perjalanan"}
+            </p>
+          </div>
+        </div>
+        <i className={`fas fa-chevron-down text-sm text-[var(--text-muted)] transition-transform duration-300 ${isOpen ? "transform rotate-180" : ""}`}></i>
+      </button>
+
+      {isOpen && (
+        <div className="p-4 pt-0 border-t border-[var(--cream-dark)]/50 space-y-4">
+          {isLoading ? (
+            <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
+              <i className="fas fa-spinner fa-spin text-xl text-[var(--terracotta)]"></i>
+              <p className="text-xs text-[var(--text-secondary)] font-medium">Menghubungi ekspedisi KiriminAja...</p>
+            </div>
+          ) : error || !tracking?.status ? (
+            <div className="py-4 px-3 bg-red-50 border border-red-200 rounded-[var(--radius-sm)] text-center space-y-2">
+              <p className="text-xs text-red-700">
+                {tracking?.message || "Belum dapat memuat status kurir saat ini."}
+              </p>
+              <button
+                type="button"
+                onClick={() => refetch()}
+                className="text-xs font-bold text-[var(--terracotta)] underline hover:text-[var(--terracotta-dark)]"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4 pt-3">
+              {/* Resi & Courier Info */}
+              <div className="p-3 bg-[var(--cream)]/40 border border-[var(--cream-dark)] rounded-[var(--radius-sm)] flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div>
+                  <span className="text-[var(--text-muted)] block font-medium">Kurir & Layanan:</span>
+                  <span className="font-extrabold text-[var(--text-primary)]">
+                    {tracking.courier || "Ekspedisi"} • {tracking.service_type || "Reguler"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[var(--text-muted)] block font-medium">No. Resi / AWB:</span>
+                  <span className="font-mono font-bold text-[var(--terracotta)] select-all">
+                    {tracking.tracking_number || "-"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[var(--text-muted)] block font-medium">Status Terkini:</span>
+                  <span className="font-bold text-[var(--forest-mid)]">
+                    {tracking.current_status || "Dalam Pengiriman"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Timeline list */}
+              <div className="relative pl-5 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[var(--cream-dark)]">
+                {tracking.histories && tracking.histories.length > 0 ? (
+                  tracking.histories.map((hist, idx) => {
+                    const isLatest = idx === 0;
+                    return (
+                      <div key={idx} className="relative">
+                        <div
+                          className={`absolute -left-5 top-1 w-2.5 h-2.5 rounded-full ${
+                            isLatest
+                              ? "bg-[var(--terracotta)] ring-4 ring-[var(--terracotta)]/20"
+                              : "bg-[var(--brown-light)]"
+                          }`}
+                        />
+                        <div className="bg-white p-3 rounded-[var(--radius-sm)] border border-[var(--cream-dark)] shadow-2xs space-y-1">
+                          <p className="text-[11px] font-bold text-[var(--text-muted)]">
+                            {hist.time || "-"}
+                          </p>
+                          <p className="text-xs font-semibold text-[var(--text-primary)]">
+                            {hist.description || "-"}
+                          </p>
+                          {hist.location && (
+                            <p className="text-[11px] text-[var(--text-muted)] flex items-center gap-1">
+                              <i className="fas fa-map-marker-alt text-[var(--terracotta)]"></i>
+                              {hist.location}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-xs text-[var(--text-muted)] italic py-2">
+                    Belum ada riwayat pembaruan status kurir.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
