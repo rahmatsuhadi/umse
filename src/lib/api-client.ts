@@ -29,8 +29,10 @@ export async function apiClient<T>(
   // Di browser (client), gunakan proxy Next.js (/api) untuk menghindari CORS.
   // Di server (SSR), hit langsung ke backend URL.
   const isServer = typeof window === "undefined";
-  const baseUrl = isServer ? API_URL : "/api";
-  const url = `${baseUrl}${endpoint}`;
+  const rawBaseUrl = isServer ? API_URL : "/api";
+  const cleanBaseUrl = rawBaseUrl.replace(/\/+$/, "");
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${cleanBaseUrl}${cleanEndpoint}`;
   const config: RequestInit = {
     ...options,
     headers: {
@@ -70,7 +72,12 @@ export async function apiClient<T>(
     });
 
     const text = await response.text();
-    const data = text ? JSON.parse(text) : {};
+    let data: Record<string, unknown> = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { message: text.slice(0, 300) };
+    }
 
     if (!response.ok) {
       const expectedErrors = [400, 401, 403, 422];
@@ -82,15 +89,20 @@ export async function apiClient<T>(
           data,
         });
       }
-      // Extract the most helpful message available
+      const validationErrors =
+        typeof data?.errors === "object" && data.errors !== null
+          ? Object.values(data.errors).flat().join(". ")
+          : null;
+      const responseMessage =
+        typeof data?.message === "string" ? data.message : null;
       const message =
-        data?.message ||
-        (data?.errors ? Object.values(data.errors).flat().join(" ") : null) ||
+        validationErrors ||
+        responseMessage ||
         `Request gagal: ${response.status} ${response.statusText}`;
       throw new Error(message);
     }
 
-    return data;
+    return data as T;
   } catch (error) {
     if (error instanceof Error) {
       console.error("[apiClient:fetchError]", {
@@ -99,7 +111,11 @@ export async function apiClient<T>(
         stack: error.stack,
         name: error.name,
       });
-      throw new Error(error.message || "Gagal terhubung ke server.");
+      const displayMessage =
+        error.message === "fetch failed"
+          ? `Gagal terhubung ke backend (${url}). Pastikan backend sedang aktif.`
+          : error.message || "Gagal terhubung ke server.";
+      throw new Error(displayMessage);
     }
     throw new Error("Gagal terhubung ke server.");
   }

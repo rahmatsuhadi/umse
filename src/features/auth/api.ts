@@ -72,9 +72,14 @@ export const register = async (data: RegisterData): Promise<User> => {
     body: formData,
   });
 
-  const responseData = await response.json();
+  let responseData: (User & { message?: string }) | null = null;
+  try {
+    responseData = await response.json();
+  } catch {
+    responseData = null;
+  }
 
-  if (!response.ok) {
+  if (!response.ok || !responseData) {
     throw new Error(
       responseData?.message || "Kesalahan dalam proses pendaftaran"
     );

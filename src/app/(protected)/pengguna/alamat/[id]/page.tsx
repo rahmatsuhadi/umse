@@ -224,22 +224,77 @@ export default function EditAddressPage() {
     [watchedDistrict, villagesData?.data]
   );
 
-  const selectedProvinceName = useMemo(
-    () => provinces.find((p) => String(p.id) === String(watchedProvince))?.name ?? "",
-    [provinces, watchedProvince]
-  );
-  const selectedRegencyName = useMemo(
-    () => regencies.find((r) => String(r.id) === String(watchedRegency))?.name ?? "",
-    [regencies, watchedRegency]
-  );
-  const selectedDistrictName = useMemo(
-    () => districts.find((d) => String(d.id) === String(watchedDistrict))?.name ?? "",
-    [districts, watchedDistrict]
-  );
-  const selectedVillageName = useMemo(
-    () => villages.find((v) => String(v.id) === String(watchedVillage))?.name ?? "",
-    [villages, watchedVillage]
-  );
+  // Pre-seed items with existing address if remote data is still loading
+  const provinceItems = provinces;
+
+  const regencyItems = useMemo(() => {
+    if (regencies.length > 0) return regencies;
+    if (
+      existingAddress?.regency &&
+      String(watchedProvince) === String(existingAddress.province_id)
+    ) {
+      return [{ id: existingAddress.regency.id, name: existingAddress.regency.name }];
+    }
+    return [];
+  }, [regencies, existingAddress, watchedProvince]);
+
+  const districtItems = useMemo(() => {
+    if (districts.length > 0) return districts;
+    if (
+      existingAddress?.district &&
+      String(watchedRegency) === String(existingAddress.regency_id)
+    ) {
+      return [{ id: existingAddress.district.id, name: existingAddress.district.name }];
+    }
+    return [];
+  }, [districts, existingAddress, watchedRegency]);
+
+  const villageItems = useMemo(() => {
+    if (villages.length > 0) return villages;
+    if (
+      existingAddress?.village &&
+      String(watchedDistrict) === String(existingAddress.district_id)
+    ) {
+      return [{ id: existingAddress.village.id, name: existingAddress.village.name }];
+    }
+    return [];
+  }, [villages, existingAddress, watchedDistrict]);
+
+  const selectedProvinceName = useMemo(() => {
+    return (
+      provinceItems.find((p) => String(p.id) === String(watchedProvince))?.name ||
+      (String(watchedProvince) === String(existingAddress?.province_id)
+        ? existingAddress?.province?.name || ""
+        : "")
+    );
+  }, [provinceItems, watchedProvince, existingAddress]);
+
+  const selectedRegencyName = useMemo(() => {
+    return (
+      regencyItems.find((r) => String(r.id) === String(watchedRegency))?.name ||
+      (String(watchedRegency) === String(existingAddress?.regency_id)
+        ? existingAddress?.regency?.name || ""
+        : "")
+    );
+  }, [regencyItems, watchedRegency, existingAddress]);
+
+  const selectedDistrictName = useMemo(() => {
+    return (
+      districtItems.find((d) => String(d.id) === String(watchedDistrict))?.name ||
+      (String(watchedDistrict) === String(existingAddress?.district_id)
+        ? existingAddress?.district?.name || ""
+        : "")
+    );
+  }, [districtItems, watchedDistrict, existingAddress]);
+
+  const selectedVillageName = useMemo(() => {
+    return (
+      villageItems.find((v) => String(v.id) === String(watchedVillage))?.name ||
+      (String(watchedVillage) === String(existingAddress?.village_id)
+        ? existingAddress?.village?.name || ""
+        : "")
+    );
+  }, [villageItems, watchedVillage, existingAddress]);
 
   const formAddressQuery = useMemo(() => {
     const addr = watchedAddress?.trim() ?? "";
@@ -477,30 +532,26 @@ export default function EditAddressPage() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <LocationSelect
                     form={form} name="province_id" label="Provinsi"
-                    items={provinces} isLoading={isLoadingProvinces}
+                    items={provinceItems} isLoading={isLoadingProvinces}
                     placeholder="Pilih Provinsi" onValueChange={handleProvinceChange}
-                    initialLabel={existingAddress.province?.name}
                   />
                   <LocationSelect
                     form={form} name="regency_id" label="Kabupaten/Kota"
-                    items={regencies} isLoading={isLoadingRegencies}
+                    items={regencyItems} isLoading={isLoadingRegencies}
                     disabled={!watchedProvince}
                     placeholder="Pilih Kabupaten/Kota" onValueChange={handleRegencyChange}
-                    initialLabel={existingAddress.regency?.name}
                   />
                   <LocationSelect
                     form={form} name="district_id" label="Kapanewon"
-                    items={districts} isLoading={isLoadingDistricts}
+                    items={districtItems} isLoading={isLoadingDistricts}
                     disabled={!watchedRegency}
                     placeholder="Pilih Kapanewon" onValueChange={handleDistrictChange}
-                    initialLabel={existingAddress.district?.name}
                   />
                   <LocationSelect
                     form={form} name="village_id" label="Kelurahan / Kalurahan"
-                    items={villages} isLoading={isLoadingVillages}
+                    items={villageItems} isLoading={isLoadingVillages}
                     disabled={!watchedDistrict}
                     placeholder="Pilih Kelurahan" onValueChange={handleVillageChange}
-                    initialLabel={existingAddress.village?.name}
                   />
                   <FormField control={form.control} name="postal_code" render={({ field }) => (
                     <FormItem>
@@ -675,42 +726,18 @@ interface LocationSelectProps {
   disabled?: boolean;
   placeholder: string;
   onValueChange: (v: string) => void;
-  /** Nama label awal (dari existingAddress) — ditampilkan sebelum data cascade dimuat */
-  initialLabel?: string;
 }
 
-function LocationSelect({ form, name, label, items, isLoading, disabled, placeholder, onValueChange, initialLabel }: LocationSelectProps) {
-  const [open, setOpen] = useState(false);
-  const currentValue = String(useWatch({ control: form.control, name }) ?? "");
-
-  // Simpan item yang pernah terpilih sebagai fallback saat items belum/sedang dimuat.
-  // Pre-seed dengan initialLabel dari existingAddress (data dari server sudah ada nama wilayah).
-  const knownSelectedRef = useRef<{ id: number | string; name: string } | null>(null);
-
-  const foundInItems = items.find((item) => String(item.id) === currentValue) ?? null;
-  // Update ref saat item ditemukan dalam data yang dimuat
-  if (foundInItems) knownSelectedRef.current = foundInItems;
-  // Reset saat value dikosongkan (user memilih wilayah baru dari parent)
-  if (!currentValue) knownSelectedRef.current = null;
-
-  // Item efektif yang terpilih (sinkron, tidak butuh useEffect):
-  // 1. Cari dari items yang sudah dimuat (paling akurat)
-  // 2. Gunakan knownSelectedRef jika pernah dimuat sebelumnya
-  // 3. Gunakan initialLabel dari existingAddress (server data) sebagai fallback awal
-  const effectiveSelected = foundInItems
-    ?? knownSelectedRef.current
-    ?? (currentValue && initialLabel ? { id: currentValue, name: initialLabel } : null);
-
-  // Item yang di-render:
-  // - Saat dropdown TERBUKA: semua item (agar user bisa memilih)
-  // - Saat dropdown TERTUTUP: hanya item terpilih (mengurangi DOM nodes untuk list besar)
-  const visibleItems = useMemo(() => {
-    if (open) return items;
-    return effectiveSelected ? [effectiveSelected] : [];
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, items, effectiveSelected?.id]);
-
-
+function LocationSelect({
+  form,
+  name,
+  label,
+  items,
+  isLoading,
+  disabled,
+  placeholder,
+  onValueChange,
+}: LocationSelectProps) {
   return (
     <FormField
       control={form.control}
@@ -719,22 +746,42 @@ function LocationSelect({ form, name, label, items, isLoading, disabled, placeho
         <FormItem>
           <FormLabel style={labelStyle}>{label}</FormLabel>
           <Select
-            open={open}
-            onOpenChange={setOpen}
             disabled={disabled || isLoading}
             value={field.value ? String(field.value) : ""}
             onValueChange={onValueChange}
           >
             <FormControl>
-              <SelectTrigger style={{
-                width: "100%", height: 44, borderRadius: 10,
-                border: "1.5px solid var(--cream-dark, #F0D5C2)", fontSize: 14,
-              }}>
-                <SelectValue placeholder={isLoading ? "Memuat..." : placeholder} />
+              <SelectTrigger
+                style={{
+                  width: "100%",
+                  height: 44,
+                  borderRadius: 10,
+                  border: "1.5px solid var(--cream-dark, #F0D5C2)",
+                  fontSize: 14,
+                }}
+              >
+                <SelectValue
+                  placeholder={
+                    isLoading ? (
+                      <span
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        <Loader2 size={13} className="animate-spin" /> Memuat...
+                      </span>
+                    ) : (
+                      placeholder
+                    )
+                  }
+                />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {visibleItems.map((item) => (
+              {items.map((item) => (
                 <SelectItem key={item.id} value={String(item.id)}>
                   {item.name}
                 </SelectItem>
