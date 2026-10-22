@@ -185,7 +185,7 @@ function ProductsContent() {
                                         <span style={{ color: "#F1C40F", fontSize: "12px" }}>★</span>
                                         <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>{product.rating_avg || '5.0'}</span>
                                         <span>·</span>
-                                        <span>({product.sold_count || 0})</span>
+                                        <span>({product.sold_count ?? product.total_sales ?? 0})</span>
                                     </div>
                                 </div>
                                 {(() => {

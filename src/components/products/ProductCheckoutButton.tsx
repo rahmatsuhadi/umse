@@ -51,6 +51,7 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.variants]);
 
+  const totalReviews = Object.values(product.rating_count || {}).reduce((sum, count) => sum + count, 0);
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant
     ? selectedVariant.stock_quantity
@@ -120,15 +121,19 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
       {/* Nama Produk */}
       <h1 id="detailName">{product.name}</h1>
 
-      {/* Rating Row — with sold count (hidden) */}
-      {/* <div className="detail-rating-row">
+      {/* Rating Row — with sold count */}
+      <div className="detail-rating-row">
         <span className="detail-stars">★★★★★</span>
         <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)' }}>
-          {Number(product.average_rating).toFixed(1)}
+          {Number(product.average_rating) > 0 ? Number(product.average_rating).toFixed(1) : '5.0'}
         </span>
         <span className="detail-rating-count">({totalReviews} ulasan)</span>
-        <span className="detail-sold">{totalReviews > 0 ? `${totalReviews}+ terjual` : 'Belum ada penjualan'}</span>
-      </div> */}
+        <span className="detail-sold">
+          {(product.sold_count ?? product.total_sales ?? 0) > 0
+            ? `${product.sold_count ?? product.total_sales} terjual`
+            : 'Belum ada penjualan'}
+        </span>
+      </div>
 
       {/* Harga */}
       <div className="detail-price-row">

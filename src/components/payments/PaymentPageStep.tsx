@@ -110,7 +110,7 @@ export default function PaymentStep({
         setRedirectCountdown((prev) => {
           if (prev === null || prev <= 1) {
             clearInterval(interval);
-            const redirectUrl = pollData?.redirect_url || "/pesanan";
+            const redirectUrl = "/pesanan?status=processing";
             router.replace(redirectUrl);
             return 0;
           }
@@ -120,7 +120,7 @@ export default function PaymentStep({
 
       return () => clearInterval(interval);
     }
-  }, [pollData?.should_redirect, pollData?.order_status, pollData?.redirect_url, isFullyPaid, order.status, showSuccessModal, router]);
+  }, [pollData?.should_redirect, pollData?.order_status, isFullyPaid, order.status, showSuccessModal, router]);
 
   // Regenerate QRIS mutation
   const { mutate: regenerateQrisMutate, isPending: isRegenerating } = useRegenerateQris(order.id);
@@ -301,19 +301,10 @@ export default function PaymentStep({
                 Seluruh tagihan pesanan Anda ({requiresShipping ? "Produk & Ongkos Kirim" : "Produk Jasa"}) telah diverifikasi lunas secara otomatis oleh sistem.
               </p>
 
-              <div className="mt-6 p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between">
-                <span className="text-xs text-emerald-800 font-semibold flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-emerald-600" />
-                  Mengalihkan otomatis dalam:
-                </span>
-                <span className="text-sm font-extrabold text-emerald-700 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-300">
-                  {redirectCountdown ?? 3} detik
-                </span>
-              </div>
 
               <button
                 type="button"
-                onClick={() => router.replace(pollData?.redirect_url || "/pesanan")}
+                onClick={() => router.replace("/pesanan?status=processing")}
                 className="mt-5 w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm"
               >
                 <span>Lihat Pesanan Sekarang</span>

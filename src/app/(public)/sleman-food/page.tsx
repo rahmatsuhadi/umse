@@ -26,6 +26,7 @@ type ProductItem = {
     price?: { formatted?: string; amount?: string | number } | null;
     rating_avg?: number;
     sold_count?: number;
+    total_sales?: number;
     discount?: number;
 };
 
