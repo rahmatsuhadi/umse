@@ -189,16 +189,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 Selesaikan Pesanan
               </button>
             )}
-
-            {order.status === 'shipped' && (
-              <button
-                onClick={onDeliveredOrder}
-                className="btn btn-primary btn-sm"
-                style={{ background: "var(--terracotta-light)", color: "white" }}
-              >
-                Pesanan Diterima
-              </button>
-            )}
           </div>
         </div>
       </div>
