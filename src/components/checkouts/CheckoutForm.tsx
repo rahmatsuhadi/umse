@@ -1,11 +1,12 @@
 import { Address, CartItem, Store } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { Ref, useEffect, useState } from "react";
+import { Ref, useEffect, useState, useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import CheckoutItemCard from "./CheckoutItem";
 import ShippingCardEstimation from "./ShippingCardEstimation";
+import { AddressLocationPicker } from "@/components/maps/AddressLocationPicker";
 import {
   Form,
   FormControl,
@@ -33,7 +34,7 @@ import {
 import { Button } from "../ui/button";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useUser } from "@/features/auth/hooks";
-import { addAddress, setDefaultAddress } from "@/features/address/api";
+import { addAddress, setDefaultAddress, updateAddress } from "@/features/address/api";
 import { Loader2, User2, Phone, Home, MapPin } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
 import { toast } from "sonner";
@@ -71,6 +72,8 @@ const addressSchema = z.object({
     .min(5, "Kode pos tidak valid.")
     .max(5, "Kode pos tidak valid."),
   note: z.string().optional(),
+  latitude: z.number().nullable().optional(),
+  longitude: z.number().nullable().optional(),
 });
 function SectionDivider({ label }: { label: string }) {
   return (
@@ -110,6 +113,8 @@ export default function CheckoutForm({
       village_id: "",
       postalCode: "",
       note: "",
+      latitude: null,
+      longitude: null,
     },
   });
 
@@ -130,6 +135,8 @@ export default function CheckoutForm({
         village_id: String(address.village_id),
         postalCode: String(address.postal_code),
         note: address.note ?? "",
+        latitude: typeof address.latitude === "number" ? address.latitude : (address.latitude ? Number(address.latitude) : null),
+        longitude: typeof address.longitude === "number" ? address.longitude : (address.longitude ? Number(address.longitude) : null),
       });
     } else if (user) {
       form.reset({
@@ -142,6 +149,8 @@ export default function CheckoutForm({
         village_id: "",
         postalCode: "",
         note: "",
+        latitude: null,
+        longitude: null,
       });
     }
   }, [address, user, form]);
@@ -167,12 +176,23 @@ export default function CheckoutForm({
           is_primary: true,
           note: data.note || "",
           label: "Utama",
+          latitude: data.latitude != null ? Number(data.latitude) : null,
+          longitude: data.longitude != null ? Number(data.longitude) : null,
         });
 
         // Otomatis di jadikan alamat utama
         if (newAddress && newAddress.id) {
           await setDefaultAddress(newAddress.id);
         }
+      } else if (address.id && (data.latitude !== address.latitude || data.longitude !== address.longitude)) {
+        // Sinkronisasi pembaruan titik koordinat ke alamat tersimpan pengguna
+        await updateAddress({
+          id: address.id,
+          data: {
+            latitude: data.latitude != null ? Number(data.latitude) : null,
+            longitude: data.longitude != null ? Number(data.longitude) : null,
+          },
+        }).catch((err) => console.warn("Gagal memperbarui koordinat alamat tersimpan:", err));
       }
 
       const orderData = {
@@ -203,6 +223,8 @@ export default function CheckoutForm({
           recipient_phone_number: data.recipientPhone,
           postal_code: Number(data.postalCode),
           note: data.note,
+          latitude: data.latitude != null ? Number(data.latitude) : null,
+          longitude: data.longitude != null ? Number(data.longitude) : null,
         },
       };
 
@@ -226,6 +248,9 @@ export default function CheckoutForm({
   const watchedDistrict = form.watch("district_id");
   const watchedVillage = form.watch("village_id");
   const watchedPostalCode = form.watch("postalCode");
+  const watchedAddress = form.watch("fullAddress");
+  const watchedLatitude = form.watch("latitude");
+  const watchedLongitude = form.watch("longitude");
 
   const { data: provincesData, isLoading: isLoadingProvinces } = useProvinces();
   const { data: regenciesData, isLoading: isLoadingRegencies } =
@@ -235,10 +260,65 @@ export default function CheckoutForm({
   const { data: villagesData, isLoading: isLoadingVillages } =
     useVillages(watchedDistrict);
 
-  const provinces = provincesData?.data || [];
-  const regencies = regenciesData?.data || [];
-  const districts = districtsData?.data || [];
-  const villages = villagesData?.data || [];
+  const provinces = useMemo(() => provincesData?.data ?? [], [provincesData?.data]);
+  const regencies = useMemo(() => regenciesData?.data ?? [], [regenciesData?.data]);
+  const districts = useMemo(() => districtsData?.data ?? [], [districtsData?.data]);
+  const villages = useMemo(() => villagesData?.data ?? [], [villagesData?.data]);
+
+  const selectedProvinceName = useMemo(() => {
+    return provinces.find((p) => String(p.id) === String(watchedProvince))?.name || "";
+  }, [provinces, watchedProvince]);
+
+  const selectedRegencyName = useMemo(() => {
+    return regencies.find((r) => String(r.id) === String(watchedRegency))?.name || "";
+  }, [regencies, watchedRegency]);
+
+  const selectedDistrictName = useMemo(() => {
+    return districts.find((d) => String(d.id) === String(watchedDistrict))?.name || "";
+  }, [districts, watchedDistrict]);
+
+  const selectedVillageName = useMemo(() => {
+    return villages.find((v) => String(v.id) === String(watchedVillage))?.name || "";
+  }, [villages, watchedVillage]);
+
+  // Query alamat lengkap untuk pencarian otomatis pada peta
+  const formAddressQuery = useMemo(() => {
+    const parts: string[] = [];
+    if (watchedAddress?.trim()) parts.push(watchedAddress.trim());
+    if (selectedVillageName && !watchedAddress?.toLowerCase().includes(selectedVillageName.toLowerCase())) {
+      parts.push(selectedVillageName);
+    }
+    if (selectedDistrictName && !watchedAddress?.toLowerCase().includes(selectedDistrictName.toLowerCase())) {
+      parts.push(selectedDistrictName);
+    }
+    if (selectedRegencyName && !watchedAddress?.toLowerCase().includes(selectedRegencyName.toLowerCase())) {
+      parts.push(selectedRegencyName);
+    }
+    if (selectedProvinceName && !watchedAddress?.toLowerCase().includes(selectedProvinceName.toLowerCase())) {
+      parts.push(selectedProvinceName);
+    }
+    return parts.join(", ");
+  }, [watchedAddress, selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
+
+  // Query fallback jika alamat spesifik tidak terindeks Nominatim OSM
+  const formFallbackQuery = useMemo(() => {
+    const parts: string[] = [];
+    if (selectedVillageName) parts.push(selectedVillageName);
+    if (selectedDistrictName) parts.push(selectedDistrictName);
+    if (selectedRegencyName) parts.push(selectedRegencyName);
+    if (selectedProvinceName) parts.push(selectedProvinceName);
+    return parts.join(", ");
+  }, [selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
+
+  const handleLocationSelect = useCallback((lat: number, lng: number) => {
+    form.setValue("latitude", lat, { shouldValidate: true, shouldDirty: true });
+    form.setValue("longitude", lng, { shouldValidate: true, shouldDirty: true });
+  }, [form]);
+
+  const handleLocationClear = useCallback(() => {
+    form.setValue("latitude", null, { shouldValidate: true, shouldDirty: true });
+    form.setValue("longitude", null, { shouldValidate: true, shouldDirty: true });
+  }, [form]);
 
   const isServiceOrder =
     items.length > 0 &&
@@ -588,6 +668,19 @@ export default function CheckoutForm({
                   />
                 </div>
 
+                {/* Section Divider: Peta Koordinat Lokasi */}
+                <SectionDivider label="Titik Koordinat Lokasi" />
+
+                {/* Leaflet Map Interactive Picker */}
+                <AddressLocationPicker
+                  latitude={watchedLatitude}
+                  longitude={watchedLongitude}
+                  onLocationSelect={handleLocationSelect}
+                  onLocationClear={handleLocationClear}
+                  formAddressQuery={formAddressQuery}
+                  formFallbackQuery={formFallbackQuery}
+                />
+
                 {/* Seller Note */}
                 <div className="border-t pt-6 mt-6" style={{ borderColor: "var(--cream-dark)" }}>
                   <FormField
@@ -666,6 +759,8 @@ export default function CheckoutForm({
                 <ShippingCardEstimation
                   items={items}
                   storeVillageId={store.village_id}
+                  storeLatitude={store.latitude}
+                  storeLongitude={store.longitude}
                   handleValidShipping={(val) => {
                     if (isServiceOrder) {
                       setIsValidShip(true);

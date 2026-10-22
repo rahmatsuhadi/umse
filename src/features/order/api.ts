@@ -20,7 +20,9 @@ export interface CreateOrderData {
     recipient_name: string,
     recipient_phone_number: string,
     postal_code: number,
-    note?: string
+    note?: string,
+    latitude?: number | null,
+    longitude?: number | null,
   }
 }
 

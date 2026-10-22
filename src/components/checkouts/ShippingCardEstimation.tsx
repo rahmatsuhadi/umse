@@ -9,6 +9,8 @@ import { getComputedPrice } from "@/lib/price-helper";
 
 interface ShippingCardEstimationProps {
   storeVillageId: number;
+  storeLatitude?: number | null;
+  storeLongitude?: number | null;
   items: Array<{
     id?: string;
     cart_item_id?: string;
@@ -24,6 +26,8 @@ export const service_name = "jne";
 export default function ShippingCardEstimation({
   items,
   storeVillageId,
+  storeLatitude,
+  storeLongitude,
   handleValidShipping = () => {},
 }: ShippingCardEstimationProps) {
   const { watch } = useFormContext();
@@ -69,6 +73,8 @@ export default function ShippingCardEstimation({
   }, [isReadyToEatOrFrozen]);
 
   const destination_village_id = watch("village_id");
+  const watchedLatitude = watch("latitude");
+  const watchedLongitude = watch("longitude");
 
   // Query tarif KiriminAja hanya jika BUKAN order jasa
   const {
@@ -80,6 +86,10 @@ export default function ShippingCardEstimation({
   } = useShippingRates({
     origin_village_id: storeVillageId,
     include_instant: true,
+    origin_lat: storeLatitude ? Number(storeLatitude) : undefined,
+    origin_long: storeLongitude ? Number(storeLongitude) : undefined,
+    destination_lat: watchedLatitude ? Number(watchedLatitude) : undefined,
+    destination_long: watchedLongitude ? Number(watchedLongitude) : undefined,
     items: items.map((item) => {
       if (item.id) {
         return {

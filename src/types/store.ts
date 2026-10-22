@@ -15,6 +15,8 @@ export interface Store {
   cover_path?: string;
   description: string;
   address: string;
+  latitude?: number | null;
+  longitude?: number | null;
   qris_url?: string;
   nmid?: string;
   instagram?: string;
