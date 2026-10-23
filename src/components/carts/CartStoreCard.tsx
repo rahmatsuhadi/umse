@@ -84,6 +84,8 @@ export const CartStoreCard = ({
                     original_price: item.product.price,
                     discount_percentage: item.product.discount_percentage,
                     discount_price: item.product.discount_price,
+                    type: item.product.type,
+                    category: item.product.category,
                 },
                 variant: item.variant ? {
                     id: item.variant.id,

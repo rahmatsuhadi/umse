@@ -40,10 +40,11 @@ export function MediaPreview({ open, onOpenChange, media }: MediaPreviewProps) {
           {media.type === 'image' ? (
             <Image
               loading="lazy"
-              layout="fill"
-              objectFit="contain"
+              fill
+              className="object-contain"
               src={media.url}
               alt="Media preview"
+              unoptimized
             />
           ) : (
             <video

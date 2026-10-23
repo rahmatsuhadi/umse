@@ -415,6 +415,8 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
           original_price: product.price,
           discount_percentage: product.discount_percentage,
           discount_price: product.discount_price,
+          type: product.type,
+          category: product.category,
         },
         variant: selectedVariant
           ? {
