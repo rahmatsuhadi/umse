@@ -324,16 +324,7 @@ export default function CheckoutForm({
     items.length > 0 &&
     items.every((item) => {
       const type = item.product?.type?.toLowerCase();
-      const catType = item.product?.category?.type?.toLowerCase();
-      const catName = item.product?.category?.name?.toLowerCase();
-      return (
-        type === "service" ||
-        type === "jasa" ||
-        catType === "service" ||
-        catType === "jasa" ||
-        catName === "jasa" ||
-        catName?.includes("jasa")
-      );
+      return type === "service" || type === "jasa";
     });
 
   const [isValidShip, setIsValidShip] = useState<boolean>(isServiceOrder);

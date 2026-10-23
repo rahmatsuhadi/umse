@@ -16,7 +16,10 @@ import {
   RefreshCw,
   Download,
   Copy,
+  Truck,
+  Package,
   ShieldCheck,
+  Sparkles,
   ArrowRight,
 } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
@@ -78,11 +81,21 @@ export default function PaymentStep({
     return order.payment_status === "paid";
   }, [pollData?.bpd_paid, order.is_order_paid, order.payment_status]);
 
+  const isShippingPaid = useMemo(() => {
+    if (!requiresShipping) return true;
+    if (pollData?.shipping_paid !== undefined) return pollData.shipping_paid;
+    if (order.is_shipping_paid !== undefined) return order.is_shipping_paid;
+    return (
+      order.shipping_payment_status?.toLowerCase() === "paid" ||
+      order.shipping_payment_status === "paid"
+    );
+  }, [requiresShipping, pollData?.shipping_paid, order.is_shipping_paid, order.shipping_payment_status]);
+
   const isFullyPaid = useMemo(() => {
     if (pollData?.is_fully_paid !== undefined) return pollData.is_fully_paid;
     if (order.is_fully_paid !== undefined) return order.is_fully_paid;
-    return isBpdPaid;
-  }, [pollData?.is_fully_paid, order.is_fully_paid, isBpdPaid]);
+    return isBpdPaid && (!requiresShipping || isShippingPaid);
+  }, [pollData?.is_fully_paid, order.is_fully_paid, isBpdPaid, requiresShipping, isShippingPaid]);
 
   // Trigger auto redirect saat semua tagihan lunas atau status pesanan processing
   useEffect(() => {
@@ -117,12 +130,54 @@ export default function PaymentStep({
   const bpdExpiryDate = order.payment_expired_at || order.payment_due_at;
   const isBpdExpired = bpdExpiryDate ? new Date(bpdExpiryDate) <= now : false;
 
+  // Waktu kadaluarsa Ongkir (QRIS Bank BPD DIY)
+  const shippingExpiryDate = order.shipping_payment_expired_at || order.payment_due_at;
+  const isShippingExpired = shippingExpiryDate ? new Date(shippingExpiryDate) <= now : false;
+
   const [qrisData, setQrisData] = useState<QrisResponseData | null>(null);
+  const [shippingQrString, setShippingQrString] = useState<string | null>(null);
   const [isLoadingQris, setIsLoadingQris] = useState<boolean>(false);
   const [qrisError, setQrisError] = useState<string | null>(null);
 
-  // QR String BPD DIY
+  // QR Strings
   const effectiveBpdQrString = order.qr_string || qrisData?.qr_string || null;
+  const effectiveShippingQrString =
+    shippingQrString ||
+    order.shipping_qr_string ||
+    order.payment_shipping?.shipping_qr_string ||
+    order.payment_shipping?.qr_string ||
+    null;
+
+  // Auto-attempt regenerate QRIS Bank BPD DIY untuk ongkir jika order butuh shipping dan belum ada QR string
+  const [hasAttemptedShippingQris, setHasAttemptedShippingQris] = useState(false);
+  useEffect(() => {
+    if (
+      requiresShipping &&
+      !isShippingPaid &&
+      !effectiveShippingQrString &&
+      !isRegenerating &&
+      !hasAttemptedShippingQris
+    ) {
+      setHasAttemptedShippingQris(true);
+      regenerateQrisMutate(
+        { type: "kiriminaja" },
+        {
+          onSuccess: (res) => {
+            if (res?.data?.shipping_qr_string) {
+              setShippingQrString(res.data.shipping_qr_string);
+            }
+          },
+        }
+      );
+    }
+  }, [
+    requiresShipping,
+    isShippingPaid,
+    effectiveShippingQrString,
+    isRegenerating,
+    hasAttemptedShippingQris,
+    regenerateQrisMutate,
+  ]);
 
   const fetchBpdQris = useCallback(async () => {
     if (order.qr_string) return;
@@ -132,8 +187,10 @@ export default function PaymentStep({
     setQrisError(null);
 
     try {
-      // Gunakan total pembayaran pesanan
-      const amountVal = order.total?.value ?? Number(order.total?.amount ?? 0);
+      // Gunakan subtotal untuk barang, atau total untuk jasa
+      const amountVal = requiresShipping
+        ? order.subtotal?.value ?? Number(order.subtotal?.amount ?? 0)
+        : order.total?.value ?? Number(order.total?.amount ?? 0);
 
       const res = await apiClient<{ data: QrisResponseData; message: string; status: string }>(
         "/qris/create",
@@ -164,7 +221,7 @@ export default function PaymentStep({
     } finally {
       setIsLoadingQris(false);
     }
-  }, [order.qr_string, order.store?.nmid, order.total, order.order_number]);
+  }, [order.qr_string, order.store?.nmid, order.subtotal, order.total, order.order_number, requiresShipping]);
 
   useEffect(() => {
     if (!order.qr_string && !qrisData?.qr_string) {
@@ -241,13 +298,8 @@ export default function PaymentStep({
                 Pembayaran Berhasil Diverifikasi!
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
-                Seluruh tagihan pesanan Anda telah diverifikasi lunas secara otomatis oleh sistem.
+                Seluruh tagihan pesanan Anda ({requiresShipping ? "Produk & Ongkos Kirim" : "Produk Jasa"}) telah diverifikasi lunas secara otomatis oleh sistem.
               </p>
-              {redirectCountdown !== null && (
-                <p className="text-[11px] text-[var(--text-muted)] mt-1">
-                  Mengalihkan ke pesanan dalam {redirectCountdown} detik...
-                </p>
-              )}
 
 
               <button
@@ -265,29 +317,65 @@ export default function PaymentStep({
         <div id="paymentSection" className="mb-6">
           {isAllowed ? (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-              {/* Kolom Kiri: Kartu QRIS Pembayaran Tunggal */}
+              {/* Kolom Kiri: Kartu QRIS (1 Card jika Jasa, 2 Card jika Barang) */}
               <div className="flex flex-col h-full lg:col-span-7 space-y-6">
                 <StepIndicator currentStep={step} />
 
+                {/* Banner Status Realtime Dual Pembayaran */}
+                {requiresShipping && (
+                  <div className="p-4 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-2xl flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-white border border-[var(--cream-dark)] flex items-center justify-center text-[var(--terracotta)]">
+                        <QrCode className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-[var(--text-primary)]">
+                          Alur Pembayaran 2 QRIS
+                        </h4>
+                        <p className="text-[11px] text-[var(--text-muted)]">
+                          Produk (QRIS BPD DIY Toko) + Ongkir (QRIS BPD DIY)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 ${
+                          isFullyPaid
+                            ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                            : isBpdPaid || isShippingPaid
+                            ? "bg-blue-100 text-blue-800 border border-blue-300"
+                            : "bg-amber-100 text-amber-800 border border-amber-300"
+                        }`}
+                      >
+                        {isFullyPaid
+                          ? "2/2 Tagihan Lunas"
+                          : isBpdPaid || isShippingPaid
+                          ? "1/2 Tagihan Lunas"
+                          : "0/2 Tagihan Lunas"}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* ========================================================= */}
-                {/* KARTU TAGIHAN PEMBAYARAN (QRIS BANK BPD DIY)              */}
+                {/* CARD 1: TAGIHAN PRODUK (QRIS BANK BPD DIY)              */}
                 {/* ========================================================= */}
                 <div className={`checkout-card flex flex-col flex-1 transition-all ${isBpdPaid ? "border-emerald-500 bg-emerald-50/20" : ""}`}>
                   <div className="checkout-header-section justify-between flex-wrap gap-2">
                     <div className="flex items-center gap-3">
                       <div className="checkout-header-icon-box">
-                        <QrCode className="w-5 h-5 text-[var(--terracotta)]" />
+                        <Package className="w-5 h-5 text-[var(--terracotta)]" />
                       </div>
                       <div>
                         <h3 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
-                          Tagihan Pembayaran QRIS
+                          1. Tagihan Produk
                         </h3>
                         <p className="text-[11px] text-[var(--text-muted)]">
-                          Bank BPD DIY • Semua E-Wallet &amp; Mobile Banking
+                          {requiresShipping ? "Khusus pembayaran barang/pesanan" : "Pembayaran layanan jasa"}
                         </p>
                       </div>
                     </div>
-                    {/* Status Badge */}
+                    {/* Status Badge BPD */}
                     {isBpdPaid ? (
                       <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
@@ -309,10 +397,10 @@ export default function PaymentStep({
                           <CheckCircle2 className="w-8 h-8" />
                         </div>
                         <h4 className="text-base font-extrabold text-emerald-900">
-                          Pembayaran Telah Lunas
+                          Tagihan Produk Telah Lunas
                         </h4>
                         <p className="text-xs text-emerald-700 max-w-xs">
-                          Pembayaran tagihan Anda telah terverifikasi secara otomatis oleh sistem.
+                          Pembayaran tagihan produk telah terverifikasi secara otomatis oleh sistem.
                         </p>
                       </div>
                     ) : (
@@ -363,11 +451,11 @@ export default function PaymentStep({
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
-                              onClick={() => downloadQrCode("bpd-qris-svg", "QRIS-Pembayaran")}
+                              onClick={() => downloadQrCode("bpd-qris-svg", "QRIS-Produk-BPD")}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[var(--cream-dark)] hover:border-[var(--terracotta)] text-[11px] font-semibold text-[var(--text-secondary)] hover:text-[var(--terracotta)] rounded-lg shadow-2xs transition-all"
                             >
                               <Download className="w-3.5 h-3.5" />
-                              Unduh QR
+                              Unduh QR Produk
                             </button>
                             <button
                               type="button"
@@ -381,13 +469,13 @@ export default function PaymentStep({
                           </div>
                         )}
 
-                        {/* Nominal Total Tagihan */}
+                        {/* Nominal Tagihan Produk */}
                         <div className="text-center w-full">
                           <span className="text-[11px] text-[var(--text-muted)] font-semibold block">
-                            Total Tagihan Pembayaran
+                            Nominal Tagihan Produk
                           </span>
                           <span className="text-xl font-extrabold text-[var(--terracotta)] tracking-tight">
-                            {order.total.formatted}
+                            {requiresShipping ? order.subtotal?.formatted || order.total.formatted : order.total.formatted}
                           </span>
                         </div>
 
@@ -395,7 +483,7 @@ export default function PaymentStep({
                         {isBpdExpired && (
                           <div className="w-full p-2.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between">
                             <span className="text-[11px] text-rose-700 font-medium">
-                              QRIS Kadaluarsa
+                              QRIS Produk Kadaluarsa
                             </span>
                             <button
                               type="button"
@@ -412,6 +500,178 @@ export default function PaymentStep({
                     )}
                   </div>
                 </div>
+
+                {/* ========================================================= */}
+                {/* CARD 2: TAGIHAN ONGKIR (QRIS BANK BPD DIY)                */}
+                {/* (Hanya Ditampilkan Jika Produk Barang / Memerlukan Ongkir)*/}
+                {/* ========================================================= */}
+                {requiresShipping && (
+                  <div className={`checkout-card flex flex-col flex-1 transition-all ${isShippingPaid ? "border-emerald-500 bg-emerald-50/20" : ""}`}>
+                    <div className="checkout-header-section justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-3">
+                        <div className="checkout-header-icon-box" style={{ background: "var(--cream)" }}>
+                          <Truck className="w-5 h-5 text-emerald-700" />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                            2. Tagihan Ongkir (QRIS Bank BPD DIY)
+                          </h3>
+                          <p className="text-[11px] text-[var(--text-muted)]">
+                            Layanan kurir {order.shipping_service?.toUpperCase()} - {order.shipping_service_type}
+                          </p>
+                        </div>
+                      </div>
+                      {/* Status Badge Shipping */}
+                      {isShippingPaid ? (
+                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          LUNAS
+                        </span>
+                      ) : (
+                        <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-amber-600" />
+                          Belum Dibayar
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="p-5 flex flex-col items-center gap-4">
+                      {/* Tampilan jika sudah Lunas */}
+                      {isShippingPaid ? (
+                        <div className="w-full py-8 px-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-center flex flex-col items-center justify-center gap-2">
+                          <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-1">
+                            <CheckCircle2 className="w-8 h-8" />
+                          </div>
+                          <h4 className="text-base font-extrabold text-emerald-900">
+                            Tagihan Ongkos Kirim Telah Lunas
+                          </h4>
+                          <p className="text-xs text-emerald-700 max-w-xs">
+                            Pembayaran ongkir via QRIS Bank BPD DIY telah terverifikasi secara otomatis oleh sistem.
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          {/* QR Code Frame Shipping */}
+                          <div className="relative">
+                            <div className="relative bg-white border-2 border-emerald-200 rounded-2xl p-4 shadow-md">
+                              <div className="w-52 h-52 flex flex-col items-center justify-center overflow-hidden bg-white">
+                                {effectiveShippingQrString ? (
+                                  <QRCode
+                                    id="shipping-bpd-qris-svg"
+                                    size={196}
+                                    style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                                    value={effectiveShippingQrString}
+                                    viewBox="0 0 256 256"
+                                  />
+                                ) : (
+                                  <div className="flex flex-col items-center justify-center gap-2 p-3 text-center">
+                                    {isRegenerating ? (
+                                      <>
+                                        <Loader2 className="w-7 h-7 animate-spin text-emerald-600" />
+                                        <span className="text-xs font-semibold text-[var(--text-primary)]">
+                                          Menyiapkan QRIS Bank BPD DIY...
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <AlertCircle className="w-7 h-7 text-amber-500" />
+                                        <span className="text-[11px] font-semibold text-[var(--text-secondary)]">
+                                          QRIS Ongkir belum siap
+                                        </span>
+                                        <button
+                                          type="button"
+                                          disabled={isRegenerating}
+                                          onClick={() =>
+                                            regenerateQrisMutate(
+                                              { type: "kiriminaja" },
+                                              {
+                                                onSuccess: (res) => {
+                                                  if (res?.data?.shipping_qr_string) {
+                                                    setShippingQrString(res.data.shipping_qr_string);
+                                                  }
+                                                },
+                                              }
+                                            )
+                                          }
+                                          className="mt-1 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
+                                        >
+                                          <RefreshCw className="w-3 h-3" />
+                                          Muat QRIS Ongkir
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Download & Copy Buttons */}
+                          {effectiveShippingQrString && (
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => downloadQrCode("shipping-bpd-qris-svg", "QRIS-Ongkir-BPD-DIY")}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[var(--cream-dark)] hover:border-emerald-600 text-[11px] font-semibold text-[var(--text-secondary)] hover:text-emerald-700 rounded-lg shadow-2xs transition-all"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                                Unduh QR Ongkir
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => copyQrString(effectiveShippingQrString)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[var(--cream-dark)] hover:border-emerald-600 text-[11px] font-semibold text-[var(--text-secondary)] hover:text-emerald-700 rounded-lg shadow-2xs transition-all"
+                                title="Salin String QRIS Ongkir"
+                              >
+                                <Copy className="w-3.5 h-3.5" />
+                                Salin Kode
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Nominal Tagihan Ongkir */}
+                          <div className="text-center w-full">
+                            <span className="text-[11px] text-[var(--text-muted)] font-semibold block">
+                              Nominal Ongkos Kirim ({order.shipping_service?.toUpperCase()})
+                            </span>
+                            <span className="text-xl font-extrabold text-emerald-700 tracking-tight">
+                              {order.shipping_cost?.formatted || "Rp 0"}
+                            </span>
+                          </div>
+
+                          {/* Tombol Regenerate QRIS Ongkir jika expired */}
+                          {isShippingExpired && (
+                            <div className="w-full p-2.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between">
+                              <span className="text-[11px] text-rose-700 font-medium">
+                                QRIS Ongkir Kadaluarsa
+                              </span>
+                              <button
+                                type="button"
+                                disabled={isRegenerating}
+                                onClick={() =>
+                                  regenerateQrisMutate(
+                                    { type: "kiriminaja" },
+                                    {
+                                      onSuccess: (res) => {
+                                        if (res?.data?.shipping_qr_string) {
+                                          setShippingQrString(res.data.shipping_qr_string);
+                                        }
+                                      },
+                                    }
+                                  )
+                                }
+                                className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                              >
+                                {isRegenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                                Generate Ulang QRIS
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Kolom Kanan: Ringkasan Total, Countdown & Panduan Pembayaran */}
@@ -436,15 +696,22 @@ export default function PaymentStep({
                     <div className="flex justify-between items-center text-xs text-[var(--text-secondary)]">
                       <span>Tagihan Produk</span>
                       <span className="font-bold">
-                        {order.subtotal?.formatted || order.total.formatted}
+                        {requiresShipping ? order.subtotal?.formatted || order.total.formatted : order.total.formatted}
                       </span>
                     </div>
 
-                    {requiresShipping && order.shipping_cost && Number(order.shipping_cost.value ?? 0) > 0 && (
+                    <div className="flex justify-between items-center text-xs text-[var(--text-secondary)]">
+                      <span>Diskon Produk</span>
+                      <span className="font-bold">
+                        - 1200
+                      </span>
+                    </div>
+
+                    {requiresShipping && (
                       <div className="flex justify-between items-center text-xs text-[var(--text-secondary)]">
                         <span>Ongkos Kirim</span>
                         <span className="font-bold text-emerald-700">
-                          {order.shipping_cost.formatted}
+                          {order.shipping_cost?.formatted || "Rp 0"}
                         </span>
                       </div>
                     )}
@@ -521,9 +788,12 @@ export default function PaymentStep({
                   <ol className="p-4 space-y-3.5">
                     {[
                       "Buka aplikasi mobile banking (BPD DIY / Bank Lain) atau e-wallet (GoPay, OVO, Dana, ShopeePay)",
-                      "Pilih menu 'Scan QR' atau 'QRIS' pada aplikasi Anda",
-                      "Arahkan kamera ke kode QRIS di samping",
-                      `Periksa nama penerima dan nominal tagihan (${order.total.formatted}), lalu selesaikan pembayaran`,
+                      requiresShipping
+                        ? "Pindai QRIS Tagihan 1 dan selesaikan pembayaran."
+                        : "Pindai kode QRIS di samping.",
+                      requiresShipping
+                        ? "Pindai QRIS Tagihan 2 dan selesaikan pembayaran."
+                        : "Masukkan nominal pembayaran yang sesuai.",
                       "Setelah pembayaran berhasil, status pada layar ini otomatis berubah menjadi LUNAS.",
                       "Sistem akan langsung mengalihkan Anda ke halaman pesanan saat tagihan telah lunas.",
                     ].map((inst, i) => (
