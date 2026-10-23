@@ -93,18 +93,23 @@ interface ReviewMediaProps {
 }
 
 const ReviewMedia = ({ media, handlePreviewClick }: ReviewMediaProps) => {
-    const mediaItem = media.media_url;
-    const isVideo = mediaItem.endsWith('.mp4');
-    const isImage = mediaItem.endsWith('.jpg') || mediaItem.endsWith('.png') || mediaItem.endsWith('.jpeg');
+    const mediaItem = media?.media_url;
+    if (!mediaItem) return null;
+
+    const isVideo = media.media_type === 'video' || /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(mediaItem);
+    const isImage = media.media_type === 'image' || /\.(jpg|jpeg|png|webp|gif|avif|bmp|svg)(\?.*)?$/i.test(mediaItem) || !isVideo;
 
     if (!isVideo && !isImage) return null;
 
     return (
-        <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
+        <div 
+            style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+            className="border border-gray-200 group hover:opacity-90 transition"
+            onClick={() => handlePreviewClick(mediaItem, isVideo ? 'video' : 'image')}
+        >
             {isVideo ? (
                 <video
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onClick={() => handlePreviewClick(mediaItem, 'video')}
                 >
                     <source src={mediaItem} type="video/mp4" />
                 </video>
@@ -113,14 +118,14 @@ const ReviewMedia = ({ media, handlePreviewClick }: ReviewMediaProps) => {
                     src={mediaItem}
                     width={80}
                     height={80}
-                    alt={`Review media ${media.id}`}
+                    alt={media.name || `Review media ${media.id || ''}`}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onClick={() => handlePreviewClick(mediaItem, 'image')}
+                    unoptimized
                 />
             )}
             {isVideo && (
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)' }}>
-                    <span style={{ color: 'white', fontSize: '24px' }}>▶</span>
+                    <span style={{ color: 'white', fontSize: '20px' }}>▶</span>
                 </div>
             )}
         </div>
