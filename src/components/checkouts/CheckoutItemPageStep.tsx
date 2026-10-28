@@ -3,7 +3,9 @@
 import { useAddressPrimary } from "@/features/address/hooks";
 import { CartItem, Store } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useStore } from "@/features/store/hooks";
 import { CheckoutStep } from "@/components/checkouts/lib";
 import CheckoutEmpty from "@/components/checkouts/CheckoutEmpyt";
 import CheckoutSkeletonPage from "@/components/checkouts/CheckoutSkeletonPage";
@@ -51,10 +53,27 @@ export default function CheckoutItem({
 }: {
   currentStep: CheckoutStep;
 }) {
-  const { isLoading, items, store } = useLocalCheckoutItem();
+  const searchParams = useSearchParams();
+  const { isLoading: isLocalLoading, items, store: localStore } = useLocalCheckoutItem();
+
+  const storeId = searchParams.get("store") || localStore?.id || "";
+  const { data: storeApiData, isLoading: isStoreLoading } = useStore(storeId);
+
+  // Selalu prioritaskan data toko terbaru dari database / API SlemanMart
+  const store: Store | undefined = useMemo(() => {
+    if (storeApiData?.data) {
+      return {
+        ...(localStore || {}),
+        ...storeApiData.data,
+      } as Store;
+    }
+    return localStore;
+  }, [storeApiData?.data, localStore]);
 
   const { data: primaryAddress, isLoading: loadPrimaryAddress } =
     useAddressPrimary();
+
+  const isLoading = isLocalLoading || (Boolean(storeId) && isStoreLoading && !localStore);
 
   const renderContent = () => {
     if (isLoading || loadPrimaryAddress) {

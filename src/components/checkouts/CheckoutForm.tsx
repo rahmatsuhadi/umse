@@ -1,12 +1,15 @@
 import { Address, CartItem, Store } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { Ref, useEffect, useState, useMemo, useCallback } from "react";
+import { Ref, useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import CheckoutItemCard from "./CheckoutItem";
 import ShippingCardEstimation from "./ShippingCardEstimation";
-import { AddressLocationPicker } from "@/components/maps/AddressLocationPicker";
+import {
+  AddressLocationPicker,
+  type DetectedAddressDetails,
+} from "@/components/maps/AddressLocationPicker";
 import {
   Form,
   FormControl,
@@ -31,11 +34,17 @@ import {
   useRegencies,
   useVillages,
 } from "@/features/locations/hooks";
+import {
+  getProvinces,
+  getRegencies,
+  getDistricts,
+  getVillages,
+} from "@/features/locations/api";
 import { Button } from "../ui/button";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { addAddress, setDefaultAddress, updateAddress } from "@/features/address/api";
-import { Loader2, User2, Phone, Home, MapPin } from "lucide-react";
+import { Loader2, User2, Phone, Home, MapPin, Compass, Check } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
 import { toast } from "sonner";
 
@@ -50,6 +59,35 @@ export const normalizePhoneNumber = (phone: string): string => {
   }
   return cleaned;
 };
+
+// Normalisasi nama wilayah (menghapus prefiks administratif umum untuk pencocokan akurat)
+const normalizeGeoName = (str?: string): string => {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .replace(
+      /\b(kapanewon|kemantren|kecamatan|kec\.|kelurahan|kalurahan|kel\.|desa|kabupaten|kab\.|kota|daerah istimewa|d\.i\.|di|provinsi|prov\.)\b/gi,
+      ""
+    )
+    .replace(/[^a-z0-9]/gi, "")
+    .trim();
+};
+
+const isGeoMatch = (nameA?: string, nameB?: string): boolean => {
+  const a = normalizeGeoName(nameA);
+  const b = normalizeGeoName(nameB);
+  if (!a || !b) return false;
+  return a === b || a.includes(b) || b.includes(a);
+};
+
+interface DetectedSuggestion {
+  provinceName?: string;
+  regencyName?: string;
+  districtName?: string;
+  villageName?: string;
+  postcode?: string;
+  summaryText: string;
+}
 
 // Skema validasi dengan Zod
 const addressSchema = z.object({
@@ -310,14 +348,257 @@ export default function CheckoutForm({
     return parts.join(", ");
   }, [selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
 
-  const handleLocationSelect = useCallback((lat: number, lng: number) => {
-    form.setValue("latitude", lat, { shouldValidate: true, shouldDirty: true });
-    form.setValue("longitude", lng, { shouldValidate: true, shouldDirty: true });
-  }, [form]);
+  // Sinkronisasi Opsi B: Deteksi cerdas & forward geocoding
+  const [detectedSuggestion, setDetectedSuggestion] = useState<DetectedSuggestion | null>(null);
+  const [isApplyingRegion, setIsApplyingRegion] = useState(false);
+  const isSyncingFromMapRef = useRef(false);
+  const lastGeocodedRegionRef = useRef<string>("");
+
+  // Forward Geocoding: Saat Kapanewon atau Kelurahan dipilih, otomatis arahkan koordinat peta ke pusat wilayah tersebut
+  useEffect(() => {
+    if (isSyncingFromMapRef.current) return;
+    if (!watchedDistrict && !watchedVillage) return;
+
+    const currentRegionString = [
+      selectedVillageName,
+      selectedDistrictName,
+      selectedRegencyName,
+      selectedProvinceName,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    if (
+      !currentRegionString ||
+      currentRegionString === lastGeocodedRegionRef.current
+    ) {
+      return;
+    }
+
+    lastGeocodedRegionRef.current = currentRegionString;
+
+    const timer = setTimeout(async () => {
+      try {
+        const query = [
+          selectedVillageName || "",
+          selectedDistrictName || "",
+          selectedRegencyName,
+          selectedProvinceName,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
+            query
+          )}`,
+          { headers: { "Accept-Language": "id,en" } }
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          form.setValue("latitude", lat, { shouldValidate: true });
+          form.setValue("longitude", lon, { shouldValidate: true });
+        }
+      } catch (err) {
+        console.warn("Forward geocoding error:", err);
+      }
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [
+    watchedVillage,
+    watchedDistrict,
+    selectedVillageName,
+    selectedDistrictName,
+    selectedRegencyName,
+    selectedProvinceName,
+    form,
+  ]);
+
+  // Sinkronisasi otomatis dari titik koordinat peta ke Wilayah Pengiriman (dropdown berjenjang)
+  const syncRegionFromCoords = useCallback(
+    async (lat: number, lng: number, details?: DetectedAddressDetails) => {
+      setIsApplyingRegion(true);
+      isSyncingFromMapRef.current = true;
+
+      try {
+        let addrDetails = details;
+        if (!addrDetails) {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+            { headers: { "Accept-Language": "id,en" } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data?.address || {};
+            addrDetails = {
+              displayName: data?.display_name,
+              village:
+                addr.village ||
+                addr.quarter ||
+                addr.suburb ||
+                addr.hamlet ||
+                addr.neighbourhood,
+              cityDistrict:
+                addr.city_district ||
+                addr.district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              district:
+                addr.district ||
+                addr.city_district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              county: addr.county || addr.city || addr.regency,
+              city: addr.city || addr.county || addr.regency,
+              state: addr.state || addr.province,
+              postcode: addr.postcode,
+            };
+          }
+        }
+
+        if (!addrDetails) {
+          setIsApplyingRegion(false);
+          isSyncingFromMapRef.current = false;
+          return;
+        }
+
+        const targetProvince = addrDetails.state || "";
+        const targetRegency = addrDetails.county || addrDetails.city || "";
+        const targetDistrict =
+          addrDetails.cityDistrict ||
+          addrDetails.district ||
+          "";
+        const targetVillage = addrDetails.village || "";
+        const targetPostcode = addrDetails.postcode || "";
+
+        // 1. Cocokkan Provinsi
+        let provList = provinces;
+        if (!provList || provList.length === 0) {
+          const provRes = await getProvinces();
+          provList = provRes?.data || [];
+        }
+
+        let matchedProv = provList.find((p) =>
+          isGeoMatch(p.name, targetProvince)
+        );
+        // Fallback untuk area DIY / Yogyakarta
+        if (
+          !matchedProv &&
+          (isGeoMatch(targetRegency, "sleman") ||
+            isGeoMatch(targetProvince, "yogyakarta") ||
+            isGeoMatch(targetRegency, "yogyakarta"))
+        ) {
+          matchedProv = provList.find((p) =>
+            isGeoMatch(p.name, "Yogyakarta")
+          );
+        }
+
+        if (!matchedProv) {
+          setIsApplyingRegion(false);
+          isSyncingFromMapRef.current = false;
+          return;
+        }
+
+        const targetProvinceId = String(matchedProv.id);
+        form.setValue("province_id", targetProvinceId, { shouldDirty: true, shouldValidate: true });
+
+        // 2. Cocokkan Kabupaten / Kota
+        const regRes = await getRegencies(targetProvinceId);
+        const regList = regRes?.data || [];
+        let matchedReg = regList.find((r) =>
+          isGeoMatch(r.name, targetRegency)
+        );
+        if (!matchedReg && regList.length === 1) {
+          matchedReg = regList[0];
+        }
+
+        if (!matchedReg) {
+          setIsApplyingRegion(false);
+          isSyncingFromMapRef.current = false;
+          return;
+        }
+
+        const targetRegencyId = String(matchedReg.id);
+        form.setValue("regency_id", targetRegencyId, { shouldDirty: true, shouldValidate: true });
+
+        // 3. Cocokkan Kapanewon / Kecamatan
+        const distRes = await getDistricts(targetRegencyId);
+        const distList = distRes?.data || [];
+        let matchedDist = distList.find((d) =>
+          isGeoMatch(d.name, targetDistrict)
+        );
+
+        // Fallback jika targetVillage tertukar dengan targetDistrict pada data OpenStreetMap
+        if (!matchedDist && targetVillage) {
+          matchedDist = distList.find((d) =>
+            isGeoMatch(d.name, targetVillage)
+          );
+        }
+
+        if (matchedDist) {
+          const targetDistrictId = String(matchedDist.id);
+          form.setValue("district_id", targetDistrictId, { shouldDirty: true, shouldValidate: true });
+
+          // 4. Cocokkan Kelurahan / Desa
+          const vilRes = await getVillages(targetDistrictId);
+          const vilList = vilRes?.data || [];
+          let matchedVil = vilList.find((v) =>
+            isGeoMatch(v.name, targetVillage)
+          );
+          if (!matchedVil && targetDistrict) {
+            matchedVil = vilList.find((v) =>
+              isGeoMatch(v.name, targetDistrict)
+            );
+          }
+
+          if (matchedVil) {
+            form.setValue("village_id", String(matchedVil.id), { shouldDirty: true, shouldValidate: true });
+            if (matchedVil.postal_code) {
+              form.setValue("postalCode", String(matchedVil.postal_code), { shouldDirty: true, shouldValidate: true });
+            }
+          }
+        }
+
+        // 5. Kode Pos
+        if (targetPostcode && !form.getValues("postalCode")) {
+          form.setValue("postalCode", targetPostcode, { shouldDirty: true, shouldValidate: true });
+        }
+
+        toast.success("Wilayah pengiriman otomatis disesuaikan dengan titik lokasi!");
+        setDetectedSuggestion(null);
+      } catch (err) {
+        console.error("Gagal menyelaraskan wilayah otomatis:", err);
+      } finally {
+        setIsApplyingRegion(false);
+        setTimeout(() => {
+          isSyncingFromMapRef.current = false;
+        }, 1000);
+      }
+    },
+    [form, provinces]
+  );
+
+  const handleLocationSelect = useCallback(
+    (lat: number, lng: number, detectedDetails?: DetectedAddressDetails) => {
+      form.setValue("latitude", lat, { shouldValidate: true, shouldDirty: true });
+      form.setValue("longitude", lng, { shouldValidate: true, shouldDirty: true });
+
+      // Langsung sinkronkan Wilayah Pengiriman secara otomatis saat titik lokasi dipilih
+      syncRegionFromCoords(lat, lng, detectedDetails);
+    },
+    [form, syncRegionFromCoords]
+  );
 
   const handleLocationClear = useCallback(() => {
     form.setValue("latitude", null, { shouldValidate: true, shouldDirty: true });
     form.setValue("longitude", null, { shouldValidate: true, shouldDirty: true });
+    setDetectedSuggestion(null);
   }, [form]);
 
   const isServiceOrder =
@@ -444,6 +725,23 @@ export default function CheckoutForm({
 
                 {/* Section Divider */}
                 <SectionDivider label="Wilayah Pengiriman" />
+
+                {/* Status Loading Penyelarasan Otomatis dari Titik Peta */}
+                {isApplyingRegion && (
+                  <div
+                    style={{
+                      borderRadius: 12,
+                      border: "1.5px solid var(--cream-dark, #F0D5C2)",
+                      background: "rgba(247, 98, 10, 0.05)",
+                    }}
+                    className="p-3 shadow-xs flex items-center gap-2.5 animate-pulse"
+                  >
+                    <Loader2 size={16} className="animate-spin text-[var(--terracotta,#F7620A)]" />
+                    <span className="text-xs font-medium text-slate-700">
+                      Menyelaraskan Wilayah Pengiriman sesuai titik koordinat lokasi peta...
+                    </span>
+                  </div>
+                )}
 
                 {/* Section 2: Regional Dropdowns */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -761,6 +1059,7 @@ export default function CheckoutForm({
                   storeVillageId={store.village_id}
                   storeLatitude={store.latitude}
                   storeLongitude={store.longitude}
+                  storeIsCod={Boolean(store.is_cod)}
                   handleValidShipping={(val) => {
                     if (isServiceOrder) {
                       setIsValidShip(true);

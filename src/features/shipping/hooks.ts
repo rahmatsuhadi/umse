@@ -12,6 +12,7 @@ export interface UseShippingRatesParams {
     origin_long?: number;
     destination_lat?: number;
     destination_long?: number;
+    enabled?: boolean;
 }
 
 export const useShippingRates = ({ 
@@ -24,6 +25,7 @@ export const useShippingRates = ({
     origin_long,
     destination_lat,
     destination_long,
+    enabled,
 }: UseShippingRatesParams) => {
     return useQuery<{ data: ResponseShippingRates[], message?: string }, Error>({
         queryKey: ["shippingRates", destination_village_id, origin_village_id, include_instant, courier, origin_lat, origin_long, destination_lat, destination_long, JSON.stringify(items)],
@@ -44,7 +46,7 @@ export const useShippingRates = ({
             });
             return res;
         },
-        enabled: !!destination_village_id && !!origin_village_id,
+        enabled: (enabled !== undefined ? enabled : true) && !!destination_village_id && !!origin_village_id,
     });
 };
 
@@ -56,6 +58,7 @@ export const useInstantShippingRates = ({
     origin_long,
     destination_lat,
     destination_long,
+    enabled,
 }: UseShippingRatesParams) => {
     return useQuery<{ data: ResponseShippingRates[], message?: string }, Error>({
         queryKey: ["instantShippingRates", destination_village_id, origin_village_id, origin_lat, origin_long, destination_lat, destination_long, JSON.stringify(items)],
@@ -74,6 +77,6 @@ export const useInstantShippingRates = ({
             });
             return res;
         },
-        enabled: !!destination_village_id && !!origin_village_id,
+        enabled: (enabled !== undefined ? enabled : true) && !!destination_village_id && !!origin_village_id,
     });
 };

@@ -55,13 +55,44 @@ export default function PaymentStep({
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // Cek apakah order memerlukan pengiriman (fisik/barang)
-  const requiresShipping = useMemo(() => {
+  // Cek apakah metode pembayaran adalah COD
+  const isCod = useMemo(() => {
+    const method = order.payment_method?.toLowerCase();
+    const service = order.shipping_service?.toLowerCase();
+    const serviceType = order.shipping_service_type?.toLowerCase();
+    return (
+      method === "cash_on_delivery" ||
+      method === "cod" ||
+      service === "cod" ||
+      serviceType === "cod"
+    );
+  }, [order.payment_method, order.shipping_service, order.shipping_service_type]);
+
+  // Cek apakah item yang di-checkout adalah jasa
+  const isServiceOrder = useMemo(() => {
+    if (order.items && order.items.length > 0) {
+      return order.items.every((item) => {
+        const type = item.product?.type?.toLowerCase();
+        return type === "service" || type === "jasa";
+      });
+    }
+    return (
+      order.requires_shipping_payment === false ||
+      (!order.shipping_service && Number(order.shipping_cost?.value ?? 0) === 0)
+    );
+  }, [order.items, order.requires_shipping_payment, order.shipping_service, order.shipping_cost]);
+
+  // Cek apakah order memerlukan tagihan ongkir via QRIS (Card 2)
+  // Tidak ditampilkan jika item adalah Jasa atau metode pembayaran adalah COD
+  const requiresShippingPayment = useMemo(() => {
+    if (isServiceOrder || isCod) {
+      return false;
+    }
     if (typeof order.requires_shipping_payment === "boolean") {
       return order.requires_shipping_payment;
     }
     return Number(order.shipping_cost?.value ?? 0) > 0 || Boolean(order.shipping_service);
-  }, [order.requires_shipping_payment, order.shipping_cost, order.shipping_service]);
+  }, [isServiceOrder, isCod, order.requires_shipping_payment, order.shipping_cost, order.shipping_service]);
 
   // Hook Polling Realtime Status Pembayaran (tiap 2.5 detik)
   const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
@@ -82,23 +113,24 @@ export default function PaymentStep({
   }, [pollData?.bpd_paid, order.is_order_paid, order.payment_status]);
 
   const isShippingPaid = useMemo(() => {
-    if (!requiresShipping) return true;
+    if (!requiresShippingPayment) return true;
     if (pollData?.shipping_paid !== undefined) return pollData.shipping_paid;
     if (order.is_shipping_paid !== undefined) return order.is_shipping_paid;
     return (
       order.shipping_payment_status?.toLowerCase() === "paid" ||
       order.shipping_payment_status === "paid"
     );
-  }, [requiresShipping, pollData?.shipping_paid, order.is_shipping_paid, order.shipping_payment_status]);
+  }, [requiresShippingPayment, pollData?.shipping_paid, order.is_shipping_paid, order.shipping_payment_status]);
 
   const isFullyPaid = useMemo(() => {
     if (pollData?.is_fully_paid !== undefined) return pollData.is_fully_paid;
     if (order.is_fully_paid !== undefined) return order.is_fully_paid;
-    return isBpdPaid && (!requiresShipping || isShippingPaid);
-  }, [pollData?.is_fully_paid, order.is_fully_paid, isBpdPaid, requiresShipping, isShippingPaid]);
+    return isBpdPaid && (!requiresShippingPayment || isShippingPaid);
+  }, [pollData?.is_fully_paid, order.is_fully_paid, isBpdPaid, requiresShippingPayment, isShippingPaid]);
 
   // Trigger auto redirect saat semua tagihan lunas atau status pesanan processing
   useEffect(() => {
+    if (isCod) return; // Order COD dibayar tunai di tempat saat barang diterima, jangan trigger modal lunas QRIS
     const isProcessing = pollData?.order_status === "processing" || order.status === "processing";
     const shouldTrigger = pollData?.should_redirect || isFullyPaid || isProcessing;
 
@@ -152,7 +184,7 @@ export default function PaymentStep({
   const [hasAttemptedShippingQris, setHasAttemptedShippingQris] = useState(false);
   useEffect(() => {
     if (
-      requiresShipping &&
+      requiresShippingPayment &&
       !isShippingPaid &&
       !effectiveShippingQrString &&
       !isRegenerating &&
@@ -171,7 +203,7 @@ export default function PaymentStep({
       );
     }
   }, [
-    requiresShipping,
+    requiresShippingPayment,
     isShippingPaid,
     effectiveShippingQrString,
     isRegenerating,
@@ -187,8 +219,8 @@ export default function PaymentStep({
     setQrisError(null);
 
     try {
-      // Gunakan subtotal untuk barang, atau total untuk jasa
-      const amountVal = requiresShipping
+      // Gunakan subtotal untuk barang, atau total untuk jasa / COD
+      const amountVal = requiresShippingPayment
         ? order.subtotal?.value ?? Number(order.subtotal?.amount ?? 0)
         : order.total?.value ?? Number(order.total?.amount ?? 0);
 
@@ -221,7 +253,7 @@ export default function PaymentStep({
     } finally {
       setIsLoadingQris(false);
     }
-  }, [order.qr_string, order.store?.nmid, order.subtotal, order.total, order.order_number, requiresShipping]);
+  }, [order.qr_string, order.store?.nmid, order.subtotal, order.total, order.order_number, requiresShippingPayment]);
 
   useEffect(() => {
     if (!order.qr_string && !qrisData?.qr_string) {
@@ -298,7 +330,7 @@ export default function PaymentStep({
                 Pembayaran Berhasil Diverifikasi!
               </h3>
               <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
-                Seluruh tagihan pesanan Anda ({requiresShipping ? "Produk & Ongkos Kirim" : "Produk Jasa"}) telah diverifikasi lunas secara otomatis oleh sistem.
+                Seluruh tagihan pesanan Anda ({requiresShippingPayment ? "Produk & Ongkos Kirim" : isServiceOrder ? "Produk Jasa" : "Produk Pesanan"}) telah diverifikasi lunas secara otomatis oleh sistem.
               </p>
 
 
@@ -322,7 +354,7 @@ export default function PaymentStep({
                 <StepIndicator currentStep={step} />
 
                 {/* Banner Status Realtime Dual Pembayaran */}
-                {requiresShipping && (
+                {requiresShippingPayment && (
                   <div className="p-4 bg-[var(--cream)] border border-[var(--cream-dark)] rounded-2xl flex items-center justify-between shadow-xs">
                     <div className="flex items-center gap-2.5">
                       <div className="w-9 h-9 rounded-xl bg-white border border-[var(--cream-dark)] flex items-center justify-center text-[var(--terracotta)]">
@@ -368,10 +400,10 @@ export default function PaymentStep({
                       </div>
                       <div>
                         <h3 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
-                          1. Tagihan Produk
+                          {requiresShippingPayment ? "1. Tagihan Produk" : "Tagihan Pesanan"}
                         </h3>
                         <p className="text-[11px] text-[var(--text-muted)]">
-                          {requiresShipping ? "Khusus pembayaran barang/pesanan" : "Pembayaran layanan jasa"}
+                          {isServiceOrder ? "Pembayaran layanan jasa" : requiresShippingPayment ? "Khusus pembayaran barang/pesanan" : "Pembayaran produk pesanan"}
                         </p>
                       </div>
                     </div>
@@ -475,7 +507,7 @@ export default function PaymentStep({
                             Nominal Tagihan Produk
                           </span>
                           <span className="text-xl font-extrabold text-[var(--terracotta)] tracking-tight">
-                            {requiresShipping ? order.subtotal?.formatted || order.total.formatted : order.total.formatted}
+                            {requiresShippingPayment ? order.subtotal?.formatted || order.total.formatted : order.total.formatted}
                           </span>
                         </div>
 
@@ -505,7 +537,7 @@ export default function PaymentStep({
                 {/* CARD 2: TAGIHAN ONGKIR (QRIS BANK BPD DIY)                */}
                 {/* (Hanya Ditampilkan Jika Produk Barang / Memerlukan Ongkir)*/}
                 {/* ========================================================= */}
-                {requiresShipping && (
+                {requiresShippingPayment && (
                   <div className={`checkout-card flex flex-col flex-1 transition-all ${isShippingPaid ? "border-emerald-500 bg-emerald-50/20" : ""}`}>
                     <div className="checkout-header-section justify-between flex-wrap gap-2">
                       <div className="flex items-center gap-3">
@@ -696,7 +728,7 @@ export default function PaymentStep({
                     <div className="flex justify-between items-center text-xs text-[var(--text-secondary)]">
                       <span>Tagihan Produk</span>
                       <span className="font-bold">
-                        {requiresShipping ? order.subtotal?.formatted || order.total.formatted : order.total.formatted}
+                        {requiresShippingPayment ? order.subtotal?.formatted || order.total.formatted : order.total.formatted}
                       </span>
                     </div>
 
@@ -707,7 +739,7 @@ export default function PaymentStep({
                       </span>
                     </div>
 
-                    {requiresShipping && (
+                    {requiresShippingPayment && (
                       <div className="flex justify-between items-center text-xs text-[var(--text-secondary)]">
                         <span>Ongkos Kirim</span>
                         <span className="font-bold text-emerald-700">
@@ -788,12 +820,12 @@ export default function PaymentStep({
                   <ol className="p-4 space-y-3.5">
                     {[
                       "Buka aplikasi mobile banking (BPD DIY / Bank Lain) atau e-wallet (GoPay, OVO, Dana, ShopeePay)",
-                      requiresShipping
+                      requiresShippingPayment
                         ? "Pindai QRIS Tagihan 1 dan selesaikan pembayaran."
                         : "Pindai kode QRIS di samping.",
-                      requiresShipping
+                      requiresShippingPayment
                         ? "Pindai QRIS Tagihan 2 dan selesaikan pembayaran."
-                        : "Masukkan nominal pembayaran yang sesuai.",
+                        : "Selesaikan pembayaran sesuai nominal yang tertera.",
                       "Setelah pembayaran berhasil, status pada layar ini otomatis berubah menjadi LUNAS.",
                       "Sistem akan langsung mengalihkan Anda ke halaman pesanan saat tagihan telah lunas.",
                     ].map((inst, i) => (

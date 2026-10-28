@@ -19,6 +19,8 @@ export interface Order {
     customer: User
     payment_status: StatusPayment
     payment_status_label: string
+    payment_method?: string
+    payment_method_label?: string
     shipping_village: Location
     shipping_regency: Location
     shipping_district: Location

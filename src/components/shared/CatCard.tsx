@@ -9,6 +9,7 @@ import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
+import { getProductTypeInfo } from "@/lib/product-helper";
 
 export interface CatCardProps {
     product?: Product;
@@ -29,6 +30,9 @@ export interface CatCardProps {
     closeHour?: number;
     category?: string;
     type?: string;
+    isFood?: boolean | number;
+    isReadyToServe?: boolean | number;
+    isFrozen?: boolean | number;
     hourPill?: { state: 'open' | 'closing-soon' | 'closed'; text: string; pillClass: string } | null;
     phone?: string;
     nmid?: string;
@@ -154,11 +158,19 @@ export function CatCard(p: CatCardProps) {
                         {p.priceOld && <div className="cat-card-price-old">{p.priceOld}</div>}
                         <div className="cat-card-rating font-semibold text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1.5 flex-wrap">
                             {/* ★ {p.rating} · */} {p.sold} terjual
-                            {p.type && (
-                                <span className="tipe-barang-sm ml-1" style={{ fontSize: '10px', padding: '0px 6px' }}>
-                                    {p.type.toLowerCase() === 'service' ? '🛠️ Jasa' : '📦 Barang'}
-                                </span>
-                            )}
+                            {(() => {
+                                const typeInfo = getProductTypeInfo({
+                                    type: p.type ?? p.product?.type,
+                                    is_food: p.isFood ?? p.product?.is_food,
+                                    is_ready_to_serve: p.isReadyToServe ?? p.product?.is_ready_to_serve,
+                                    is_frozen: p.isFrozen ?? p.product?.is_frozen,
+                                });
+                                return (
+                                    <span className={`${typeInfo.smClass} ml-1`} style={{ fontSize: '10px', padding: '0px 6px' }}>
+                                        {typeInfo.label}
+                                    </span>
+                                );
+                            })()}
                         </div>
                     </div>
                     {isClosed || !p.nmid ? (

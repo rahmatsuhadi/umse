@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,10 @@ import { getStatusBadgeClass } from "../lib";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MediaPreview } from "@/components/shared/MediaPreview";
 import { ComplaintMedia } from "@/types";
+import { getShippingMethodInfo, getCourierDisplayName } from "@/lib/shipping-helper";
+import { getComputedPrice, parsePriceValue } from "@/lib/price-helper";
+import { formatRupiah } from "@/lib/curency-format";
+import { OrderTimeline } from "@/components/orders/OrderTimeLine";
 
 type Props = {
   open: boolean;
@@ -55,6 +59,34 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
   const currentStatus = order ? (order.status === "awaiting_payment" ? order.payment_status : order.status) : "";
   const bannerStyle = getStatusBannerStyle(currentStatus);
+  const shippingInfo = order ? getShippingMethodInfo(order) : null;
+
+  // Hitung total potongan diskon pesanan
+  const totalDiscount = useMemo(() => {
+    if (!order) return 0;
+
+    // 1. Cek jika order memiliki property diskon langsung dari API
+    const explicitDiscount =
+      (order as unknown as { discount?: unknown })?.discount ??
+      (order as unknown as { total_discount?: unknown })?.total_discount ??
+      (order as unknown as { discount_amount?: unknown })?.discount_amount;
+    const explicitVal = parsePriceValue(explicitDiscount as number | string | undefined);
+    if (explicitVal > 0) return explicitVal;
+
+    // 2. Hitung akumulasi diskon dari setiap item pesanan
+    if (order.items && order.items.length > 0) {
+      return order.items.reduce((acc, item) => {
+        const itemPrice = getComputedPrice(item.product, item.variant);
+        if (itemPrice.hasDiscount) {
+          const diff = itemPrice.originalPriceValue - itemPrice.finalPriceValue;
+          return acc + (diff > 0 ? diff * item.quantity : 0);
+        }
+        return acc;
+      }, 0);
+    }
+
+    return 0;
+  }, [order]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -135,9 +167,32 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
 
                   {/* Status "Processing" */}
                   {order.status === "processing" && (
-                    <p className="text-[var(--text-secondary)] font-medium">
-                      Pesanan sedang diproses dan dikemas oleh penjual
-                    </p>
+                    <div className="space-y-1">
+                      <p className="text-[var(--text-secondary)] font-medium">
+                        Pesanan sedang diproses dan dikemas oleh penjual
+                      </p>
+                      {shippingInfo && (
+                        <div className="flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-muted)] font-semibold mt-1">
+                          <span className="flex items-center gap-1 text-[var(--text-primary)]">
+                            <i className={`${shippingInfo.icon} text-[var(--terracotta)]`}></i>
+                            Pengiriman: <strong className="font-bold">{shippingInfo.categoryLabel}</strong>
+                          </span>
+                          {(shippingInfo.category === "instant" || shippingInfo.category === "regular") && (
+                            <span className="flex items-center gap-1">
+                              • Kurir: <strong className="text-[var(--terracotta-dark)] font-extrabold">{shippingInfo.courierName}</strong>
+                              {order.shipping_service_type && (
+                                <span className="text-[11px] font-medium text-[var(--text-secondary)]">({order.shipping_service_type})</span>
+                              )}
+                            </span>
+                          )}
+                          {shippingInfo.category === "cod" && (
+                            <span className="text-amber-800 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                              Bayar Tunai di Tempat
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {/* Status "Shipped" */}
@@ -145,25 +200,42 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                     <div className="space-y-1">
                       <p className="text-[var(--text-secondary)] font-medium">
                         Pesanan dikirim {formatDate(order.shipped_at)} dengan{" "}
-                        <span className="font-extrabold text-[var(--text-primary)]">{order.shipping_service?.toUpperCase()}</span> ({order.shipping_service_type})
+                        <span className="font-extrabold text-[var(--text-primary)]">
+                          {shippingInfo?.category === "instant"
+                            ? `Instant - ${shippingInfo.courierName}`
+                            : shippingInfo?.category === "regular"
+                            ? `Reguler - ${shippingInfo.courierName}`
+                            : shippingInfo?.courierName || order.shipping_service?.toUpperCase()}
+                        </span>
+                        {order.shipping_service_type && ` (${order.shipping_service_type})`}
                       </p>
                       {order.estimated_delivery && (
                         <p className="text-[var(--text-muted)] text-xs font-semibold">
                           Estimasi sampai:{" "}
                           {(() => {
-                            const [min, max] = order.estimated_delivery
+                            if (!order.estimated_delivery) return "-";
+                            const parts = order.estimated_delivery
                               .split("-")
                               .map((n: string) => parseInt(n.trim()));
+                            const min = parts[0];
+                            const max = parts.length > 1 ? parts[1] : min;
+
+                            if (isNaN(min)) {
+                              return order.estimated_delivery;
+                            }
 
                             const shippedDate = new Date(order.shipped_at);
+                            if (isNaN(shippedDate.getTime())) {
+                              return `${order.estimated_delivery} Hari`;
+                            }
+
                             const minDate = new Date(
                               shippedDate.getTime() + min * 24 * 60 * 60 * 1000
                             );
                             const maxDate = new Date(
-                              shippedDate.getTime() + max * 24 * 60 * 60 * 1000
+                              shippedDate.getTime() + (max || min) * 24 * 60 * 60 * 1000
                             );
 
-                            // Format
                             const options: Intl.DateTimeFormatOptions = { day: "numeric" };
                             const monthYearOptions: Intl.DateTimeFormatOptions = {
                               month: "long",
@@ -313,42 +385,62 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                 </div>
               )}
 
+              {/* Riwayat Status Pesanan */}
+              <OrderTimeline order={order} />
+
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <i className="fas fa-shopping-bag text-[var(--terracotta)] text-sm"></i>
                   <h3 className="text-sm font-extrabold text-[var(--text-primary)]">Item Pesanan</h3>
                 </div>
                 <div className="space-y-3">
-                  {order.items.map((item, i) => (
-                    <div key={i} className="checkout-item-card" style={{marginBottom:"5px"}}>
-                      <div className="checkout-item-img-box">
-                        <Image
-                          src={item.product ? item.product.thumbnail.media_url : '/assets/no-image.jpg'}
-                          layout="fill"
-                          alt="gambar"
-                          objectFit="cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="checkout-item-title truncate">
-                          {item.variant_name || item.product_name}
-                        </h4>
-                        <p className="text-[11px] text-[var(--text-muted)] font-medium truncate mt-0.5">
-                          <i className="fas fa-store text-[var(--brown-light)] mr-1"></i> {order.store.name}
-                        </p>
-                        <div className="flex justify-between items-center mt-1">
-                          <span className="checkout-item-price">
-                            {item.variant_price
-                              ? item.variant_price.formatted
-                              : item.product_price.formatted}
-                          </span>
-                          <span className="text-[var(--text-muted)] text-xs font-bold bg-[var(--cream)] px-2.5 py-0.5 rounded-md border border-[var(--cream-dark)]">
-                            x {item.quantity}
-                          </span>
+                  {order.items.map((item, i) => {
+                    const priceInfo = getComputedPrice(item.product, item.variant);
+                    return (
+                      <div key={i} className="checkout-item-card" style={{ marginBottom: "5px" }}>
+                        <div className="checkout-item-img-box">
+                          <Image
+                            src={item.product ? item.product.thumbnail.media_url : '/assets/no-image.jpg'}
+                            layout="fill"
+                            alt="gambar"
+                            objectFit="cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-1">
+                            <h4 className="checkout-item-title truncate">
+                              {item.variant_name || item.product_name}
+                            </h4>
+                            {priceInfo.hasDiscount && priceInfo.discountBadge && (
+                              <span className="badge badge-terracotta text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0">
+                                {priceInfo.discountBadge}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-[var(--text-muted)] font-medium truncate mt-0.5">
+                            <i className="fas fa-store text-[var(--brown-light)] mr-1"></i> {order.store.name}
+                          </p>
+                          <div className="flex justify-between items-center mt-1">
+                            <div className="flex items-baseline gap-1.5 flex-wrap">
+                              <span className="checkout-item-price">
+                                {item.variant_price
+                                  ? item.variant_price.formatted
+                                  : item.product_price.formatted}
+                              </span>
+                              {priceInfo.hasDiscount && (
+                                <span className="line-through text-[11px] text-[var(--text-muted)]">
+                                  {priceInfo.originalPriceFormatted}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[var(--text-muted)] text-xs font-bold bg-[var(--cream)] px-2.5 py-0.5 rounded-md border border-[var(--cream-dark)]">
+                              x {item.quantity}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -374,24 +466,146 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                 )}
               </div>
 
+              {/* Shipping Information Card */}
+              {shippingInfo && (
+                <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300" style={{marginBottom:"5px"}}>
+                  <div className="flex items-center justify-between gap-2.5 pb-2.5 border-b border-[var(--cream-dark)] mb-3">
+                    <div className="flex items-center gap-2">
+                      <i className="fas fa-shipping-fast text-[var(--terracotta)] text-sm"></i>
+                      <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Informasi Pengiriman</h4>
+                    </div>
+                    {/* Badge Jenis Pengiriman (COD, Instant, atau Reguler) */}
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${shippingInfo.badgeClass}`}>
+                      <i className={shippingInfo.icon}></i>
+                      {shippingInfo.categoryLabel}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs sm:text-sm pl-6">
+                    {/* Jenis Pengiriman */}
+                    <div className="flex justify-between items-center py-1 border-b border-[var(--cream-dark)]/40">
+                      <span className="text-[var(--text-muted)] font-semibold">Jenis Pengiriman:</span>
+                      <span className="font-extrabold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <i className={`${shippingInfo.icon} text-xs`} style={{ color: shippingInfo.accentColor }}></i>
+                        {shippingInfo.categoryFullLabel}
+                      </span>
+                    </div>
+
+                    {/* Nama Jasa Kurir (Wajib tampil untuk Instant dan Reguler) */}
+                    {(shippingInfo.category === "instant" || shippingInfo.category === "regular") && (
+                      <div className="flex justify-between items-center py-1 border-b border-[var(--cream-dark)]/40">
+                        <span className="text-[var(--text-muted)] font-semibold">Nama Jasa Kurir:</span>
+                        <div className="text-right">
+                          <span className="font-black text-[var(--terracotta-dark)] text-sm block">
+                            {shippingInfo.courierName}
+                          </span>
+                          {order.shipping_service_type && (
+                            <span className="text-[11px] font-bold text-[var(--text-secondary)] bg-[var(--cream)] px-2 py-0.5 rounded border border-[var(--cream-dark)] inline-block mt-0.5">
+                              Layanan: {order.shipping_service_type}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Informasi COD */}
+                    {shippingInfo.category === "cod" && (
+                      <div className="flex justify-between items-center py-1 border-b border-[var(--cream-dark)]/40">
+                        <span className="text-[var(--text-muted)] font-semibold">Metode Pembayaran:</span>
+                        <span className="font-bold text-[var(--forest-mid)] flex items-center gap-1">
+                          <i className="fas fa-hand-holding-usd text-xs"></i> Bayar Tunai di Tempat (COD)
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Estimasi Waktu Tiba */}
+                    {order.estimated_delivery && (
+                      <div className="flex justify-between items-center py-1 border-b border-[var(--cream-dark)]/40">
+                        <span className="text-[var(--text-muted)] font-semibold">Estimasi Waktu:</span>
+                        <span className="font-bold text-[var(--text-secondary)]">
+                          {shippingInfo.category === "cod"
+                            ? (order.estimated_delivery.toLowerCase().includes("cod")
+                                ? "Sesuai kesepakatan pengantaran"
+                                : `${order.estimated_delivery} Hari`)
+                            : shippingInfo.category === "instant"
+                            ? (order.estimated_delivery.includes("jam") || order.estimated_delivery.includes("hour")
+                                ? order.estimated_delivery
+                                : "1 – 3 Jam (Tiba Hari Ini)")
+                            : `${order.estimated_delivery} Hari`}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Nomor Resi Pengiriman (jika ada) */}
+                    {order.tracking_number && (
+                      <div className="flex justify-between items-center py-1 border-b border-[var(--cream-dark)]/40">
+                        <span className="text-[var(--text-muted)] font-semibold">No. Resi Pengiriman:</span>
+                        <span className="font-mono font-bold text-[var(--terracotta-dark)] bg-[var(--cream)] px-2.5 py-1 rounded border border-[var(--cream-dark)] select-all text-xs">
+                          {order.tracking_number}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Biaya Ongkos Kirim */}
+                    <div className="flex justify-between items-center pt-1">
+                      <span className="text-[var(--text-muted)] font-semibold">Ongkos Kirim:</span>
+                      <span className="font-extrabold text-[var(--text-primary)]">
+                        {shippingInfo.category === "cod" && Number(order.shipping_cost?.value ?? 0) === 0
+                          ? "Sesuai kesepakatan"
+                          : (order.shipping_cost?.formatted || "Rp 0")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Payment Summary Card */}
               <div className="bg-white border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 sm:p-6 space-y-3.5 shadow-sm" style={{marginBottom:"5px"}}>
                 <div className="flex items-center gap-2 mb-1">
                   <i className="fas fa-wallet text-[var(--terracotta)] text-sm"></i>
                   <h4 className="text-sm font-extrabold text-[var(--text-primary)]">Ringkasan Pembayaran</h4>
                 </div>
+                
+                {/* Subtotal Produk */}
                 <div className="flex justify-between text-xs sm:text-sm text-[var(--text-secondary)] pl-6">
                   <span>Subtotal Produk</span>
-                  <span className="font-bold">{order.subtotal.formatted}</span>
+                  <span className="font-bold">
+                    {totalDiscount > 0
+                      ? formatRupiah(order.subtotal.value + totalDiscount)
+                      : order.subtotal.formatted}
+                  </span>
                 </div>
+
+                {/* Informasi Diskon Produk */}
+                {totalDiscount > 0 && (
+                  <div className="flex justify-between text-xs sm:text-sm pl-6 font-semibold" style={{ color: "#059669" }}>
+                    <span className="flex items-center gap-1.5">
+                      <i className="fas fa-tag text-xs" style={{ color: "#059669" }}></i>
+                      Total Diskon Produk
+                    </span>
+                    <span className="font-extrabold" style={{ color: "#059669" }}>
+                      - {formatRupiah(totalDiscount)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Ongkos Kirim */}
                 <div className="flex justify-between text-xs sm:text-sm text-[var(--text-secondary)] pl-6">
                   <span>Ongkos Kirim</span>
                   <span className="font-bold">{order.shipping_cost.formatted}</span>
                 </div>
+
                 <hr className="border-[var(--cream-dark)] my-1" />
+
+                {/* Total Belanja */}
                 <div className="flex justify-between items-center pl-6">
                   <div>
-                    <span className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)]">Total Belanja</span>
+                    <span className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] block">Total Belanja</span>
+                    {totalDiscount > 0 && (
+                      <span className="text-[11px] font-bold text-emerald-700 flex items-center gap-1 mt-0.5">
+                        <i className="fas fa-check-circle text-[10px]"></i> Hemat {formatRupiah(totalDiscount)}
+                      </span>
+                    )}
                   </div>
                   <span className="text-lg font-black text-[var(--terracotta)]">{order.total.formatted}</span>
                 </div>
@@ -539,6 +753,15 @@ const OrderDetailModalSkeleton = () => {
         <Skeleton className="w-2/3 h-4 bg-gray-200" />
       </div>
 
+      {/* Timeline Skeleton */}
+      <div className="border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-4 space-y-3 bg-white">
+        <Skeleton className="w-1/3 h-4 bg-gray-200" />
+        <div className="space-y-2 pl-4 border-l-2 border-gray-100">
+          <Skeleton className="w-3/4 h-3 bg-gray-200" />
+          <Skeleton className="w-1/2 h-3 bg-gray-200" />
+        </div>
+      </div>
+
       {/* Items */}
       <div className="space-y-3">
         <Skeleton className="w-1/4 h-5 bg-gray-200" />
@@ -556,6 +779,13 @@ const OrderDetailModalSkeleton = () => {
         <Skeleton className="w-1/3 h-4 bg-gray-200" />
         <Skeleton className="w-full h-3 bg-gray-200" />
         <Skeleton className="w-5/6 h-3 bg-gray-200" />
+      </div>
+
+      {/* Shipping Information Skeleton */}
+      <div className="border-[1.5px] border-[var(--cream-dark)] rounded-[var(--radius-md)] p-4 space-y-3 bg-white">
+        <Skeleton className="w-1/3 h-4 bg-gray-200" />
+        <Skeleton className="w-full h-3 bg-gray-200" />
+        <Skeleton className="w-4/5 h-3 bg-gray-200" />
       </div>
 
       {/* Payment Summary */}
@@ -631,7 +861,7 @@ function OrderTrackingSection({ orderId, orderStatus }: OrderTrackingSectionProp
                 <div>
                   <span className="text-[var(--text-muted)] block font-medium">Kurir & Layanan:</span>
                   <span className="font-extrabold text-[var(--text-primary)]">
-                    {tracking.courier || "Ekspedisi"} • {tracking.service_type || "Reguler"}
+                    {tracking.courier ? getCourierDisplayName(tracking.courier) : "Ekspedisi"} • {tracking.service_type || "Reguler"}
                   </span>
                 </div>
                 <div>

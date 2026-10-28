@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getComputedPrice, formatPriceDisplay } from "@/lib/price-helper";
 import { formatRupiah } from "@/lib/curency-format";
+import { getProductTypeInfo } from "@/lib/product-helper";
 
 const buildSlug = (name: string, id: string | number) =>
   String(name || "")
@@ -110,11 +111,14 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
         ) : (
           <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>✗ Stok Habis</span>
         )}
-        {product.type && (
-          <span className="tipe-badge tipe-barang">
-            {product.type.toLowerCase() === 'jasa' ? '🛠️ Jasa' : '📦 Barang'}
-          </span>
-        )}
+        {(() => {
+          const typeInfo = getProductTypeInfo(product);
+          return (
+            <span className={`tipe-badge ${typeInfo.badgeClass}`}>
+              {typeInfo.label}
+            </span>
+          );
+        })()}
         <span className="badge badge-saffron">🏅 Produk Unggulan</span>
       </div>
 
@@ -415,6 +419,10 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
           original_price: product.price,
           discount_percentage: product.discount_percentage,
           discount_price: product.discount_price,
+          type: product.type,
+          is_food: product.is_food,
+          is_ready_to_serve: product.is_ready_to_serve,
+          is_frozen: product.is_frozen,
         },
         variant: selectedVariant
           ? {
@@ -438,6 +446,7 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     ];
     const saveLocal = {
       store: {
+        ...product.store,
         id: product.store.id,
         name: product.store.name,
         slug: product.store.slug,
@@ -448,6 +457,9 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
         district_id: product.store.district_id,
         regency_id: product.store.regency_id,
         description: product.store.description,
+        is_cod: product.store.is_cod,
+        latitude: product.store.latitude,
+        longitude: product.store.longitude,
       },
       items,
     };

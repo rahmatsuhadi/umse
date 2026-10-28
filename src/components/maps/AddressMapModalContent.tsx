@@ -12,13 +12,18 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
+import type { DetectedAddressDetails } from "./AddressLocationPicker";
 
 interface AddressMapModalContentProps {
   initialLat?: number | null;
   initialLng?: number | null;
   formAddressQuery?: string;
   formFallbackQuery?: string;
-  onConfirm: (lat: number, lng: number) => void;
+  onConfirm: (
+    lat: number,
+    lng: number,
+    detectedDetails?: DetectedAddressDetails
+  ) => void;
   onClose: () => void;
 }
 
@@ -74,8 +79,9 @@ export default function AddressMapModalContent({
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const detectedDetailsRef = useRef<DetectedAddressDetails | null>(null);
 
-  // Reverse geocode to get human-readable location preview
+  // Reverse geocode to get human-readable location preview and region components
   const fetchAddressName = useCallback(async (lat: number, lng: number) => {
     try {
       const res = await fetch(
@@ -86,6 +92,36 @@ export default function AddressMapModalContent({
       const data = await res.json();
       if (data?.display_name) {
         setLocationName(data.display_name);
+      }
+      if (data?.address) {
+        const addr = data.address;
+        const details: DetectedAddressDetails = {
+          displayName: data.display_name,
+          road: addr.road,
+          village:
+            addr.village ||
+            addr.quarter ||
+            addr.suburb ||
+            addr.hamlet ||
+            addr.neighbourhood,
+          cityDistrict:
+            addr.city_district ||
+            addr.district ||
+            addr.town ||
+            addr.municipality ||
+            addr.suburb,
+          district:
+            addr.district ||
+            addr.city_district ||
+            addr.town ||
+            addr.municipality ||
+            addr.suburb,
+          county: addr.county || addr.city || addr.regency,
+          city: addr.city || addr.county || addr.regency,
+          state: addr.state || addr.province,
+          postcode: addr.postcode,
+        };
+        detectedDetailsRef.current = details;
       }
     } catch {
       // ignore network errors for preview
@@ -313,8 +349,52 @@ export default function AddressMapModalContent({
     executeSearch(formAddressQuery, false);
   };
 
-  const handleConfirm = () => {
-    onConfirm(currentLat, currentLng);
+  const handleConfirm = async () => {
+    let details = detectedDetailsRef.current;
+    if (!details) {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${currentLat}&lon=${currentLng}`,
+          { headers: { "Accept-Language": "id,en" } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.address) {
+            const addr = data.address;
+            details = {
+              displayName: data.display_name,
+              road: addr.road,
+              village:
+                addr.village ||
+                addr.quarter ||
+                addr.suburb ||
+                addr.hamlet ||
+                addr.neighbourhood,
+              cityDistrict:
+                addr.city_district ||
+                addr.district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              district:
+                addr.district ||
+                addr.city_district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              county: addr.county || addr.city || addr.regency,
+              city: addr.city || addr.county || addr.regency,
+              state: addr.state || addr.province,
+              postcode: addr.postcode,
+            };
+            detectedDetailsRef.current = details;
+          }
+        }
+      } catch (err) {
+        console.warn("Reverse geocode on confirm error:", err);
+      }
+    }
+    onConfirm(currentLat, currentLng, details || undefined);
     toast.success("Titik lokasi koordinat berhasil ditentukan!");
   };
 
@@ -432,10 +512,17 @@ export default function AddressMapModalContent({
       <div className="p-4 border-t border-slate-100 bg-white space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-xl bg-orange-50/60 border border-orange-100">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 min-w-0">
               <MapPin size={13} className="text-orange-600 shrink-0" />
-              <span className="truncate">
-                {locationName || "Titik terpilih pada peta"}
+              <span
+                className="truncate block"
+                title={locationName || "Titik terpilih pada peta"}
+              >
+                {locationName
+                  ? locationName.length > 70
+                    ? `${locationName.slice(0, 70)}...`
+                    : locationName
+                  : "Titik terpilih pada peta"}
               </span>
             </div>
             <div className="text-[11px] text-slate-500 font-mono mt-0.5">

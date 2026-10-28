@@ -241,9 +241,7 @@ export function PaymentStatusModal({ open, orderId, onClose }: Props) {
               </div>
 
               {/* Timeline Card */}
-              <div className="bg-white border border-[var(--cream-dark)] rounded-[var(--radius-md)] p-5 shadow-sm">
-                <OrderTimeline order={order} />
-              </div>
+              <OrderTimeline order={order} defaultOpen={true} />
             </div>
 
             {/* Footer */}

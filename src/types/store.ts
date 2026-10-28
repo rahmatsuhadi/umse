@@ -34,6 +34,7 @@ export interface Store {
   products_count: number;
   is_open: boolean;
   is_emergency_close?: boolean;
+  is_cod?: boolean;
   phone?: string;
   emergency_close_reason?: string | null;
   reopen_at?: string | null;

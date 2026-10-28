@@ -77,6 +77,7 @@ export const CartStoreCard = ({
             return {
                 id: item.id,
                 product: {
+                    ...item.product,
                     id: item.product.id,
                     name: item.product.name,
                     thumbnail: item.product.thumbnail,
@@ -84,6 +85,10 @@ export const CartStoreCard = ({
                     original_price: item.product.price,
                     discount_percentage: item.product.discount_percentage,
                     discount_price: item.product.discount_price,
+                    type: item.product.type,
+                    is_food: item.product.is_food,
+                    is_ready_to_serve: item.product.is_ready_to_serve,
+                    is_frozen: item.product.is_frozen,
                 },
                 variant: item.variant ? {
                     id: item.variant.id,
@@ -106,6 +111,7 @@ export const CartStoreCard = ({
 
         const saveLocal = {
             store:{
+                ...store,
                 id:store.id,
                 name: store.name,
                 slug: store.slug,
@@ -115,7 +121,10 @@ export const CartStoreCard = ({
                 village_id: store.village_id,
                 district_id:store.district_id,
                 regency_id: store.regency_id,
-                description:store.description
+                description:store.description,
+                is_cod: store.is_cod,
+                latitude: store.latitude,
+                longitude: store.longitude,
             },
             items
         };

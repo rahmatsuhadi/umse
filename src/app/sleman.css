@@ -5888,6 +5888,45 @@
         color: #1565C0;
         border-color: #BBDEFB;
     }
+    .tipe-makanan {
+        background: #E8F5E9;
+        color: #2E7D32;
+        border-color: #C8E6C9;
+    }
+    .tipe-makanan-sm {
+        background: #E8F5E9;
+        color: #2E7D32;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+    .tipe-siap-saji {
+        background: #FFF3E0;
+        color: #E65100;
+        border-color: #FFE0B2;
+    }
+    .tipe-siap-saji-sm {
+        background: #FFF3E0;
+        color: #E65100;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+    .tipe-frozen {
+        background: #E0F7FA;
+        color: #00838F;
+        border-color: #B2EBF2;
+    }
+    .tipe-frozen-sm {
+        background: #E0F7FA;
+        color: #00838F;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
 
 
     /* ═══════════════════════════════════════════════════════ */
@@ -5939,8 +5978,14 @@
       letter-spacing: 0.3px; border: 1.5px solid transparent;
     }
     .tipe-barang { background: #E3F2FD; color: #1565C0; border-color: #BBDEFB; }
+    .tipe-makanan { background: #E8F5E9; color: #2E7D32; border-color: #C8E6C9; }
+    .tipe-siap-saji { background: #FFF3E0; color: #E65100; border-color: #FFE0B2; }
+    .tipe-frozen { background: #E0F7FA; color: #00838F; border-color: #B2EBF2; }
     .tipe-jasa   { background: #F3E5F5; color: #7B1FA2; border-color: #E1BEE7; }
     .tipe-barang-sm { background: #E3F2FD; color: #1565C0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .tipe-makanan-sm { background: #E8F5E9; color: #2E7D32; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .tipe-siap-saji-sm { background: #FFF3E0; color: #E65100; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .tipe-frozen-sm { background: #E0F7FA; color: #00838F; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
     .tipe-jasa-sm   { background: #F3E5F5; color: #7B1FA2; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
 
     /* ───────────────────────────────────────────── */
@@ -6162,8 +6207,14 @@
   letter-spacing: 0.3px; border: 1.5px solid transparent;
 }
 .tipe-barang { background: #E3F2FD; color: #1565C0; border-color: #BBDEFB; }
+.tipe-makanan { background: #E8F5E9; color: #2E7D32; border-color: #C8E6C9; }
+.tipe-siap-saji { background: #FFF3E0; color: #E65100; border-color: #FFE0B2; }
+.tipe-frozen { background: #E0F7FA; color: #00838F; border-color: #B2EBF2; }
 .tipe-jasa   { background: #F3E5F5; color: #7B1FA2; border-color: #E1BEE7; }
 .tipe-barang-sm { background: #E3F2FD; color: #1565C0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.tipe-makanan-sm { background: #E8F5E9; color: #2E7D32; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.tipe-siap-saji-sm { background: #FFF3E0; color: #E65100; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.tipe-frozen-sm { background: #E0F7FA; color: #00838F; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
 .tipe-jasa-sm   { background: #F3E5F5; color: #7B1FA2; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
 
 /* ───────────────────────────────────────────── */

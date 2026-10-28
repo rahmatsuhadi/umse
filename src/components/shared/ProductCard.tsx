@@ -87,6 +87,9 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
             promo={discountStr}
             isNew={isNew}
             type={p.type}
+            isFood={p.is_food}
+            isReadyToServe={p.is_ready_to_serve}
+            isFrozen={p.is_frozen}
             openHour={openHour}
             closeHour={closeHour}
             hourPill={hourPill}

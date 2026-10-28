@@ -7,6 +7,7 @@ import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { getComputedPrice } from "@/lib/price-helper";
+import { getProductTypeInfo } from "@/lib/product-helper";
 
 interface CardProductProps {
   product: Product;
@@ -115,11 +116,14 @@ export const ProductCard = ({ product }: CardProductProps) => {
               <i className="fas fa-star text-yellow-400"></i>
               {/* <span>{product.average_rating} · {(product.sold_count ?? product.total_sales ?? 0)} terjual</span> */}
               <span>{product.sold_count ?? product.total_sales ?? 0} terjual</span>
-              {product.type && (
-                <span className="tipe-barang-sm" style={{ padding: '0px 6px', fontSize: '10px' }}>
-                  {product.type.toLowerCase() === 'jasa' ? '🛠️ Jasa' : '📦 Barang'}
-                </span>
-              )}
+              {(() => {
+                const typeInfo = getProductTypeInfo(product);
+                return (
+                  <span className={typeInfo.smClass} style={{ padding: '0px 6px', fontSize: '10px' }}>
+                    {typeInfo.label}
+                  </span>
+                );
+              })()}
             </div>
           </div>
           {(() => {

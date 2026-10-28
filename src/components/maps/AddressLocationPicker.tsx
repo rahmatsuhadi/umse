@@ -18,10 +18,26 @@ const AddressMapModalContent = dynamic(
   }
 );
 
+export interface DetectedAddressDetails {
+  displayName?: string;
+  road?: string;
+  village?: string;
+  cityDistrict?: string;
+  district?: string;
+  county?: string;
+  city?: string;
+  state?: string;
+  postcode?: string;
+}
+
 interface AddressLocationPickerProps {
   latitude?: number | null;
   longitude?: number | null;
-  onLocationSelect: (lat: number, lng: number) => void;
+  onLocationSelect: (
+    lat: number,
+    lng: number,
+    detectedDetails?: DetectedAddressDetails
+  ) => void;
   onLocationClear?: () => void;
   formAddressQuery?: string;
   formFallbackQuery?: string;
@@ -44,8 +60,12 @@ export function AddressLocationPicker({
     !isNaN(longitude) &&
     (latitude !== 0 || longitude !== 0);
 
-  const handleConfirm = (lat: number, lng: number) => {
-    onLocationSelect(lat, lng);
+  const handleConfirm = (
+    lat: number,
+    lng: number,
+    detectedDetails?: DetectedAddressDetails
+  ) => {
+    onLocationSelect(lat, lng, detectedDetails);
     setIsOpen(false);
   };
 

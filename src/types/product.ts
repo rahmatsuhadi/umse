@@ -57,6 +57,7 @@ export interface Product {
   thumbnail: Media;
   media: Media[];
   variants: Variant[];
+  is_food?: boolean | number;
   is_ready_to_serve?: boolean | number;
   is_frozen?: boolean | number;
   sold_count?: number;
