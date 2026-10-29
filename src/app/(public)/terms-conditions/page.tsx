@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/shared/Navbar";
 import { Footer } from "@/components/shared/Footer";
-import { FileText, ShieldAlert, CheckCircle, Scale, AlertTriangle, HelpCircle, Mail } from "lucide-react";
+import { FileText, CheckCircle, Scale, AlertTriangle, HelpCircle } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Syarat & Ketentuan (Terms & Conditions) | Sleman Mart",

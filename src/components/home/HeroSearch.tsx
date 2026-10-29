@@ -164,13 +164,13 @@ export function HeroSearch() {
                     {/* Left: Text + Search */}
                     <div className="hero-left">
                         <div className="hero-eyebrow">
-                            <span>📍</span> Sleman, Daerah Istimewa Yogyakarta
+                            <span>🏛️</span> Platform Resmi DISKOPUKM Kab. Sleman
                         </div>
                         <h1 className="hero-title">
-                            Temukan Produk<br /> <span className="highlight">Unggulan</span><br /> Sleman
+                            Marketplace &amp; Produk<br /> <span className="highlight">Unggulan UMKM</span><br /> Kabupaten Sleman
                         </h1>
                         <p className="hero-subtitle">
-                            Yuk dukung UMKM Sleman untuk tumbuh bersama
+                            Platform digital resmi Pemerintah Kabupaten Sleman untuk promosi, katalog publik, dan transaksi belanja produk lokal UMKM Sleman bersama
                             <Image
                                 src={settings?.site_identity?.logo_url || "/slemanmartlogo.png"}
                                 alt={settings?.site_identity?.app_name || "Sleman Mart"}

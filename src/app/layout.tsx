@@ -44,7 +44,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     icons: {
       icon: "/favicon.svg",
-    }
+    },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    },
   };
 
   try {

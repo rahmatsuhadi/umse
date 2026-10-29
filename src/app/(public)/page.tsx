@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/shared/Navbar";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { Subdistricts } from "@/components/home/Subdistricts";
+import { PlatformAboutSection } from "@/components/home/PlatformAboutSection";
 import { TopProductsHome } from "@/components/home/TopProductsHome";
 import { NewProducts } from "@/components/home/NewProducts";
 import { SlemanFoodSectionsHome } from "@/components/home/SlemanFoodSectionsHome";
@@ -18,11 +19,11 @@ interface HomePage {
 }
 
 export const metadata: Metadata = {
-    title: "Daftar Produk Unggulan UMKM Sleman",
-    description: "Temukan berbagai produk berkualitas dari UMKM Sleman Mart. Jelajahi kategori, fitur, dan toko-toko terbaik dengan penawaran menarik.",
+    title: "Sleman Mart - Platform Marketplace & Produk Unggulan UMKM Sleman",
+    description: "Sleman Mart adalah platform marketplace resmi Pemerintah Kabupaten Sleman (Dinas Koperasi dan UKM) untuk mempromosikan dan memasarkan produk unggulan UMKM lokal Sleman.",
     openGraph: {
-        title: "Daftar Produk Unggulan UMKM Sleman",
-        description: "Marketplace terbaik untuk produk UMKM di Sleman. Dapatkan produk berkualitas dan layanan terbaik.",
+        title: "Sleman Mart - Platform Marketplace Resmi UMKM Sleman",
+        description: "Platform marketplace resmi Pemerintah Kabupaten Sleman untuk promosi dan transaksi produk UMKM lokal berkualitas.",
         images: [
             {
                 url: "/slemanmartlogo.png",
@@ -38,8 +39,8 @@ export const metadata: Metadata = {
     twitter: {
         card: "summary_large_image",
         site: "@SlemanMart",
-        title: "Daftar Produk Unggulan UMKM Sleman",
-        description: "Marketplace UMKM Sleman dengan produk berkualitas dan penawaran menarik.",
+        title: "Sleman Mart - Marketplace UMKM Sleman",
+        description: "Platform marketplace resmi Dinas Koperasi dan UKM Kabupaten Sleman.",
         images: APP_URL + "/slemanmartlogo.png"
     }
 };
@@ -53,6 +54,9 @@ export default async function HomePage({ }: HomePage) {
                 {/* Section 1: Hero Search and Subdistrict Explorer */}
                 <HeroSearch />
                 <Subdistricts />
+
+                {/* Section 1B: About Sleman Mart & Platform Purpose (Google OAuth Compliance & Public Disclosure) */}
+                <PlatformAboutSection />
 
                 {/* Section 2A: New Products */}
                 <NewProducts />
