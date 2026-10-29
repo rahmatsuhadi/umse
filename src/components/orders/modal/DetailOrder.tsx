@@ -115,11 +115,13 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
             </DialogHeader>
 
             {/* Status Badge */}
-            <div className="py-3.5 flex items-center gap-2">
-              <span className={getStatusBadgeClass(order.status === "awaiting_payment" ? order.payment_status : order.status)}>
-                {order.status === "awaiting_payment" ? order.payment_status_label : order.status_label}
-              </span>
-            </div>
+            {order.status?.toLowerCase() !== "processing" && order.status_label?.toLowerCase() !== "diproses" && (
+              <div className="py-3.5 flex items-center gap-2">
+                <span className={getStatusBadgeClass(order.status === "awaiting_payment" ? order.payment_status : order.status)}>
+                  {order.status === "awaiting_payment" ? order.payment_status_label : order.status_label}
+                </span>
+              </div>
+            )}
 
             {/* Status Detail Section Banner */}
             <div className={`p-4 ${bannerStyle.bg} border rounded-[var(--radius-md)] text-sm space-y-3`}>

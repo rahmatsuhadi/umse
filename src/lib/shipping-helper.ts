@@ -25,6 +25,7 @@ export function getCourierDisplayName(service?: string | null): string {
     case "gosend":
       return "GoSend";
     case "grab":
+    case "grab_express":
     case "grabexpress":
       return "GrabExpress";
     case "jne":
@@ -112,6 +113,7 @@ export function getShippingMethodInfo(order: Partial<Order>): ShippingMethodInfo
   const isInstant =
     service === "gosend" ||
     service === "grab" ||
+    service === "grab_express" ||
     service === "grabexpress" ||
     service === "instant" ||
     serviceType.includes("instant") ||

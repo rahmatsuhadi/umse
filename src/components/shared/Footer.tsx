@@ -22,7 +22,8 @@ const FOOTER_LINKS = {
     { label: "Sering Ditanyakan (FAQ)", href: "/faq" },
     { label: "Tentang Kami", href: "/" },
     { label: "Daftarkan Toko", href: `${process.env.NEXT_PUBLIC_APP_URL || ""}/register-email` },
-    { label: "Kebijakan Privasi", href: "/" },
+    { label: "Kebijakan Privasi", href: "/privacy-policy" },
+    { label: "Syarat & Ketentuan", href: "/terms-conditions" },
     { label: "Hubungi Kami", href: "/" },
   ],
 };

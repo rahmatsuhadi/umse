@@ -354,7 +354,7 @@ export default function ShippingCardEstimation({
     if (isServiceOrder || !canShowRegular) return [];
     return (shippingRateResponse?.data ?? []).filter(
       (r) =>
-        !["gosend", "grab"].includes(r.service.toLowerCase()) &&
+        !["gosend", "grab", "grab_express", "grabexpress"].includes(r.service.toLowerCase()) &&
         r.service_type.toLowerCase() !== "instant"
     );
   }, [isServiceOrder, canShowRegular, shippingRateResponse?.data]);
@@ -366,7 +366,7 @@ export default function ShippingCardEstimation({
   }, [isServiceOrder, canShowInstant, instantRatesFromApi]);
 
   const isRateInstant = (rate: ResponseShippingRates) =>
-    ["gosend", "grab"].includes(rate.service.toLowerCase()) ||
+    ["gosend", "grab", "grab_express", "grabexpress"].includes(rate.service.toLowerCase()) ||
     rate.service_type.toLowerCase() === "instant";
 
   // Opsi kurir sesuai tab yang sedang aktif

@@ -41,11 +41,20 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { normalizePhoneNumber } from "@/components/checkouts/CheckoutForm";
-import { AddressLocationPicker } from "@/components/maps/AddressLocationPicker";
+import {
+  AddressLocationPicker,
+  type DetectedAddressDetails,
+} from "@/components/maps/AddressLocationPicker";
+import {
+  getDistricts,
+  getProvinces,
+  getRegencies,
+  getVillages,
+} from "@/features/locations/api";
 import { toast } from "sonner";
 
 const addressSchema = z.object({
@@ -100,6 +109,128 @@ const iconStyle: React.CSSProperties = {
   pointerEvents: "none",
 };
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+// Normalisasi nama wilayah (menghapus prefiks administratif umum untuk pencocokan akurat)
+const normalizeGeoName = (str?: string): string => {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .replace(
+      /\b(kapanewon|kemantren|kecamatan|kec\.|kelurahan|kalurahan|kel\.|desa|kabupaten|kab\.|kota|daerah istimewa|d\.i\.|di|provinsi|prov\.)\b/gi,
+      ""
+    )
+    .replace(/[^a-z0-9]/gi, "")
+    .trim();
+};
+
+const isGeoMatch = (nameA?: string, nameB?: string): boolean => {
+  const a = normalizeGeoName(nameA);
+  const b = normalizeGeoName(nameB);
+  if (!a || !b) return false;
+  return a === b || a.includes(b) || b.includes(a);
+};
+
+// Membersihkan nama alamat OSM dari embel-embel kode pos dan ", Indonesia" di bagian akhir
+function cleanOsmAddress(displayName?: string): string {
+  if (!displayName) return "";
+  return displayName
+    .replace(/,\s*\d{5},?\s*Indonesia$/i, "")
+    .replace(/,\s*Indonesia$/i, "")
+    .trim();
+}
+
+// Memformat alamat dari pecahan detail reverse geocoding
+function formatAddressFromDetails(details?: DetectedAddressDetails): string {
+  if (!details) return "";
+  const parts: string[] = [];
+  if (details.road) parts.push(details.road);
+  if (details.village && !parts.includes(details.village)) parts.push(details.village);
+  const dist = details.cityDistrict || details.district;
+  if (dist && !parts.includes(dist)) parts.push(dist);
+  const reg = details.county || details.city;
+  if (reg && !parts.includes(reg)) parts.push(reg);
+  if (details.state && !parts.includes(details.state)) parts.push(details.state);
+  return parts.join(", ");
+}
+
+// Memeriksa apakah suatu segmen teks adalah nama wilayah administratif murni
+function isRegionSegment(segment: string, knownRegionNames: string[]): boolean {
+  const trimmed = segment.trim();
+  if (!trimmed) return false;
+
+  if (
+    /^(jl|jalan|gang|gg|blok|no|nomor|rt|rw|dusun|kp|kampung|perum|perumahan|komplek)\b/i.test(
+      trimmed
+    ) ||
+    /\b(no\.?\s*\d+|rt\.?\s*\d+|rw\.?\s*\d+|km\.?\s*\d+)\b/i.test(trimmed)
+  ) {
+    return false;
+  }
+
+  const normalized = normalizeGeoName(trimmed);
+  if (!normalized) return false;
+
+  return knownRegionNames.some((r) => {
+    const normR = normalizeGeoName(r);
+    return (
+      normR &&
+      (normR === normalized ||
+        normR.includes(normalized) ||
+        normalized.includes(normR))
+    );
+  });
+}
+
+// Mengambil bagian spesifik (jalan, nomor, RT/RW) dari alamat sebelum nama-nama wilayah
+function extractStreetPrefix(
+  address: string,
+  knownRegionNames: string[]
+): string {
+  if (!address || !address.trim()) return "";
+
+  const segments = address.split(",").map((s) => s.trim()).filter(Boolean);
+  if (segments.length === 0) return "";
+
+  const streetSegments: string[] = [];
+  for (const seg of segments) {
+    if (isRegionSegment(seg, knownRegionNames)) {
+      break;
+    } else {
+      streetSegments.push(seg);
+    }
+  }
+
+  return streetSegments.join(", ");
+}
+
+// Menggabungkan street prefix dan nama wilayah baru
+function composeAddress(
+  streetPrefix: string,
+  regions: {
+    villageName?: string;
+    districtName?: string;
+    regencyName?: string;
+    provinceName?: string;
+  }
+): string {
+  const parts: string[] = [];
+  if (streetPrefix) parts.push(streetPrefix);
+  if (regions.villageName && !parts.includes(regions.villageName)) {
+    parts.push(regions.villageName);
+  }
+  if (regions.districtName && !parts.includes(regions.districtName)) {
+    parts.push(regions.districtName);
+  }
+  if (regions.regencyName && !parts.includes(regions.regencyName)) {
+    parts.push(regions.regencyName);
+  }
+  if (regions.provinceName && !parts.includes(regions.provinceName)) {
+    parts.push(regions.provinceName);
+  }
+
+  return parts.join(", ");
+}
+
 interface FormAddressPageProps {
   params: Promise<{ id: string }>;
 }
@@ -138,21 +269,88 @@ export default function FormAddressPage({}: FormAddressPageProps) {
   const districts = useMemo(() => districtsData?.data ?? [], [districtsData?.data]);
   const villages = useMemo(() => villagesData?.data ?? [], [villagesData?.data]);
 
+  const [syncedRegionItems, setSyncedRegionItems] = useState<{
+    regency?: { id: number | string; name: string; province_id?: string | number };
+    district?: { id: number | string; name: string; regency_id?: string | number };
+    village?: { id: number | string; name: string; district_id?: string | number; postal_code?: string | number | null };
+  }>({});
+
+  const regencyItems = useMemo(() => {
+    if (regencies.length > 0) return regencies;
+    if (
+      syncedRegionItems.regency &&
+      String(watchedProvince) ===
+        String(syncedRegionItems.regency.province_id || watchedProvince)
+    ) {
+      return [{ id: syncedRegionItems.regency.id, name: syncedRegionItems.regency.name }];
+    }
+    return [];
+  }, [regencies, syncedRegionItems.regency, watchedProvince]);
+
+  const districtItems = useMemo(() => {
+    if (districts.length > 0) return districts;
+    if (
+      syncedRegionItems.district &&
+      String(watchedRegency) ===
+        String(syncedRegionItems.district.regency_id || watchedRegency)
+    ) {
+      return [{ id: syncedRegionItems.district.id, name: syncedRegionItems.district.name }];
+    }
+    return [];
+  }, [districts, syncedRegionItems.district, watchedRegency]);
+
+  const villageItems = useMemo(() => {
+    if (villages.length > 0) return villages;
+    if (
+      syncedRegionItems.village &&
+      String(watchedDistrict) ===
+        String(syncedRegionItems.village.district_id || watchedDistrict)
+    ) {
+      return [{ id: syncedRegionItems.village.id, name: syncedRegionItems.village.name }];
+    }
+    return [];
+  }, [villages, syncedRegionItems.village, watchedDistrict]);
+
   const selectedProvinceName = useMemo(() => {
     return provinces.find((p) => String(p.id) === String(watchedProvince))?.name || "";
   }, [provinces, watchedProvince]);
 
   const selectedRegencyName = useMemo(() => {
-    return regencies.find((r) => String(r.id) === String(watchedRegency))?.name || "";
-  }, [regencies, watchedRegency]);
+    return regencyItems.find((r) => String(r.id) === String(watchedRegency))?.name || "";
+  }, [regencyItems, watchedRegency]);
 
   const selectedDistrictName = useMemo(() => {
-    return districts.find((d) => String(d.id) === String(watchedDistrict))?.name || "";
-  }, [districts, watchedDistrict]);
+    return districtItems.find((d) => String(d.id) === String(watchedDistrict))?.name || "";
+  }, [districtItems, watchedDistrict]);
 
   const selectedVillageName = useMemo(() => {
-    return villages.find((v) => String(v.id) === String(watchedVillage))?.name || "";
-  }, [villages, watchedVillage]);
+    return villageItems.find((v) => String(v.id) === String(watchedVillage))?.name || "";
+  }, [villageItems, watchedVillage]);
+
+  const allKnownRegionNames = useMemo(() => {
+    const names = new Set<string>();
+    const add = (s?: string) => {
+      if (s && s.trim()) names.add(s.trim());
+    };
+    add(selectedVillageName);
+    add(selectedDistrictName);
+    add(selectedRegencyName);
+    add(selectedProvinceName);
+    villageItems.forEach((v) => add(v.name));
+    districtItems.forEach((d) => add(d.name));
+    regencyItems.forEach((r) => add(r.name));
+    provinces.forEach((p) => add(p.name));
+    return Array.from(names);
+  }, [
+    selectedVillageName,
+    selectedDistrictName,
+    selectedRegencyName,
+    selectedProvinceName,
+    villageItems,
+    districtItems,
+    regencyItems,
+    provinces,
+  ]);
 
   // Query alamat lengkap untuk pencarian otomatis pada peta saat create
   const formAddressQuery = useMemo(() => {
@@ -183,33 +381,363 @@ export default function FormAddressPage({}: FormAddressPageProps) {
     return parts.join(", ");
   }, [selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
 
-  // Stable handler references — inline arrows in JSX change every render
-  const handleProvinceChange = useCallback((v: string) => {
-    form.setValue("province_id", v);
-    form.setValue("regency_id", "");
-    form.setValue("district_id", "");
-    form.setValue("village_id", "");
-  }, [form]);
+  // Sinkronisasi otomatis dari titik koordinat peta ke Wilayah Pengiriman (dropdown berjenjang)
+  const syncRegionFromCoords = useCallback(
+    async (lat: number, lng: number, details?: DetectedAddressDetails) => {
+      try {
+        let addrDetails = details;
+        if (!addrDetails) {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+            { headers: { "Accept-Language": "id,en" } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data?.address || {};
+            addrDetails = {
+              displayName: data?.display_name,
+              road: addr.road,
+              village:
+                addr.village ||
+                addr.quarter ||
+                addr.suburb ||
+                addr.hamlet ||
+                addr.neighbourhood,
+              cityDistrict:
+                addr.city_district ||
+                addr.district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              district:
+                addr.district ||
+                addr.city_district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              county: addr.county || addr.city || addr.regency,
+              city: addr.city || addr.county || addr.regency,
+              state: addr.state || addr.province,
+              postcode: addr.postcode,
+            };
+          }
+        }
 
-  const handleRegencyChange = useCallback((v: string) => {
-    form.setValue("regency_id", v);
-    form.setValue("district_id", "");
-    form.setValue("village_id", "");
-  }, [form]);
+        if (!addrDetails) return;
 
-  const handleDistrictChange = useCallback((v: string) => {
-    form.setValue("district_id", v);
-    form.setValue("village_id", "");
-  }, [form]);
+        const targetProvince = addrDetails.state || "";
+        const targetRegency = addrDetails.county || addrDetails.city || "";
+        const targetDistrict =
+          addrDetails.cityDistrict || addrDetails.district || "";
+        const targetVillage = addrDetails.village || "";
+        const targetPostcode = addrDetails.postcode || "";
 
-  const handleVillageChange = useCallback((v: string) => {
-    form.setValue("village_id", v);
-  }, [form]);
+        // 1. Cocokkan Provinsi
+        let provList = provinces;
+        if (!provList || provList.length === 0) {
+          const provRes = await getProvinces();
+          provList = provRes?.data || [];
+        }
 
-  const handleLocationSelect = useCallback((lat: number, lng: number) => {
-    form.setValue("latitude", lat, { shouldValidate: true, shouldDirty: true });
-    form.setValue("longitude", lng, { shouldValidate: true, shouldDirty: true });
-  }, [form]);
+        let matchedProv = provList.find((p) =>
+          isGeoMatch(p.name, targetProvince)
+        );
+        if (
+          !matchedProv &&
+          (isGeoMatch(targetRegency, "sleman") ||
+            isGeoMatch(targetProvince, "yogyakarta") ||
+            isGeoMatch(targetRegency, "yogyakarta"))
+        ) {
+          matchedProv = provList.find((p) => isGeoMatch(p.name, "Yogyakarta"));
+        }
+
+        if (!matchedProv) return;
+
+        const targetProvinceId = String(matchedProv.id);
+        form.setValue("province_id", targetProvinceId, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+
+        // 2. Cocokkan Kabupaten / Kota
+        const regRes = await getRegencies(targetProvinceId);
+        const regList = regRes?.data || [];
+        let matchedReg = regList.find((r) => isGeoMatch(r.name, targetRegency));
+        if (!matchedReg && regList.length === 1) {
+          matchedReg = regList[0];
+        }
+
+        if (!matchedReg) return;
+
+        const targetRegencyId = String(matchedReg.id);
+        form.setValue("regency_id", targetRegencyId, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+        setSyncedRegionItems((prev) => ({
+          ...prev,
+          regency: matchedReg,
+        }));
+
+        // 3. Cocokkan Kapanewon / Kecamatan
+        const distRes = await getDistricts(targetRegencyId);
+        const distList = distRes?.data || [];
+        let matchedDist = distList.find((d) => isGeoMatch(d.name, targetDistrict));
+
+        if (!matchedDist && targetVillage) {
+          matchedDist = distList.find((d) => isGeoMatch(d.name, targetVillage));
+        }
+
+        if (matchedDist) {
+          const targetDistrictId = String(matchedDist.id);
+          form.setValue("district_id", targetDistrictId, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+          setSyncedRegionItems((prev) => ({
+            ...prev,
+            district: matchedDist,
+          }));
+
+          // 4. Cocokkan Kelurahan / Desa
+          const vilRes = await getVillages(targetDistrictId);
+          const vilList = vilRes?.data || [];
+          let matchedVil = vilList.find((v) => isGeoMatch(v.name, targetVillage));
+          if (!matchedVil && targetDistrict) {
+            matchedVil = vilList.find((v) => isGeoMatch(v.name, targetDistrict));
+          }
+
+          if (matchedVil) {
+            form.setValue("village_id", String(matchedVil.id), {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setSyncedRegionItems((prev) => ({
+              ...prev,
+              village: matchedVil,
+            }));
+
+            if (matchedVil.postal_code) {
+              form.setValue("postal_code", String(matchedVil.postal_code), {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
+            }
+          }
+        }
+
+        // 5. Kode Pos dari geocode jika belum terisi
+        if (targetPostcode && !form.getValues("postal_code")) {
+          form.setValue("postal_code", targetPostcode, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+        }
+      } catch (err) {
+        console.error("Gagal menyelaraskan wilayah otomatis:", err);
+      }
+    },
+    [form, provinces]
+  );
+
+  // Saat ada perubahan Wilayah Pengiriman, tulis ulang kolom alamat lengkap sesuai alamat yang dipilih
+  const handleProvinceChange = useCallback(
+    (v: string) => {
+      form.setValue("province_id", v, { shouldDirty: true, shouldValidate: true });
+      form.setValue("regency_id", "", { shouldDirty: true });
+      form.setValue("district_id", "", { shouldDirty: true });
+      form.setValue("village_id", "", { shouldDirty: true });
+
+      const newProvinceName =
+        provinces.find((p) => String(p.id) === String(v))?.name || "";
+
+      const currentAddr = form.getValues("address") || "";
+      const streetPrefix = extractStreetPrefix(currentAddr, allKnownRegionNames);
+      const rewritten = composeAddress(streetPrefix, {
+        provinceName: newProvinceName,
+      });
+
+      if (rewritten) {
+        form.setValue("address", rewritten, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    },
+    [form, provinces, allKnownRegionNames]
+  );
+
+  const handleRegencyChange = useCallback(
+    (v: string) => {
+      form.setValue("regency_id", v, { shouldDirty: true, shouldValidate: true });
+      form.setValue("district_id", "", { shouldDirty: true });
+      form.setValue("village_id", "", { shouldDirty: true });
+
+      const newRegencyName =
+        regencyItems.find((r) => String(r.id) === String(v))?.name || "";
+
+      const currentAddr = form.getValues("address") || "";
+      const streetPrefix = extractStreetPrefix(currentAddr, allKnownRegionNames);
+      const rewritten = composeAddress(streetPrefix, {
+        regencyName: newRegencyName,
+        provinceName: selectedProvinceName,
+      });
+
+      if (rewritten) {
+        form.setValue("address", rewritten, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    },
+    [form, regencyItems, allKnownRegionNames, selectedProvinceName]
+  );
+
+  const handleDistrictChange = useCallback(
+    (v: string) => {
+      form.setValue("district_id", v, { shouldDirty: true, shouldValidate: true });
+      form.setValue("village_id", "", { shouldDirty: true });
+
+      const newDistrictName =
+        districtItems.find((d) => String(d.id) === String(v))?.name || "";
+
+      const currentAddr = form.getValues("address") || "";
+      const streetPrefix = extractStreetPrefix(currentAddr, allKnownRegionNames);
+      const rewritten = composeAddress(streetPrefix, {
+        districtName: newDistrictName,
+        regencyName: selectedRegencyName,
+        provinceName: selectedProvinceName,
+      });
+
+      if (rewritten) {
+        form.setValue("address", rewritten, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    },
+    [
+      form,
+      districtItems,
+      allKnownRegionNames,
+      selectedRegencyName,
+      selectedProvinceName,
+    ]
+  );
+
+  const handleVillageChange = useCallback(
+    (v: string) => {
+      form.setValue("village_id", v, { shouldDirty: true, shouldValidate: true });
+
+      const selectedVil = villageItems.find((item) => String(item.id) === String(v));
+      const newVillageName = selectedVil?.name || "";
+
+      if (selectedVil && "postal_code" in selectedVil && selectedVil.postal_code) {
+        form.setValue("postal_code", String(selectedVil.postal_code), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      const currentAddr = form.getValues("address") || "";
+      const streetPrefix = extractStreetPrefix(currentAddr, allKnownRegionNames);
+      const rewritten = composeAddress(streetPrefix, {
+        villageName: newVillageName,
+        districtName: selectedDistrictName,
+        regencyName: selectedRegencyName,
+        provinceName: selectedProvinceName,
+      });
+
+      if (rewritten) {
+        form.setValue("address", rewritten, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    },
+    [
+      form,
+      villageItems,
+      allKnownRegionNames,
+      selectedDistrictName,
+      selectedRegencyName,
+      selectedProvinceName,
+    ]
+  );
+
+  const handleLocationSelect = useCallback(
+    async (lat: number, lng: number, detectedDetails?: DetectedAddressDetails) => {
+      // Simpan koordinat baru
+      const { latitude, longitude } = form.getValues();
+      const same = (a?: number | null, b?: number) =>
+        a != null && b != null && Math.abs(a - b) < 1e-7;
+
+      if (!same(latitude, lat) || !same(longitude, lng)) {
+        form.setValue("latitude", lat, { shouldValidate: true, shouldDirty: true });
+        form.setValue("longitude", lng, { shouldValidate: true, shouldDirty: true });
+      }
+
+      // Tulis ulang kolom alamat lengkap sesuai dengan alamat pada titik koordinat
+      let addrDetails = detectedDetails;
+      if (!addrDetails) {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+            { headers: { "Accept-Language": "id,en" } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data?.address || {};
+            addrDetails = {
+              displayName: data?.display_name,
+              road: addr.road,
+              village:
+                addr.village ||
+                addr.quarter ||
+                addr.suburb ||
+                addr.hamlet ||
+                addr.neighbourhood,
+              cityDistrict:
+                addr.city_district ||
+                addr.district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              district:
+                addr.district ||
+                addr.city_district ||
+                addr.town ||
+                addr.municipality ||
+                addr.suburb,
+              county: addr.county || addr.city || addr.regency,
+              city: addr.city || addr.county || addr.regency,
+              state: addr.state || addr.province,
+              postcode: addr.postcode,
+            };
+          }
+        } catch (err) {
+          console.warn("Reverse geocode on select error:", err);
+        }
+      }
+
+      if (addrDetails) {
+        const coordAddress =
+          cleanOsmAddress(addrDetails.displayName) ||
+          formatAddressFromDetails(addrDetails);
+
+        if (coordAddress) {
+          form.setValue("address", coordAddress, {
+            shouldValidate: true,
+            shouldDirty: true,
+          });
+        }
+
+        await syncRegionFromCoords(lat, lng, addrDetails);
+        toast.success("Alamat dan wilayah berhasil diselaraskan dengan titik lokasi!");
+      }
+    },
+    [form, syncRegionFromCoords]
+  );
 
   const handleLocationClear = useCallback(() => {
     form.setValue("latitude", null, { shouldValidate: true, shouldDirty: true });
@@ -359,7 +887,7 @@ export default function FormAddressPage({}: FormAddressPageProps) {
 
                 <LocationSelect
                   form={form} name="regency_id" label="Kabupaten/Kota"
-                  items={regencies} isLoading={isLoadingRegencies}
+                  items={regencyItems} isLoading={isLoadingRegencies}
                   disabled={!watchedProvince}
                   placeholder="Pilih Kabupaten/Kota"
                   onValueChange={handleRegencyChange}
@@ -367,7 +895,7 @@ export default function FormAddressPage({}: FormAddressPageProps) {
 
                 <LocationSelect
                   form={form} name="district_id" label="Kapanewon"
-                  items={districts} isLoading={isLoadingDistricts}
+                  items={districtItems} isLoading={isLoadingDistricts}
                   disabled={!watchedRegency}
                   placeholder="Pilih Kapanewon"
                   onValueChange={handleDistrictChange}
@@ -375,7 +903,7 @@ export default function FormAddressPage({}: FormAddressPageProps) {
 
                 <LocationSelect
                   form={form} name="village_id" label="Kelurahan / Kalurahan"
-                  items={villages} isLoading={isLoadingVillages}
+                  items={villageItems} isLoading={isLoadingVillages}
                   disabled={!watchedDistrict}
                   placeholder="Pilih Kelurahan"
                   onValueChange={handleVillageChange}
