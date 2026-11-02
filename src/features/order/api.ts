@@ -228,3 +228,28 @@ export const getOrderTracking = (id: string): Promise<{ status: boolean; data: O
   return apiClient<{ status: boolean; data: OrderTrackingData }>(`/customer/orders/${id}/tracking`);
 };
 
+export interface SubmitCodNegotiationData {
+  action: 'accept' | 'reject' | 'nego';
+  proposed_delivery_at?: string;
+  proposed_shipping_cost?: number;
+  notes?: string;
+}
+
+export const getCodNegotiations = (orderId: string): Promise<{ status: boolean; data: import("@/types").CodNegotiation[]; latest: import("@/types").CodNegotiation | null }> => {
+  return apiClient<{ status: boolean; data: import("@/types").CodNegotiation[]; latest: import("@/types").CodNegotiation | null }>(`/customer/orders/${orderId}/cod-negotiations`);
+};
+
+export const submitCodNegotiation = (
+  orderId: string,
+  data: SubmitCodNegotiationData
+): Promise<{ status: boolean; message: string; data: import("@/types").CodNegotiation; order: Order }> => {
+  return apiClient<{ status: boolean; message: string; data: import("@/types").CodNegotiation; order: Order }>(
+    `/customer/orders/${orderId}/cod-negotiations`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }
+  );
+};
+
+

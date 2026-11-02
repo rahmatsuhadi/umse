@@ -454,13 +454,13 @@ export default function DaftarPage() {
 
           {/* Social SSO / Switcher links */}
           <div className="flex flex-col gap-4 pt-4 border-t border-[var(--cream-dark)]/40 mt-6">
+            {/* Tombol Daftar Google dinonaktifkan sementara
             <div className="auth-split-divider">
               <div className="auth-split-divider-line" />
               <span>atau daftar dengan</span>
               <div className="auth-split-divider-line" />
             </div>
 
-            {/* Google SSO Button */}
             <Button
               type="button"
               variant="outline"
@@ -477,6 +477,7 @@ export default function DaftarPage() {
               </svg>
               <span>Daftar dengan Google</span>
             </Button>
+            */}
 
             <p className="text-sm text-[var(--text-muted)] text-center">
               Sudah punya akun?{" "}

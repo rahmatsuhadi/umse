@@ -19,6 +19,7 @@ import { getShippingMethodInfo, getCourierDisplayName } from "@/lib/shipping-hel
 import { getComputedPrice, parsePriceValue } from "@/lib/price-helper";
 import { formatRupiah } from "@/lib/curency-format";
 import { OrderTimeline } from "@/components/orders/OrderTimeLine";
+import { getCleanItemNames } from "@/lib/product-helper";
 
 type Props = {
   open: boolean;
@@ -398,20 +399,28 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                 <div className="space-y-3">
                   {order.items.map((item, i) => {
                     const priceInfo = getComputedPrice(item.product, item.variant);
+                    const rawProductName = item.product_name || item.product?.name || "Produk";
+                    const rawVariantName = item.variant_name || item.variant?.name || "";
+                    const { productName, variantName } = getCleanItemNames(rawProductName, rawVariantName);
+
                     return (
                       <div key={i} className="checkout-item-card" style={{ marginBottom: "5px" }}>
                         <div className="checkout-item-img-box">
                           <Image
-                            src={item.product ? item.product.thumbnail.media_url : '/assets/no-image.jpg'}
+                            src={
+                              item.variant?.thumbnail?.media_url ||
+                              item.product?.thumbnail?.media_url ||
+                              '/assets/no-image.jpg'
+                            }
                             layout="fill"
-                            alt="gambar"
+                            alt={productName || "gambar"}
                             objectFit="cover"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-1">
                             <h4 className="checkout-item-title truncate">
-                              {item.variant_name || item.product_name}
+                              {productName}
                             </h4>
                             {priceInfo.hasDiscount && priceInfo.discountBadge && (
                               <span className="badge badge-terracotta text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0">
@@ -419,7 +428,15 @@ export default function OrderDetailModal({ open, orderId, onClose }: Props) {
                               </span>
                             )}
                           </div>
-                          <p className="text-[11px] text-[var(--text-muted)] font-medium truncate mt-0.5">
+                          {variantName && (
+                            <div className="mt-1">
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-muted)] bg-[var(--cream)] px-2 py-0.5 rounded-full border border-[var(--cream-dark)]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--terracotta-light)] flex-shrink-0"></span>
+                                <span>Varian: {variantName}</span>
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-[11px] text-[var(--text-muted)] font-medium truncate mt-1">
                             <i className="fas fa-store text-[var(--brown-light)] mr-1"></i> {order.store.name}
                           </p>
                           <div className="flex justify-between items-center mt-1">

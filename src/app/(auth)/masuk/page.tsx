@@ -246,6 +246,7 @@ export default function LoginPage() {
 
           {/* Social SSO / switch account links */}
           <div className="flex flex-col gap-5 pt-4 border-t border-[var(--cream-dark)]/40 mt-6">
+            {/* Tombol Login Google dinonaktifkan sementara
             <div className="auth-split-divider">
               <div className="auth-split-divider-line" />
               <span>atau masuk dengan</span>
@@ -268,6 +269,7 @@ export default function LoginPage() {
               </svg>
               <span>Masuk dengan Google</span>
             </Button>
+            */}
 
             <p className="text-sm text-[var(--text-muted)] text-center">
               Belum punya akun?{" "}

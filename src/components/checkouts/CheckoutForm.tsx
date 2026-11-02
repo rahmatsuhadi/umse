@@ -1,6 +1,7 @@
 import { Address, CartItem, Store } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Ref, useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -44,7 +45,7 @@ import { Button } from "../ui/button";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { addAddress, setDefaultAddress, updateAddress } from "@/features/address/api";
-import { Loader2, User2, Phone, Home, MapPin, Compass, Check } from "lucide-react";
+import { Loader2, User2, Phone, Home, MapPin, Compass, Check, Banknote } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
 import { toast } from "sonner";
 
@@ -193,6 +194,9 @@ export default function CheckoutForm({
     }
   }, [address, user, form]);
 
+  const router = useRouter();
+  const isCod = shipping_service.name === "cod" || shipping_service.type === "cod";
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutateAsync: createOrderMutate, isPending } = useCreateOrder();
   const isProcessing = isPending || isSubmitting;
@@ -266,7 +270,14 @@ export default function CheckoutForm({
         },
       };
 
-      await createOrderMutate(orderData);
+      const res = await createOrderMutate(orderData);
+      if (res?.data?.id) {
+        if (isCod) {
+          router.replace(`/pembayaran/${res.data.id}/cod`);
+        } else {
+          router.replace(`/pembayaran/${res.data.id}`);
+        }
+      }
     } catch (error: unknown) {
       console.error("Gagal memproses alamat atau pesanan:", error);
       const message =
@@ -1091,8 +1102,13 @@ export default function CheckoutForm({
                     {isProcessing ? (
                       <div className="flex items-center gap-2">
                         <Loader2 className="animate-spin w-4 h-4" />
-                        <span>Membuat Pesanan...</span>
+                        <span>{isCod ? "Membuat Pesanan COD..." : "Membuat Pesanan..."}</span>
                       </div>
+                    ) : isCod ? (
+                      <>
+                        <Banknote className="w-4 h-4" />
+                        <span>Lanjut ke Pembayaran COD</span>
+                      </>
                     ) : (
                       <>
                         <i className="fas fa-shield-alt text-sm"></i>

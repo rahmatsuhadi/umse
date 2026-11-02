@@ -69,19 +69,31 @@ export const useInfiniteOrders = (filters: Omit<OrderQueryParams, 'page'>) => {
 };
 
 export const useCreateOrder = () => {
-  const router = useRouter()
+  const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateOrderData) => createOrder(data),
-    onSuccess: async(data) => {
-      await localStorage.removeItem("checkout_items")
+    onSuccess: async (data, variables) => {
+      await localStorage.removeItem("checkout_items");
       toast.success("Berhasil membuat order!");
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      router.replace("/pembayaran/" + data.data.id)
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+
+      const isCod =
+        variables.shipping_service?.toLowerCase() === "cod" ||
+        variables.shipping_service_type?.toLowerCase() === "cod" ||
+        data?.data?.payment_method?.toLowerCase() === "cash_on_delivery" ||
+        data?.data?.payment_method?.toLowerCase() === "cod" ||
+        data?.data?.shipping_service?.toLowerCase() === "cod";
+
+      if (isCod) {
+        router.replace(`/pembayaran/${data.data.id}/cod`);
+      } else {
+        router.replace(`/pembayaran/${data.data.id}`);
+      }
     },
     onError: (error) => {
       toast.error("Gagal Membuat Order", { description: error.message });
-    }
+    },
   });
 };
 

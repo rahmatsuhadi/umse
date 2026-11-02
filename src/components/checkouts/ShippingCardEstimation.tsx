@@ -145,6 +145,14 @@ export default function ShippingCardEstimation({
     Number(watchedLongitude) !== 0
   );
 
+  // Cek apakah koordinat lokasi toko sudah terisi
+  const hasStoreCoordinates = Boolean(
+    storeLatitude != null &&
+    storeLongitude != null &&
+    Number(storeLatitude) !== 0 &&
+    Number(storeLongitude) !== 0
+  );
+
   // =========================================================================
   // ON CHANGE TITIK KOORDINAT LOKASI:
   // Lakukan pengecekan jarak ulang & tarif antara seller dan customer via API KiriminAja Instant Price
@@ -164,15 +172,15 @@ export default function ShippingCardEstimation({
     destination_long: watchedLongitude ? Number(watchedLongitude) : undefined,
     destination_village_id: Number(destination_village_id),
     items: itemsPayload,
-    enabled: Boolean(destination_village_id) && hasCoordinates && !isServiceOrder,
+    enabled: Boolean(destination_village_id) && hasCoordinates && hasStoreCoordinates && !isServiceOrder,
   });
 
   // Re-fetch instan pricing saat koordinat berubah (on change koordinat)
   useEffect(() => {
-    if (hasCoordinates && destination_village_id && !isServiceOrder) {
+    if (hasCoordinates && hasStoreCoordinates && destination_village_id && !isServiceOrder) {
       refetchInstantRates();
     }
-  }, [watchedLatitude, watchedLongitude]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [watchedLatitude, watchedLongitude, storeLatitude, storeLongitude]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const instantRatesFromApi: ResponseShippingRates[] = useMemo(() => {
     return instantPriceResponse?.data ?? [];
@@ -192,9 +200,10 @@ export default function ShippingCardEstimation({
       String(storeIsCod) === "true"
     );
 
-  // - Opsi Instant: di-enable jika titik koordinat terisi dan terverifikasi di bawah 40 KM (melalui hasil API KiriminAja Instant Price atau jarak straight-line < 40 KM)
+  // - Opsi Instant: di-enable jika titik koordinat toko & pembeli terisi dan terverifikasi di bawah 40 KM (melalui hasil API KiriminAja Instant Price atau jarak straight-line < 40 KM)
   const canShowInstant =
     !isServiceOrder &&
+    hasStoreCoordinates &&
     hasCoordinates &&
     (hasInstantFromApi || (distanceKm !== null && distanceKm < 40));
 
@@ -247,11 +256,14 @@ export default function ShippingCardEstimation({
     if (isServiceOrder) {
       return "Produk layanan jasa tidak memerlukan kurir pengiriman.";
     }
-    if (distanceKm !== null && distanceKm >= 40) {
-      return `Berdasarkan pengecekan API KiriminAja, jarak pengiriman (${distanceKm} km) melebihi batas jangkauan maksimal kurir Instant 40 km dari lokasi toko.`;
+    if (!hasStoreCoordinates) {
+      return "Kurir Instant belum dapat digunakan karena pihak toko belum menentukan titik koordinat lokasi toko pada peta.";
     }
     if (!hasCoordinates) {
       return "Kurir Instant belum dapat digunakan karena titik koordinat lokasi alamat belum ditentukan pada peta (dibutuhkan untuk validasi jarak < 40 km).";
+    }
+    if (distanceKm !== null && distanceKm >= 40) {
+      return `Berdasarkan pengecekan API KiriminAja, jarak pengiriman (${distanceKm} km) melebihi batas jangkauan maksimal kurir Instant 40 km dari lokasi toko.`;
     }
     if (!hasInstantFromApi && !isLoadingInstantRates) {
       return "Kurir Instant (GoSend / Grab) tidak menjangkau rute lokasi ini dari toko terkait.";
@@ -289,17 +301,17 @@ export default function ShippingCardEstimation({
     }
   };
 
-  // Objek opsi pengiriman khusus COD (Ongkos Kirim Rp 0)
+  // Objek opsi pengiriman khusus COD (Nominal ongkir ditentukan oleh kesepakatan penjual dan pembeli)
   const codShippingRate: ResponseShippingRates = useMemo(
     () => ({
       service: "cod",
       service_name: "COD (Bayar di Tempat)",
       service_type: "cod",
-      etd: "1-3 hari",
+      etd: "Sesuai kesepakatan",
       cost: {
         amount: "0",
         currency: "IDR",
-        formatted: "Rp 0",
+        formatted: "Ditentukan kesepakatan",
         value: 0,
       },
     }),
@@ -647,10 +659,10 @@ export default function ShippingCardEstimation({
                 </div>
                 <span
                   className={`text-[9px] font-semibold px-1.5 py-0.2 rounded-full ${
-                    activeTab === "cod" ? "bg-white/20 text-white" : "bg-emerald-100 text-emerald-800"
+                    activeTab === "cod" ? "bg-white/20 text-white" : "bg-amber-100 text-amber-900"
                   }`}
                 >
-                  Bebas Ongkir
+                  Kesepakatan
                 </span>
               </button>
             )}
@@ -745,30 +757,30 @@ export default function ShippingCardEstimation({
 
           {/* KONTEN TAB: 1. Tab COD */}
           {activeTab === "cod" && canShowCod && (
-            <div className="p-3 bg-emerald-50/70 border border-emerald-300 rounded-xl space-y-2">
+            <div className="p-3 bg-amber-50/70 border border-amber-300 rounded-xl space-y-2">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 flex-shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-800 flex-shrink-0 mt-0.5">
                     <Banknote className="w-4 h-4" />
                   </div>
                   <div>
-                    <h5 className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                    <h5 className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
                       COD (Cash on Delivery)
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-200 text-emerald-900">
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-900">
                         Aktif
                       </span>
                     </h5>
-                    <p className="text-[11px] text-emerald-800 mt-0.5">
-                      Pengiriman langsung oleh Toko. Bayar tunai kepada kurir saat pesanan tiba di alamat Anda.
+                    <p className="text-[11px] text-amber-900 mt-0.5">
+                      Pengiriman langsung oleh Toko. Nominal ongkir ditentukan oleh kesepakatan penjual dan pembeli.
                     </p>
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <span className="text-xs font-extrabold text-emerald-700 block">
-                    Rp 0
+                  <span className="text-xs font-bold text-amber-900 block">
+                    Sesuai Kesepakatan
                   </span>
-                  <span className="text-[10px] text-emerald-600 block mt-0.5">
-                    1-3 hari tiba
+                  <span className="text-[10px] text-amber-700 block mt-0.5">
+                    Waktu disepakati
                   </span>
                 </div>
               </div>
@@ -918,12 +930,12 @@ export default function ShippingCardEstimation({
               Tentukan Alamat
             </span>
           ) : activeTab === "cod" && canShowCod ? (
-            /* COD: Rp 0 */
+            /* COD: Kesepakatan Penjual dan Pembeli */
             <div className="flex flex-col items-end gap-1">
-              <span className="font-extrabold text-sm text-emerald-700">
-                Rp 0
+              <span className="font-bold text-xs text-amber-900 bg-amber-50 border border-amber-300 px-2.5 py-1 rounded-lg text-right">
+                Nominal ongkir ditentukan oleh kesepakatan penjual dan pembeli
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 mt-0.5">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1 mt-0.5">
                 <Banknote className="w-2.5 h-2.5" />
                 COD (Bayar di Tempat)
               </span>
@@ -1008,7 +1020,7 @@ export default function ShippingCardEstimation({
             {isServiceOrder
               ? "Produk Jasa (Tanpa Ongkir)"
               : activeTab === "cod"
-              ? "Metode COD (Ongkir Rp 0)"
+              ? "Metode COD"
               : "Termasuk Ongkos Kirim"}
           </span>
         </div>

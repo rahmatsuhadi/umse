@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/format-date";
 import type { StatusPayment } from "@/types";
 import Image from "next/image";
+import { getCleanItemNames } from "@/lib/product-helper";
 
 type Props = {
   open: boolean;
@@ -187,33 +188,51 @@ export function PaymentStatusModal({ open, orderId, onClose }: Props) {
                   <h3 className="text-sm font-extrabold text-[var(--text-primary)]">Item Pesanan</h3>
                 </div>
                 <div className="space-y-3">
-                  {order.items.map((item, i) => (
-                    <div className="checkout-item-card" key={i}>
-                      <div className="checkout-item-img-box" style={{ position: "relative", width: "64px", height: "64px", flexShrink: 0 }}>
-                        <Image
-                          src={item.product?.thumbnail?.media_url || '/assets/no-image.jpg'}
-                          alt={item.product_name}
-                          fill
-                          style={{ objectFit: "cover", borderRadius: "var(--radius-sm)" }}
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="checkout-item-title">{item.variant_name || item.product_name}</h4>
-                        <p className="text-[11px] text-[var(--text-muted)] font-medium mt-0.5">
-                          <i className="fas fa-store text-[var(--brown-light)] mr-1"></i>
-                          {order.store.name}
-                        </p>
-                        <div className="flex items-center justify-between mt-1.5">
-                          <span className="checkout-item-price">
-                            {item.variant_price?.formatted ?? item.product_price.formatted}
-                          </span>
-                          <span className="text-[var(--text-muted)] text-xs font-bold bg-[var(--cream)] px-2.5 py-0.5 rounded-md border border-[var(--cream-dark)]">
-                            x{item.quantity}
-                          </span>
+                  {order.items.map((item, i) => {
+                    const rawProductName = item.product_name || item.product?.name || "Produk";
+                    const rawVariantName = item.variant_name || item.variant?.name || "";
+                    const { productName, variantName } = getCleanItemNames(rawProductName, rawVariantName);
+
+                    return (
+                      <div className="checkout-item-card" key={i}>
+                        <div className="checkout-item-img-box" style={{ position: "relative", width: "64px", height: "64px", flexShrink: 0 }}>
+                          <Image
+                            src={
+                              item.variant?.thumbnail?.media_url ||
+                              item.product?.thumbnail?.media_url ||
+                              '/assets/no-image.jpg'
+                            }
+                            alt={productName || "gambar"}
+                            fill
+                            style={{ objectFit: "cover", borderRadius: "var(--radius-sm)" }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="checkout-item-title truncate">{productName}</h4>
+                          {variantName && (
+                            <div className="mt-1">
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-muted)] bg-[var(--cream)] px-2 py-0.5 rounded-full border border-[var(--cream-dark)]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--terracotta-light)] flex-shrink-0"></span>
+                                <span>Varian: {variantName}</span>
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-[11px] text-[var(--text-muted)] font-medium mt-1">
+                            <i className="fas fa-store text-[var(--brown-light)] mr-1"></i>
+                            {order.store.name}
+                          </p>
+                          <div className="flex items-center justify-between mt-1.5">
+                            <span className="checkout-item-price">
+                              {item.variant_price?.formatted ?? item.product_price.formatted}
+                            </span>
+                            <span className="text-[var(--text-muted)] text-xs font-bold bg-[var(--cream)] px-2.5 py-0.5 rounded-md border border-[var(--cream-dark)]">
+                              x{item.quantity}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

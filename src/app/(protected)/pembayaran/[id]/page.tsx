@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { notFound, useParams } from "next/navigation";
+import React, { useEffect } from "react";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useGetOrderPayments } from "@/features/order/hooks";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import PaymentStep from "@/components/payments/PaymentPageStep";
@@ -10,10 +10,26 @@ import { Footer } from "@/components/shared/Footer";
 
 export default function PaymentPage() {
     const { id } = useParams<{ id: string }>();
+    const router = useRouter();
 
     const { data, isLoading } = useGetOrderPayments(id);
 
     const order = data?.data;
+
+    // Jika pesanan adalah COD, otomatis arahkan ke halaman pembayaran COD
+    useEffect(() => {
+        if (order) {
+            const isCod =
+                order.payment_method?.toLowerCase() === "cash_on_delivery" ||
+                order.payment_method?.toLowerCase() === "cod" ||
+                order.shipping_service?.toLowerCase() === "cod" ||
+                order.shipping_service_type?.toLowerCase() === "cod";
+
+            if (isCod) {
+                router.replace(`/pembayaran/${order.id}/cod`);
+            }
+        }
+    }, [order, router]);
 
     const renderContent = () => {
         if (isLoading && !order) {

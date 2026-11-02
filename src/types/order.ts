@@ -9,6 +9,29 @@ import { User } from "./user"
 export type StatusOrder = 'awaiting_payment' | 'processing' | 'expired'| 'paid' | 'shipped' | 'completed' | 'delivered' | 'cancelled' | 'refunded' | 'pending'
 export type StatusPayment = 'unpaid' | 'pending' | 'paid' | 'uploaded' | 'verified' | 'rejected' | 'expired' | 'refunded'
 
+export interface CodNegotiation {
+    id: string;
+    order_id: string;
+    user_id: string;
+    negotiator_type: 'customer' | 'seller';
+    negotiator_type_label: string;
+    round: number;
+    proposed_delivery_at: string;
+    proposed_delivery_at_formatted: string;
+    proposed_shipping_cost: Price | number | {
+        amount: string;
+        currency: string;
+        formatted: string;
+        value: number;
+    };
+    status: 'dinego' | 'diterima' | 'ditolak';
+    status_label: string;
+    status_color: string;
+    notes?: string | null;
+    created_at: string;
+    created_at_formatted: string;
+}
+
 export interface Order {
     order_number: string
     complaint?: Complaint
@@ -93,4 +116,6 @@ export interface Order {
         paid_at?: string | null
         is_paid?: boolean
     } | null
+    cod_negotiations?: CodNegotiation[]
+    latest_cod_negotiation?: CodNegotiation | null
 }

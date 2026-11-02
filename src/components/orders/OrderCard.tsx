@@ -27,6 +27,12 @@ const OrderCard: React.FC<OrderCardProps> = ({
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
   const router = useRouter();
 
+  const isCod =
+    order.payment_method?.toLowerCase() === "cash_on_delivery" ||
+    order.payment_method?.toLowerCase() === "cod" ||
+    order.shipping_service?.toLowerCase() === "cod" ||
+    order.shipping_service_type?.toLowerCase() === "cod";
+
   return (
     <div className="cart-store-container">
       {/* Top Gradient Header Bar */}
@@ -120,9 +126,10 @@ const OrderCard: React.FC<OrderCardProps> = ({
               Detail
             </button>
 
-            {order.status == "awaiting_payment" && order.payment_status == "unpaid" && (
+            {((order.status == "awaiting_payment" && order.payment_status == "unpaid") ||
+              (isCod && order.status == "pending" && order.payment_status == "unpaid")) && (
               <button
-                onClick={() => router.push("/pembayaran/" + order.id)}
+                onClick={() => router.push(isCod ? `/pembayaran/${order.id}/cod` : `/pembayaran/${order.id}`)}
                 className="btn btn-primary btn-sm"
               >
                 Bayar
