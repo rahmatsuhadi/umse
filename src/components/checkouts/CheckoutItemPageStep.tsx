@@ -10,6 +10,9 @@ import { CheckoutStep } from "@/components/checkouts/lib";
 import CheckoutEmpty from "@/components/checkouts/CheckoutEmpyt";
 import CheckoutSkeletonPage from "@/components/checkouts/CheckoutSkeletonPage";
 import CheckoutForm from "./CheckoutForm";
+import CheckoutMixedOrder from "./CheckoutMixedOrder";
+import { hasMixedOrderItems, isGoodsItem, isServiceItem } from "@/lib/product-helper";
+import { toast } from "sonner";
 
 export const animationVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -45,7 +48,7 @@ const useLocalCheckoutItem = () => {
     }
   }, []);
 
-  return { store, isLoading, items };
+  return { store, isLoading, items, setItems };
 };
 
 export default function CheckoutItem({
@@ -54,7 +57,7 @@ export default function CheckoutItem({
   currentStep: CheckoutStep;
 }) {
   const searchParams = useSearchParams();
-  const { isLoading: isLocalLoading, items, store: localStore } = useLocalCheckoutItem();
+  const { isLoading: isLocalLoading, items, store: localStore, setItems } = useLocalCheckoutItem();
 
   const storeId = searchParams.get("store") || localStore?.id || "";
   const { data: storeApiData, isLoading: isStoreLoading } = useStore(storeId);
@@ -75,10 +78,44 @@ export default function CheckoutItem({
 
   const isLoading = isLocalLoading || (Boolean(storeId) && isStoreLoading && !localStore);
 
+  // Validasi: Jenis barang dan jasa tidak boleh digabung dalam satu checkout order
+  const isMixedOrder = useMemo(() => hasMixedOrderItems(items), [items]);
+
+  const handleSelectFilteredType = (type: "goods" | "service") => {
+    if (!store) return;
+    const filtered = items.filter((item) =>
+      type === "service" ? isServiceItem(item) : isGoodsItem(item)
+    );
+    const saveLocal = {
+      store,
+      items: filtered,
+    };
+    try {
+      localStorage.setItem("checkout_items", JSON.stringify(saveLocal));
+    } catch (err) {
+      console.error("Gagal memperbarui checkout_items:", err);
+    }
+    setItems(filtered);
+    toast.success(
+      type === "goods"
+        ? "Melanjutkan checkout khusus Produk Barang."
+        : "Melanjutkan checkout khusus Layanan Jasa."
+    );
+  };
+
   const renderContent = () => {
     if (isLoading || loadPrimaryAddress) {
       return <CheckoutSkeletonPage />;
-    } else if (!isLoading && !!store && !!items) {
+    } else if (!isLoading && !!store && items && items.length > 0) {
+      if (isMixedOrder) {
+        return (
+          <CheckoutMixedOrder
+            items={items}
+            store={store}
+            onSelectType={handleSelectFilteredType}
+          />
+        );
+      }
       return (
         <CheckoutForm
           address={primaryAddress?.data}

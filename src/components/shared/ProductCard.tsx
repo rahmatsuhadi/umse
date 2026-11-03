@@ -1,16 +1,9 @@
 "use client";
 
 import { CatCard } from "./CatCard";
+import { getLowestProductPrice } from "@/lib/price-helper";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-// Helper function to format prices
-const formatPrice = (price: any): string => {
-    if (!price) return "Rp 0";
-    if (typeof price === "number") return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
-    if (typeof price === "object" && "formatted" in price) return price.formatted as string;
-    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(Number(price));
-};
 
 export const SkeletonProductCard = ({ className }: { className?: string }) => (
     <div className={`product-card-mini ${className || ""}`} style={{ opacity: 0.7, pointerEvents: "none" }}>
@@ -35,12 +28,12 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
     const isEmergencyClose = p.store?.is_emergency_close === true;
     const isClosed = p.store?.is_open === false || isEmergencyClose;
 
-    // Discount: discount_price is the sale price, price is original
-    const discountPct = p.discount_percentage ? Number(p.discount_percentage) : 0;
-    const hasDiscount = discountPct > 0 && p.discount_price != null;
-    const displayPrice = hasDiscount ? formatPrice(p.discount_price) : formatPrice(p.price);
-    const priceOld = hasDiscount ? formatPrice(p.price) : undefined;
-    const discountStr = hasDiscount ? `-${Math.round(discountPct)}%` : null;
+    // Ambil harga terendah dari harga produk, diskon, dan variant (jika ada)
+    const priceInfo = getLowestProductPrice(p);
+    const displayPrice = priceInfo.displayPrice;
+    const priceOld = priceInfo.priceOld;
+    const discountStr = priceInfo.discountStr;
+    const hasDiscount = priceInfo.hasDiscount;
 
     const ratingAvg = p.rating_avg ?? (p.average_rating ? Number(p.average_rating) : 0);
     const soldCount = p.sold_count ?? p.total_sales ?? 0;

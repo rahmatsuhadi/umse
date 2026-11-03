@@ -201,3 +201,42 @@ export function getCleanItemNames(
   return { productName: p, variantName: v || null };
 }
 
+/**
+ * Cek apakah sebuah item / produk berjenis Layanan Jasa
+ */
+export function isServiceItem(
+  item?: { product?: { type?: string } } | { type?: string } | null
+): boolean {
+  if (!item) return false;
+  const rawType =
+    'product' in item && item.product
+      ? item.product.type
+      : 'type' in item
+      ? (item as { type?: string }).type
+      : undefined;
+  const typeStr = (rawType || '').toLowerCase();
+  return typeStr === 'service' || typeStr === 'jasa';
+}
+
+/**
+ * Cek apakah sebuah item / produk berjenis Barang fisik (bukan Jasa)
+ */
+export function isGoodsItem(
+  item?: { product?: { type?: string } } | { type?: string } | null
+): boolean {
+  return !isServiceItem(item);
+}
+
+/**
+ * Cek apakah daftar item memuat gabungan jenis Barang fisik dan Layanan Jasa
+ */
+export function hasMixedOrderItems(
+  items?: Array<{ product?: { type?: string } } | { type?: string }> | null
+): boolean {
+  if (!items || items.length <= 1) return false;
+  const hasService = items.some((it) => isServiceItem(it));
+  const hasGoods = items.some((it) => isGoodsItem(it));
+  return hasService && hasGoods;
+}
+
+

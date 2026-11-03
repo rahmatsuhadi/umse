@@ -1,13 +1,15 @@
 import { useRemoveCartItem, useUpdateCartItem } from "@/features/cart/hooks";
 import { CartItem } from "@/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Checkbox } from "../ui/checkbox";
 import Image from "next/image";
 import { CartItemCard } from "./CartItemCard";
 import { formatRupiah } from "@/lib/curency-format";
-import { ShoppingBag, MapPin, ArrowRight } from "lucide-react";
+import { ShoppingBag, MapPin, ArrowRight, AlertTriangle, Package, Wrench } from "lucide-react";
 import { getComputedPrice } from "@/lib/price-helper";
+import { hasMixedOrderItems, isGoodsItem, isServiceItem } from "@/lib/product-helper";
+import { toast } from "sonner";
 
 interface StoreCartItemProps {
     storeName: string;
@@ -33,10 +35,39 @@ export const CartStoreCard = ({
     const { mutate: updateItem, isPending } = useUpdateCartItem();
     const { mutate: removeItem, } = useRemoveCartItem();
 
+    // Hitung jumlah barang fisik dan layanan jasa di toko ini
+    const goodsCount = useMemo(() => items.filter((item) => isGoodsItem(item)).length, [items]);
+    const serviceCount = useMemo(() => items.filter((item) => isServiceItem(item)).length, [items]);
+    const isStoreMixed = goodsCount > 0 && serviceCount > 0;
+
+    // Cek apakah item yang saat ini dipilih memuat campuran barang dan jasa
+    const hasMixedSelection = useMemo(() => hasMixedOrderItems(selectedItems), [selectedItems]);
+
+    // Helper untuk memilih hanya barang fisik
+    const handleSelectGoodsOnly = () => {
+        const updated = items.map((item) => isGoodsItem(item));
+        setItemChecked(updated);
+        setIsStoreChecked(goodsCount === items.length);
+        toast.info(`Memilih semua produk barang (${goodsCount} item).`);
+    };
+
+    // Helper untuk memilih hanya layanan jasa
+    const handleSelectServicesOnly = () => {
+        const updated = items.map((item) => isServiceItem(item));
+        setItemChecked(updated);
+        setIsStoreChecked(serviceCount === items.length);
+        toast.info(`Memilih semua layanan jasa (${serviceCount} item).`);
+    };
+
     // Mengubah status checkbox store dan checkbox item
     const handleStoreCheckboxChange = (checked: boolean) => {
         setIsStoreChecked(checked);
         setItemChecked(new Array(items.length).fill(checked)); // Menyinkronkan status checkbox item dengan checkbox store
+        if (checked && isStoreMixed) {
+            toast.warning(
+                "Toko ini memuat barang dan jasa. Keduanya tidak dapat di-checkout bersamaan dalam satu pesanan."
+            );
+        }
     };
 
     // Mengubah status checkbox item dan memperbarui status checkbox store jika perlu
@@ -68,6 +99,14 @@ export const CartStoreCard = ({
         // Logika checkout untuk toko ini
 
         if (selectedItems.length === 0) return;
+
+        // Validasi: Jenis barang dan jasa tidak bisa di-checkout dalam satu order
+        if (hasMixedSelection) {
+            toast.error(
+                "Jenis barang dan jasa tidak bisa di-checkout dalam satu order. Silakan pilih hanya produk barang atau hanya layanan jasa."
+            );
+            return;
+        }
 
         const store = selectedItems[0].store;
 
@@ -159,15 +198,42 @@ export const CartStoreCard = ({
                         />
                     </div>
 
-                    <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="cart-store-name">
-                                {storeName}
-                            </h3>
-                            <span className="cart-store-badge">
-                                <ShoppingBag className="w-2.5 h-2.5 mr-1" />
-                                {items.length} produk
-                            </span>
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <h3 className="cart-store-name">
+                                    {storeName}
+                                </h3>
+                                <span className="cart-store-badge">
+                                    <ShoppingBag className="w-2.5 h-2.5 mr-1" />
+                                    {items.length} produk
+                                </span>
+                            </div>
+
+                            {/* Quick selection chips jika toko memiliki barang dan jasa */}
+                            {isStoreMixed && (
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="text-[10px] text-gray-400 font-medium hidden sm:inline">Pilih:</span>
+                                    <button
+                                        type="button"
+                                        onClick={handleSelectGoodsOnly}
+                                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-orange-700 hover:bg-orange-100 border border-orange-200 transition-colors"
+                                        title="Pilih hanya produk barang dari toko ini"
+                                    >
+                                        <Package className="w-3 h-3 text-orange-600" />
+                                        Barang ({goodsCount})
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleSelectServicesOnly}
+                                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 transition-colors"
+                                        title="Pilih hanya layanan jasa dari toko ini"
+                                    >
+                                        <Wrench className="w-3 h-3 text-purple-600" />
+                                        Jasa ({serviceCount})
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         {storeLocation && (
                             <p className="cart-store-location">
@@ -213,6 +279,41 @@ export const CartStoreCard = ({
                 })}
             </div>
 
+            {/* Peringatan jika pengguna memilih kombinasi Barang dan Jasa */}
+            {hasMixedSelection && (
+                <div className="mx-4 mb-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs">
+                    <div className="flex items-start gap-2.5">
+                        <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <p className="font-bold text-amber-950">
+                                Barang & Jasa Tidak Bisa Di-checkout Bersamaan
+                            </p>
+                            <p className="text-amber-800 mt-0.5 leading-relaxed text-[11px]">
+                                Pesanan Anda memuat produk fisik dan layanan jasa sekaligus. Karena perbedaan alur transaksi & kurir pengiriman, silakan pilih salah satu jenis untuk checkout:
+                            </p>
+                            <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                                <button
+                                    type="button"
+                                    onClick={handleSelectGoodsOnly}
+                                    className="px-2.5 py-1 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-sm"
+                                >
+                                    <Package className="w-3 h-3" />
+                                    Pilih Barang Saja ({goodsCount})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleSelectServicesOnly}
+                                    className="px-2.5 py-1 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-sm"
+                                >
+                                    <Wrench className="w-3 h-3" />
+                                    Pilih Jasa Saja ({serviceCount})
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Footer — Subtotal & Checkout CTA */}
             <div className="cart-store-footer">
                 {/* Subtotal */}
@@ -232,9 +333,10 @@ export const CartStoreCard = ({
                 {/* Checkout Button */}
                 <button
                     type="button"
-                    disabled={selectedItems.length === 0}
+                    disabled={selectedItems.length === 0 || hasMixedSelection}
                     onClick={onCheckout}
-                    className="cart-checkout-btn"
+                    className="cart-checkout-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={hasMixedSelection ? "Barang dan Jasa tidak dapat di-checkout dalam satu order" : undefined}
                 >
                     Checkout Toko Ini
                     <ArrowRight className="w-4 h-4" />

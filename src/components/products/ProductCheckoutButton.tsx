@@ -59,12 +59,13 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
     : product.stock_quantity;
 
   const computed = getComputedPrice(product, selectedVariant);
-  const finalPriceStr = computed.hasDiscount ? computed.finalPriceFormatted : (currentPrice.formatted || formatPriceDisplay(currentPrice));
-  let oldPriceStr = computed.hasDiscount ? (currentPrice.formatted || formatPriceDisplay(currentPrice)) : "";
+  const cleanPriceStr = (str: string) => str ? str.replace(/,00$/, '') : '';
+  const finalPriceStr = cleanPriceStr(computed.hasDiscount ? computed.finalPriceFormatted : (currentPrice.formatted || formatPriceDisplay(currentPrice)));
+  let oldPriceStr = computed.hasDiscount ? cleanPriceStr(currentPrice.formatted || formatPriceDisplay(currentPrice)) : "";
   let discountStrDisplay = computed.discountBadge;
 
   if (!computed.hasDiscount && product.highest_price && product.highest_price.value > product.lowest_price.value && !selectedVariant) {
-    oldPriceStr = formatPriceDisplay(product.highest_price);
+    oldPriceStr = cleanPriceStr(formatPriceDisplay(product.highest_price));
     discountStrDisplay = `-${Math.round(((product.highest_price.value - product.lowest_price.value) / product.highest_price.value) * 100)}%`;
   }
 

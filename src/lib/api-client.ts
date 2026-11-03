@@ -41,14 +41,16 @@ export async function apiClient<T>(
     },
   };
 
-  // Debug log
-  console.log("[apiClient:request]", {
-    url,
-    method: config.method || "GET",
-    headers: config.headers,
-    body: isFormData ? "[FormData]" : config.body,
-    runtime: isServer ? "server" : "client",
-  });
+  // Debug log (hanya tampil di mode development)
+  if (process.env.NODE_ENV === "development") {
+    console.log("[apiClient:request]", {
+      url,
+      method: config.method || "GET",
+      headers: config.headers,
+      body: isFormData ? "[FormData]" : config.body,
+      runtime: isServer ? "server" : "client",
+    });
+  }
 
   try {
     const response = await fetch(url, config);
@@ -65,11 +67,13 @@ export async function apiClient<T>(
       }
     }
 
-    console.log("[apiClient:response]", {
-      url,
-      status: response.status,
-      statusText: response.statusText,
-    });
+    if (process.env.NODE_ENV === "development") {
+      console.log("[apiClient:response]", {
+        url,
+        status: response.status,
+        statusText: response.statusText,
+      });
+    }
 
     const text = await response.text();
     let data: Record<string, unknown> = {};
@@ -105,12 +109,14 @@ export async function apiClient<T>(
     return data as T;
   } catch (error) {
     if (error instanceof Error) {
-      console.error("[apiClient:fetchError]", {
-        url,
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      });
+      if (process.env.NODE_ENV === "development") {
+        console.error("[apiClient:fetchError]", {
+          url,
+          message: error.message,
+          stack: error.stack,
+          name: error.name,
+        });
+      }
       const displayMessage =
         error.message === "fetch failed"
           ? `Gagal terhubung ke backend (${url}). Pastikan backend sedang aktif.`

@@ -6,7 +6,7 @@ import { useAddToCart, useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
-import { getComputedPrice } from "@/lib/price-helper";
+import { getComputedPrice, getLowestProductPrice } from "@/lib/price-helper";
 import { getProductTypeInfo } from "@/lib/product-helper";
 
 interface CardProductProps {
@@ -17,9 +17,11 @@ export const ProductCard = ({ product }: CardProductProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
 
-  const discountPct = product.discount_percentage ? Number(product.discount_percentage) : 0;
-  const hasDiscount = discountPct > 0 && product.discount_price != null;
-  const discountStr = hasDiscount ? `-${Math.round(discountPct)}%` : null;
+  const priceInfo = getLowestProductPrice(product);
+  const hasDiscount = priceInfo.hasDiscount;
+  const discountStr = priceInfo.discountStr;
+  const priceDisplay = priceInfo.displayPrice;
+  const priceOld = priceInfo.priceOld;
 
   const isNewCalculated = (() => {
     if (!product.created_at) return false;
@@ -32,10 +34,6 @@ export const ProductCard = ({ product }: CardProductProps) => {
 
   const promoRibbon = discountStr ? <div className="promo-ribbon">{discountStr}</div> : null;
   const newRibbon = isNew ? <div className="new-ribbon">✨ Baru</div> : null;
-
-  const price = product.variants_exists ? product.lowest_price : product.price;
-
-  const priceDisplay = `Rp ${price.value.toLocaleString()}`;
 
   const { data: user } = useUser();
   const { mutate: addToCart, isPending } = useAddToCart();
@@ -109,9 +107,16 @@ export const ProductCard = ({ product }: CardProductProps) => {
         </p>
         <div className="product-actions-lg mt-auto p-0">
           <div className="price-col">
-            <span className="product-price-lg">
-              {priceDisplay}
-            </span>
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              <span className="product-price-lg">
+                {priceDisplay}
+              </span>
+              {priceOld && (
+                <span className="line-through text-xs text-gray-400 font-medium">
+                  {priceOld}
+                </span>
+              )}
+            </div>
             <div className="sold-row flex items-center gap-1.5 flex-wrap text-[11px] text-gray-500 font-semibold mb-1">
               <i className="fas fa-star text-yellow-400"></i>
               {/* <span>{product.average_rating} · {(product.sold_count ?? product.total_sales ?? 0)} terjual</span> */}

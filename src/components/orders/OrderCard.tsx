@@ -20,7 +20,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
   order,
   viewOrderDetail,
   onCompleteOrder,
-  onDeliveredOrder: _onDeliveredOrder,
   openReviewModal,
   onComplainOrder,
 }) => {

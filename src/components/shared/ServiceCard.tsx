@@ -7,16 +7,9 @@ import { useAddToCart, useGuestCart } from "@/features/cart/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
+import { getLowestProductPrice } from "@/lib/price-helper";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-// Helper function to format prices
-const formatPrice = (price: any): string => {
-    if (!price) return "Rp 0";
-    if (typeof price === "number") return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
-    if (typeof price === "object" && "formatted" in price) return price.formatted as string;
-    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(Number(price));
-};
 
 export const SkeletonServiceCard = ({ className }: { className?: string }) => (
     <div className={`product-card-mini ${className || ""}`} style={{ opacity: 0.7, pointerEvents: "none" }}>
@@ -50,8 +43,8 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                 quantity: 1,
                 product_name: p.name,
                 product_thumbnail: p.thumbnail?.media_url || p.media?.[0]?.media_url || '',
-                product_price_value: p.price?.value || 0,
-                product_price_formatted: p.price?.formatted || '',
+                product_price_value: p.lowest_price?.value || p.price?.value || 0,
+                product_price_formatted: p.lowest_price?.formatted || p.price?.formatted || '',
                 store_id: p.store.id,
                 store_name: p.store.name,
                 store_logo_url: p.store.logo_url || '',
@@ -71,12 +64,13 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
         });
     };
 
-    // From ProductCard parsing logic
+    // From ProductCard parsing logic - ambil harga terendah produk & variant
     const isEmergencyClose = p.store?.is_emergency_close === true;
     const isClosed = p.store?.is_open === false || isEmergencyClose;
-    const discountPct = p.discount_percentage ? Number(p.discount_percentage) : 0;
-    const hasDiscount = discountPct > 0 && p.discount_price != null;
-    const displayPrice = hasDiscount ? formatPrice(p.discount_price) : formatPrice(p.price);
+    const priceInfo = getLowestProductPrice(p);
+    const displayPrice = priceInfo.displayPrice;
+    const priceOld = priceInfo.priceOld;
+    const discountStr = priceInfo.discountStr;
 
     // const ratingAvg = p.rating_avg ?? (p.average_rating ? Number(p.average_rating) : 0);
     const soldCount = p.sold_count ?? p.total_sales ?? 0;
@@ -108,6 +102,7 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
 
     const topBadge = badge === 'Terlaris' ? <div className="hot-badge">🔥 Terlaris</div>
         : badge === 'Unggulan' ? <div className="star-badge">⭐ Unggulan</div> : null;
+    const promoRibbon = discountStr ? <div className="promo-ribbon">{discountStr}</div> : null;
 
     let hourPillRender = null;
     if (hourPill) {
@@ -165,6 +160,7 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                 )}
                 <div className="jasa-tipe-ribbon">🛠️ Jasa</div>
                 <div className="jasa-cat-tag" style={{ background: '#eee', color: '#666' }}>🛠️ {catName}</div>
+                {promoRibbon}
                 {topBadge}
                 {hourPillRender}
                 {closedOverlay}
@@ -179,7 +175,12 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                 />
                 <div className="jasa-card-footer">
                     <div>
-                        <div className="jasa-card-price" style={{ color: '#7B1FA2', fontWeight: 600, fontSize: '15px' }}>{displayPrice}</div>
+                        <div className="flex items-baseline gap-1.5 flex-wrap">
+                            <div className="jasa-card-price" style={{ color: '#7B1FA2', fontWeight: 600, fontSize: '15px' }}>{displayPrice}</div>
+                            {priceOld && (
+                                <div className="text-xs text-gray-400 line-through" style={{ textDecoration: 'line-through' }}>{priceOld}</div>
+                            )}
+                        </div>
                         <div className="jasa-card-meta" style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
                             {/* ⭐ {ratingDisplay} &nbsp;·&nbsp; */} {soldCount} dipesan
                         </div>

@@ -45,9 +45,10 @@ import { Button } from "../ui/button";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { addAddress, setDefaultAddress, updateAddress } from "@/features/address/api";
-import { Loader2, User2, Phone, Home, MapPin, Banknote, Clock } from "lucide-react";
+import { Loader2, User2, Phone, Home, MapPin, Banknote, Clock, AlertTriangle } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
 import { toast } from "sonner";
+import { hasMixedOrderItems } from "@/lib/product-helper";
 
 export const normalizePhoneNumber = (phone: string): string => {
   let cleaned = phone.replace(/[\s\-()]/g, "");
@@ -197,11 +198,19 @@ export default function CheckoutForm({
   const router = useRouter();
   const isCod = shipping_service.name === "cod" || shipping_service.type === "cod";
 
+  const isMixedOrder = useMemo(() => hasMixedOrderItems(items), [items]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutateAsync: createOrderMutate, isPending } = useCreateOrder();
   const isProcessing = isPending || isSubmitting;
 
   const handleOrderSubmit = async (data: z.infer<typeof addressSchema>) => {
+    if (isMixedOrder) {
+      toast.error(
+        "Jenis barang dan jasa tidak bisa di-checkout dalam satu order. Silakan pisahkan checkout Anda."
+      );
+      return;
+    }
     setIsSubmitting(true);
     try {
       if (!address) {
@@ -1113,8 +1122,27 @@ export default function CheckoutForm({
                     </div>
                   )}
 
+                  {isMixedOrder && (
+                    <div
+                      className="mb-4 p-3.5 rounded-xl flex items-start gap-2.5 text-xs font-semibold"
+                      style={{
+                        background: "#FEF2F2",
+                        color: "#991B1B",
+                        border: "1px solid #FCA5A5",
+                      }}
+                    >
+                      <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-bold">Pemisahan Order Diperlukan</p>
+                        <p className="mt-0.5 font-normal text-red-700 leading-relaxed">
+                          Pesanan ini memuat campuran produk barang fisik dan layanan jasa. Barang dan jasa tidak dapat diproses dalam satu order.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <Button
-                    disabled={isProcessing || !isValidShip || !watchedPostalCode || watchedPostalCode.length !== 5}
+                    disabled={isProcessing || isMixedOrder || !isValidShip || !watchedPostalCode || watchedPostalCode.length !== 5}
                     type="submit"
                     className="checkout-btn-full"
                     style={

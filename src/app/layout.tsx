@@ -76,7 +76,9 @@ export async function generateMetadata(): Promise<Metadata> {
       }
     }
   } catch (error) {
-    console.error("Failed to load web settings for metadata:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Notice: Failed to load dynamic web settings for metadata, using defaults:", error);
+    }
   }
 
   return defaultMeta;
