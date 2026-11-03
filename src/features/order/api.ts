@@ -11,6 +11,7 @@ export interface CreateOrderData {
   shipping_service: string,
   shipping_service_type: string,
   store_id: string,
+  status?: string,
   address: {
     address_line: string,
     district_id: number,
@@ -245,6 +246,43 @@ export const submitCodNegotiation = (
 ): Promise<{ status: boolean; message: string; data: import("@/types").CodNegotiation; order: Order }> => {
   return apiClient<{ status: boolean; message: string; data: import("@/types").CodNegotiation; order: Order }>(
     `/customer/orders/${orderId}/cod-negotiations`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }
+  );
+};
+
+export interface SubmitServiceRequestData {
+  service_deadline: string;
+  service_request_details?: string;
+  service_reference_url?: string;
+}
+
+export const submitServiceRequest = (
+  orderId: string,
+  data: SubmitServiceRequestData
+): Promise<{ status: boolean; message: string; data: Order }> => {
+  return apiClient<{ status: boolean; message: string; data: Order }>(
+    `/customer/orders/${orderId}/service-request`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }
+  );
+};
+
+export interface SubmitServiceDecisionData {
+  action: 'confirm' | 'reject';
+  rejection_reason?: string;
+}
+
+export const submitServiceDecision = (
+  orderId: string,
+  data: SubmitServiceDecisionData
+): Promise<{ status: boolean; message: string; data: Order }> => {
+  return apiClient<{ status: boolean; message: string; data: Order }>(
+    `/customer/orders/${orderId}/service-decision`,
     {
       method: 'POST',
       body: JSON.stringify(data),

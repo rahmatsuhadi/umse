@@ -85,8 +85,19 @@ export const useCreateOrder = () => {
         data?.data?.payment_method?.toLowerCase() === "cod" ||
         data?.data?.shipping_service?.toLowerCase() === "cod";
 
+      const isService =
+        (data?.data?.items && data?.data?.items.length > 0 && data?.data?.items.every((item) => {
+          const type = item.product?.type?.toLowerCase();
+          return type === "service" || type === "jasa";
+        })) ||
+        (data?.data?.requires_shipping_payment === false &&
+          (!data?.data?.shipping_service || data?.data?.shipping_service.toLowerCase() === "none" || data?.data?.shipping_service.toLowerCase() === "pickup") &&
+          Number(data?.data?.shipping_cost?.value ?? 0) === 0);
+
       if (isCod) {
         router.replace(`/pembayaran/${data.data.id}/cod`);
+      } else if (isService) {
+        router.replace(`/pembayaran/${data.data.id}/jasa`);
       } else {
         router.replace(`/pembayaran/${data.data.id}`);
       }

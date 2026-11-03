@@ -71,8 +71,8 @@ export function ReviewModalOrder({ open, onClose, orderId, item }: ReviewModalOr
                     <div className="flex items-center gap-3.5 bg-[var(--cream)] border border-[var(--cream-dark)] p-3.5 rounded-[var(--radius-md)] hover:bg-white hover:border-[var(--terracotta-light)] hover:shadow-md transition-all duration-300">
                         <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-[var(--cream-dark)] bg-white shadow-xs">
                             <Image 
-                                src={item.product ? item.product.thumbnail.media_url : '/assets/no-image.jpg'} 
-                                alt="gambar" 
+                                src={item.variant?.thumbnail?.media_url || item.product?.thumbnail?.media_url || '/assets/no-image.jpg'} 
+                                alt={item.product_name || "gambar"} 
                                 layout="fill" 
                                 objectFit="cover"
                             />

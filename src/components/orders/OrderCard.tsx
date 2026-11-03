@@ -20,11 +20,11 @@ const OrderCard: React.FC<OrderCardProps> = ({
   order,
   viewOrderDetail,
   onCompleteOrder,
-  onDeliveredOrder,
+  onDeliveredOrder: _onDeliveredOrder,
   openReviewModal,
   onComplainOrder,
 }) => {
-  const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
   const router = useRouter();
 
   const isCod =
@@ -32,6 +32,21 @@ const OrderCard: React.FC<OrderCardProps> = ({
     order.payment_method?.toLowerCase() === "cod" ||
     order.shipping_service?.toLowerCase() === "cod" ||
     order.shipping_service_type?.toLowerCase() === "cod";
+
+  const isService =
+    (order.items && order.items.length > 0 && order.items.every((item) => {
+      const type = item.product?.type?.toLowerCase();
+      return type === "service" || type === "jasa";
+    })) ||
+    (order.requires_shipping_payment === false &&
+      (!order.shipping_service || order.shipping_service.toLowerCase() === "none" || order.shipping_service.toLowerCase() === "pickup") &&
+      Number(order.shipping_cost?.value ?? 0) === 0);
+
+  const paymentUrl = isCod
+    ? `/pembayaran/${order.id}/cod`
+    : isService
+    ? `/pembayaran/${order.id}/jasa`
+    : `/pembayaran/${order.id}`;
 
   return (
     <div className="cart-store-container">
@@ -52,7 +67,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
       <div>
         {/* Items List */}
         <div className="mb-2">
-          {order.items.map((item, idx) => (
+          {order.items?.map((item, idx) => (
             <div
               key={idx}
               style={{ padding: '16px 20px' }}
@@ -61,9 +76,13 @@ const OrderCard: React.FC<OrderCardProps> = ({
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="cart-item-img-wrapper relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
                   <Image
-                    src={item.product ? item.product.thumbnail.media_url : "/assets/no-image.jpg"}
+                    src={
+                      item.variant?.thumbnail?.media_url ||
+                      item.product?.thumbnail?.media_url ||
+                      "/assets/no-image.jpg"
+                    }
                     layout='fill'
-                    alt='gambar'
+                    alt={item.product_name || 'gambar'}
                     objectFit='cover'
                     className='rounded-md'
                   />
@@ -76,9 +95,9 @@ const OrderCard: React.FC<OrderCardProps> = ({
                   ) : (
                     <h4 className="cart-item-title text-sm sm:text-base font-bold text-[var(--text-primary)] truncate">{item.product_name}</h4>
                   )}
-                  <p className="text-xs text-[var(--text-muted)] truncate mt-0.5">{order.store.name}</p>
+                  <p className="text-xs text-[var(--text-muted)] truncate mt-0.5">{order.store?.name}</p>
                   <p className="cart-item-price text-xs sm:text-sm font-extrabold mt-1">
-                    {item.variant_price ? item.variant_price.formatted : item.product_price.formatted} <span className="text-xs font-normal text-[var(--text-muted)]">x {item.quantity}</span>
+                    {item.variant_price ? item.variant_price.formatted : item.product_price?.formatted} <span className="text-xs font-normal text-[var(--text-muted)]">x {item.quantity}</span>
                   </p>
                 </div>
               </div>
@@ -112,7 +131,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 {totalItems} item • {order.status == "awaiting_payment" ? order.payment_status_label : order.status_label}
               </span>
               <span className="font-extrabold text-[var(--text-primary)] text-sm sm:text-base">
-                Total: <span className="text-[var(--terracotta)]">{order.total.formatted}</span>
+                Total: <span className="text-[var(--terracotta)]">{order.total?.formatted}</span>
               </span>
             </div>
           </div>
@@ -129,7 +148,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
             {((order.status == "awaiting_payment" && order.payment_status == "unpaid") ||
               (isCod && order.status == "pending" && order.payment_status == "unpaid")) && (
               <button
-                onClick={() => router.push(isCod ? `/pembayaran/${order.id}/cod` : `/pembayaran/${order.id}`)}
+                onClick={() => router.push(paymentUrl)}
                 className="btn btn-primary btn-sm"
               >
                 Bayar

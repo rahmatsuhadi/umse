@@ -17,6 +17,7 @@ export default function PaymentPage() {
     const order = data?.data;
 
     // Jika pesanan adalah COD, otomatis arahkan ke halaman pembayaran COD
+    // Jika pesanan adalah transaksi item produk jasa, otomatis arahkan ke halaman pembayaran Jasa
     useEffect(() => {
         if (order) {
             const isCod =
@@ -27,6 +28,21 @@ export default function PaymentPage() {
 
             if (isCod) {
                 router.replace(`/pembayaran/${order.id}/cod`);
+                return;
+            }
+
+            const isService =
+                (order.items && order.items.length > 0 && order.items.every((item) => {
+                    const type = item.product?.type?.toLowerCase();
+                    return type === "service" || type === "jasa";
+                })) ||
+                (order.requires_shipping_payment === false &&
+                 (!order.shipping_service || order.shipping_service.toLowerCase() === "none" || order.shipping_service.toLowerCase() === "pickup") &&
+                 Number(order.shipping_cost?.value ?? 0) === 0);
+
+            if (isService) {
+                router.replace(`/pembayaran/${order.id}/jasa`);
+                return;
             }
         }
     }, [order, router]);

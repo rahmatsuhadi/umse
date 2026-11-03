@@ -118,4 +118,13 @@ export interface Order {
     } | null
     cod_negotiations?: CodNegotiation[]
     latest_cod_negotiation?: CodNegotiation | null
+    service_deadline?: string | null
+    service_deadline_formatted?: string | null
+    service_request_details?: string | null
+    service_reference_url?: string | null
+    service_status?: 'pending_submission' | 'pending_confirmation' | 'confirmed' | 'rejected' | null
+    service_status_label?: string | null
+    service_confirmed_at?: string | null
+    service_rejected_at?: string | null
+    service_rejection_reason?: string | null
 }

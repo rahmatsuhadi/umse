@@ -45,7 +45,7 @@ import { Button } from "../ui/button";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useUser } from "@/features/auth/hooks";
 import { addAddress, setDefaultAddress, updateAddress } from "@/features/address/api";
-import { Loader2, User2, Phone, Home, MapPin, Compass, Check, Banknote } from "lucide-react";
+import { Loader2, User2, Phone, Home, MapPin, Banknote, Clock } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
 import { toast } from "sonner";
 
@@ -252,9 +252,10 @@ export default function CheckoutForm({
             };
           }
         }),
-        shipping_service: shipping_service.name,
-        shipping_service_type: shipping_service.type,
+        shipping_service: isServiceOrder ? "" : (shipping_service.name || ""),
+        shipping_service_type: isServiceOrder ? "" : (shipping_service.type || ""),
         store_id: store.id,
+        status: isServiceOrder ? "pending" : undefined,
         address: {
           address_line: data.fullAddress,
           district_id: Number(data.district_id),
@@ -274,6 +275,8 @@ export default function CheckoutForm({
       if (res?.data?.id) {
         if (isCod) {
           router.replace(`/pembayaran/${res.data.id}/cod`);
+        } else if (isServiceOrder) {
+          router.replace(`/pembayaran/${res.data.id}/jasa`);
         } else {
           router.replace(`/pembayaran/${res.data.id}`);
         }
@@ -360,7 +363,7 @@ export default function CheckoutForm({
   }, [selectedVillageName, selectedDistrictName, selectedRegencyName, selectedProvinceName]);
 
   // Sinkronisasi Opsi B: Deteksi cerdas & forward geocoding
-  const [detectedSuggestion, setDetectedSuggestion] = useState<DetectedSuggestion | null>(null);
+  const [, setDetectedSuggestion] = useState<DetectedSuggestion | null>(null);
   const [isApplyingRegion, setIsApplyingRegion] = useState(false);
   const isSyncingFromMapRef = useRef(false);
   const lastGeocodedRegionRef = useRef<string>("");
@@ -1094,20 +1097,55 @@ export default function CheckoutForm({
 
                 {/* Action payment button */}
                 <div className="mt-6">
+                  {isServiceOrder && (
+                    <div
+                      className="mb-3 p-3 rounded-xl flex items-center gap-2.5 text-xs font-semibold"
+                      style={{
+                        background: "#F3E5F5",
+                        color: "#7B1FA2",
+                        border: "1px solid #E1BEE7",
+                      }}
+                    >
+                      <Clock className="w-4 h-4 text-[#7B1FA2] flex-shrink-0" />
+                      <span>
+                        Status transaksi layanan jasa: <strong>Menunggu Konfirmasi</strong> dari penyedia jasa.
+                      </span>
+                    </div>
+                  )}
+
                   <Button
                     disabled={isProcessing || !isValidShip || !watchedPostalCode || watchedPostalCode.length !== 5}
                     type="submit"
                     className="checkout-btn-full"
+                    style={
+                      isServiceOrder
+                        ? {
+                            background: "linear-gradient(135deg, #7B1FA2 0%, #9C27B0 100%)",
+                            borderColor: "#7B1FA2",
+                          }
+                        : undefined
+                    }
                   >
                     {isProcessing ? (
                       <div className="flex items-center gap-2">
                         <Loader2 className="animate-spin w-4 h-4" />
-                        <span>{isCod ? "Membuat Pesanan COD..." : "Membuat Pesanan..."}</span>
+                        <span>
+                          {isCod
+                            ? "Membuat Pesanan COD..."
+                            : isServiceOrder
+                            ? "Memproses Pesanan (Menunggu Konfirmasi)..."
+                            : "Membuat Pesanan..."}
+                        </span>
                       </div>
                     ) : isCod ? (
                       <>
                         <Banknote className="w-4 h-4" />
                         <span>Lanjut ke Pembayaran COD</span>
+                      </>
+                    ) : isServiceOrder ? (
+                      <>
+                        <Clock className="w-4 h-4" />
+                        <span>Pesan Layanan Jasa</span>
                       </>
                     ) : (
                       <>

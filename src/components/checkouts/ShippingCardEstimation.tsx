@@ -485,6 +485,7 @@ export default function ShippingCardEstimation({
         handleValidShipping(null);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isServiceOrder,
     activeTab,
@@ -495,7 +496,7 @@ export default function ShippingCardEstimation({
     currentTabRates,
     isLoadingShippingRates,
     isLoadingInstantRates,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+  ]);
 
   const handleSelectRate = (rate: ResponseShippingRates) => {
     const key = `${rate.service}_${rate.service_type}`;

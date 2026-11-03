@@ -19,7 +19,6 @@ import {
   Truck,
   Package,
   ShieldCheck,
-  Sparkles,
   ArrowRight,
 } from "lucide-react";
 import { StepIndicator } from "@/components/orders/step/StepIndicator";
@@ -152,7 +151,7 @@ export default function PaymentStep({
 
       return () => clearInterval(interval);
     }
-  }, [pollData?.should_redirect, pollData?.order_status, isFullyPaid, order.status, showSuccessModal, router]);
+  }, [pollData?.should_redirect, pollData?.order_status, isFullyPaid, order.status, showSuccessModal, router, isCod]);
 
   // Regenerate QRIS mutation
   const { mutate: regenerateQrisMutate, isPending: isRegenerating } = useRegenerateQris(order.id);
@@ -333,6 +332,11 @@ export default function PaymentStep({
                 Seluruh tagihan pesanan Anda ({requiresShippingPayment ? "Produk & Ongkos Kirim" : isServiceOrder ? "Produk Jasa" : "Produk Pesanan"}) telah diverifikasi lunas secara otomatis oleh sistem.
               </p>
 
+              {redirectCountdown !== null && (
+                <p className="text-[11px] text-emerald-700 font-semibold mt-3">
+                  Mengalihkan ke halaman pesanan dalam {redirectCountdown} detik...
+                </p>
+              )}
 
               <button
                 type="button"

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Order, CodNegotiation } from "@/types";
 import { CheckoutStep } from "@/components/checkouts/lib";
@@ -16,7 +16,6 @@ import {
   Store as StoreIcon,
   Phone,
   ArrowRight,
-  Info,
   Clock,
   ShieldCheck,
   Home,
@@ -26,7 +25,6 @@ import {
   RotateCcw,
   AlertCircle,
   Truck,
-  MessageSquare,
 } from "lucide-react";
 
 interface PaymentCodStepProps {
@@ -42,7 +40,7 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
     initialOrder.latest_cod_negotiation || (initialOrder.cod_negotiations?.length ? initialOrder.cod_negotiations[initialOrder.cod_negotiations.length - 1] : null)
   );
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showNegoForm, setShowNegoForm] = useState(false);
 
@@ -56,7 +54,7 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
   const [showRejectModal, setShowRejectModal] = useState(false);
 
   // Fetch negotiations
-  const fetchNegotiations = async () => {
+  const fetchNegotiations = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await getCodNegotiations(order.id);
@@ -69,16 +67,19 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [order.id]);
 
   useEffect(() => {
     fetchNegotiations();
-  }, [order.id]);
+  }, [fetchNegotiations]);
 
   const recipientName = order.shipping_recipient_name || order.customer?.name || "-";
   const recipientPhone = order.shipping_recipient_phone_number || order.customer?.phone_number || "-";
   const shippingAddress = order.shipping_address_line || "-";
-  const storePhone = order.store?.phone || order.store?.user?.phone_number || (order.store as any)?.owner?.phone_number;
+  const storePhone =
+    order.store?.phone ||
+    order.store?.user?.phone_number ||
+    (order.store as unknown as { owner?: { phone_number?: string } })?.owner?.phone_number;
 
   // Cek apakah giliran pembeli
   const isOrderCancelled = order.status === "cancelled";
@@ -123,8 +124,9 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
         setOrder(res.order);
       }
       await fetchNegotiations();
-    } catch (err: any) {
-      toast.error(err.message || "Gagal mengirim pengajuan negosiasi.");
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      toast.error(error.message || "Gagal mengirim pengajuan negosiasi.");
     } finally {
       setIsSubmitting(false);
     }
@@ -144,8 +146,9 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
         setOrder(res.order);
       }
       await fetchNegotiations();
-    } catch (err: any) {
-      toast.error(err.message || "Gagal menyetujui negosiasi.");
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      toast.error(error.message || "Gagal menyetujui negosiasi.");
     } finally {
       setIsSubmitting(false);
     }
@@ -165,17 +168,20 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
         setOrder(res.order);
       }
       await fetchNegotiations();
-    } catch (err: any) {
-      toast.error(err.message || "Gagal menolak negosiasi.");
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      toast.error(error.message || "Gagal menolak negosiasi.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const formatRupiah = (val: any) => {
+  const formatRupiah = (val: unknown) => {
     if (!val && val !== 0) return "Rp 0";
-    if (typeof val === "object" && val?.formatted) return val.formatted;
-    const num = typeof val === "number" ? val : parseFloat(val);
+    if (typeof val === "object" && val !== null && "formatted" in val) {
+      return String((val as { formatted: unknown }).formatted);
+    }
+    const num = typeof val === "number" ? val : parseFloat(String(val));
     return isNaN(num) ? "Rp 0" : `Rp ${num.toLocaleString("id-ID")}`;
   };
 
@@ -395,8 +401,10 @@ export default function PaymentCodStep({ order: initialOrder, currentStep = "pay
                           }
                           if (latestNegotiation?.proposed_shipping_cost) {
                             const cost =
-                              typeof latestNegotiation.proposed_shipping_cost === "object"
-                                ? (latestNegotiation.proposed_shipping_cost as any).value
+                              typeof latestNegotiation.proposed_shipping_cost === "object" &&
+                              latestNegotiation.proposed_shipping_cost !== null &&
+                              "value" in latestNegotiation.proposed_shipping_cost
+                                ? (latestNegotiation.proposed_shipping_cost as { value: unknown }).value
                                 : latestNegotiation.proposed_shipping_cost;
                             setShippingCost(String(cost));
                           }
