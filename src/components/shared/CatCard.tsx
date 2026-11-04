@@ -36,12 +36,20 @@ export interface CatCardProps {
     hourPill?: { state: 'open' | 'closing-soon' | 'closed'; text: string; pillClass: string } | null;
     phone?: string;
     nmid?: string;
+    isCod?: boolean;
     className?: string;
 }
 
 
 export function CatCard(p: CatCardProps) {
     const isClosed = p.isClosed === true;
+    const hasNmid = Boolean((p.nmid && p.nmid.trim() !== "") || (p.product?.store?.nmid && p.product.store.nmid.trim() !== ""));
+    const isCod = Boolean(p.isCod ?? p.product?.store?.is_cod);
+    const canAddToCart = !isClosed && (hasNmid || isCod);
+    const disabledReason = isClosed
+        ? "Toko sedang tutup"
+        : "Penjual belum menginput NMID atau mengaktifkan mode COD";
+
     const router = useRouter();
     const pathname = usePathname();
     const { data: user } = useUser();
@@ -52,6 +60,12 @@ export function CatCard(p: CatCardProps) {
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!canAddToCart) {
+            toast.error("Gagal menambahkan ke keranjang", {
+                description: disabledReason,
+            });
+            return;
+        }
         if (!user) {
             if (p.product) {
                 const product = p.product;
@@ -173,14 +187,14 @@ export function CatCard(p: CatCardProps) {
                             })()}
                         </div>
                     </div>
-                    {isClosed || !p.nmid ? (
+                    {!canAddToCart ? (
                         <span
-                            title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
+                            title={disabledReason}
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 toast.error("Gagal menambahkan ke keranjang", {
-                                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                                    description: disabledReason,
                                 });
                             }}
                             style={{ display: "inline-flex" }}

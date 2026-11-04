@@ -19,6 +19,7 @@ interface ProductStickyWAProps {
     phone: string; // store.user.phone_number
     isClosed?: boolean;
     hasNoQris?: boolean;
+    isCod?: boolean;
 }
 
 export default function ProductStickyWA({
@@ -27,7 +28,8 @@ export default function ProductStickyWA({
     selectedVariantId,
     quantity,
     isClosed,
-    hasNoQris
+    hasNoQris,
+    isCod,
 }: ProductStickyWAProps) {
     const { data: user } = useUser();
     const router = useRouter();
@@ -35,7 +37,29 @@ export default function ProductStickyWA({
     const { mutate: addToCart, isPending } = useAddToCart();
     const { addItem: addToGuestCart } = useGuestCart();
 
+    const hasNmid = Boolean(
+        (product?.store?.nmid && product.store.nmid.trim() !== "") ||
+        (hasNoQris !== undefined ? !hasNoQris : false)
+    );
+    const isCodActive = Boolean(isCod ?? product?.store?.is_cod);
+    const hasPaymentMethod = hasNmid || isCodActive;
+    const canAddToCart = !isClosed && hasPaymentMethod;
+
+    const disabled = !canAddToCart || isPending;
+    const tooltipText = isClosed
+        ? "Toko sedang tutup"
+        : !hasPaymentMethod
+        ? "Penjual belum menginput NMID atau mengaktifkan mode COD"
+        : undefined;
+
     const handleClick = () => {
+        if (!canAddToCart) {
+            toast.error("Gagal menambahkan ke keranjang", {
+                description: tooltipText,
+            });
+            return;
+        }
+
         if (!user) {
             if (product) {
                 const selectedVariant = product.variants?.find(v => v.id === selectedVariantId) || null;
@@ -79,9 +103,6 @@ export default function ProductStickyWA({
         });
     };
 
-    const disabled = isClosed || isPending || hasNoQris;
-    const tooltipText = isClosed ? "Toko sedang tutup" : hasNoQris ? "Penjual belum mengupload QRIS" : undefined;
-
     return (
         <span
             title={tooltipText}
@@ -104,17 +125,17 @@ export default function ProductStickyWA({
                     border: "none",
                     cursor: disabled ? "not-allowed" : "pointer",
                     opacity: disabled ? 0.6 : 1,
-                    background: isClosed ? "#a0a0a0" : hasNoQris ? "#888888" : "var(--primary, #F97316)",
+                    background: isClosed ? "#a0a0a0" : !hasPaymentMethod ? "#888888" : "var(--primary, #F97316)",
                     color: "white",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
                     justifyContent: "center",
-                    pointerEvents: (isClosed || hasNoQris) ? "none" : "auto"
+                    pointerEvents: (!canAddToCart) ? "none" : "auto"
                 }}
             >
                 <ShoppingCart size={20} style={{ opacity: disabled ? 0.5 : 1 }} />
-                {isClosed ? "Toko Tutup" : hasNoQris ? "QRIS Belum Diupload" : isPending ? "Memproses..." : "Masukkan Keranjang"}
+                {isClosed ? "Toko Tutup" : !hasPaymentMethod ? "Metode Bayar Belum Ada" : isPending ? "Memproses..." : "Masukkan Keranjang"}
             </button>
         </span>
     );

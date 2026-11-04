@@ -35,6 +35,17 @@ export const CartStoreCard = ({
     const { mutate: updateItem, isPending } = useUpdateCartItem();
     const { mutate: removeItem, } = useRemoveCartItem();
 
+    const store = items[0]?.store;
+    const isClosed = store?.is_open === false || store?.is_emergency_close === true;
+    const hasNmid = Boolean(store?.nmid && store.nmid.trim() !== "");
+    const isCod = Boolean(store?.is_cod);
+    const canCheckout = !isClosed && (hasNmid || isCod);
+    const cannotCheckoutReason = isClosed
+        ? "Toko sedang tutup"
+        : !hasNmid && !isCod
+        ? "Penjual belum menginput NMID atau mengaktifkan mode COD"
+        : undefined;
+
     // Hitung jumlah barang fisik dan layanan jasa di toko ini
     const goodsCount = useMemo(() => items.filter((item) => isGoodsItem(item)).length, [items]);
     const serviceCount = useMemo(() => items.filter((item) => isServiceItem(item)).length, [items]);
@@ -99,6 +110,20 @@ export const CartStoreCard = ({
         // Logika checkout untuk toko ini
 
         if (selectedItems.length === 0) return;
+
+        if (isClosed) {
+            toast.error("Toko sedang tutup", {
+                description: "Pesanan belum dapat di-checkout karena toko sedang tutup.",
+            });
+            return;
+        }
+
+        if (!hasNmid && !isCod) {
+            toast.error("Checkout tidak dapat diproses", {
+                description: "Penjual belum menginput NMID atau mengaktifkan mode COD.",
+            });
+            return;
+        }
 
         // Validasi: Jenis barang dan jasa tidak bisa di-checkout dalam satu order
         if (hasMixedSelection) {
@@ -279,6 +304,36 @@ export const CartStoreCard = ({
                 })}
             </div>
 
+            {/* Peringatan jika toko tutup */}
+            {isClosed && (
+                <div className="mx-4 mb-3 p-3.5 rounded-2xl bg-red-50 border border-red-300 text-red-900 text-xs">
+                    <div className="flex items-start gap-2.5">
+                        <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <p className="font-bold text-red-950">Toko Sedang Tutup</p>
+                            <p className="text-red-800 mt-0.5 leading-relaxed text-[11px]">
+                                {store?.emergency_close_reason || "Toko ini sedang tutup untuk sementara waktu sehingga pesanan belum dapat di-checkout."}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Peringatan jika toko belum input NMID dan tidak aktif COD */}
+            {!isClosed && !hasNmid && !isCod && (
+                <div className="mx-4 mb-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs">
+                    <div className="flex items-start gap-2.5">
+                        <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <p className="font-bold text-amber-950">Metode Pembayaran Toko Belum Tersedia</p>
+                            <p className="text-amber-800 mt-0.5 leading-relaxed text-[11px]">
+                                Penjual belum menginput NMID (QRIS) atau mengaktifkan mode COD. Checkout toko ini belum dapat diproses.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Peringatan jika pengguna memilih kombinasi Barang dan Jasa */}
             {hasMixedSelection && (
                 <div className="mx-4 mb-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs">
@@ -333,10 +388,14 @@ export const CartStoreCard = ({
                 {/* Checkout Button */}
                 <button
                     type="button"
-                    disabled={selectedItems.length === 0 || hasMixedSelection}
+                    disabled={selectedItems.length === 0 || hasMixedSelection || !canCheckout}
                     onClick={onCheckout}
                     className="cart-checkout-btn disabled:opacity-50 disabled:cursor-not-allowed"
-                    title={hasMixedSelection ? "Barang dan Jasa tidak dapat di-checkout dalam satu order" : undefined}
+                    title={
+                        hasMixedSelection
+                            ? "Barang dan Jasa tidak dapat di-checkout dalam satu order"
+                            : cannotCheckoutReason
+                    }
                 >
                     Checkout Toko Ini
                     <ArrowRight className="w-4 h-4" />

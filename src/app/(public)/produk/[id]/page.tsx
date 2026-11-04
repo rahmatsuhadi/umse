@@ -126,7 +126,7 @@ export default async function ProductDetailPage({
           {/* Product Detail Client handles both Gallery and Info for state sharing */}
           <ProductDetailClient
             product={product}
-            isClosed={!product.store?.is_open}
+            isClosed={product.store?.is_open === false || product.store?.is_emergency_close === true}
             mainImage={mainImage}
             images={images}
           />

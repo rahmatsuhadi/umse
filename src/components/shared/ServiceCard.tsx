@@ -34,9 +34,24 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
     const { mutate: addToCart, isPending } = useAddToCart();
     const { addItem: addToGuestCart } = useGuestCart();
 
+    const isEmergencyClose = p.store?.is_emergency_close === true;
+    const isClosed = p.store?.is_open === false || isEmergencyClose;
+    const hasNmid = Boolean(p.store?.nmid && p.store.nmid.trim() !== "");
+    const isCod = Boolean(p.store?.is_cod);
+    const canAddToCart = !isClosed && (hasNmid || isCod);
+    const disabledReason = isClosed
+        ? "Toko sedang tutup"
+        : "Penjual belum menginput NMID atau mengaktifkan mode COD";
+
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!canAddToCart) {
+            toast.error("Gagal menambahkan ke keranjang", {
+                description: disabledReason,
+            });
+            return;
+        }
         if (!user) {
             addToGuestCart({
                 product_id: String(p.id),
@@ -65,8 +80,6 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
     };
 
     // From ProductCard parsing logic - ambil harga terendah produk & variant
-    const isEmergencyClose = p.store?.is_emergency_close === true;
-    const isClosed = p.store?.is_open === false || isEmergencyClose;
     const priceInfo = getLowestProductPrice(p);
     const displayPrice = priceInfo.displayPrice;
     const priceOld = priceInfo.priceOld;
@@ -185,14 +198,14 @@ export function ServiceCard({ product: p, className }: ServiceCardProps) {
                             {/* ⭐ {ratingDisplay} &nbsp;·&nbsp; */} {soldCount} dipesan
                         </div>
                     </div>
-                    {isClosed || !p.store?.nmid ? (
+                    {!canAddToCart ? (
                         <span
-                            title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
+                            title={disabledReason}
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 toast.error("Gagal menambahkan ke keranjang", {
-                                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                                    description: disabledReason,
                                 });
                             }}
                             style={{ display: "inline-flex" }}

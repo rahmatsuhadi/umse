@@ -100,6 +100,7 @@ export default function ProductDetailClient({ product, isClosed, mainImage, imag
                         phone={product.store?.user?.phone_number || product.store?.phone || ''}
                         isClosed={isClosed}
                         hasNoQris={!product.store?.nmid}
+                        isCod={product.store?.is_cod}
                     />
                 </div>
             </div>

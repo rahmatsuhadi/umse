@@ -11,6 +11,7 @@ import Image from "next/image";
 import { getComputedPrice, formatPriceDisplay } from "@/lib/price-helper";
 import { formatRupiah } from "@/lib/curency-format";
 import { getProductTypeInfo } from "@/lib/product-helper";
+import { toast } from "sonner";
 
 const buildSlug = (name: string, id: string | number) =>
   String(name || "")
@@ -100,6 +101,20 @@ export default function ProductCheckoutButton({ product, isClosed, onVariantChan
             <h3 className="text-base font-bold text-red-600 mb-0.5">Toko Sedang Tutup</h3>
             <p className="text-sm text-red-800/80 leading-tight font-medium">
               {product.store.emergency_close_reason || "Maaf, toko ini sedang tidak dapat menerima pesanan untuk sementara waktu."}
+            </p>
+          </div>
+        </div>
+      )}
+      {!isClosed && !product.store?.nmid && !product.store?.is_cod && (
+        <div className="relative overflow-hidden bg-white border border-amber-500 rounded-2xl p-4 shadow-sm mb-4 flex flex-col sm:flex-row items-center gap-4" style={{ padding: 20, marginBottom: 16 }}>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600"></div>
+          <div className="w-10 h-10 bg-amber-100/80 rounded-full flex items-center justify-center text-amber-600 shadow-sm flex-shrink-0">
+            <i className="fas fa-exclamation-triangle text-lg"></i>
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <h3 className="text-base font-bold text-amber-700 mb-0.5">Metode Pembayaran Belum Tersedia</h3>
+            <p className="text-sm text-amber-800/80 leading-tight font-medium">
+              Maaf, toko ini belum menginput NMID (QRIS) atau mengaktifkan mode COD sehingga pesanan belum dapat diproses.
             </p>
           </div>
         </div>
@@ -356,6 +371,20 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     selectedVariant: Variant | null;
     quantity: number;
   }) => {
+    const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
+    const hasNmid = Boolean(product.store?.nmid && product.store.nmid.trim() !== "");
+    const isCod = Boolean(product.store?.is_cod);
+    if (isClosed) {
+      toast.error("Gagal menambahkan ke keranjang", { description: "Toko sedang tutup" });
+      return;
+    }
+    if (!hasNmid && !isCod) {
+      toast.error("Gagal menambahkan ke keranjang", {
+        description: "Penjual belum menginput NMID atau mengaktifkan mode COD",
+      });
+      return;
+    }
+
     if (!isAuth) {
       // Guest: simpan ke localStorage
       const price = selectedVariant ? selectedVariant.price : product.price;
@@ -403,6 +432,22 @@ const useCheckout = ({ isAuth = false, product }: CheckoutButtonProps) => {
     quantity: number;
     price: Price;
   }) => {
+    const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
+    const hasNmid = Boolean(product.store?.nmid && product.store.nmid.trim() !== "");
+    const isCod = Boolean(product.store?.is_cod);
+    if (isClosed) {
+      toast.error("Toko sedang tutup", {
+        description: "Pesanan belum dapat diproses karena toko sedang tutup.",
+      });
+      return;
+    }
+    if (!hasNmid && !isCod) {
+      toast.error("Checkout tidak dapat diproses", {
+        description: "Penjual belum menginput NMID atau mengaktifkan mode COD.",
+      });
+      return;
+    }
+
     if (!isAuth) {
       router.push(`/masuk?redirect=${pathname}`);
       return;

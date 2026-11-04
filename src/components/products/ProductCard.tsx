@@ -42,6 +42,20 @@ export const ProductCard = ({ product }: CardProductProps) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
+    const hasNmid = Boolean(product.store?.nmid && product.store.nmid.trim() !== "");
+    const isCod = Boolean(product.store?.is_cod);
+    const canAddToCart = !isClosed && (hasNmid || isCod);
+    const disabledReason = isClosed
+      ? "Toko sedang tutup"
+      : "Penjual belum menginput NMID atau mengaktifkan mode COD";
+
+    if (!canAddToCart) {
+      toast.error("Gagal menambahkan ke keranjang", {
+        description: disabledReason,
+      });
+      return;
+    }
     if (!user) {
       const computed = getComputedPrice(product, null);
       addToGuestCart({
@@ -133,15 +147,21 @@ export const ProductCard = ({ product }: CardProductProps) => {
           </div>
           {(() => {
             const isClosed = product.store?.is_open === false || product.store?.is_emergency_close === true;
-            const hasNoQris = !product.store?.nmid;
-            return isClosed || hasNoQris ? (
+            const hasNmid = Boolean(product.store?.nmid && product.store.nmid.trim() !== "");
+            const isCod = Boolean(product.store?.is_cod);
+            const canAddToCart = !isClosed && (hasNmid || isCod);
+            const disabledReason = isClosed
+              ? "Toko sedang tutup"
+              : "Penjual belum menginput NMID atau mengaktifkan mode COD";
+
+            return !canAddToCart ? (
               <span
-                title={isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS"}
+                title={disabledReason}
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   toast.error("Gagal menambahkan ke keranjang", {
-                    description: isClosed ? "Toko sedang tutup" : "Penjual belum mengupload QRIS",
+                    description: disabledReason,
                   });
                 }}
                 style={{ display: "inline-flex" }}

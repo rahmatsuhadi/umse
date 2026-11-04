@@ -88,6 +88,7 @@ export function ProductCard({ product, isNew: isNewProp, className }: ProductCar
             hourPill={hourPill}
             phone={p.store?.user?.phone_number || p.store?.phone || ""}
             nmid={p.store?.nmid}
+            isCod={p.store?.is_cod}
             className={className}
         />
     );
